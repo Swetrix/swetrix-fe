@@ -1,5 +1,5 @@
 module.exports = {
-  // mode: 'jit',
+  mode: 'jit',
   important: true,
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   darkMode: false, // or 'media' or 'class'
@@ -21,6 +21,5 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/forms'),
-    require('tailwind-scroll-behavior')(),
   ]
 }
