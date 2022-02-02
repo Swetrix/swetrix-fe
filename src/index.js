@@ -47,7 +47,7 @@ if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'swetrix:*'
 }
 
-ReactDOM.render(
+const Index = () => (
   <React.StrictMode>
     <Sentry.ErrorBoundary fallback={<p>The app crashed, sorry about that.. :(<br />Please, tell us about it at {CONTACT_EMAIL}<br /><br />To continue using the website, please reload the page.</p>}>
       <AlertProvider template={AlertTemplate} {...options}>
@@ -62,6 +62,13 @@ ReactDOM.render(
         </Provider>
       </AlertProvider>
     </Sentry.ErrorBoundary>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 )
+
+const rootElement = document.getElementById('root')
+
+if (rootElement.hasChildNodes()) {
+  ReactDOM.hydrate(<Index />, rootElement);
+} else {
+  ReactDOM.render(<Index />, rootElement);
+}
