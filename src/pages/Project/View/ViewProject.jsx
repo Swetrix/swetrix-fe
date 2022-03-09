@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo, memo, useRef } from 'react'
+import React, { useState, useEffect, useMemo, memo, useRef, Fragment } from 'react'
 import { useHistory, useParams, Link } from 'react-router-dom'
 import domToImage from 'dom-to-image'
 import { saveAs } from 'file-saver'
-import bb, { area, zoom } from 'billboard.js' // eslint-disable-line
+import bb, { area /*, zoom */ } from 'billboard.js' // eslint-disable-line
 import Flag from 'react-flagkit'
 import countries from 'i18n-iso-countries'
 import countriesEn from 'i18n-iso-countries/langs/en.json'
@@ -12,6 +12,7 @@ import countriesUk from 'i18n-iso-countries/langs/uk.json'
 import countriesZh from 'i18n-iso-countries/langs/zh.json'
 import countriesRu from 'i18n-iso-countries/langs/ru.json'
 import countriesSv from 'i18n-iso-countries/langs/sv.json'
+import { DownloadIcon } from '@heroicons/react/outline'
 import cx from 'clsx'
 import * as d3 from 'd3'
 import dayjs from 'dayjs'
@@ -33,13 +34,14 @@ import Button from 'ui/Button'
 import Loader from 'ui/Loader'
 import Dropdown from 'ui/Dropdown'
 import Checkbox from 'ui/Checkbox'
-import {
-  Panel, Overview, CustomEvents,
-} from './Panels'
 import routes from 'routes'
 import {
   getProjectData, getProject, getOverallStats, getLiveVisitors,
 } from 'api'
+import {
+  Panel, Overview, CustomEvents,
+} from './Panels'
+import { onCSVExportClick } from './ViewProject.helpers'
 import './styles.css'
 
 countries.registerLocale(countriesEn)
@@ -330,6 +332,11 @@ const ViewProject = ({
     }
   }
 
+  const exportTypes = [
+    { label: 'As image', onClick: exportAsImageHandler },
+    { label: 'As CSV', onClick: onCSVExportClick },
+  ]
+
   const isPanelsDataEmpty = _isEmpty(panelsData)
 
   if (!isLoading) {
@@ -387,9 +394,19 @@ const ViewProject = ({
           <div className={cx('flex flex-row items-center justify-center md:justify-end h-10 mt-16 md:mt-5 mb-4', { hidden: isPanelsDataEmpty })}>
             <Checkbox label={t('project.showAll')} id='views' checked={showTotal} onChange={(e) => setShowTotal(e.target.checked)} />
             <div className='h-full ml-3'>
-              <Button onClick={exportAsImageHandler} className='py-2.5 px-3 md:px-4 text-sm' secondary>
+              <Dropdown
+                items={exportTypes}
+                title={[
+                  <DownloadIcon key='download-icon' className='w-5 h-5 mr-2' />,
+                  <Fragment key='export-data'>Export data</Fragment>
+                ]}
+                labelExtractor={item => item.label}
+                keyExtractor={item => item.label}
+                onSelect={item => item.onClick(panelsData, t)}
+              />
+              {/* <Button onClick={exportAsImageHandler} className='py-2.5 px-3 md:px-4 text-sm' secondary>
                 {t('project.exportImg')}
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty })}>
