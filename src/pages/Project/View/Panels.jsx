@@ -1,6 +1,6 @@
-import React, { memo, useState, useEffect, useMemo, Fragment, useRef } from 'react'
+import React, { memo, useState, useEffect, useMemo, Fragment } from 'react'
 import { ArrowSmUpIcon, ArrowSmDownIcon } from '@heroicons/react/solid'
-import { FilterIcon } from '@heroicons/react/outline'
+import { FilterIcon, MapIcon, ViewListIcon, ArrowsExpandIcon } from '@heroicons/react/outline'
 import cx from 'clsx'
 import PropTypes from 'prop-types'
 import _keys from 'lodash/keys'
@@ -16,7 +16,8 @@ import _sum from 'lodash/sum'
 import InteractiveMap from './InteractiveMap'
 import Progress from 'ui/Progress'
 import PulsatingCircle from 'ui/icons/PulsatingCircle'
-import ModalMap from 'ui/ModalMap'
+import Modal from 'ui/Modal'
+import { iconClassName } from './ViewProject'
 import {pie} from "billboard.js"
 import Chart from 'ui/Chart'
 
@@ -24,26 +25,14 @@ const ENTRIES_PER_PANEL = 5
 
 // noSwitch - 'previous' and 'next' buttons
 const PanelContainer = ({
-  name,
-  children,
-  noSwitch,
-  icon,
-  type,
-  showFragment,
-  fragment,
-  openModal,
+  name, children, noSwitch, icon, type, openModal, activeFragment, setActiveFragment,
 }) => (
-  <div
-    className={cx(
-      "relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden",
-      {
-        "pb-12": !noSwitch,
-        "pb-5": noSwitch,
-      }
-    )}
-  >
-    <div className="flex items-center justify-between">
-      <h3 className="flex items-center text-lg leading-6 font-semibold mb-2 text-gray-900 dark:text-gray-50">
+  <div className={cx('relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden', {
+    'pb-12': !noSwitch,
+    'pb-5': noSwitch,
+  })}>
+    <div className='flex items-center justify-between mb-2'>
+      <h3 className='flex items-center text-lg leading-6 font-semibold text-gray-900 dark:text-gray-50'>
         {icon && (
           <>
             {icon}
@@ -52,57 +41,38 @@ const PanelContainer = ({
         )}
         {name}
       </h3>
-      {type === "cc" &&
-        (!fragment ? (
-          <button
-            className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
-            onClick={showFragment}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-            >
-              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-              <path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z" />
-            </svg>
-          </button>
-        ) : (
-          <div className="flex items-center">
-            <button
-              className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 text-ms hover:text-white px-2 border border-blue-500 hover:border-transparent rounded mr-2"
-              onClick={openModal}
-            >
-              Open map
-            </button>
-            <button
-              className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
-              onClick={showFragment}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"
-                />
-              </svg>
-            </button>
-          </div>
-        ))}
+      {type === 'cc' && (
+        <div className='flex'>
+          <ViewListIcon
+            className={cx(iconClassName, 'cursor-pointer', {
+              'text-blue-500': activeFragment === 0,
+              'text-gray-900 dark:text-gray-50': activeFragment === 1,
+            })}
+            onClick={() => setActiveFragment(0)}
+          />
+          <MapIcon
+            className={cx(iconClassName, 'ml-2 cursor-pointer', {
+              'text-blue-500': activeFragment === 1,
+              'text-gray-900 dark:text-gray-50': activeFragment === 0,
+            })}
+            onClick={() => setActiveFragment(1)}
+          />
+          <ArrowsExpandIcon
+            className={cx(iconClassName, 'ml-2 cursor-pointer text-gray-900 dark:text-gray-50', {
+              'hidden': activeFragment === 0,
+            })}
+            onClick={openModal}
+          />
+        </div>
+      )}
       { type !== "cc" &&
         type &&
         type !== "me" &&
         type !== "ca" &&
-        (!fragment ? (
+        (!activeFragment ? (
           <button
             className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
-            onClick={showFragment}
+            onClick={setActiveFragment}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +89,7 @@ const PanelContainer = ({
           <div>
             <button
               className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
-              onClick={showFragment}
+              onClick={setActiveFragment}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -136,20 +106,26 @@ const PanelContainer = ({
           </div>
         ))}
     </div>
-    <div className="flex flex-col h-full scroll-auto">{children}</div>
+    <div className='flex flex-col h-full scroll-auto'>
+      {children}
+    </div>
   </div>
-);
+)
 
 PanelContainer.propTypes = {
   name: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
   noSwitch: PropTypes.bool,
+  activeFragment: PropTypes.number,
+  setActiveFragment: PropTypes.func,
   icon: PropTypes.node,
 }
 
 PanelContainer.defaultProps = {
   icon: null,
   noSwitch: false,
+  activeFragment: 0,
+  setActiveFragment: () => { },
 }
 
 const Overview = ({
@@ -330,10 +306,11 @@ const Panel = ({
   const keys = useMemo(() => _keys(data).sort((a, b) => data[b] - data[a]), [data])
   const keysToDisplay = useMemo(() => _slice(keys, currentIndex, currentIndex + 5), [keys, currentIndex])
   const total = useMemo(() => _reduce(keys, (prev, curr) => prev + data[curr], 0), [keys]) // eslint-disable-line
-  const [fragment, setFragment] = useState(false)
+  const [activeFragment, setActiveFragment] = useState(0)
   const [modal, setModal] = useState(false)
   const canGoPrev = () => page > 0
-  const canGoNext = () => page < _floor((_size(keys) - 1  ) / ENTRIES_PER_PANEL)
+  const canGoNext = () => page < _floor(_size(keys) / ENTRIES_PER_PANEL)
+
   const _onFilter = hideFilters ? () => { } : onFilter
 
   useEffect(() => {
@@ -356,46 +333,39 @@ const Panel = ({
     }
   }
 
-
-  if (id === 'cc' && fragment) {
+  if (id === 'cc' && activeFragment === 1 && !_isEmpty(data)) {
     return (
       <PanelContainer
         name={name}
         icon={icon}
         type={id}
-        showFragment={() => setFragment(false)}
-        fragment={fragment}
+        activeFragment={activeFragment}
+        setActiveFragment={setActiveFragment}
         openModal={() => setModal(true)}
       >
-        {_isEmpty(data) ? (
-          <p className="mt-1 text-base text-gray-700 dark:text-gray-300">
-            {t("project.noParamData")}
-          </p>
-        ) : (
-          <>
+        <InteractiveMap
+          data={data}
+          total={total}
+          onClickCountry={(key) => _onFilter(id, key)}
+        />
+        <Modal
+          onClose={() => setModal(false)}
+          closeText={t('common.close')}
+          isOpened={modal}
+          message={(
             <InteractiveMap
               data={data}
+              total={total}
               onClickCountry={(key) => _onFilter(id, key)}
             />
-            <ModalMap
-            onClose={() => setModal(false)}
-            closeText="Close map"
-            isOpened={modal}
-            >
-              <InteractiveMap
-                data={data}
-                onClickCountry={(key) => _onFilter(id, key)}
-              />
-            </ModalMap>
-          </>
-        )}
+          )}
+          size='large'
+        />
       </PanelContainer>
-    );
+    )
   }
 
-
-
-  if (fragment) {
+  if (activeFragment && !_isEmpty(data)) {
     const options = {
       data: {
         columns: _map(data, (e, index) => [index, e]),
@@ -412,10 +382,10 @@ const Panel = ({
         name={name}
         icon={icon}
         type={id}
-        showFragment={() => {
-          setFragment(false);
+        setActiveFragment={() => {
+          setActiveFragment(false);
         }}
-        fragment={fragment}
+        activeFragment={activeFragment}
       >
         {_isEmpty(data) ? (
           <p className="mt-1 text-base text-gray-700 dark:text-gray-300">
@@ -432,7 +402,7 @@ const Panel = ({
   }
 
   return (
-    <PanelContainer name={name} icon={icon} type={id} showFragment={() => setFragment(true)}>
+    <PanelContainer name={name} icon={icon} type={id} activeFragment={activeFragment} setActiveFragment={setActiveFragment}>
       {_isEmpty(data) ? (
         <p className='mt-1 text-base text-gray-700 dark:text-gray-300'>
           {t('project.noParamData')}
