@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useMemo, Fragment } from 'react'
+import React, { memo, useState, useEffect, useMemo, Fragment, useRef } from 'react'
 import { ArrowSmUpIcon, ArrowSmDownIcon } from '@heroicons/react/solid'
 import { FilterIcon } from '@heroicons/react/outline'
 import cx from 'clsx'
@@ -17,19 +17,33 @@ import InteractiveMap from './InteractiveMap'
 import Progress from 'ui/Progress'
 import PulsatingCircle from 'ui/icons/PulsatingCircle'
 import ModalMap from 'ui/ModalMap'
+import {pie} from "billboard.js"
+import Chart from 'ui/Chart'
 
 const ENTRIES_PER_PANEL = 5
 
 // noSwitch - 'previous' and 'next' buttons
 const PanelContainer = ({
-  name, children, noSwitch, icon, type, showMap, fragment, openModal
+  name,
+  children,
+  noSwitch,
+  icon,
+  type,
+  showFragment,
+  fragment,
+  openModal,
 }) => (
-  <div className={cx('relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden', {
-    'pb-12': !noSwitch,
-    'pb-5': noSwitch,
-  })}>
-    <div className='flex items-center justify-between'>
-      <h3 className='flex items-center text-lg leading-6 font-semibold mb-2 text-gray-900 dark:text-gray-50'>
+  <div
+    className={cx(
+      "relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden",
+      {
+        "pb-12": !noSwitch,
+        "pb-5": noSwitch,
+      }
+    )}
+  >
+    <div className="flex items-center justify-between">
+      <h3 className="flex items-center text-lg leading-6 font-semibold mb-2 text-gray-900 dark:text-gray-50">
         {icon && (
           <>
             {icon}
@@ -38,22 +52,93 @@ const PanelContainer = ({
         )}
         {name}
       </h3>
-      { type === 'cc' && (
-        !fragment ? (
-          <button className=' mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded' onClick={showMap}>Show map</button>
+      {type === "cc" &&
+        (!fragment ? (
+          <button
+            className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
+            onClick={showFragment}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+              <path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z" />
+            </svg>
+          </button>
         ) : (
-          <div> 
-            <button className=' mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded mr-2' onClick={openModal}>Open map</button>
-            <button className=' mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded' onClick={showMap}>Close map</button>
+          <div className="flex items-center">
+            <button
+              className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 text-ms hover:text-white px-2 border border-blue-500 hover:border-transparent rounded mr-2"
+              onClick={openModal}
+            >
+              Open map
+            </button>
+            <button
+              className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
+              onClick={showFragment}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"
+                />
+              </svg>
+            </button>
           </div>
-        )
-      )}
+        ))}
+      { type !== "cc" &&
+        type &&
+        type !== "me" &&
+        type !== "ca" &&
+        (!fragment ? (
+          <button
+            className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
+            onClick={showFragment}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+              <path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z" />
+            </svg>
+          </button>
+        ) : (
+          <div>
+            <button
+              className=" mb-2 bg-transparent hover:bg-blue-500 text-blue-400 font-semibold hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
+              onClick={showFragment}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"
+                />
+              </svg>
+            </button>
+          </div>
+        ))}
     </div>
-    <div className='flex flex-col h-full scroll-auto'>
-      {children}
-    </div>
+    <div className="flex flex-col h-full scroll-auto">{children}</div>
   </div>
-)
+);
 
 PanelContainer.propTypes = {
   name: PropTypes.string.isRequired,
@@ -278,7 +363,7 @@ const Panel = ({
         name={name}
         icon={icon}
         type={id}
-        showMap={() => setFragment(false)}
+        showFragment={() => setFragment(false)}
         fragment={fragment}
         openModal={() => setModal(true)}
       >
@@ -308,8 +393,46 @@ const Panel = ({
     );
   }
 
+
+
+  if (fragment) {
+    const options = {
+      data: {
+        columns: _map(data, (e, index) => [index, e]),
+        type: pie(),
+        // (if you need fillter for onClick, but this fillter have some bugs rerender )
+        // onclick: (e) => { _onFilter(id, e.id)}
+      },
+      legend: {
+        show: false,
+      },
+    };
+    return (
+      <PanelContainer
+        name={name}
+        icon={icon}
+        type={id}
+        showFragment={() => {
+          setFragment(false);
+        }}
+        fragment={fragment}
+      >
+        {_isEmpty(data) ? (
+          <p className="mt-1 text-base text-gray-700 dark:text-gray-300">
+            {t("project.noParamData")}
+          </p>
+        ) : (
+          <Chart
+            options={options}
+            current={`Panels-${id}`}
+          />
+        )}
+      </PanelContainer>
+    );
+  }
+
   return (
-    <PanelContainer name={name} icon={icon} type={id} showMap={() => setFragment(true)}>
+    <PanelContainer name={name} icon={icon} type={id} showFragment={() => setFragment(true)}>
       {_isEmpty(data) ? (
         <p className='mt-1 text-base text-gray-700 dark:text-gray-300'>
           {t('project.noParamData')}
