@@ -78,7 +78,7 @@ const PanelContainer = ({
     </div>
     <div className='flex flex-col h-full scroll-auto'>{children}</div>
   </div>
-);
+)
 
 PanelContainer.propTypes = {
   name: PropTypes.string.isRequired,
