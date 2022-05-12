@@ -23,26 +23,19 @@ const ENTRIES_PER_PANEL = 5
 
 // noSwitch - 'previous' and 'next' buttons
 const PanelContainer = ({
-  name,
-  children,
-  noSwitch,
-  icon,
-  type,
-  openModal,
-  activeFragment,
-  setActiveFragment,
+  name, children, noSwitch, icon, type, openModal, activeFragment, setActiveFragment,
 }) => (
   <div
     className={cx(
-      "relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden",
+      'relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden',
       {
-        "pb-12": !noSwitch,
-        "pb-5": noSwitch,
+        'pb-12': !noSwitch,
+        'pb-5': noSwitch,
       }
     )}
   >
-    <div className="flex items-center justify-between mb-2">
-      <h3 className="flex items-center text-lg leading-6 font-semibold text-gray-900 dark:text-gray-50">
+    <div className='flex items-center justify-between mb-2'>
+      <h3 className='flex items-center text-lg leading-6 font-semibold text-gray-900 dark:text-gray-50'>
         {icon && (
           <>
             {icon}
@@ -51,26 +44,26 @@ const PanelContainer = ({
         )}
         {name}
       </h3>
-      {type === "cc" && (
-        <div className="flex">
+      {type === 'cc' && (
+        <div className='flex'>
           <ViewListIcon
-            className={cx(iconClassName, "cursor-pointer", {
-              "text-blue-500": activeFragment === 0,
-              "text-gray-900 dark:text-gray-50": activeFragment === 1,
+            className={cx(iconClassName, 'cursor-pointer', {
+              'text-blue-500': activeFragment === 0,
+              'text-gray-900 dark:text-gray-50': activeFragment === 1,
             })}
             onClick={() => setActiveFragment(0)}
           />
           <MapIcon
-            className={cx(iconClassName, "ml-2 cursor-pointer", {
-              "text-blue-500": activeFragment === 1,
-              "text-gray-900 dark:text-gray-50": activeFragment === 0,
+            className={cx(iconClassName, 'ml-2 cursor-pointer', {
+              'text-blue-500': activeFragment === 1,
+              'text-gray-900 dark:text-gray-50': activeFragment === 0,
             })}
             onClick={() => setActiveFragment(1)}
           />
           <ArrowsExpandIcon
             className={cx(
               iconClassName,
-              "ml-2 cursor-pointer text-gray-900 dark:text-gray-50",
+              'ml-2 cursor-pointer text-gray-900 dark:text-gray-50',
               {
                 hidden: activeFragment === 0,
               }
@@ -83,7 +76,7 @@ const PanelContainer = ({
     <div className='flex flex-col h-full scroll-auto'>
       {children}
     </div>
-    <div className="flex flex-col h-full scroll-auto">{children}</div>
+    <div className='flex flex-col h-full scroll-auto'>{children}</div>
   </div>
 );
 
