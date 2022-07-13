@@ -1,0 +1,7 @@
+.main_section {
+    min-height: 740px;
+}
+
+.elipse-main-page {
+    transform: matrix(0.5, 2, 3, 1, 30, 15)!important;
+}
