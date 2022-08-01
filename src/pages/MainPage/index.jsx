@@ -103,7 +103,7 @@ const Main = () => {
             <div className='dark:bg-gray-900 bg-white px-4 pb-24'>
               {/* section Core Analytics Features */}
               <section className='flex pt-20 md:pt-48 flex-col-reverse md:flex-row items-center md:items-start md:justify-between max-w-7xl m-auto'>
-                <img className='md:max-w-md lg:max-w-full md:relative md:-top-10' src='/assets/CoreFeaturesLight.png' alt='Core Analytics Features' />
+                <img className='md:max-w-md md:mr-3 mt-3 md:mt-0 lg:max-w-full md:relative md:-top-10' src='/assets/CoreFeaturesLight.png' alt='Core Analytics Features' />
                 <div className='max-w-lg'>
                   <h1 className='font-extrabold text-4xl dark:text-white text-gray-800'>
                     {t('main.coreFeatures.title')}
@@ -118,7 +118,7 @@ const Main = () => {
                 </div>
               </section>
               {/* section Marketplace & build-in Extensions */}
-              <section className='flex pt-20 md:pt-30 flex-col md:flex-row items-center md:items-start md:justify-between max-w-7xl m-auto'>
+              <section className='flex pt-20 md:pt-30 flex-col md:flex-row items-center md:justify-between max-w-7xl m-auto'>
                 <div className='max-w-[516px]'>
                   <h1 className='font-extrabold text-4xl text-gray-800 dark:text-white'>
                     {t('main.marketplace.title')}
@@ -134,11 +134,11 @@ const Main = () => {
                     <ArrowSmRightIcon className='w-5 h-4 mt-[1px]' />
                   </Link>
                 </div>
-                <img className='md:max-w-[450px] lg:max-w-lg' src='/assets/teardown.svg' alt='Marketplace' />
+                <img className='md:max-w-[450px] md:ml-5 mt-8 md:mt-0 lg:max-w-lg' src='/assets/teardown.svg' alt='Marketplace' />
               </section>
               {/* section Privacy compliance. */}
-              <section className='flex pt-20 md:pt-48 flex-col-reverse md:flex-row items-center md:items-start md:justify-between max-w-7xl m-auto'>
-                <img className='md:max-w-[360px] lg:max-w-lg' src='/assets/gdpr.svg' alt='GDPR compliant' />
+              <section className='flex pt-20 md:pt-48 flex-col-reverse md:flex-row items-center md:items-center md:justify-between max-w-7xl m-auto'>
+                <img className='md:max-w-[360px] md:mr-3 mt-3 md:mt-0 lg:max-w-lg' src='/assets/gdpr.svg' alt='GDPR compliant' />
                 <div className='max-w-[516px] w-full md:min-w-[370px] pb-16 md:pb-0'>
                   <h1 className='font-extrabold mb-6 text-4xl text-gray-800 dark:text-white'>
                     {t('main.privacy.title')}
