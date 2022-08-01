@@ -17,7 +17,7 @@ import { alertsActions } from 'redux/actions/alerts'
 import UIActions from 'redux/actions/ui'
 import { getCookie, setCookie } from 'utils/cookie'
 import { trackCustom } from 'utils/analytics'
-import { confirmEmail, exportUserData } from 'api'
+import { confirmEmail, exportUserData, generateApiKey } from 'api'
 import routes from 'routes'
 import UserSettings from './UserSettings'
 
@@ -138,6 +138,16 @@ const UserSettingsContainer = () => {
     dispatch(authActions.setUserShareData(data, id))
   }
 
+  const onApiKeyGenerate = async (userId) => {
+    try {
+      const res = await generateApiKey(userId)
+      console.log(res)
+      dispatch(authActions.setApiKey(res.apiKey))
+    } catch (e) {
+      dispatch(errorsActions.updateProfileFailed(e))
+    }
+  }
+
   return (
     <UserSettings
       t={t}
@@ -156,6 +166,7 @@ const UserSettingsContainer = () => {
       updateUserData={updateUserData}
       login={login}
       genericError={genericError}
+      onApiKeyGenerate={onApiKeyGenerate}
     />
   )
 }

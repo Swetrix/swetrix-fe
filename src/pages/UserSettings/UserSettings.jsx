@@ -356,7 +356,7 @@ const TwoFA = ({
 const UserSettings = ({
   onDelete, onExport, onSubmit, onEmailConfirm, onDeleteProjectCache, t,
   removeProject, removeShareProject, setUserShareData, setProjectsShareData, language,
-  userSharedUpdate, sharedProjectError, updateUserData, login, genericError,
+  userSharedUpdate, sharedProjectError, updateUserData, login, genericError, onApiKeyGenerate,
 }) => {
   const { user, dontRemember } = useSelector(state => state.auth)
 
@@ -537,6 +537,30 @@ const UserSettings = ({
           </Button>
           <hr className='mt-5' />
           <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+            Api-key
+            <div className='ml-5'>
+              <Beta />
+            </div>
+          </h3>
+          <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
+            <div>
+              <Input
+                name='apiKey'
+                id='apiKey'
+                type='text'
+                label='Generated Api-key'
+                value={user.apiKey || ''}
+                className='mt-4'
+                onChange={handleInput}
+                disabled
+              />
+            </div>
+          </div>
+          <Button className='mt-4' onClick={() => onApiKeyGenerate(user.id)} primary large>
+            Generate
+          </Button>
+          <hr className='mt-5' />
+          <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
             {t('profileSettings.2fa')}
             <div className='ml-5'>
               <Beta />
@@ -675,6 +699,7 @@ UserSettings.propTypes = {
   updateUserData: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
   genericError: PropTypes.func.isRequired,
+  onApiKeyGenerate: PropTypes.func.isRequired,
 }
 
 export default memo(UserSettings)
