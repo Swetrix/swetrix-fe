@@ -8,7 +8,7 @@ import Flag from 'react-flagkit'
 import i18next from 'i18next'
 import { Popover, Transition } from '@headlessui/react'
 import {
-  MenuIcon, XIcon, DocumentTextIcon, CreditCardIcon, CollectionIcon, RssIcon,
+  MenuIcon, XIcon, DocumentTextIcon, CreditCardIcon, CollectionIcon, RssIcon, UserIcon, DesktopComputerIcon,
 } from '@heroicons/react/outline'
 import { MoonIcon, SunIcon } from '@heroicons/react/solid'
 
@@ -108,11 +108,13 @@ const Header = ({ authenticated, theme }) => {
               {authenticated ? (
                 <>
                   {!isSelfhosted && (
-                    <NavLink to={routes.user_settings} className='text-base select-none font-medium text-white hover:text-indigo-50 py-2 px-3 dark:hover:bg-gray-700 hover:bg-indigo-500 rounded-md' activeClassName='bg-indigo-700 hover:bg-indigo-700 dark:bg-gray-700'>
+                    <NavLink to={routes.user_settings} className='flex justify-center items-center text-base select-none font-medium text-white hover:text-indigo-50 py-2 px-3 dark:hover:bg-gray-700 hover:bg-indigo-500 rounded-md' activeClassName='bg-indigo-700 hover:bg-indigo-700 dark:bg-gray-700'>
+                      <UserIcon className='w-5 h-5 mr-1' />
                       {t('common.you')}
                     </NavLink>
                   )}
-                  <Link to={routes.dashboard} className='inline-block select-none bg-white py-2 px-4 border border-transparent rounded-md text-base font-medium text-indigo-600 hover:bg-indigo-50 dark:text-gray-50 dark:border-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600'>
+                  <Link to={routes.dashboard} className='flex justify-center items-center select-none bg-white py-2 px-4 border border-transparent rounded-md text-base font-medium text-indigo-600 hover:bg-indigo-50 dark:text-gray-50 dark:border-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600'>
+                    <DesktopComputerIcon className='w-5 h-5 mr-1' />
                     {t('common.dashboard')}
                   </Link>
                   <Link to='#' className='text-base font-medium select-none text-white hover:text-indigo-50 py-2 px-3 dark:hover:bg-gray-700 hover:bg-indigo-500 rounded-md' onClick={logoutHandler}>
