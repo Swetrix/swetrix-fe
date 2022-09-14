@@ -26,7 +26,7 @@ const getTiers = (t) => [
     includedFeatures: [
       t('pricing.tiers.upToXVMo', { amount: '5,000' }),
       t('pricing.tiers.upToXWebsites', { amount: 10 }),
-      // t('pricing.tiers.xMoDataRetention', { amount: 3 }),
+      t('pricing.tiers.xMoDataRetention', { amount: 3 }),
       t('pricing.tiers.dataExports'),
       t('pricing.tiers.dataOwnership'),
       t('pricing.tiers.noBanners'),
@@ -43,7 +43,7 @@ const getTiers = (t) => [
       t('pricing.tiers.evXPlanIncl', { plan: t('pricing.tiers.hobby') }),
       t('pricing.tiers.xVMo', { amount: '100,000' }),
       t('pricing.tiers.upToXWebsites', { amount: 20 }),
-      // t('pricing.tiers.xMoDataRetention', { amount: 12 }),
+      t('pricing.tiers.xMoDataRetention', { amount: 24 }),
       t('pricing.tiers.smallBusiSupport'),
     ],
     pid: 752316, // Plan ID
@@ -57,7 +57,7 @@ const getTiers = (t) => [
     includedFeatures: [
       t('pricing.tiers.evXPlanIncl', { plan: t('pricing.tiers.freelancer') }),
       t('pricing.tiers.xVMo', { amount: '1,000,000' }),
-      // t('pricing.tiers.xMoDataRetention', { amount: 12 }),
+      t('pricing.tiers.xMoDataRetention', { amount: 24 }),
     ],
     pid: 752317,
     ypid: 776470,
@@ -72,7 +72,7 @@ const getTiers = (t) => [
       t('pricing.tiers.evXPlanIncl', { plan: t('pricing.tiers.startup') }),
       t('pricing.tiers.xVMo', { amount: '5,000,000' }),
       t('pricing.tiers.upToXWebsites', { amount: 30 }),
-      // t('pricing.tiers.xMoDataRetention', { amount: 24 }),
+      t('pricing.tiers.xMoDataRetention', { amount: 24 }),
     ],
     pid: 752318,
     ypid: 776471,
