@@ -76,7 +76,14 @@ const Fallback = ({ isMinimalFooter }) => {
 }
 
 const App = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch
+
+
+
+
+::
+
+
   const location = useLocation()
   const alert = useAlert()
   const { loading, authenticated } = useSelector(state => state.auth)
