@@ -65,7 +65,7 @@ const PanelContainer = ({
         <div className="flex">
           <Bars4Icon
             className={cx(iconClassName, 'cursor-pointer', {
-              'text-blue-500': activeFragment === 0,
+              'text-blue-200': activeFragment === 0,
               'text-gray-900 dark:text-gray-50': activeFragment === 1,
             })}
             onClick={() => setActiveFragment(0)}
