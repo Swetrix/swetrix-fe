@@ -9,6 +9,16 @@ html {
   scroll-behavior: smooth;
 }
 
+.snowflake {
+	color: #fff;
+	position: absolute;
+  z-index: 9999;
+	top: -20px;
+	animation: fall linear forwards;
+  width: 5px;
+  height: 5px;
+}
+
 /* Temporary solution: this WILL override all the other colour - background colour transitions */
 /* Do not use animations for people with vestibular motion disorders */
 * {
