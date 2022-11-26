@@ -63,6 +63,7 @@ const ViewProject = ({
   const [periodPairs, setPeriodPairs] = useState(tbPeriodPairs(t))
   const [customExportTypes, setCustomExportTypes] = useState([])
   const [customPanelTabs, setCustomPanelTabs] = useState([])
+  const [customPanelContentCenter, setCustomPanelContentCenter] = useState([])
   const [sdkInstance, setSdkInstance] = useState(null)
   const dashboardRef = useRef(null)
   const { id } = useParams()
@@ -351,6 +352,16 @@ const ViewProject = ({
         },
         onRemovePanelTab: (extensionID, panelID) => {
           setCustomPanelTabs((prev) => _filter(prev, (row) => row.extensionID !== extensionID && row.panelID !== panelID))
+        },
+        onAddPanelContentCenter: (extensionID, panelID, content) => {
+          setCustomPanelContentCenter((prev) => [
+            ...prev,
+            {
+              extensionID,
+              panelID,
+              content,
+            },
+          ])
         },
       })
       setSdkInstance(sdk)
@@ -855,6 +866,7 @@ const ViewProject = ({
                 const panelName = tnMapping[type]
                 const panelIcon = panelIconMapping[type]
                 const customTabs = _filter(customPanelTabs, tab => tab.panelID === type)
+                const customCenterContent = _find(customPanelContentCenter, panel => panel.panelID === type)
 
                 if (type === 'cc') {
                   return (
@@ -867,6 +879,7 @@ const ViewProject = ({
                       name={panelName}
                       data={panelsData.data[type]}
                       customTabs={customTabs}
+                      customCenterContent={customCenterContent}
                       rowMapper={(rowName) => (
                         <CCRow rowName={rowName} language={language} />
                       )}
@@ -885,6 +898,7 @@ const ViewProject = ({
                       name={panelName}
                       data={panelsData.data[type]}
                       customTabs={customTabs}
+                      customCenterContent={customCenterContent}
                       capitalize
                     />
                   )
@@ -901,6 +915,7 @@ const ViewProject = ({
                       name={panelName}
                       data={panelsData.data[type]}
                       customTabs={customTabs}
+                      customCenterContent={customCenterContent}
                       rowMapper={(rowName) => (
                         <RefRow rowName={rowName} showIcons={showIcons} />
                       )}
@@ -918,6 +933,7 @@ const ViewProject = ({
                     name={panelName}
                     data={panelsData.data[type]}
                     customTabs={customTabs}
+                    customCenterContent={customCenterContent}
                   />
                 )
               })}
