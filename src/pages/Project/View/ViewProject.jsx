@@ -63,7 +63,8 @@ const ViewProject = ({
   const [periodPairs, setPeriodPairs] = useState(tbPeriodPairs(t))
   const [customExportTypes, setCustomExportTypes] = useState([])
   const [customPanelTabs, setCustomPanelTabs] = useState([])
-  const [customPanelContentCenter, setCustomPanelContentCenter] = useState([])
+  const [customizePanelTab, setCustomizePanelTab] = useState(false)
+  const [newPanelTabs, setNewPanelTabs] = useState([])
   const [sdkInstance, setSdkInstance] = useState(null)
   const dashboardRef = useRef(null)
   const { id } = useParams()
@@ -353,13 +354,23 @@ const ViewProject = ({
         onRemovePanelTab: (extensionID, panelID) => {
           setCustomPanelTabs((prev) => _filter(prev, (row) => row.extensionID !== extensionID && row.panelID !== panelID))
         },
-        onAddPanelContentCenter: (extensionID, panelID, content) => {
-          setCustomPanelContentCenter((prev) => [
+        onCustomizePanelTab: (extensionID, panelID, tabContent) => {
+          setCustomizePanelTab((prev) => [
             ...prev,
             {
               extensionID,
               panelID,
-              content,
+              tabContent,
+            },
+          ])
+        },
+        onAddNewPanelTab: (extensionID, panelID, tabContent) => {
+          setNewPanelTabs((prev) => [
+            ...prev,
+            {
+              extensionID,
+              panelID,
+              tabContent,
             },
           ])
         },
@@ -866,7 +877,8 @@ const ViewProject = ({
                 const panelName = tnMapping[type]
                 const panelIcon = panelIconMapping[type]
                 const customTabs = _filter(customPanelTabs, tab => tab.panelID === type)
-                const customCenterContent = _find(customPanelContentCenter, panel => panel.panelID === type)
+                const customizePanel = _find(customizePanelTab, tab => tab.panelID === type)
+                const newPanelTab = _find(newPanelTabs, tab => tab.panelID === type)
 
                 if (type === 'cc') {
                   return (
@@ -879,7 +891,8 @@ const ViewProject = ({
                       name={panelName}
                       data={panelsData.data[type]}
                       customTabs={customTabs}
-                      customCenterContent={customCenterContent}
+                      customizePanel={customizePanel}
+                      newPanelTab={newPanelTab}
                       rowMapper={(rowName) => (
                         <CCRow rowName={rowName} language={language} />
                       )}
@@ -898,7 +911,8 @@ const ViewProject = ({
                       name={panelName}
                       data={panelsData.data[type]}
                       customTabs={customTabs}
-                      customCenterContent={customCenterContent}
+                      customizePanel={customizePanel}
+                      newPanelTab={newPanelTab}
                       capitalize
                     />
                   )
@@ -915,7 +929,8 @@ const ViewProject = ({
                       name={panelName}
                       data={panelsData.data[type]}
                       customTabs={customTabs}
-                      customCenterContent={customCenterContent}
+                      customizePanel={customizePanel}
+                      newPanelTab={newPanelTab}
                       rowMapper={(rowName) => (
                         <RefRow rowName={rowName} showIcons={showIcons} />
                       )}
@@ -933,7 +948,8 @@ const ViewProject = ({
                     name={panelName}
                     data={panelsData.data[type]}
                     customTabs={customTabs}
-                    customCenterContent={customCenterContent}
+                    customizePanel={customizePanel}
+                    newPanelTab={newPanelTab}
                   />
                 )
               })}

@@ -46,7 +46,7 @@ const checkIfBarsNeeded = (panelID) => {
 
 // noSwitch - 'previous' and 'next' buttons
 const PanelContainer = ({
-  name, children, noSwitch, icon, type, openModal, activeFragment, setActiveFragment, customTabs, customCenterContent,
+  name, children, noSwitch, icon, type, openModal, activeFragment, setActiveFragment, customTabs, customizePanel,
 }) => (
   <div
     className={cx('relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden', {
@@ -64,12 +64,6 @@ const PanelContainer = ({
         )}
         {name}
       </h3>
-      {customCenterContent.content && (
-        <>
-          <p className='sr-only'>fot extensions</p>
-          customCenterContent.content
-        </>
-      )}
       <div className='flex'>
         {(checkIfBarsNeeded(type) || checkCustomTabs(type, customTabs)) && (
           <Bars4Icon
@@ -127,7 +121,11 @@ const PanelContainer = ({
     </div>
     {/* for other tabs */}
     <div className='flex flex-col h-full scroll-auto overflow-auto'>
-      {children}
+      {checkCustomTabs(type, customTabs) ? (
+        customizePanel.tabContent
+      ) : (
+        children
+      )}
     </div>
   </div>
 )
@@ -420,7 +418,7 @@ CustomEvents.propTypes = {
 }
 
 const Panel = ({
-  name, data, rowMapper, capitalize, linkContent, t, icon, id, hideFilters, onFilter, customTabs, customCenterContent,
+  name, data, rowMapper, capitalize, linkContent, t, icon, id, hideFilters, onFilter, customTabs, customizePanel, newPanelTab,
 }) => {
   const [page, setPage] = useState(0)
   const currentIndex = page * ENTRIES_PER_PANEL
@@ -468,6 +466,7 @@ const Panel = ({
         setActiveFragment={setActiveFragment}
         openModal={() => setModal(true)}
         customTabs={customTabs}
+        customizePanel={customizePanel}
       >
         <InteractiveMap
           data={data}
@@ -535,6 +534,7 @@ const Panel = ({
         setActiveFragment={setActiveFragment}
         activeFragment={activeFragment}
         customTabs={customTabs}
+        customizePanel={customizePanel}
       >
         {_isEmpty(data) ? (
           <p className='mt-1 text-base text-gray-700 dark:text-gray-300'>
@@ -565,6 +565,7 @@ const Panel = ({
         setActiveFragment={setActiveFragment}
         openModal={() => setModal(true)}
         customTabs={customTabs}
+        customizePanel={customizePanel}
       >
         {/* eslint-disable-next-line react/no-danger */}
         <div dangerouslySetInnerHTML={{ __html: content }} />
@@ -572,8 +573,16 @@ const Panel = ({
     )
   }
 
+  if (checkCustomTabs(id, newPanelTab)) {
+    <div
+      className='relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden'
+    >
+      {newPanelTab.tabContent}
+    </div>
+  }
+
   return (
-    <PanelContainer name={name} icon={icon} type={id} activeFragment={activeFragment} setActiveFragment={setActiveFragment} customTabs={customTabs}>
+    <PanelContainer name={name} icon={icon} type={id} activeFragment={activeFragment} setActiveFragment={setActiveFragment} customTabs={customTabs} customizePanel={customizePanel}>
       {_isEmpty(data) ? (
         <p className='mt-1 text-base text-gray-700 dark:text-gray-300'>
           {t('project.noParamData')}
