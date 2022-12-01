@@ -1,5 +1,5 @@
 import React, {
-  useEffect, lazy, Suspense, useState,
+  useEffect, lazy, Suspense, useState, useMemo,
 } from 'react'
 import { Switch, Route, useLocation } from 'react-router-dom'
 import routes from 'routes'
@@ -14,6 +14,7 @@ import 'dayjs/locale/uk'
 import Header from 'components/Header'
 import Footer from 'components/Footer'
 import Loader from 'ui/Loader'
+import Snow from 'ui/icons/Snow'
 
 import ScrollToTop from 'hoc/ScrollToTop'
 import Selfhosted from 'hoc/Selfhosted'
@@ -154,12 +155,38 @@ const App = () => {
   }, [message, type]) // eslint-disable-line
 
   const isMinimalFooter = _some(minimalFooterPages, (page) => _includes(location.pathname, page))
+  // const createSnowFlake = () => {
+  //   const snowFlake = document.createElement('i')
+  //   snowFlake.setAttribute('class', 'snowflake')
+  //   snowFlake.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+  //   snowFlake.setAttribute('viewBox', '0 0 512 512')
+  //   snowFlake.innerHTML = Snow
+  //   snowFlake.style.left = `${Math.random() * window.innerWidth}px`
+  //   snowFlake.style.top = `${(Math.random() * window.innerHeight) + window.scrollY}px`
+  //   snowFlake.style.animationDuration = `${Math.random() * 3 + 2}s`
+  //   snowFlake.style.width = `${Math.random() * 12 + 10}px`
+  //   snowFlake.style.height = `${Math.random() * 12 + 10}px`
+  //   snowFlake.style.opacity = Math.random()
+  //   snowFlake.style.fontSize = `${Math.random() * 12 + 10}px`
+  //   document.getElementById('root').appendChild(snowFlake)
+
+  //   setTimeout(() => {
+  //     snowFlake.remove()
+  //   }, 5000)
+  // }
+
+  // useEffect(() => {
+  //   setInterval(createSnowFlake, 500)
+  // }, [])
 
   return (
     (!accessToken || !loading) && (
       // eslint-disable-next-line react/jsx-no-useless-fragment
       <Suspense fallback={<></>}>
         <Header authenticated={authenticated} theme={theme} themeType={themeType} />
+        <div
+          className='snow'
+        />
         <ScrollToTop>
           <Selfhosted>
             <Suspense fallback={<Fallback theme={theme} isMinimalFooter={isMinimalFooter} />}>

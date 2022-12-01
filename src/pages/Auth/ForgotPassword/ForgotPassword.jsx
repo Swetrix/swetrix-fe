@@ -81,7 +81,7 @@ const ForgotPassword = ({
   return (
     <Title title={t('titles.recovery')}>
       <div className='min-h-page bg-gray-50 dark:bg-gray-800 flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
-        <form className='max-w-7xl w-full mx-auto' onSubmit={handleSubmit}>
+        <form className='max-w-7xl w-full mx-auto relative z-10' onSubmit={handleSubmit}>
           <h2 className='mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>
             {t('titles.recovery')}
           </h2>

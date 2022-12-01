@@ -88,7 +88,7 @@ const Footer = ({ minimal, authenticated }) => {
   if (minimal) {
     return (
       <footer className='bg-gray-800 dark:bg-gray-900'>
-        <div className='max-w-7xl mx-auto py-8 px-4 overflow-hidden sm:px-6 lg:px-8'>
+        <div className='max-w-7xl mx-auto py-8 px-4 overflow-hidden sm:px-6 lg:px-8 relative z-10'>
           <nav className='-mx-5 -my-2 flex flex-wrap justify-center' aria-label='Footer'>
             <div className='px-5 py-2'>
               <Link to={routes.contact} className='text-base text-gray-300 hover:text-white'>
@@ -128,7 +128,7 @@ const Footer = ({ minimal, authenticated }) => {
       <h2 id='footer-heading' className='sr-only'>
         Footer
       </h2>
-      <div className='w-11/12 mx-auto pt-8 pb-5 px-4 sm:px-6 lg:px-8'>
+      <div className='w-11/12 mx-auto pt-8 pb-5 px-4 sm:px-6 lg:px-8 relative z-10'>
         <div className='xl:grid xl:grid-cols-3 xl:gap-8'>
           <div className='space-y-8 xl:col-span-1'>
             <div className='flex gap-5 flex-wrap'>

@@ -12,7 +12,7 @@ const Modal = ({
   <Transition.Root show={isOpened} as={Fragment}>
     <Dialog
       as='div'
-      className={cx('fixed z-10 inset-0 overflow-y-auto', className)}
+      className={cx('fixed z-20 inset-0 overflow-y-auto', className)}
       open={isOpened}
       onClose={onClose}
       static

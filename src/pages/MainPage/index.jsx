@@ -57,14 +57,14 @@ const Main = () => {
       </div>
       <div className='overflow-hidden'>
         <div className='bg-gray-800 dark:bg-gray-900'>
-          <main>
+          <main className='relative z-10'>
             {/* first block with live demo */}
             <div className='relativ overflow-x-clip'>
               <div
                 className='relative pt-10 lg:pt-24 pb-5 xl:px-8 lg:px-6 sm:px-3 mx-auto min-h-[740px]'
               >
                 <div
-                  className='absolute w-36 h-[558px] z-10 bottom-0 right-[50vw] filter_blur'
+                  className='absolute w-36 h-[558px] z-20 bottom-0 right-[50vw] filter_blur'
                   style={{
                     background: 'linear-gradient(67.59deg, #408B9B 25.75%, #0B145F 61.14%)',
                     transform: 'rotate(-50.32deg)',
@@ -255,7 +255,7 @@ const Main = () => {
                 <h1 className='relative z-20 dark:text-white'>
                   {t('main.coreFeaturesBlock')}
                 </h1>
-                <BackgroundSvg className='absolute right-0 sm:-right-16 top-9 z-10 opacity-30' type='semicircle' />
+                <BackgroundSvg className='absolute right-0 sm:-right-16 top-9 z-20 opacity-30' type='semicircle' />
               </div>
               <div className='mt-[60px] flex items-center max-w-7xl w-full mx-auto flex-wrap justify-center xl:justify-between'>
                 {_map(t('main.features', { returnObjects: true }), (item, index) => (
@@ -268,7 +268,7 @@ const Main = () => {
                   </div>
                 ))}
               </div>
-              <BackgroundSvg className='absolute right-0 bottom-0 z-10' type='twolinecircle' />
+              <BackgroundSvg className='absolute right-0 bottom-0 z-20' type='twolinecircle' />
             </section>
             {/* end Core features section */}
             {/* section supports */}
@@ -296,7 +296,7 @@ const Main = () => {
             <div className='overflow-hidden'>
               <div className='relative max-w-7xl w-full mx-auto'>
                 <div
-                  className='absolute w-60 h-[458px] z-10 left-[10vw] -top-[10vh] filter_blur'
+                  className='absolute w-60 h-[458px] z-20 left-[10vw] -top-[10vh] filter_blur'
                   style={{
                     background: 'linear-gradient(67.59deg, #408B9B 25.75%, #0B145F 61.14%)',
                     transform: 'rotate(-50.32deg)',
@@ -319,7 +319,7 @@ const Main = () => {
                   </div>
                 </section>
                 <div
-                  className='absolute w-80 h-[558px] z-10 -left-[30vw] top-[80vh] sm:left-[70vw] sm:top-[30vh] filter_blur'
+                  className='absolute w-80 h-[558px] z-20 -left-[30vw] top-[80vh] sm:left-[70vw] sm:top-[30vh] filter_blur'
                   style={{
                     background: 'linear-gradient(67.59deg, #408B9B 25.75%, #0B145F 61.14%)',
                     transform: 'rotate(-50.32deg)',
@@ -330,7 +330,7 @@ const Main = () => {
             {/* end Marketplace and extension features */}
             <Pricing t={t} language={language} />
             {/* section Testimonials */}
-            <section className='bg-white dark:bg-gray-900 pt-20 pb-20 relative'>
+            <section className='pt-20 pb-20'>
               <div className='absolute right-0 top-0'>
                 <BackgroundSvg type='twolinecircle2' />
               </div>
@@ -370,8 +370,8 @@ const Main = () => {
               </div>
             </section>
             {/* end section Testimonials */}
-            <div className='bg-white dark:bg-gray-900 px-4 md:px-8 pb-12'>
-              <section className='max-w-7xl w-full mx-auto bg-gray-800 overflow-hidden lg:h-[450px]' style={{ borderRadius: '100px 30px 30px 30px' }}>
+            <div className='bg-white dark:bg-gray-900 px-4 md:px-8 pb-12 '>
+              <section className='relative z-10 max-w-7xl w-full mx-auto bg-gray-800 overflow-hidden lg:h-[450px]' style={{ borderRadius: '100px 30px 30px 30px' }}>
                 <div className='flex items-start justify-between pt-8 pl-8 sm:pl-14 lg:pl-28 md:flex-row flex-col'>
                   <div className='max-w-[430px] w-full pt-14 pr-3 mb-16 md:mb-0'>
                     <h1 className='font-bold text-2xl leading-9 sm:text-4xl sm:leading-[48px] md:text-[28px] md:leading-10 lg:text-[33px] lg:leading-[48px] text-white mb-3'>
@@ -410,7 +410,7 @@ const Main = () => {
               <h1 className='text-gray-800 text-5xl font-extrabold text-center relative z-20 dark:text-white'>Checklist</h1>
               <div className='flex flex-col lg:flex-row items-center justify-between max-w-5xl w-full mx-auto mt-16'>
                 <div
-                  className='max-w-xs w-full mx-auto shadow-lg overflow-hidden relative z-10'
+                  className='max-w-xs w-full mx-auto shadow-lg overflow-hidden relative z-20'
                   style={{ borderRadius: '20px 10px 10px 10px' }}
                 >
                   <div className='flex items-center justify-between pl-11 pr-6 bg-orange-300 py-4'>
@@ -502,7 +502,7 @@ const Main = () => {
                   </div>
                 </div>
                 <div
-                  className='max-w-xs w-full mx-auto shadow-lg overflow-hidden relative z-10'
+                  className='max-w-xs w-full mx-auto shadow-lg overflow-hidden relative z-20'
                   style={{ borderRadius: '20px 10px 10px 10px' }}
                 >
                   <div className='flex items-center justify-between pl-11 pr-6 bg-gray-800 dark:bg-blue-900 py-4'>
@@ -551,7 +551,7 @@ const Main = () => {
             </section> */}
 
             {/* Advantages of using open source */}
-            <section className='flex items-center lg:flex-row flex-col-reverse justify-between max-w-7xl w-full mx-auto py-20 lg:py-32 px-5'>
+            <section className='relative z-10 flex items-center lg:flex-row flex-col-reverse justify-between max-w-7xl w-full mx-auto py-20 lg:py-32 px-5'>
               <picture>
                 <source srcSet={theme === 'dark' ? '/assets/opensource_dark.webp' : '/assets/opensource_light.webp'} type='image/webp' />
                 <img src={theme === 'dark' ? '/assets/opensource_dark.png' : '/assets/opensource_light.png'} loading='lazy' alt='Swetrix open source' />
@@ -582,7 +582,7 @@ const Main = () => {
             </section>
             {/* end Advantages of using open source */}
             {/* Become a developer */}
-            <section className='bg-white dark:bg-gray-800 pt-20 pb-44 relative'>
+            <section className='relative z-10 bg-white dark:bg-gray-800 pt-20 pb-44'>
               <div className='absolute right-0 top-16 z-0'>
                 <BackgroundSvg type='threecircle' />
               </div>

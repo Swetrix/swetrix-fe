@@ -9,6 +9,52 @@ html {
   scroll-behavior: smooth;
 }
 
+.snow,
+.snow:before,
+.snow:after {
+  position: fixed;
+  z-index: 0;
+  top: -600px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-image: radial-gradient(5px 5px at 218px 191px, white 50%, rgba(0, 0, 0, 0)), radial-gradient(4px 4px at 577px 155px, rgba(255, 255, 255, 0.6) 50%, rgba(0, 0, 0, 0)), radial-gradient(6px 6px at 129px 178px, rgba(255, 255, 255, 0.8) 50%, rgba(0, 0, 0, 0)), radial-gradient(3px 3px at 197px 237px, rgba(255, 255, 255, 0.9) 50%, rgba(0, 0, 0, 0)), radial-gradient(5px 5px at 353px 331px, rgba(255, 255, 255, 0.9) 50%, rgba(0, 0, 0, 0)), radial-gradient(5px 5px at 213px 259px, rgba(255, 255, 255, 0.6) 50%, rgba(0, 0, 0, 0)), radial-gradient(5px 5px at 228px 52px, rgba(255, 255, 255, 0.9) 50%, rgba(0, 0, 0, 0)), radial-gradient(3px 3px at 276px 498px, rgba(255, 255, 255, 0.8) 50%, rgba(0, 0, 0, 0)), radial-gradient(5px 5px at 77px 376px, rgba(255, 255, 255, 0.6) 50%, rgba(0, 0, 0, 0)), radial-gradient(5px 5px at 497px 373px, rgba(255, 255, 255, 0.6) 50%, rgba(0, 0, 0, 0));
+  background-size: 600px 600px;
+  animation: snow 3s linear infinite;
+  content: "";
+}
+
+.snow:after {
+  margin-left: -200px;
+  opacity: 0.4;
+  animation-duration: 6s;
+  animation-direction: reverse;
+  filter: blur(3px);
+}
+
+.snow:before {
+  animation-duration: 9s;
+  animation-direction: reverse;
+  margin-left: -300px;
+  opacity: 0.65;
+  filter: blur(1.5px);
+}
+
+@keyframes snow {
+  to {
+    transform: translateY(600px);
+  }
+}
+
+/* .snowflake {
+	color: #fff;
+	position: absolute;
+  z-index: 9999;
+	top: -20px;
+	animation: fall linear forwards;
+  width: 5px;
+  height: 5px;
+} */
 
 .santa-claus {
   position: absolute;

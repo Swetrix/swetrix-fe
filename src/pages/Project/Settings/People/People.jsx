@@ -87,7 +87,7 @@ const UsersList = ({
               />
             </button>
             {open && (
-              <ul className='text-left origin-top-right absolute z-10 right-0 mt-2 w-72 rounded-md shadow-lg bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 focus:outline-none'>
+              <ul className='text-left origin-top-right absolute z-20 right-0 mt-2 w-72 rounded-md shadow-lg bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 focus:outline-none'>
                 {_map(roles, (itRole) => (
                   <li onClick={() => changeRole(itRole)} className='p-4 hover:bg-indigo-600 group cursor-pointer flex justify-between items-center' key={itRole}>
                     <div>
@@ -386,7 +386,7 @@ const People = ({
               </label>
               <div className={cx('mt-1 bg-white rounded-md -space-y-px dark:bg-gray-800', { 'border-red-300 border': errors.role })}>
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                <label className={cx('dark:border-gray-500 rounded-tl-md rounded-tr-md relative border p-4 flex cursor-pointer border-gray-200', { 'bg-indigo-50 border-indigo-200 dark:bg-indigo-500 dark:border-indigo-800 z-10': form.role === roleAdmin.role, 'border-gray-200': form.role !== roleAdmin.role })}>
+                <label className={cx('dark:border-gray-500 rounded-tl-md rounded-tr-md relative border p-4 flex cursor-pointer border-gray-200', { 'bg-indigo-50 border-indigo-200 dark:bg-indigo-500 dark:border-indigo-800 z-20': form.role === roleAdmin.role, 'border-gray-200': form.role !== roleAdmin.role })}>
                   <input
                     name='role'
                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
@@ -405,7 +405,7 @@ const People = ({
                   </div>
                 </label>
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                <label className={cx('dark:border-gray-500 rounded-bl-md rounded-br-md relative border p-4 flex cursor-pointer border-gray-200', { 'bg-indigo-50 border-indigo-200 dark:bg-indigo-500 dark:border-indigo-800 z-10': form.role === roleViewer.role, 'border-gray-200': form.role !== roleViewer.role })}>
+                <label className={cx('dark:border-gray-500 rounded-bl-md rounded-br-md relative border p-4 flex cursor-pointer border-gray-200', { 'bg-indigo-50 border-indigo-200 dark:bg-indigo-500 dark:border-indigo-800 z-20': form.role === roleViewer.role, 'border-gray-200': form.role !== roleViewer.role })}>
                   <input
                     name='role'
                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
