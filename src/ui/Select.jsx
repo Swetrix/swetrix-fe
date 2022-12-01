@@ -29,12 +29,12 @@ const Select = ({
           >
             <Listbox.Options
               static
-              className='absolute z-20 mt-1 w-full bg-white dark:bg-gray-700 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm'
+              className='absolute z-50 mt-1 w-full bg-white dark:bg-gray-700 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm'
             >
               {_map(items, (item, index) => (
                 <Listbox.Option
                   key={keyExtractor ? keyExtractor(item, index) : item}
-                  className={({ active }) => cx('dark:text-white cursor-default select-none relative py-2 pl-8 pr-4', {
+                  className={({ active }) => cx('dark:text-white cursor-default select-none py-2 pl-8 pr-4 relative', {
                     'text-white bg-indigo-600': active,
                     'text-gray-900': !active,
                   })}

@@ -97,7 +97,7 @@ const Contents = ({ t }) => {
   const tContents = contents(t)
 
   return (
-    <div className='lg:flex flex-1 items-start justify-center lg:order-2'>
+    <div className='lg:flex flex-1 items-start justify-center lg:order-2 relative '>
       <h2 className='block lg:hidden text-3xl font-bold text-gray-900 dark:text-gray-50 tracking-tight'>
         {t('docs.contents')}
         :
@@ -145,7 +145,7 @@ const Docs = () => {
   return (
     <Title title={t('titles.docs')}>
       <div className='bg-gray-50 dark:bg-gray-800'>
-        <div className='w-11/12 mx-auto pb-16 pt-12 px-4 sm:px-6 lg:w-11/12 lg:px-8 lg:flex'>
+        <div className='w-11/12 mx-auto pb-16 pt-12 px-4 sm:px-6 lg:w-11/12 lg:px-8 lg:flex relative '>
           <Contents t={t} />
           <div className='flex-1 lg:order-1 whitespace-pre-line'>
             <h1 className='text-4xl font-extrabold text-gray-900 dark:text-gray-50 tracking-tight'>

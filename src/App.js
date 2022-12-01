@@ -1,5 +1,5 @@
 import React, {
-  useEffect, lazy, Suspense, useState, useMemo,
+  useEffect, lazy, Suspense, useState,
 } from 'react'
 import { Switch, Route, useLocation } from 'react-router-dom'
 import routes from 'routes'
@@ -14,11 +14,10 @@ import 'dayjs/locale/uk'
 import Header from 'components/Header'
 import Footer from 'components/Footer'
 import Loader from 'ui/Loader'
-import Snow from 'ui/icons/Snow'
 
 import ScrollToTop from 'hoc/ScrollToTop'
 import Selfhosted from 'hoc/Selfhosted'
-import { isSelfhosted } from 'redux/constants'
+import { isSelfhosted, THEME_TYPE } from 'redux/constants'
 import { getAccessToken } from 'utils/accessToken'
 import { authActions } from 'redux/actions/auth'
 import { errorsActions } from 'redux/actions/errors'
@@ -184,9 +183,11 @@ const App = () => {
       // eslint-disable-next-line react/jsx-no-useless-fragment
       <Suspense fallback={<></>}>
         <Header authenticated={authenticated} theme={theme} themeType={themeType} />
-        <div
-          className='snow'
-        />
+        {themeType === THEME_TYPE.christmas && (
+          <div
+            className='snow'
+          />
+        )}
         <ScrollToTop>
           <Selfhosted>
             <Suspense fallback={<Fallback theme={theme} isMinimalFooter={isMinimalFooter} />}>

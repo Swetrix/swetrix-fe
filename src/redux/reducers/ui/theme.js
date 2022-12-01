@@ -60,7 +60,7 @@ const themeReducer = (state = getInitialState(), { type, payload }) => {
 
       return {
         ...state,
-        type: theme,
+        type: theme || THEME_TYPE.christmas,
       }
     }
 

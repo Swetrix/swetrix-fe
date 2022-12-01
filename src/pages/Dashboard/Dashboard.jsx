@@ -163,7 +163,7 @@ const ProjectCart = ({
 }
 
 const NoProjects = ({ t }) => (
-  <div className='mt-5'>
+  <div className='mt-5 relative '>
     <h3 className='text-center dark:text-gray-50'>
       {t('dashboard.noProjects')}
     </h3>
@@ -215,7 +215,7 @@ const Dashboard = ({
   if (error && !isLoading) {
     return (
       <Title title={t('titles.dashboard')}>
-        <div className='flex justify-center pt-10'>
+        <div className='flex justify-center pt-10 relative '>
           <div className='rounded-md bg-red-50 p-4 w-11/12 lg:w-4/6'>
             <div className='flex'>
               <div className='flex-shrink-0'>
@@ -235,7 +235,7 @@ const Dashboard = ({
     <Title title={t('titles.dashboard')}>
       <div className='min-h-min-footer bg-gray-50 dark:bg-gray-800'>
         <EventsRunningOutBanner />
-        <div className='flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
+        <div className='flex flex-col py-6 px-4 sm:px-6 lg:px-8 relative '>
           <div className='max-w-7xl w-full mx-auto'>
             <div className='flex justify-between'>
               <h2 className='mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>

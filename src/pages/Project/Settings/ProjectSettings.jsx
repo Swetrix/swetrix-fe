@@ -221,7 +221,7 @@ const ProjectSettings = ({
           'pb-40': isSettings,
         })}
       >
-        <form className='max-w-7xl w-full mx-auto' onSubmit={handleSubmit}>
+        <form className='max-w-7xl w-full mx-auto relative' onSubmit={handleSubmit}>
           <h2 className='mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>
             {title}
           </h2>

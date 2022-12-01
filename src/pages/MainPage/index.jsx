@@ -14,7 +14,7 @@ import _isEmpty from 'lodash/isEmpty'
 import routes from 'routes'
 import { nFormatterSeparated } from 'utils/generic'
 import Title from 'components/Title'
-import { GITHUB_URL, MARKETPLACE_URL } from 'redux/constants'
+import { GITHUB_URL, MARKETPLACE_URL, THEME_TYPE } from 'redux/constants'
 import BackgroundSvg from 'ui/icons/BackgroundSvg'
 import Webflow from 'ui/icons/Webflow'
 import NextJS from 'ui/icons/NextJS'
@@ -55,9 +55,10 @@ const Main = () => {
         </a>
         <ArrowTopRightOnSquareIcon className='h-4 w-4 text-white ml-1 hidden md:block' />
       </div>
-      <div className='overflow-hidden'>
+      <div className='overflow-hidden mainPage'>
+        <div className='snow' />
         <div className='bg-gray-800 dark:bg-gray-900'>
-          <main className='relative z-10'>
+          <main className='relative '>
             {/* first block with live demo */}
             <div className='relativ overflow-x-clip'>
               <div
@@ -330,7 +331,7 @@ const Main = () => {
             {/* end Marketplace and extension features */}
             <Pricing t={t} language={language} />
             {/* section Testimonials */}
-            <section className='pt-20 pb-20'>
+            <section className='bg-white dark:bg-gray-900 pt-20 pb-20 relative'>
               <div className='absolute right-0 top-0'>
                 <BackgroundSvg type='twolinecircle2' />
               </div>
@@ -371,7 +372,7 @@ const Main = () => {
             </section>
             {/* end section Testimonials */}
             <div className='bg-white dark:bg-gray-900 px-4 md:px-8 pb-12 '>
-              <section className='relative z-10 max-w-7xl w-full mx-auto bg-gray-800 overflow-hidden lg:h-[450px]' style={{ borderRadius: '100px 30px 30px 30px' }}>
+              <section className='relative  max-w-7xl w-full mx-auto bg-gray-800 overflow-hidden lg:h-[450px]' style={{ borderRadius: '100px 30px 30px 30px' }}>
                 <div className='flex items-start justify-between pt-8 pl-8 sm:pl-14 lg:pl-28 md:flex-row flex-col'>
                   <div className='max-w-[430px] w-full pt-14 pr-3 mb-16 md:mb-0'>
                     <h1 className='font-bold text-2xl leading-9 sm:text-4xl sm:leading-[48px] md:text-[28px] md:leading-10 lg:text-[33px] lg:leading-[48px] text-white mb-3'>
@@ -551,7 +552,7 @@ const Main = () => {
             </section> */}
 
             {/* Advantages of using open source */}
-            <section className='relative z-10 flex items-center lg:flex-row flex-col-reverse justify-between max-w-7xl w-full mx-auto py-20 lg:py-32 px-5'>
+            <section className='relative  flex items-center lg:flex-row flex-col-reverse justify-between max-w-7xl w-full mx-auto py-20 lg:py-32 px-5'>
               <picture>
                 <source srcSet={theme === 'dark' ? '/assets/opensource_dark.webp' : '/assets/opensource_light.webp'} type='image/webp' />
                 <img src={theme === 'dark' ? '/assets/opensource_dark.png' : '/assets/opensource_light.png'} loading='lazy' alt='Swetrix open source' />
@@ -582,7 +583,7 @@ const Main = () => {
             </section>
             {/* end Advantages of using open source */}
             {/* Become a developer */}
-            <section className='relative z-10 bg-white dark:bg-gray-800 pt-20 pb-44'>
+            <section className='relative  bg-white dark:bg-gray-800 pt-20 pb-44'>
               <div className='absolute right-0 top-16 z-0'>
                 <BackgroundSvg type='threecircle' />
               </div>

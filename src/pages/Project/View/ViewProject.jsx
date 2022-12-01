@@ -703,7 +703,7 @@ const ViewProject = ({
           )}
           ref={dashboardRef}
         >
-          <div className='flex flex-col md:flex-row items-center md:items-start justify-between h-10'>
+          <div className='flex flex-col md:flex-row items-center md:items-start justify-between h-10 relative'>
             <h2 className='text-3xl font-bold text-gray-900 dark:text-gray-50 break-words'>
               {name}
             </h2>
@@ -787,7 +787,7 @@ const ViewProject = ({
               />
             </div>
           </div>
-          <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-16 md:mt-5 mb-4'>
+          <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-16 md:mt-5 mb-4 relative'>
             <Checkbox
               className={cx({ hidden: isPanelsDataEmpty || analyticsLoading })}
               label={t('project.showAll')}
@@ -825,7 +825,7 @@ const ViewProject = ({
           {isPanelsDataEmpty && (
             <NoEvents filters={filters} resetFilters={resetFilters} pid={id} />
           )}
-          <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
+          <div className={cx('pt-4 md:pt-0 relative', { hidden: isPanelsDataEmpty || analyticsLoading })}>
             <div className='h-80' id='dataChart' />
             <Filters
               filters={filters}
@@ -932,7 +932,7 @@ const ViewProject = ({
           </div>
         </div>
         {!authenticated && (
-          <div className='bg-indigo-600'>
+          <div className='bg-indigo-600 relative'>
             <div className='w-11/12 mx-auto pb-16 pt-12 px-4 sm:px-6 lg:px-8 lg:flex lg:items-center lg:justify-between'>
               <h2 className='text-3xl sm:text-4xl font-bold tracking-tight text-gray-900'>
                 <span className='block text-white'>{t('project.ad')}</span>

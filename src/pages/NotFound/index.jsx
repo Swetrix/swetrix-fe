@@ -11,7 +11,7 @@ const NotFound = () => {
   return (
     <Title title={t('notFoundPage.title')}>
       <div className='bg-gray-50 dark:bg-gray-800 min-h-min-footer px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8'>
-        <div className='max-w-max mx-auto'>
+        <div className='max-w-max mx-auto relative '>
           <main className='sm:flex'>
             <p className='text-4xl font-bold text-indigo-600 dark:text-indigo-500 sm:text-5xl'>
               404

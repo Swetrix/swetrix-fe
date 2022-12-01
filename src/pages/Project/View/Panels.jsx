@@ -304,7 +304,7 @@ const getPieOptions = (customs, uniques, t) => {
           CONVERSION: conversion,
         },
         template: `
-          <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
+          <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1 relative'>
             {{
               <li class='flex'>
                 <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
@@ -376,7 +376,7 @@ const CustomEvents = ({
 
   return (
     <PanelContainer name={t('project.customEv')} type='ce' setActiveFragment={setActiveFragment} activeFragment={activeFragment}>
-      <table className='table-fixed'>
+      <table className='table-fixed relative'>
         <thead>
           <tr>
             <th className='w-4/6 text-left text-gray-900 dark:text-gray-50'>{t('project.event')}</th>
@@ -500,7 +500,7 @@ const Panel = ({
             QUANTITY: _values(data),
           },
           template: `
-            <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
+            <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1 relative'>
               {{
                 <li class='flex'>
                   <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
@@ -579,7 +579,7 @@ const Panel = ({
         return (
           <Fragment key={key}>
             <div
-              className={cx('flex justify-between mt-1 dark:text-gray-50 rounded', {
+              className={cx('flex justify-between mt-1 dark:text-gray-50 rounded relative', {
                 'group hover:bg-gray-100 hover:dark:bg-gray-700 cursor-pointer': !hideFilters,
               })}
               onClick={() => _onFilter(id, key)}
