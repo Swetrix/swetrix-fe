@@ -4,6 +4,7 @@ import { THEME_TYPE } from 'redux/constants'
 
 import UIActions from 'redux/actions/ui'
 import { getGeneralStats } from 'api'
+import { THEME_TYPE } from 'redux/constants'
 
 const debug = Debug('swetrix:rx:s:logout')
 
