@@ -1,6 +1,5 @@
 import { call, put } from 'redux-saga/effects'
 import Debug from 'debug'
-import { THEME_TYPE } from 'redux/constants'
 
 import UIActions from 'redux/actions/ui'
 import { getGeneralStats } from 'api'
