@@ -18,6 +18,7 @@ const mapStateToProps = (state) => {
       isPaidTierUsed: state.auth.isPaidTierUsed,
       extensions: state.ui.misc.extensions,
       user: state.auth.user,
+      theme: state.ui.theme.theme,
     }
   }
 

@@ -92,7 +92,7 @@ ChartJS.register(
 
 const ViewProject = ({
   projects, isLoading: _isLoading, showError, cache, setProjectCache, projectViewPrefs, setProjectViewPrefs, setPublicProject,
-  setLiveStatsForProject, authenticated, timezone, user, sharedProjects, isPaidTierUsed, extensions,
+  setLiveStatsForProject, authenticated, timezone, user, sharedProjects, isPaidTierUsed, extensions, theme,
 }) => {
   const { t, i18n: { language } } = useTranslation('common')
   const [periodPairs, setPeriodPairs] = useState(tbPeriodPairs(t))
@@ -974,13 +974,11 @@ const ViewProject = ({
           )}
           <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
             <div
-              className={cx('h-80', {
+              className={cx('max-h-[600px] h-full mx-auto max-w-fit', {
                 hidden: checkIfAllMetricsAreDisabled,
               })}
             >
-              <div className='h-80' id='dataChart' />
-            </div>
-            {(!_isEmpty(chartOptions) && !_isEmpty(chartData)) && (
+              {(!_isEmpty(chartOptions) && !_isEmpty(chartData)) && (
               <Chart
                 data={{
                   labels: chartOptions.labels,
@@ -1012,7 +1010,7 @@ const ViewProject = ({
                       grid: {
                         drawOnChartArea: true,
                         drawBorder: false,
-                        color: '#CCDCE666',
+                        color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
                       },
                     },
                     y: {
@@ -1023,25 +1021,38 @@ const ViewProject = ({
                       grid: {
                         drawOnChartArea: true,
                         drawBorder: false,
-                        color: '#CCDCE666',
+                        color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
                       },
-                      ticks: {
-                        color: '#415659',
-                        // callback(label) {
-                        //   if (Math.floor(label) === label) { return k(label, this.roundingEnabled) }
-                        // },
+                    },
+                  },
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: 'bottom',
+                    },
+                    tooltip: {
+                      enabled: true,
+                      titleColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+                      bodyColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+                      footerColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+                      footerFont: { weight: 'normal', style: 'italic' },
+                      backgroundColor: theme === 'dark' ? '#1e2a2f' : '#fff',
+                      displayColors: false,
+                      cornerRadius: 3,
+                      callbacks: {
+                        label: (label) => {
+                          if (label.dataset._satype?.includes('trendline')) return
+
+                          // eslint-disable-next-line consistent-return
+                          return `${label.dataset.label} ${label.formattedValue}`
+                        },
                       },
-                      // afterTickToLabelConversion: (axis) => {
-                      //   axis.ticks.forEach((tick) => {
-                      //     tick.label += this.yUnit
-                      //   })
-                      //   return axis
-                      // },
                     },
                   },
                 }}
               />
-            )}
+              )}
+            </div>
             <Filters
               filters={filters}
               onRemoveFilter={filterHandler}
