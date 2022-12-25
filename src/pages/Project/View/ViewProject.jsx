@@ -974,7 +974,7 @@ const ViewProject = ({
           )}
           <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
             <div
-              className={cx('max-h-[600px] h-full mx-auto max-w-fit', {
+              className={cx('max-h-[500px] h-full mx-auto', {
                 hidden: checkIfAllMetricsAreDisabled,
               })}
             >
