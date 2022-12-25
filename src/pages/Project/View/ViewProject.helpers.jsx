@@ -179,6 +179,118 @@ const getColumns = (chart, activeChartMetrics) => {
   return columns
 }
 
+const getColumnsChartjs = (chart, activeChartMetrics) => {
+  const {
+    views, bounce, viewsPerUnique, unique, trendlines,
+  } = activeChartMetrics
+
+  const labels = [..._map(chart.x, el => dayjs(el).toDate())]
+
+  const columns = []
+  if (unique) {
+    columns.push({
+      type: 'line',
+      label: 'Unique',
+      borderColor: '#2563EB',
+      pointBackgroundColor: '#2563EB',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: true,
+      backgroundColor: 'rgba(37, 99, 235, 0.2)',
+      data: chart.uniques,
+    })
+    if (trendlines) {
+      columns.push({
+        type: 'line',
+        label: 'Trendline Unique',
+        borderColor: '#436abf',
+        pointBackgroundColor: '#436abf',
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointBorderWidth: 0,
+        borderWidth: 2,
+        fill: false,
+        data: trendline(chart.uniques),
+      })
+    }
+  }
+
+  if (views) {
+    columns.push({
+      type: 'line',
+      label: 'Total',
+      borderColor: '#D97706',
+      pointBackgroundColor: '#D97706',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      backgroundColor: 'rgba(217, 119, 6, 0.2)',
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: true,
+      data: chart.visits,
+    })
+    if (trendlines) {
+      columns.push({
+        type: 'line',
+        label: 'Trendline Total',
+        borderColor: '#eba14b',
+        pointBackgroundColor: '#eba14b',
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointBorderWidth: 0,
+        borderWidth: 2,
+        fill: false,
+        data: trendline(chart.visits),
+      })
+    }
+  }
+
+  if (bounce) {
+    const bounceArray = _map(chart.uniques, (el, i) => {
+      return _round((el * 100) / chart.visits[i], 1) || 0
+    })
+    columns.push(
+      {
+        type: 'line',
+        label: 'Bounce',
+        borderColor: '#2AC4B3',
+        pointBackgroundColor: '#2AC4B3',
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointBorderWidth: 0,
+        borderWidth: 2,
+        fill: false,
+        data: bounceArray,
+      },
+    )
+  }
+
+  if (viewsPerUnique) {
+    const viewsPerUniqueArray = _map(chart.visits, (el, i) => {
+      if (chart.uniques[i] === 0 || chart.uniques[i] === undefined) {
+        return 0
+      }
+      return _round(el / chart.uniques[i], 1)
+    })
+    columns.push({
+      type: 'line',
+      label: 'Views per Unique',
+      pointBorderWidth: 0,
+      pointBackgroundColor: '#F87171',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      borderColor: '#F87171',
+      borderWidth: 2,
+      fill: false,
+      data: viewsPerUniqueArray,
+    })
+  }
+
+  return { labels, columns }
+}
+
 // setting the default values for the time period dropdown
 const noRegionPeriods = ['custom', 'yesterday']
 
@@ -360,5 +472,5 @@ const getFormatDate = (date) => {
 }
 
 export {
-  iconClassName, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods, validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING,
+  iconClassName, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods, validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING, getColumnsChartjs,
 }

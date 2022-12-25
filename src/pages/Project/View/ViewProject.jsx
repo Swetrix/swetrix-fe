@@ -44,18 +44,51 @@ import routes from 'routes'
 import {
   getProjectData, getProject, getOverallStats, getLiveVisitors,
 } from 'api'
+
+import {
+  Chart as ChartJS,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip,
+  LineController,
+  BarController,
+  TimeScale,
+  Filler,
+} from 'chart.js'
+import 'chartjs-adapter-dayjs-3'
+// eslint-disable-next-line import/no-unresolved
+import { Chart } from 'react-chartjs-2'
+
 import {
   Panel, Overview, CustomEvents,
 } from './Panels'
 import {
   onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
-  validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING,
+  validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING, getColumnsChartjs,
 } from './ViewProject.helpers'
 import CCRow from './components/CCRow'
 import RefRow from './components/RefRow'
 import NoEvents from './components/NoEvents'
 import Filters from './components/Filters'
 import './styles.css'
+
+ChartJS.register(
+  LinearScale,
+  CategoryScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip,
+  LineController,
+  BarController,
+  TimeScale,
+  Filler,
+)
 
 const ViewProject = ({
   projects, isLoading: _isLoading, showError, cache, setProjectCache, projectViewPrefs, setProjectViewPrefs, setPublicProject,
@@ -109,7 +142,11 @@ const ViewProject = ({
   const { name } = project
 
   const sharedRoles = useMemo(() => _find(user.sharedProjects, p => p.project.id === id)?.role || {}, [user, id])
-
+  const chartOptions = useMemo(() => {
+    return getColumnsChartjs(chartData, activeChartMetrics)
+  }, [chartData, activeChartMetrics])
+  console.log('chartOptions', chartOptions)
+  console.log(language)
   const chartMetrics = useMemo(() => {
     return [
       {
@@ -943,6 +980,68 @@ const ViewProject = ({
             >
               <div className='h-80' id='dataChart' />
             </div>
+            {(!_isEmpty(chartOptions) && !_isEmpty(chartData)) && (
+              <Chart
+                data={{
+                  labels: chartOptions.labels,
+                  datasets: chartOptions.columns,
+                }}
+                options={{
+                  responsive: true,
+                  interaction: {
+                    mode: 'index',
+                    intersect: false,
+                  },
+                  scales: {
+                    x: {
+                      display: true,
+                      alignToPixels: true,
+                      type: 'time',
+                      time: {
+                        tooltipFormat: 'll HH:mm',
+                        minUnit: 'hour',
+                        unit: timeBucket,
+                        displayFormats: {
+                          hour: 'HH:mm',
+                          day: 'MMM D',
+                          week: 'MMM D',
+                          month: 'MMM YYYY',
+                          year: 'YYYY',
+                        },
+                      },
+                      grid: {
+                        drawOnChartArea: true,
+                        drawBorder: false,
+                        color: '#CCDCE666',
+                      },
+                    },
+                    y: {
+                      display: true,
+                      suggestedMin: 0,
+                      min: 0,
+                      beginAtZero: true,
+                      grid: {
+                        drawOnChartArea: true,
+                        drawBorder: false,
+                        color: '#CCDCE666',
+                      },
+                      ticks: {
+                        color: '#415659',
+                        // callback(label) {
+                        //   if (Math.floor(label) === label) { return k(label, this.roundingEnabled) }
+                        // },
+                      },
+                      // afterTickToLabelConversion: (axis) => {
+                      //   axis.ticks.forEach((tick) => {
+                      //     tick.label += this.yUnit
+                      //   })
+                      //   return axis
+                      // },
+                    },
+                  },
+                }}
+              />
+            )}
             <Filters
               filters={filters}
               onRemoveFilter={filterHandler}
