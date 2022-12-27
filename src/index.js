@@ -6,7 +6,6 @@ import { Provider } from 'react-redux'
 import { I18nextProvider } from 'react-i18next'
 import { HelmetProvider } from 'react-helmet-async'
 import { transitions, positions, Provider as AlertProvider } from '@blaumaus/react-alert'
-import 'billboard.js/dist/billboard.min.css'
 import 'prismjs/themes/prism-tomorrow.css'
 
 import CrashHandler from 'pages/CrashHandler'

@@ -133,53 +133,7 @@ const CHART_METRICS_MAPPING = {
   trendlines: 'trendlines',
 }
 
-// function to filter the data for the chart
-const getColumns = (chart, activeChartMetrics) => {
-  const {
-    views, bounce, viewsPerUnique, unique, trendlines,
-  } = activeChartMetrics
-
-  const columns = [
-    ['x', ..._map(chart.x, el => dayjs(el).toDate())],
-  ]
-
-  if (unique) {
-    columns.push(['unique', ...chart.uniques])
-    if (trendlines) {
-      columns.push(['trendlineUnique', ...trendline(chart.uniques)])
-    }
-  }
-
-  if (views) {
-    columns.push(['total', ...chart.visits])
-    if (trendlines) {
-      columns.push(['trendlineTotal', ...trendline(chart.visits)])
-    }
-  }
-
-  if (bounce) {
-    const bounceArray = _map(chart.uniques, (el, i) => {
-      return _round((el * 100) / chart.visits[i], 1) || 0
-    })
-    columns.push(
-      ['bounce', ...bounceArray],
-    )
-  }
-
-  if (viewsPerUnique) {
-    const viewsPerUniqueArray = _map(chart.visits, (el, i) => {
-      if (chart.uniques[i] === 0 || chart.uniques[i] === undefined) {
-        return 0
-      }
-      return _round(el / chart.uniques[i], 1)
-    })
-    columns.push(['viewsPerUnique', ...viewsPerUniqueArray])
-  }
-
-  return columns
-}
-
-const getColumnsChartjs = (chart, activeChartMetrics) => {
+const getColumnsChartjs = (chart, activeChartMetrics, t) => {
   const {
     views, bounce, viewsPerUnique, unique, trendlines,
   } = activeChartMetrics
@@ -190,7 +144,7 @@ const getColumnsChartjs = (chart, activeChartMetrics) => {
   if (unique) {
     columns.push({
       type: 'line',
-      label: 'Unique',
+      label: t('project.unique'),
       borderColor: '#2563EB',
       pointBackgroundColor: '#2563EB',
       pointRadius: 0,
@@ -204,7 +158,7 @@ const getColumnsChartjs = (chart, activeChartMetrics) => {
     if (trendlines) {
       columns.push({
         type: 'line',
-        label: 'Trendline Unique',
+        label: t('project.trendlineUnique'),
         borderColor: '#436abf',
         pointBackgroundColor: '#436abf',
         pointRadius: 0,
@@ -220,7 +174,7 @@ const getColumnsChartjs = (chart, activeChartMetrics) => {
   if (views) {
     columns.push({
       type: 'line',
-      label: 'Total',
+      label: t('project.total'),
       borderColor: '#D97706',
       pointBackgroundColor: '#D97706',
       pointRadius: 0,
@@ -234,7 +188,7 @@ const getColumnsChartjs = (chart, activeChartMetrics) => {
     if (trendlines) {
       columns.push({
         type: 'line',
-        label: 'Trendline Total',
+        label: t('project.trendlineTotal'),
         borderColor: '#eba14b',
         pointBackgroundColor: '#eba14b',
         pointRadius: 0,
@@ -254,7 +208,7 @@ const getColumnsChartjs = (chart, activeChartMetrics) => {
     columns.push(
       {
         type: 'line',
-        label: 'Bounce',
+        label: `${t('dashboard.bounceRate')} (%)`,
         borderColor: '#2AC4B3',
         pointBackgroundColor: '#2AC4B3',
         pointRadius: 0,
@@ -276,7 +230,7 @@ const getColumnsChartjs = (chart, activeChartMetrics) => {
     })
     columns.push({
       type: 'line',
-      label: 'Views per Unique',
+      label: t('dashboard.viewsPerUnique'),
       pointBorderWidth: 0,
       pointBackgroundColor: '#F87171',
       pointRadius: 0,
@@ -291,145 +245,77 @@ const getColumnsChartjs = (chart, activeChartMetrics) => {
   return { labels, columns }
 }
 
-// setting the default values for the time period dropdown
-const noRegionPeriods = ['custom', 'yesterday']
-
-// function to get the settings and data for the chart(main diagram)
-const getSettings = (chart, timeBucket, activeChartMetrics, applyRegions) => {
-  const xAxisSize = _size(chart.x)
-  let regions
-
-  if (applyRegions) {
-    let regionStart
-
-    if (xAxisSize > 1) {
-      regionStart = dayjs(chart.x[xAxisSize - 2]).toDate()
-    } else {
-      regionStart = dayjs(chart.x[xAxisSize - 1]).toDate()
-    }
-
-    regions = {
-      unique: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      total: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      bounce: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      viewsPerUnique: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-    }
-  }
-
+const getSettings = (timeBucket, theme) => {
   return {
-    data: {
-      x: 'x',
-      columns: getColumns(chart, activeChartMetrics),
-      types: {
-        unique: area(),
-        total: area(),
-        bounce: spline(),
-        viewsPerUnique: spline(),
-        trendlineUnique: spline(),
-        trendlineTotal: spline(),
-      },
-      colors: {
-        unique: '#2563EB',
-        total: '#D97706',
-        bounce: '#2AC4B3',
-        viewsPerUnique: '#F87171',
-        trendlineUnique: '#436abf',
-        trendlineTotal: '#eba14b',
-      },
-      regions,
-      axes: {
-        bounce: 'y2',
-      },
+    responsive: true,
+    interaction: {
+      mode: 'index',
+      intersect: false,
     },
-    axis: {
+    scales: {
       x: {
-        tick: {
-          fit: true,
+        display: true,
+        alignToPixels: true,
+        type: 'time',
+        time: {
+          tooltipFormat: 'll',
+          minUnit: 'hour',
+          unit: timeBucket,
+          displayFormats: {
+            hour: 'HH:mm',
+            day: 'MMM D',
+            week: 'MMM D',
+            month: 'MMM YYYY',
+            year: 'YYYY',
+          },
         },
-        type: 'timeseries',
-      },
-      y2: {
-        show: activeChartMetrics.bounce,
-        tick: {
-          format: (d) => `${d}%`,
+        grid: {
+          drawOnChartArea: true,
+          drawBorder: false,
+          color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
         },
-        min: 10,
-        max: 90,
-        default: [0, 100],
       },
-    },
-    tooltip: {
-      format: {
-        title: (x) => d3.timeFormat(tbsFormatMapper[timeBucket])(x),
-      },
-      contents: {
-        template: `
-          <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
-            <li class='font-semibold'>{=TITLE}</li>
-            <hr class='border-gray-200 dark:border-gray-600' />
-            {{
-              <li class='flex justify-between'>
-                <div class='flex justify-items-start'>
-                  <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
-                  <span>{=NAME}</span>
-                </div>
-                <span class='pl-4'>{=VALUE}</span>
-              </li>
-            }}
-          </ul>`,
-      },
-    },
-    point: {
-      focus: {
-        only: xAxisSize > 1,
-      },
-      pattern: [
-        'circle',
-      ],
-      r: 3,
-    },
-    legend: {
-      usePoint: true,
-      item: {
-        tile: {
-          width: 10,
+      y: {
+        display: true,
+        suggestedMin: 0,
+        min: 0,
+        beginAtZero: true,
+        grid: {
+          drawOnChartArea: true,
+          drawBorder: false,
+          color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
         },
       },
     },
-    area: {
-      linearGradient: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+      },
+      tooltip: {
+        enabled: true,
+        titleColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+        bodyColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+        footerColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+        footerFont: { weight: 'normal', style: 'italic' },
+        backgroundColor: theme === 'dark' ? '#1e2a2f' : '#fff',
+        displayColors: false,
+        cornerRadius: 3,
+        callbacks: {
+          label: (label) => {
+            if (label.dataset._satype?.includes('trendline')) return
+
+            // eslint-disable-next-line consistent-return
+            return `${label.dataset.label} ${label.formattedValue}`
+          },
+        },
+      },
     },
-    bindto: '#dataChart',
   }
 }
+
+// setting the default values for the time period dropdown
+const noRegionPeriods = ['custom', 'yesterday']
 
 const validTimeBacket = ['hour', 'day', 'week', 'month']
 const validPeriods = ['custom', 'today', 'yesterday', '1d', '7d', '4w', '3M', '12M', '24M']
@@ -472,5 +358,5 @@ const getFormatDate = (date) => {
 }
 
 export {
-  iconClassName, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods, validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING, getColumnsChartjs,
+  iconClassName, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods, validTimeBacket, paidPeriods, noRegionPeriods, getExportFilename, onCSVExportClick, CHART_METRICS_MAPPING, getColumnsChartjs, getSettings,
 }

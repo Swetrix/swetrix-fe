@@ -5,7 +5,6 @@ import React, {
 import { useHistory, useParams, Link } from 'react-router-dom'
 import domToImage from 'dom-to-image'
 import { saveAs } from 'file-saver'
-import bb from 'billboard.js'
 import {
   ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, CurrencyDollarIcon,
 } from '@heroicons/react/24/outline'
@@ -68,7 +67,7 @@ import {
 } from './Panels'
 import {
   onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
-  validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING, getColumnsChartjs,
+  validTimeBacket, paidPeriods, CHART_METRICS_MAPPING, getColumnsChartjs, getSettings,
 } from './ViewProject.helpers'
 import CCRow from './components/CCRow'
 import RefRow from './components/RefRow'
@@ -119,7 +118,6 @@ const ViewProject = ({
   const [timeBucket, setTimebucket] = useState(projectViewPrefs[id]?.timeBucket || periodPairs[3].tbs[1])
   const activePeriod = useMemo(() => _find(periodPairs, p => p.period === period), [period, periodPairs])
   const [chartData, setChartData] = useState({})
-  const [mainChart, setMainChart] = useState(null)
   const [dataLoading, setDataLoading] = useState(false)
   const [activeChartMetrics, setActiveChartMetrics] = useState({
     [CHART_METRICS_MAPPING.unique]: true,
@@ -143,10 +141,13 @@ const ViewProject = ({
 
   const sharedRoles = useMemo(() => _find(user.sharedProjects, p => p.project.id === id)?.role || {}, [user, id])
   const chartOptions = useMemo(() => {
-    return getColumnsChartjs(chartData, activeChartMetrics)
-  }, [chartData, activeChartMetrics])
-  console.log('chartOptions', chartOptions)
-  console.log(language)
+    return getColumnsChartjs(chartData, activeChartMetrics, t)
+  }, [chartData, activeChartMetrics, t])
+
+  const chartSettings = useMemo(() => {
+    return getSettings(timeBucket, theme)
+  }, [timeBucket, theme])
+
   const chartMetrics = useMemo(() => {
     return [
       {
@@ -176,12 +177,6 @@ const ViewProject = ({
       },
     ]
   }, [t, activeChartMetrics])
-
-  const dataNames = useMemo(() => {
-    return {
-      unique: t('project.unique'), total: t('project.total'), bounce: `${t('dashboard.bounceRate')} (%)`, viewsPerUnique: t('dashboard.viewsPerUnique'), trendlineTotal: t('project.trendlineTotal'), trendlineUnique: t('project.trendlineUnique'),
-    }
-  }, [t])
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const switchActiveChartMetric = useCallback(_debounce((pairID) => {
@@ -262,8 +257,6 @@ const ViewProject = ({
       if (_isEmpty(params)) {
         setIsPanelsDataEmpty(true)
       } else {
-        const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
-        const bbSettings = getSettings(chart, timeBucket, activeChartMetrics, applyRegions)
         setChartData(chart)
 
         setPanelsData({
@@ -272,15 +265,6 @@ const ViewProject = ({
           customs,
         })
 
-        if (!_isEmpty(mainChart)) {
-          mainChart.destroy()
-        }
-
-        setMainChart(() => {
-          const generete = bb.generate(bbSettings)
-          generete.data.names(dataNames)
-          return generete
-        })
         setIsPanelsDataEmpty(false)
       }
 
@@ -382,66 +366,6 @@ const ViewProject = ({
       loadAnalytics(true)
     }
   }
-
-  useEffect(() => {
-    if (!isLoading && !_isEmpty(chartData) && !_isEmpty(mainChart)) {
-      mainChart.data.names(dataNames)
-
-      if (activeChartMetrics.views || activeChartMetrics.unique || activeChartMetrics.viewsPerUnique || activeChartMetrics.trendlines) {
-        mainChart.load({
-          columns: getColumns(chartData, activeChartMetrics),
-        })
-      }
-
-      if (activeChartMetrics.bounce) {
-        const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
-        const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions)
-
-        if (!_isEmpty(mainChart)) {
-          mainChart.destroy()
-        }
-
-        setMainChart(() => {
-          const generete = bb.generate(bbSettings)
-          generete.data.names(dataNames)
-          return generete
-        })
-      }
-
-      if (!activeChartMetrics.bounce) {
-        const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
-        const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions)
-
-        if (!_isEmpty(mainChart)) {
-          mainChart.destroy()
-        }
-
-        setMainChart(() => {
-          const generete = bb.generate(bbSettings)
-          generete.data.names(dataNames)
-          return generete
-        })
-      }
-
-      if (!activeChartMetrics.views) {
-        mainChart.unload({
-          ids: 'total',
-        })
-      }
-
-      if (!activeChartMetrics.unique) {
-        mainChart.unload({
-          ids: 'unique',
-        })
-      }
-
-      if (!activeChartMetrics.viewsPerUnique) {
-        mainChart.unload({
-          ids: 'viewsPerUnique',
-        })
-      }
-    }
-  }, [isLoading, activeChartMetrics, chartData]) // eslint-disable-line
 
   // Initialising Swetrix SDK instance
   useEffect(() => {
@@ -984,72 +908,7 @@ const ViewProject = ({
                   labels: chartOptions.labels,
                   datasets: chartOptions.columns,
                 }}
-                options={{
-                  responsive: true,
-                  interaction: {
-                    mode: 'index',
-                    intersect: false,
-                  },
-                  scales: {
-                    x: {
-                      display: true,
-                      alignToPixels: true,
-                      type: 'time',
-                      time: {
-                        tooltipFormat: 'll HH:mm',
-                        minUnit: 'hour',
-                        unit: timeBucket,
-                        displayFormats: {
-                          hour: 'HH:mm',
-                          day: 'MMM D',
-                          week: 'MMM D',
-                          month: 'MMM YYYY',
-                          year: 'YYYY',
-                        },
-                      },
-                      grid: {
-                        drawOnChartArea: true,
-                        drawBorder: false,
-                        color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
-                      },
-                    },
-                    y: {
-                      display: true,
-                      suggestedMin: 0,
-                      min: 0,
-                      beginAtZero: true,
-                      grid: {
-                        drawOnChartArea: true,
-                        drawBorder: false,
-                        color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
-                      },
-                    },
-                  },
-                  plugins: {
-                    legend: {
-                      display: true,
-                      position: 'bottom',
-                    },
-                    tooltip: {
-                      enabled: true,
-                      titleColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
-                      bodyColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
-                      footerColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
-                      footerFont: { weight: 'normal', style: 'italic' },
-                      backgroundColor: theme === 'dark' ? '#1e2a2f' : '#fff',
-                      displayColors: false,
-                      cornerRadius: 3,
-                      callbacks: {
-                        label: (label) => {
-                          if (label.dataset._satype?.includes('trendline')) return
-
-                          // eslint-disable-next-line consistent-return
-                          return `${label.dataset.label} ${label.formattedValue}`
-                        },
-                      },
-                    },
-                  },
-                }}
+                options={chartSettings}
               />
               )}
             </div>
