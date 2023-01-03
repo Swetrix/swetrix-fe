@@ -21,6 +21,7 @@ const mapStateToProps = (state) => {
       extensions: state.ui.misc.extensions,
       user: state.auth.user,
       projectTab: state.ui.projects.projectTab,
+      theme: state.ui.theme.theme,
     }
   }
 
@@ -37,6 +38,7 @@ const mapStateToProps = (state) => {
     extensions: state.ui.misc.extensions,
     user: state.auth.user,
     projectTab: state.ui.projects.projectTab,
+    theme: state.ui.theme.theme,
   }
 }
 

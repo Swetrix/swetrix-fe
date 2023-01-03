@@ -142,27 +142,169 @@ const CHART_METRICS_MAPPING_PERF = {
   backend: 'backend',
 }
 
-// function to filter the data for the chart
-const getColumns = (chart, activeChartMetrics) => {
+// setting the default values for the time period dropdown
+const noRegionPeriods = ['custom', 'yesterday']
+
+const getSettings = (timeBucket, theme, activeChartMetrics) => {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    scales: {
+      x: {
+        display: true,
+        alignToPixels: true,
+        type: 'time',
+        time: {
+          tooltipFormat: 'll',
+          minUnit: 'hour',
+          unit: timeBucket,
+          displayFormats: {
+            hour: 'HH:mm',
+            day: 'MMM D',
+            week: 'MMM D',
+            month: 'MMM YYYY',
+            year: 'YYYY',
+          },
+        },
+        grid: {
+          drawOnChartArea: true,
+          drawBorder: false,
+          color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
+        },
+      },
+      y: {
+        display: true,
+        suggestedMin: 0,
+        min: 0,
+        beginAtZero: true,
+        grid: {
+          drawOnChartArea: true,
+          drawBorder: false,
+          color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
+        },
+      },
+      y1: {
+        display: activeChartMetrics.bounce || activeChartMetrics.sessionDuration,
+        position: 'right',
+        min: activeChartMetrics.bounce ? 0 : null,
+        max: activeChartMetrics.bounce ? 100 : null,
+        default: activeChartMetrics.bounce ? [0, 100] : null,
+        grid: {
+          drawOnChartArea: false,
+          color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
+        },
+        ticks: {
+          callback: activeChartMetrics.bounce ? (d) => `${d}%` : (d) => getStringFromTime(getTimeFromSeconds(d)),
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+      },
+      tooltip: {
+        enabled: true,
+        titleColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+        bodyColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+        footerColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+        footerFont: { weight: 'normal', style: 'italic' },
+        backgroundColor: theme === 'dark' ? '#1e2a2f' : '#fff',
+        displayColors: false,
+        cornerRadius: 3,
+        callbacks: {
+          label(context) {
+            if (context.dataset?._satype?.includes('trendline')) return null
+
+            if (context.dataset?._satype?.includes('bounce')) {
+              // eslint-disable-next-line consistent-return
+              return `${context.dataset.label} ${context.formattedValue}%`
+            }
+
+            if (context.dataset?._satype?.includes('sessionDuration')) {
+              // eslint-disable-next-line consistent-return
+              return `${context.dataset.label} ${getStringFromTime(getTimeFromSeconds(context.formattedValue))}`
+            }
+            // eslint-disable-next-line consistent-return
+            return `${context.dataset.label} ${context.formattedValue}`
+          },
+        },
+      },
+    },
+  }
+}
+
+const getColumns = (chart, activeChartMetrics, t) => {
   const {
     views, bounce, viewsPerUnique, unique, trendlines, sessionDuration,
   } = activeChartMetrics
 
-  const columns = [
-    ['x', ..._map(chart.x, el => dayjs(el).toDate())],
-  ]
+  const labels = [..._map(chart.x, el => dayjs(el).toDate())]
 
+  const columns = []
   if (unique) {
-    columns.push(['unique', ...chart.uniques])
+    columns.push({
+      type: 'line',
+      label: t('project.unique'),
+      borderColor: '#2563EB',
+      pointBackgroundColor: '#2563EB',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: true,
+      backgroundColor: 'rgba(37, 99, 235, 0.2)',
+      data: chart.uniques,
+    })
     if (trendlines) {
-      columns.push(['trendlineUnique', ...trendline(chart.uniques)])
+      columns.push({
+        type: 'line',
+        _satype: 'trendline',
+        label: t('project.trendlineUnique'),
+        borderColor: '#436abf',
+        pointBackgroundColor: '#436abf',
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointBorderWidth: 0,
+        borderWidth: 2,
+        fill: false,
+        data: trendline(chart.uniques),
+      })
     }
   }
 
   if (views) {
-    columns.push(['total', ...chart.visits])
+    columns.push({
+      type: 'line',
+      label: t('project.total'),
+      borderColor: '#D97706',
+      pointBackgroundColor: '#D97706',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      backgroundColor: 'rgba(217, 119, 6, 0.2)',
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: true,
+      data: chart.visits,
+    })
     if (trendlines) {
-      columns.push(['trendlineTotal', ...trendline(chart.visits)])
+      columns.push({
+        type: 'line',
+        _satype: 'trendline',
+        label: t('project.trendlineTotal'),
+        borderColor: '#eba14b',
+        pointBackgroundColor: '#eba14b',
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointBorderWidth: 0,
+        borderWidth: 2,
+        fill: false,
+        data: trendline(chart.visits),
+      })
     }
   }
 
@@ -171,7 +313,20 @@ const getColumns = (chart, activeChartMetrics) => {
       return _round((el * 100) / chart.visits[i], 1) || 0
     })
     columns.push(
-      ['bounce', ...bounceArray],
+      {
+        type: 'line',
+        _satype: 'bounce',
+        label: `${t('dashboard.bounceRate')} (%)`,
+        borderColor: '#2AC4B3',
+        pointBackgroundColor: '#2AC4B3',
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointBorderWidth: 0,
+        borderWidth: 2,
+        fill: false,
+        yAxisID: 'y1',
+        data: bounceArray,
+      },
     )
   }
 
@@ -182,363 +337,265 @@ const getColumns = (chart, activeChartMetrics) => {
       }
       return _round(el / chart.uniques[i], 1)
     })
-    columns.push(['viewsPerUnique', ...viewsPerUniqueArray])
+    columns.push({
+      type: 'line',
+      label: t('dashboard.viewsPerUnique'),
+      pointBorderWidth: 0,
+      pointBackgroundColor: '#F87171',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      borderColor: '#F87171',
+      borderWidth: 2,
+      fill: false,
+      data: viewsPerUniqueArray,
+    })
   }
 
   if (sessionDuration) {
-    columns.push(['sessionDuration', ...chart.sdur])
+    columns.push({
+      type: 'line',
+      _satype: 'sessionDuration',
+      label: t('dashboard.sessionDuration'),
+      pointBorderWidth: 0,
+      pointBackgroundColor: '#F87171',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      borderColor: '#F87171',
+      borderWidth: 2,
+      fill: false,
+      yAxisID: 'y1',
+      data: chart.sdur,
+    })
   }
 
-  return columns
+  return { labels, columns }
 }
 
-const getColumnsPerf = (chart, activeChartMetrics) => {
-  const columns = [
-    ['x', ..._map(chart.x, el => dayjs(el).toDate())],
-  ]
+const getColumnsPerf = (chart, activeChartMetrics, t) => {
+  const labels = [..._map(chart.x, el => dayjs(el).toDate())]
+
+  const columns = []
 
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.full) {
-    columns.push(['dns', ...chart.dns])
-    columns.push(['tls', ...chart.tls])
-    columns.push(['conn', ...chart.conn])
-    columns.push(['response', ...chart.response])
-    columns.push(['render', ...chart.render])
-    columns.push(['dom_load', ...chart.domLoad])
-    columns.push(['ttfb', ...chart.ttfb])
+    columns.push({
+      type: 'line',
+      label: t('project.dns'),
+      borderColor: '#EC4319',
+      pointBackgroundColor: '#EC4319',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.dns,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.tls'),
+      borderColor: '#F27059',
+      pointBackgroundColor: '#F27059',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.tls,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.conn'),
+      borderColor: '#F7A265',
+      pointBackgroundColor: '#F7A265',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.conn,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.response'),
+      borderColor: '#F5D376',
+      pointBackgroundColor: '#F5D376',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.response,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.render'),
+      borderColor: '#709775',
+      pointBackgroundColor: '#709775',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.render,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.domLoad'),
+      borderColor: '#A5E6AB',
+      pointBackgroundColor: '#25A5E6AB63EB',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.domLoad,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.ttfb'),
+      borderColor: '#00A8E8',
+      pointBackgroundColor: '#00A8E8',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.ttfb,
+    })
   }
 
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.timing) {
-    columns.push(['frontend', ...sumArrays(chart.render, chart.domLoad)])
-    columns.push(['network', ...sumArrays(chart.dns, chart.tls, chart.conn, chart.response)])
-    columns.push(['backend', ...chart.ttfb])
+    columns.push({
+      type: 'line',
+      label: t('project.frontend'),
+      borderColor: '#709775',
+      pointBackgroundColor: '#709775',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: sumArrays(chart.render, chart.domLoad),
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.network'),
+      borderColor: '#2563EB',
+      pointBackgroundColor: '#2563EB',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: sumArrays(chart.dns, chart.tls, chart.conn, chart.response),
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.backend'),
+      borderColor: '#00A8E8',
+      pointBackgroundColor: '#00A8E8',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.ttfb,
+    })
   }
 
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.network) {
-    columns.push(['dns', ...chart.dns])
-    columns.push(['tls', ...chart.tls])
-    columns.push(['conn', ...chart.conn])
-    columns.push(['response', ...chart.response])
+    columns.push({
+      type: 'line',
+      label: t('project.network'),
+      borderColor: '#F7A265',
+      pointBackgroundColor: '#F7A265',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.dns,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.tls'),
+      borderColor: '#F27059',
+      pointBackgroundColor: '#F27059',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.tls,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.conn'),
+      borderColor: '#F7A265',
+      pointBackgroundColor: '#F7A265',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.conn,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.response'),
+      borderColor: '#F5D376',
+      pointBackgroundColor: '#F5D376',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.response,
+    })
   }
 
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.frontend) {
-    columns.push(['render', ...chart.render])
-    columns.push(['dom_load', ...chart.domLoad])
+    columns.push({
+      type: 'line',
+      label: t('project.render'),
+      borderColor: '#709775',
+      pointBackgroundColor: '#709775',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.render,
+    })
+    columns.push({
+      type: 'line',
+      label: t('project.domLoad'),
+      borderColor: '#A5E6AB',
+      pointBackgroundColor: '#A5E6AB',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.domLoad,
+    })
   }
 
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.backend) {
-    columns.push(['ttfb', ...chart.ttfb])
+    columns.push({
+      type: 'line',
+      label: t('project.ttfb'),
+      borderColor: '#00A8E8',
+      pointBackgroundColor: '#00A8E8',
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      pointBorderWidth: 0,
+      borderWidth: 2,
+      fill: false,
+      data: chart.ttfb,
+    })
   }
 
-  return columns
-}
-
-// setting the default values for the time period dropdown
-const noRegionPeriods = ['custom', 'yesterday']
-
-// function to get the settings and data for the chart(main diagram)
-const getSettings = (chart, timeBucket, activeChartMetrics, applyRegions) => {
-  const xAxisSize = _size(chart.x)
-  let regions
-
-  if (applyRegions) {
-    let regionStart
-
-    if (xAxisSize > 1) {
-      regionStart = dayjs(chart.x[xAxisSize - 2]).toDate()
-    } else {
-      regionStart = dayjs(chart.x[xAxisSize - 1]).toDate()
-    }
-
-    regions = {
-      unique: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      total: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      bounce: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      viewsPerUnique: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-    }
-  }
-
-  return {
-    data: {
-      x: 'x',
-      columns: getColumns(chart, activeChartMetrics),
-      types: {
-        unique: area(),
-        total: area(),
-        bounce: spline(),
-        viewsPerUnique: spline(),
-        trendlineUnique: spline(),
-        trendlineTotal: spline(),
-        sessionDuration: spline(),
-      },
-      colors: {
-        unique: '#2563EB',
-        total: '#D97706',
-        bounce: '#2AC4B3',
-        viewsPerUnique: '#F87171',
-        trendlineUnique: '#436abf',
-        trendlineTotal: '#eba14b',
-        sessionDuration: '#c945ed',
-      },
-      regions,
-      axes: {
-        bounce: 'y2',
-        sessionDuration: 'y2',
-      },
-    },
-    axis: {
-      x: {
-        tick: {
-          fit: true,
-        },
-        type: 'timeseries',
-      },
-      y2: {
-        show: activeChartMetrics.bounce || activeChartMetrics.sessionDuration,
-        tick: {
-          format: activeChartMetrics.bounce ? (d) => `${d}%` : (d) => getStringFromTime(getTimeFromSeconds(d)),
-        },
-        min: activeChartMetrics.bounce ? 10 : null,
-        max: activeChartMetrics.bounce ? 100 : null,
-        default: activeChartMetrics.bounce ? [10, 100] : null,
-      },
-    },
-    tooltip: {
-      format: {
-        title: (x) => d3.timeFormat(tbsFormatMapper[timeBucket])(x),
-      },
-      contents: {
-        template: `
-          <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
-            <li class='font-semibold'>{=TITLE}</li>
-            <hr class='border-gray-200 dark:border-gray-600' />
-            {{
-              <li class='flex justify-between'>
-                <div class='flex justify-items-start'>
-                  <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
-                  <span>{=NAME}</span>
-                </div>
-                <span class='pl-4'>{=VALUE}</span>
-              </li>
-            }}
-          </ul>`,
-      },
-    },
-    point: {
-      focus: {
-        only: xAxisSize > 1,
-      },
-      pattern: [
-        'circle',
-      ],
-      r: 3,
-    },
-    legend: {
-      usePoint: true,
-      item: {
-        tile: {
-          width: 10,
-        },
-      },
-    },
-    area: {
-      linearGradient: true,
-    },
-    bindto: '#dataChart',
-  }
-}
-
-const getSettingsPerf = (chart, timeBucket, activeChartMetrics, applyRegions) => {
-  const xAxisSize = _size(chart.x)
-
-  let regions
-
-  if (applyRegions) {
-    let regionStart
-
-    if (xAxisSize > 1) {
-      regionStart = dayjs(chart.x[xAxisSize - 2]).toDate()
-    } else {
-      regionStart = dayjs(chart.x[xAxisSize - 1]).toDate()
-    }
-
-    regions = {
-      dns: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      tls: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      conn: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      response: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      render: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      dom_load: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-      ttfb: [
-        {
-          start: regionStart,
-          style: {
-            dasharray: '6 2',
-          },
-        },
-      ],
-    }
-  }
-
-  return {
-    data: {
-      x: 'x',
-      xFormat: tbsFormatMapper[timeBucket],
-      columns: getColumnsPerf(chart, activeChartMetrics),
-      types: {
-        dns: areaSpline(),
-        tls: areaSpline(),
-        conn: areaSpline(),
-        response: areaSpline(),
-        render: areaSpline(),
-        dom_load: areaSpline(),
-        ttfb: areaSpline(),
-        frontend: areaSpline(),
-        network: areaSpline(),
-        backend: areaSpline(),
-      },
-      colors: {
-        dns: '#EC4319',
-        tls: '#F27059',
-        conn: '#F7A265',
-        response: '#F5D376',
-        render: '#709775',
-        dom_load: '#A5E6AB',
-        ttfb: '#00A8E8',
-        frontend: '#709775',
-        network: '#F7A265',
-        backend: '#00A8E8',
-      },
-      groups: [
-        ['dns', 'tls', 'conn', 'response', 'render', 'dom_load', 'ttfb', 'frontend', 'network', 'backend'],
-      ],
-      // regions,
-    },
-    axis: {
-      x: {
-        type: 'timeseries',
-        tick: {
-          format: tbsFormatMapper[timeBucket],
-        },
-      },
-      y: {
-        tick: {
-          format: (d) => getStringFromTime(getTimeFromSeconds(d), true),
-        },
-      },
-    },
-    tooltip: {
-      format: {
-        title: (x) => d3.timeFormat(tbsFormatMapper[timeBucket])(x),
-      },
-      contents: {
-        template: `
-          <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
-            <li class='font-semibold'>{=TITLE}</li>
-            <hr class='border-gray-200 dark:border-gray-600' />
-            {{
-              <li class='flex justify-between'>
-                <div class='flex justify-items-start'>
-                  <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
-                  <span>{=NAME}</span>
-                </div>
-                <span class='pl-4'>{=VALUE}</span>
-              </li>
-            }}
-          </ul>`,
-      },
-    },
-    point: {
-      focus: {
-        only: xAxisSize > 1,
-      },
-      pattern: [
-        'circle',
-      ],
-      r: 3,
-    },
-    legend: {
-      usePoint: true,
-      item: {
-        tile: {
-          width: 10,
-        },
-      },
-    },
-    area: {
-      linearGradient: true,
-    },
-    bindto: '#dataChart',
-  }
+  return { labels, columns }
 }
 
 const validTimeBacket = ['hour', 'day', 'week', 'month']
@@ -582,5 +639,5 @@ const getFormatDate = (date) => {
 }
 
 export {
-  iconClassName, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods, validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING, CHART_METRICS_MAPPING_PERF, getColumnsPerf, getSettingsPerf,
+  iconClassName, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods, validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING, CHART_METRICS_MAPPING_PERF, getColumnsPerf,
 }

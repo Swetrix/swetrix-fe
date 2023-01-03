@@ -51,7 +51,7 @@ import {
 } from './Panels'
 import {
   onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
-  validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING, CHART_METRICS_MAPPING_PERF, getSettingsPerf,
+  validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING, CHART_METRICS_MAPPING_PERF, getColumnsPerf,
 } from './ViewProject.helpers'
 import CCRow from './components/CCRow'
 import RefRow from './components/RefRow'
@@ -59,10 +59,43 @@ import NoEvents from './components/NoEvents'
 import Filters from './components/Filters'
 import './styles.css'
 
+// eslint-disable-next-line import/order
+import {
+  Chart as ChartJS,
+  LinearScale,
+  CategoryScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip,
+  LineController,
+  BarController,
+  TimeScale,
+  Filler,
+} from 'chart.js'
+import 'chartjs-adapter-dayjs-3'
+// eslint-disable-next-line import/no-unresolved, import/order
+import { Chart } from 'react-chartjs-2'
+
+ChartJS.register(
+  LinearScale,
+  CategoryScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip,
+  LineController,
+  BarController,
+  TimeScale,
+  Filler,
+)
+
 const ViewProject = ({
   projects, isLoading: _isLoading, showError, cache, cachePerf, setProjectCache, projectViewPrefs, setProjectViewPrefs, setPublicProject,
   setLiveStatsForProject, authenticated, timezone, user, sharedProjects, isPaidTierUsed, extensions, generateAlert, setProjectCachePerf,
-  projectTab, setProjectTab,
+  projectTab, setProjectTab, theme,
 }) => {
   const { t, i18n: { language } } = useTranslation('common')
   const [periodPairs, setPeriodPairs] = useState(tbPeriodPairs(t))
@@ -90,7 +123,6 @@ const ViewProject = ({
   const [timeBucket, setTimebucket] = useState(projectViewPrefs[id]?.timeBucket || periodPairs[3].tbs[1])
   const activePeriod = useMemo(() => _find(periodPairs, p => p.period === period), [period, periodPairs])
   const [chartData, setChartData] = useState({})
-  const [mainChart, setMainChart] = useState(null)
   const [dataLoading, setDataLoading] = useState(false)
   const [activeChartMetrics, setActiveChartMetrics] = useState({
     [CHART_METRICS_MAPPING.unique]: true,
@@ -119,8 +151,23 @@ const ViewProject = ({
     const tab = searchParams.get('tab')
     return tab || projectTab || 'traffic'
   })
-
   const [chartDataPerf, setChartDataPerf] = useState({})
+
+  const chartOptions = useMemo(() => {
+    return getColumns(chartData, activeChartMetrics, t)
+  }, [chartData, activeChartMetrics, t])
+
+  const chartOptionsPerf = useMemo(() => {
+    if (chartDataPerf) {
+      return getColumnsPerf(chartDataPerf, activeChartMetricsPerf, t)
+    }
+    return []
+  }, [chartDataPerf, activeChartMetricsPerf, t])
+
+  const chartSettings = useMemo(() => {
+    return getSettings(timeBucket, theme, activeChartMetrics)
+  }, [timeBucket, theme, activeChartMetrics])
+
   const [isPanelsDataEmptyPerf, setIsPanelsDataEmptyPerf] = useState(false)
   const [panelsDataPerf, setPanelsDataPerf] = useState({})
 
@@ -212,34 +259,6 @@ const ViewProject = ({
     ]
   }, [t, activeChartMetricsPerf])
 
-  const dataNames = useMemo(() => {
-    return {
-      unique: t('project.unique'),
-      total: t('project.total'),
-      bounce: `${t('dashboard.bounceRate')} (%)`,
-      viewsPerUnique: t('dashboard.viewsPerUnique'),
-      trendlineTotal: t('project.trendlineTotal'),
-      trendlineUnique: t('project.trendlineUnique'),
-      sessionDuration: t('dashboard.sessionDuration'),
-    }
-  }, [t])
-
-  const dataNamesPerf = useMemo(() => {
-    return {
-      full: t('dashboard.timing'),
-      network: t('dashboard.network'),
-      frontend: t('dashboard.frontend'),
-      backend: t('dashboard.backend'),
-      dns: t('dashboard.dns'),
-      tls: t('dashboard.tls'),
-      conn: t('dashboard.conn'),
-      response: t('dashboard.response'),
-      render: t('dashboard.render'),
-      dom_load: t('dashboard.domLoad'),
-      ttfb: t('dashboard.ttfb'),
-    }
-  }, [t])
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const switchActiveChartMetric = useCallback(_debounce((pairID) => {
     if (activeTab === PROJECT_TABS.performance) {
@@ -326,8 +345,6 @@ const ViewProject = ({
       if (_isEmpty(params)) {
         setIsPanelsDataEmpty(true)
       } else {
-        const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
-        const bbSettings = getSettings(chart, timeBucket, activeChartMetrics, applyRegions)
         setChartData(chart)
 
         setPanelsData({
@@ -335,18 +352,6 @@ const ViewProject = ({
           data: params,
           customs,
         })
-
-        if (activeTab === PROJECT_TABS.traffic) {
-          if (!_isEmpty(mainChart)) {
-            mainChart.destroy()
-          }
-
-          setMainChart(() => {
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNames)
-            return generete
-          })
-        }
 
         setIsPanelsDataEmpty(false)
       }
@@ -411,26 +416,12 @@ const ViewProject = ({
         setIsPanelsDataEmptyPerf(true)
       } else {
         const { chart: chartPerf } = dataPerf
-        const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
-        const bbSettings = getSettingsPerf(chartPerf, timeBucket, activeChartMetricsPerf, applyRegions)
         setChartDataPerf(chartPerf)
 
         setPanelsDataPerf({
           types: _keys(dataPerf.params),
           data: dataPerf.params,
         })
-
-        if (activeTab === PROJECT_TABS.performance) {
-          if (!_isEmpty(mainChart)) {
-            mainChart.destroy()
-          }
-
-          setMainChart(() => {
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNamesPerf)
-            return generete
-          })
-        }
 
         setIsPanelsDataEmptyPerf(false)
       }
@@ -616,82 +607,7 @@ const ViewProject = ({
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab])
-
-  useEffect(() => {
-    if (activeTab === PROJECT_TABS.traffic) {
-      if (!isLoading && !_isEmpty(chartData) && !_isEmpty(mainChart)) {
-        mainChart.data.names(dataNames)
-
-        if (activeChartMetrics.views || activeChartMetrics.unique || activeChartMetrics.viewsPerUnique || activeChartMetrics.trendlines) {
-          mainChart.load({
-            columns: getColumns(chartData, activeChartMetrics),
-          })
-        }
-
-        if (activeChartMetrics.bounce || activeChartMetrics.sessionDuration) {
-          const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
-          const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions)
-
-          if (!_isEmpty(mainChart)) {
-            mainChart.destroy()
-          }
-
-          setMainChart(() => {
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNames)
-            return generete
-          })
-        }
-
-        if (!activeChartMetrics.bounce || !activeChartMetrics.sessionDuration) {
-          const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
-          const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions)
-
-          if (!_isEmpty(mainChart)) {
-            mainChart.destroy()
-          }
-
-          setMainChart(() => {
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNames)
-            return generete
-          })
-        }
-
-        if (!activeChartMetrics.views) {
-          mainChart.unload({
-            ids: 'total',
-          })
-        }
-
-        if (!activeChartMetrics.unique) {
-          mainChart.unload({
-            ids: 'unique',
-          })
-        }
-
-        if (!activeChartMetrics.viewsPerUnique) {
-          mainChart.unload({
-            ids: 'viewsPerUnique',
-          })
-        }
-      }
-    } else if (!isLoading && !_isEmpty(chartDataPerf) && !_isEmpty(mainChart)) {
-      const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
-      const bbSettings = getSettingsPerf(chartDataPerf, timeBucket, activeChartMetricsPerf, applyRegions)
-
-      if (!_isEmpty(mainChart)) {
-        mainChart.destroy()
-      }
-
-      setMainChart(() => {
-        const generete = bb.generate(bbSettings)
-        generete.data.names(dataNamesPerf)
-        return generete
-      })
-    }
-  }, [isLoading, activeChartMetrics, chartData, chartDataPerf, activeChartMetricsPerf]) // eslint-disable-line
+  }, [activeTab])// eslint-disable-line
 
   // Initialising Swetrix SDK instance
   useEffect(() => {
@@ -1367,14 +1283,20 @@ const ViewProject = ({
           {isPanelsDataEmpty && (
             <NoEvents filters={filters} resetFilters={resetFilters} pid={id} />
           )}
-          {activeTab === 'traffic' && (
+          {activeTab === PROJECT_TABS.traffic && (
             <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
               <div
-                className={cx('h-80', {
+                className={cx('h-[400px]', {
                   hidden: checkIfAllMetricsAreDisabled,
                 })}
               >
-                <div className='h-80' id='dataChart' />
+                <Chart
+                  data={{
+                    labels: chartOptions.labels,
+                    datasets: chartOptions.columns,
+                  }}
+                  options={chartSettings}
+                />
               </div>
               <Filters
                 filters={filters}
@@ -1485,11 +1407,19 @@ const ViewProject = ({
           {activeTab === PROJECT_TABS.performance && (
             <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
               <div
-                className={cx('h-80', {
+                className={cx('h-[400px]', {
                   hidden: checkIfAllMetricsAreDisabled,
                 })}
               >
-                <div className='h-80' id='dataChart' />
+                {(!_isEmpty(chartOptions) && !_isEmpty(chartOptionsPerf)) && (
+                <Chart
+                  data={{
+                    labels: chartOptionsPerf.labels,
+                    datasets: chartOptionsPerf.columns,
+                  }}
+                  options={chartSettings}
+                />
+                )}
               </div>
               <Filters
                 filters={filtersPerf}
