@@ -47,19 +47,6 @@ import routes from 'routes'
 import {
   getProjectData, getProject, getOverallStats, getLiveVisitors, getPerfData,
 } from 'api'
-import {
-  Panel, Overview, CustomEvents,
-} from './Panels'
-import {
-  onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
-  validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING, CHART_METRICS_MAPPING_PERF, getColumnsPerf,
-} from './ViewProject.helpers'
-import CCRow from './components/CCRow'
-import RefRow from './components/RefRow'
-import NoEvents from './components/NoEvents'
-import Filters from './components/Filters'
-import ProjectAlertsView from '../Alerts/View'
-import './styles.css'
 
 import {
   Chart as ChartJS,
@@ -75,6 +62,21 @@ import {
   TimeScale,
   Filler,
 } from 'chart.js'
+
+import {
+  Panel, Overview, CustomEvents,
+} from './Panels'
+import {
+  onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
+  validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING, CHART_METRICS_MAPPING_PERF, getColumnsPerf,
+} from './ViewProject.helpers'
+import CCRow from './components/CCRow'
+import RefRow from './components/RefRow'
+import NoEvents from './components/NoEvents'
+import Filters from './components/Filters'
+import ProjectAlertsView from '../Alerts/View'
+import './styles.css'
+
 import 'chartjs-adapter-dayjs-3'
 // eslint-disable-next-line import/no-unresolved, import/order
 import { Chart } from 'react-chartjs-2'
@@ -161,8 +163,9 @@ const ViewProject = ({
   const [chartDataPerf, setChartDataPerf] = useState({})
 
   const chartOptions = useMemo(() => {
-    return getColumns(chartData, activeChartMetrics, t)
-  }, [chartData, activeChartMetrics, t])
+    const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
+    return getColumns(chartData, activeChartMetrics, applyRegions, t)
+  }, [chartData, activeChartMetrics, t, activePeriod])
 
   const chartOptionsPerf = useMemo(() => {
     if (chartDataPerf) {
@@ -172,8 +175,9 @@ const ViewProject = ({
   }, [chartDataPerf, activeChartMetricsPerf, t])
 
   const chartSettings = useMemo(() => {
-    return getSettings(timeBucket, theme, activeChartMetrics)
-  }, [timeBucket, theme, activeChartMetrics])
+    const isPerf = activeTab === PROJECT_TABS.performance
+    return getSettings(timeBucket, theme, activeChartMetrics, isPerf)
+  }, [timeBucket, theme, activeChartMetrics, activeTab])
 
   const [isPanelsDataEmptyPerf, setIsPanelsDataEmptyPerf] = useState(false)
   const [panelsDataPerf, setPanelsDataPerf] = useState({})

@@ -16,6 +16,7 @@ import _size from 'lodash/size'
 import _round from 'lodash/round'
 import _fill from 'lodash/fill'
 import _reduce from 'lodash/reduce'
+import _includes from 'lodash/includes'
 import JSZip from 'jszip'
 
 import { tbsFormatMapper } from 'redux/constants'
@@ -145,7 +146,7 @@ const CHART_METRICS_MAPPING_PERF = {
 // setting the default values for the time period dropdown
 const noRegionPeriods = ['custom', 'yesterday']
 
-const getSettings = (timeBucket, theme, activeChartMetrics) => {
+const getSettings = (timeBucket, theme, activeChartMetrics, isPerf) => {
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -186,6 +187,7 @@ const getSettings = (timeBucket, theme, activeChartMetrics) => {
           drawBorder: false,
           color: theme === 'dark' ? '#2a3638' : '#CCDCE666',
         },
+        stacked: isPerf,
       },
       y1: {
         display: activeChartMetrics.bounce || activeChartMetrics.sessionDuration,
@@ -206,30 +208,50 @@ const getSettings = (timeBucket, theme, activeChartMetrics) => {
       legend: {
         display: true,
         position: 'bottom',
+        labels: {
+          color: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+          font: { weight: 500, size: 12, family: "'Inter', 'Cantarell', 'Roboto', 'Oxygen', 'Ubuntu', 'sans-serif'" },
+          usePointStyle: true,
+        },
       },
       tooltip: {
         enabled: true,
-        titleColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
-        bodyColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
-        footerColor: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
-        footerFont: { weight: 'normal', style: 'italic' },
-        backgroundColor: theme === 'dark' ? '#1e2a2f' : '#fff',
-        displayColors: false,
-        cornerRadius: 3,
+        backgroundColor: theme === 'dark' ? 'rgb(75 85 99)' : 'rgb(255 255 255)',
+        titleFont: {
+          family: "'Inter', 'Cantarell', 'Roboto', 'Oxygen', 'Ubuntu', 'sans-serif'",
+          size: 14,
+          weight: 700,
+        },
+        titleColor: theme === 'dark' ? 'rgb(255 255 255)' : 'rgb(0 0 0)',
+        titleSpacing: 4,
+        bodyColor: theme === 'dark' ? 'rgb(255 255 255)' : 'rgb(0 0 0)',
+        bodyFont: {
+          family: "'Inter', 'Cantarell', 'Roboto', 'Oxygen', 'Ubuntu', 'sans-serif'",
+          size: 14,
+          weight: 500,
+        },
+        bodySpacing: 4,
+        cornerRadius: 6,
+        usePointStyle: true,
         callbacks: {
-          label(context) {
-            if (context.dataset?._satype?.includes('trendline')) return null
+          label: (context) => {
+            if (_includes(context.dataset?._satype, 'trendline')) return null
 
-            if (context.dataset?._satype?.includes('bounce')) {
+            if (_includes(context.dataset?._satype, 'bounce')) {
               // eslint-disable-next-line consistent-return
               return `${context.dataset.label} ${context.formattedValue}%`
             }
 
-            if (context.dataset?._satype?.includes('sessionDuration')) {
+            if (_includes(context.dataset?._satype, 'sessionDuration')) {
               // eslint-disable-next-line consistent-return
               return `${context.dataset.label} ${getStringFromTime(getTimeFromSeconds(context.formattedValue))}`
             }
-            // eslint-disable-next-line consistent-return
+
+            if (_includes(context.dataset?._satype, 'timmings')) {
+              // eslint-disable-next-line consistent-return
+              return `${context.dataset.label} ${getStringFromTime(getTimeFromSeconds(context.formattedValue), true)}`
+            }
+
             return `${context.dataset.label} ${context.formattedValue}`
           },
         },
@@ -238,7 +260,7 @@ const getSettings = (timeBucket, theme, activeChartMetrics) => {
   }
 }
 
-const getColumns = (chart, activeChartMetrics, t) => {
+const getColumns = (chart, activeChartMetrics, applyRegions, t) => {
   const {
     views, bounce, viewsPerUnique, unique, trendlines, sessionDuration,
   } = activeChartMetrics
@@ -256,9 +278,16 @@ const getColumns = (chart, activeChartMetrics, t) => {
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: true,
       backgroundColor: 'rgba(37, 99, 235, 0.2)',
       data: chart.uniques,
+      segment: {
+        // eslint-disable-next-line consistent-return
+        borderDash: (context) => {
+          if (context.p1DataIndex === chart.uniques.length - 1 && applyRegions) return [5, 5]
+        },
+      },
     })
     if (trendlines) {
       columns.push({
@@ -268,6 +297,7 @@ const getColumns = (chart, activeChartMetrics, t) => {
         borderColor: '#436abf',
         pointBackgroundColor: '#436abf',
         pointRadius: 0,
+        pointStyle: 'rectRounded',
         pointHoverRadius: 4,
         pointBorderWidth: 0,
         borderWidth: 2,
@@ -285,11 +315,18 @@ const getColumns = (chart, activeChartMetrics, t) => {
       pointBackgroundColor: '#D97706',
       pointRadius: 0,
       pointHoverRadius: 4,
+      pointStyle: 'rectRounded',
       backgroundColor: 'rgba(217, 119, 6, 0.2)',
       pointBorderWidth: 0,
       borderWidth: 2,
       fill: true,
       data: chart.visits,
+      segment: {
+        // eslint-disable-next-line consistent-return
+        borderDash: (context) => {
+          if (context.p1DataIndex === chart.visits.length - 1 && applyRegions) return [5, 5]
+        },
+      },
     })
     if (trendlines) {
       columns.push({
@@ -301,6 +338,7 @@ const getColumns = (chart, activeChartMetrics, t) => {
         pointRadius: 0,
         pointHoverRadius: 4,
         pointBorderWidth: 0,
+        pointStyle: 'rectRounded',
         borderWidth: 2,
         fill: false,
         data: trendline(chart.visits),
@@ -322,6 +360,7 @@ const getColumns = (chart, activeChartMetrics, t) => {
         pointRadius: 0,
         pointHoverRadius: 4,
         pointBorderWidth: 0,
+        pointStyle: 'rectRounded',
         borderWidth: 2,
         fill: false,
         yAxisID: 'y1',
@@ -345,6 +384,7 @@ const getColumns = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       borderColor: '#F87171',
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       data: viewsPerUniqueArray,
@@ -361,6 +401,7 @@ const getColumns = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       borderColor: '#F87171',
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       yAxisID: 'y1',
@@ -370,7 +411,17 @@ const getColumns = (chart, activeChartMetrics, t) => {
 
   return { labels, columns }
 }
-
+// {
+//   dns: '#EC4319',
+//   tls: '#F27059',
+//   conn: '#F7A265',
+//   response: '#F5D376',
+//   render: '#709775',
+//   dom_load: '#A5E6AB',
+//   ttfb: '#00A8E8',
+//   frontend: '#709775',
+//   network: '#F7A265',
+//   backend: '#00A8E8',
 const getColumnsPerf = (chart, activeChartMetrics, t) => {
   const labels = [..._map(chart.x, el => dayjs(el).toDate())]
 
@@ -379,85 +430,99 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.full) {
     columns.push({
       type: 'line',
-      label: t('project.dns'),
+      label: t('dashboard.dns'),
+      _satype: 'timmings',
       borderColor: '#EC4319',
       pointBackgroundColor: '#EC4319',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: false,
       data: chart.dns,
     })
     columns.push({
       type: 'line',
-      label: t('project.tls'),
+      label: t('dashboard.tls'),
+      _satype: 'timmings',
       borderColor: '#F27059',
       pointBackgroundColor: '#F27059',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: false,
       data: chart.tls,
     })
     columns.push({
       type: 'line',
-      label: t('project.conn'),
+      label: t('dashboard.conn'),
+      _satype: 'timmings',
       borderColor: '#F7A265',
       pointBackgroundColor: '#F7A265',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: false,
       data: chart.conn,
     })
     columns.push({
       type: 'line',
-      label: t('project.response'),
+      label: t('dashboard.response'),
+      _satype: 'timmings',
       borderColor: '#F5D376',
       pointBackgroundColor: '#F5D376',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: false,
       data: chart.response,
     })
     columns.push({
       type: 'line',
-      label: t('project.render'),
+      label: t('dashboard.render'),
+      _satype: 'timmings',
       borderColor: '#709775',
       pointBackgroundColor: '#709775',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: false,
       data: chart.render,
     })
     columns.push({
       type: 'line',
-      label: t('project.domLoad'),
+      label: t('dashboard.domLoad'),
+      _satype: 'timmings',
       borderColor: '#A5E6AB',
       pointBackgroundColor: '#25A5E6AB63EB',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: false,
       data: chart.domLoad,
     })
     columns.push({
       type: 'line',
-      label: t('project.ttfb'),
+      label: t('dashboard.ttfb'),
+      _satype: 'timmings',
       borderColor: '#00A8E8',
       pointBackgroundColor: '#00A8E8',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: false,
       data: chart.ttfb,
     })
@@ -466,36 +531,42 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.timing) {
     columns.push({
       type: 'line',
-      label: t('project.frontend'),
+      label: t('dashboard.frontend'),
+      _satype: 'timmings',
       borderColor: '#709775',
       pointBackgroundColor: '#709775',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       data: sumArrays(chart.render, chart.domLoad),
     })
     columns.push({
       type: 'line',
-      label: t('project.network'),
+      label: t('dashboard.network'),
+      _satype: 'timmings',
       borderColor: '#2563EB',
       pointBackgroundColor: '#2563EB',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       data: sumArrays(chart.dns, chart.tls, chart.conn, chart.response),
     })
     columns.push({
       type: 'line',
-      label: t('project.backend'),
+      label: t('dashboard.backend'),
+      _satype: 'timmings',
       borderColor: '#00A8E8',
       pointBackgroundColor: '#00A8E8',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       data: chart.ttfb,
@@ -505,49 +576,57 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.network) {
     columns.push({
       type: 'line',
-      label: t('project.network'),
+      label: t('dashboard.network'),
+      _satype: 'timmings',
       borderColor: '#F7A265',
       pointBackgroundColor: '#F7A265',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       data: chart.dns,
     })
     columns.push({
       type: 'line',
-      label: t('project.tls'),
+      label: t('dashboard.tls'),
+      _satype: 'timmings',
       borderColor: '#F27059',
       pointBackgroundColor: '#F27059',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: false,
       data: chart.tls,
     })
     columns.push({
       type: 'line',
-      label: t('project.conn'),
+      label: t('dashboard.conn'),
+      _satype: 'timmings',
       borderColor: '#F7A265',
       pointBackgroundColor: '#F7A265',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       data: chart.conn,
     })
     columns.push({
       type: 'line',
-      label: t('project.response'),
+      label: t('dashboard.response'),
+      _satype: 'timmings',
       borderColor: '#F5D376',
       pointBackgroundColor: '#F5D376',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      pointStyle: 'rectRounded',
       fill: false,
       data: chart.response,
     })
@@ -556,24 +635,28 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.frontend) {
     columns.push({
       type: 'line',
-      label: t('project.render'),
+      label: t('dashboard.render'),
+      _satype: 'timmings',
       borderColor: '#709775',
       pointBackgroundColor: '#709775',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       data: chart.render,
     })
     columns.push({
       type: 'line',
-      label: t('project.domLoad'),
+      label: t('dashboard.domLoad'),
+      _satype: 'timmings',
       borderColor: '#A5E6AB',
       pointBackgroundColor: '#A5E6AB',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       data: chart.domLoad,
@@ -583,12 +666,14 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.backend) {
     columns.push({
       type: 'line',
-      label: t('project.ttfb'),
+      label: t('dashboard.ttfb'),
+      _satype: 'timmings',
       borderColor: '#00A8E8',
       pointBackgroundColor: '#00A8E8',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: false,
       data: chart.ttfb,
