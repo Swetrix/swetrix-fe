@@ -439,7 +439,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       borderWidth: 2,
       pointStyle: 'rectRounded',
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(236, 67, 25, 0.2)',
       data: chart.dns,
     })
     columns.push({
@@ -453,7 +454,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       borderWidth: 2,
       pointStyle: 'rectRounded',
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(242, 112, 89, 0.2)',
       data: chart.tls,
     })
     columns.push({
@@ -467,7 +469,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       borderWidth: 2,
       pointStyle: 'rectRounded',
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(247, 162, 101, 0.2)',
       data: chart.conn,
     })
     columns.push({
@@ -481,7 +484,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       borderWidth: 2,
       pointStyle: 'rectRounded',
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(245, 211, 118, 0.2)',
       data: chart.response,
     })
     columns.push({
@@ -495,7 +499,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       borderWidth: 2,
       pointStyle: 'rectRounded',
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(112, 151, 117, 0.2)',
       data: chart.render,
     })
     columns.push({
@@ -503,13 +508,14 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       label: t('dashboard.domLoad'),
       _satype: 'timmings',
       borderColor: '#A5E6AB',
-      pointBackgroundColor: '#25A5E6AB63EB',
+      pointBackgroundColor: '#A5E6AB',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
       pointStyle: 'rectRounded',
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(165, 230, 171, 0.2)',
       data: chart.domLoad,
     })
     columns.push({
@@ -523,7 +529,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       borderWidth: 2,
       pointStyle: 'rectRounded',
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(0, 168, 232, 0.2)',
       data: chart.ttfb,
     })
   }
@@ -540,21 +547,23 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(112, 151, 117, 0.2)',
       data: sumArrays(chart.render, chart.domLoad),
     })
     columns.push({
       type: 'line',
       label: t('dashboard.network'),
       _satype: 'timmings',
-      borderColor: '#2563EB',
-      pointBackgroundColor: '#2563EB',
+      borderColor: '#F7A265',
+      pointBackgroundColor: '#F7A265',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(247, 162, 101, 0.2)',
       data: sumArrays(chart.dns, chart.tls, chart.conn, chart.response),
     })
     columns.push({
@@ -568,7 +577,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(0, 168, 232, 0.2)',
       data: chart.ttfb,
     })
   }
@@ -576,16 +586,17 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
   if (activeChartMetrics === CHART_METRICS_MAPPING_PERF.network) {
     columns.push({
       type: 'line',
-      label: t('dashboard.network'),
+      label: t('dashboard.dns'),
       _satype: 'timmings',
-      borderColor: '#F7A265',
-      pointBackgroundColor: '#F7A265',
+      borderColor: '#EC4319',
+      pointBackgroundColor: '#EC4319',
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(236, 67, 25, 0.2)',
       data: chart.dns,
     })
     columns.push({
@@ -599,7 +610,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       borderWidth: 2,
       pointStyle: 'rectRounded',
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(242, 112, 89, 0.2)',
       data: chart.tls,
     })
     columns.push({
@@ -613,7 +625,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(247, 162, 101, 0.2)',
       data: chart.conn,
     })
     columns.push({
@@ -627,7 +640,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       borderWidth: 2,
       pointStyle: 'rectRounded',
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(245, 211, 118, 0.2)',
       data: chart.response,
     })
   }
@@ -644,7 +658,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(112, 151, 117, 0.2)',
       data: chart.render,
     })
     columns.push({
@@ -658,7 +673,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(165, 230, 171, 0.2)',
       data: chart.domLoad,
     })
   }
@@ -675,7 +691,8 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
-      fill: false,
+      fill: true,
+      backgroundColor: 'rgba(0, 168, 232, 0.2)',
       data: chart.ttfb,
     })
   }
