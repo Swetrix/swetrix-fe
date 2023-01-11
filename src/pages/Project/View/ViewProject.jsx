@@ -1354,7 +1354,6 @@ const ViewProject = ({
                     labels: chartOptions.labels,
                     datasets: chartOptions.columns,
                   }}
-                  id='chart'
                   options={chartSettings}
                 />
               </div>

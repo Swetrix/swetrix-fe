@@ -25,7 +25,6 @@ import Progress from 'ui/Progress'
 import PulsatingCircle from 'ui/icons/PulsatingCircle'
 import Modal from 'ui/Modal'
 import Chart from 'ui/Chart'
-import { useSelector } from 'react-redux'
 import LiveVisitorsDropdown from './components/LiveVisitorsDropdown'
 import InteractiveMap from './components/InteractiveMap'
 import { iconClassName } from './ViewProject.helpers'
@@ -312,7 +311,7 @@ const CustomEvents = ({
   const callbacks = (context) => {
     const conversion = _round((context.parsed / uniques) * 100, 2)
     const ratio = _round((context.parsed / _sum(quantity)) * 100, 2)
-    return `${tQuantity}: ${context.formattedValue} \r ${tRatio}: ${ratio}% \r ${tConversion}: ${conversion}% `
+    return [`${tQuantity}: ${context.formattedValue}`, `${tRatio}: ${ratio}%`, `${tConversion}: ${conversion}%`]
   }
 
   useEffect(() => {
@@ -474,7 +473,7 @@ const Panel = ({
 
     const callbacks = (context) => {
       const ratio = _round((context.parsed / _sum(quantity)) * 100, 2)
-      return `${tQuantity}: ${context.formattedValue} \r ${tRatio}: ${ratio}%`
+      return [`${tQuantity}: ${context.formattedValue}`, `${tRatio}: ${ratio}%`]
     }
 
     const options = {

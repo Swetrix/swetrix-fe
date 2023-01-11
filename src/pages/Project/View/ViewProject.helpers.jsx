@@ -17,7 +17,6 @@ import _reduce from 'lodash/reduce'
 import _includes from 'lodash/includes'
 import JSZip from 'jszip'
 
-import { tbsFormatMapper } from 'redux/constants'
 import { getTimeFromSeconds, getStringFromTime, sumArrays } from 'utils/generic'
 import countries from 'utils/isoCountries'
 
@@ -257,15 +256,21 @@ const getSettings = (timeBucket, theme, activeChartMetrics, isPerf) => {
         backgroundColor: theme === 'dark' ? 'rgb(75 85 99)' : 'rgb(255 255 255)',
         titleFont: {
           family: "'Inter', 'Cantarell', 'Roboto', 'Oxygen', 'Ubuntu', 'sans-serif'",
-          size: 14,
-          weight: 700,
+          size: 16,
+          weight: 800,
+        },
+        padding: {
+          top: 5,
+          bottom: 5,
+          left: 8,
+          right: 8,
         },
         titleColor: theme === 'dark' ? 'rgb(255 255 255)' : 'rgb(0 0 0)',
         titleSpacing: 4,
         bodyColor: theme === 'dark' ? 'rgb(255 255 255)' : 'rgb(0 0 0)',
         bodyFont: {
           family: "'Inter', 'Cantarell', 'Roboto', 'Oxygen', 'Ubuntu', 'sans-serif'",
-          size: 14,
+          size: 15,
           weight: 500,
         },
         bodySpacing: 4,
@@ -291,6 +296,18 @@ const getSettings = (timeBucket, theme, activeChartMetrics, isPerf) => {
             }
 
             return `${context.dataset.label} ${context.formattedValue}`
+          },
+          title: (context) => {
+            if (timeBucket === 'hour') return dayjs(context[0].parsed.x).format('D MMM h:mm')
+            if (timeBucket === 'day') return dayjs(context[0].parsed.x).format('D MMM')
+            if (timeBucket === 'week') return dayjs(context[0].parsed.x).format('D MMM')
+            if (timeBucket === 'month') return dayjs(context[0].parsed.x).format('D MMM YYYY')
+            return dayjs(context[0].label).format('MMM D, YYYY')
+          },
+          labelColor: (context) => {
+            return {
+              backgroundColor: context.dataset.borderColor,
+            }
           },
         },
       },
@@ -400,6 +417,7 @@ const getColumns = (chart, activeChartMetrics, applyRegions, t) => {
         pointBorderWidth: 0,
         pointStyle: 'rectRounded',
         borderWidth: 2,
+        tension: 0.4,
         fill: false,
         yAxisID: 'y1',
         data: bounceArray,
@@ -441,6 +459,7 @@ const getColumns = (chart, activeChartMetrics, applyRegions, t) => {
       borderColor: '#F87171',
       pointStyle: 'rectRounded',
       borderWidth: 2,
+      tension: 0.4,
       fill: false,
       yAxisID: 'y1',
       data: chart.sdur,
@@ -466,6 +485,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      tension: 0.4,
       pointStyle: 'rectRounded',
       fill: true,
       backgroundColor: 'rgba(236, 67, 25, 0.2)',
@@ -481,6 +501,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointHoverRadius: 4,
       pointBorderWidth: 0,
       borderWidth: 2,
+      tension: 0.4,
       pointStyle: 'rectRounded',
       fill: true,
       backgroundColor: 'rgba(242, 112, 89, 0.2)',
@@ -495,6 +516,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       borderWidth: 2,
       pointStyle: 'rectRounded',
       fill: true,
@@ -510,6 +532,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       borderWidth: 2,
       pointStyle: 'rectRounded',
       fill: true,
@@ -525,6 +548,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       borderWidth: 2,
       pointStyle: 'rectRounded',
       fill: true,
@@ -540,6 +564,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       borderWidth: 2,
       pointStyle: 'rectRounded',
       fill: true,
@@ -555,6 +580,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       borderWidth: 2,
       pointStyle: 'rectRounded',
       fill: true,
@@ -573,6 +599,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: true,
@@ -588,6 +615,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: true,
@@ -599,6 +627,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       label: t('dashboard.backend'),
       _satype: 'timmings',
       borderColor: '#00A8E8',
+      tension: 0.4,
       pointBackgroundColor: '#00A8E8',
       pointRadius: 0,
       pointHoverRadius: 4,
@@ -621,6 +650,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: true,
@@ -636,6 +666,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       borderWidth: 2,
       pointStyle: 'rectRounded',
       fill: true,
@@ -651,6 +682,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: true,
@@ -666,6 +698,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointRadius: 0,
       pointHoverRadius: 4,
       pointBorderWidth: 0,
+      tension: 0.4,
       borderWidth: 2,
       pointStyle: 'rectRounded',
       fill: true,
@@ -686,6 +719,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
+      tension: 0.4,
       fill: true,
       backgroundColor: 'rgba(112, 151, 117, 0.2)',
       data: chart.render,
@@ -702,6 +736,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointStyle: 'rectRounded',
       borderWidth: 2,
       fill: true,
+      tension: 0.4,
       backgroundColor: 'rgba(165, 230, 171, 0.2)',
       data: chart.domLoad,
     })
@@ -719,6 +754,7 @@ const getColumnsPerf = (chart, activeChartMetrics, t) => {
       pointBorderWidth: 0,
       pointStyle: 'rectRounded',
       borderWidth: 2,
+      tension: 0.4,
       fill: true,
       backgroundColor: 'rgba(0, 168, 232, 0.2)',
       data: chart.ttfb,
