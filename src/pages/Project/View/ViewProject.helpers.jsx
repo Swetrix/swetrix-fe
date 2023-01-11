@@ -3,9 +3,7 @@ import {
   GlobeEuropeAfricaIcon, LanguageIcon, DocumentTextIcon, DeviceTabletIcon,
   ArrowRightCircleIcon, MagnifyingGlassIcon, ServerIcon,
 } from '@heroicons/react/24/outline'
-import * as d3 from 'd3'
 import dayjs from 'dayjs'
-import { area, areaSpline, spline } from 'billboard.js'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _split from 'lodash/split'
@@ -208,6 +206,46 @@ const getSettings = (timeBucket, theme, activeChartMetrics, isPerf) => {
       legend: {
         display: true,
         position: 'bottom',
+        onHover: (evt, item, legend) => {
+          const { chart } = legend
+          const { datasets } = chart.data
+          const { text } = item
+
+          chart.canvas.style.cursor = 'pointer'
+
+          const datasetsUpdate = _map(datasets, (dataset) => {
+            if (dataset.label === text) {
+              return {
+                ...dataset,
+                borderWidth: 4,
+              }
+            }
+
+            return dataset
+          })
+          chart.data.datasets = datasetsUpdate
+          chart.update('none')
+        },
+        onLeave: (evt, item, legend) => {
+          const { chart } = legend
+          const { datasets } = chart.data
+          const { text } = item
+
+          chart.canvas.style.cursor = 'default'
+
+          const datasetsUpdate = _map(datasets, (dataset) => {
+            if (dataset.label === text) {
+              return {
+                ...dataset,
+                borderWidth: 1,
+              }
+            }
+            return dataset
+          })
+          chart.data.datasets = datasetsUpdate
+          chart.update('none')
+        },
+        onClick: () => {},
         labels: {
           color: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
           font: { weight: 500, size: 12, family: "'Inter', 'Cantarell', 'Roboto', 'Oxygen', 'Ubuntu', 'sans-serif'" },
@@ -411,17 +449,7 @@ const getColumns = (chart, activeChartMetrics, applyRegions, t) => {
 
   return { labels, columns }
 }
-// {
-//   dns: '#EC4319',
-//   tls: '#F27059',
-//   conn: '#F7A265',
-//   response: '#F5D376',
-//   render: '#709775',
-//   dom_load: '#A5E6AB',
-//   ttfb: '#00A8E8',
-//   frontend: '#709775',
-//   network: '#F7A265',
-//   backend: '#00A8E8',
+
 const getColumnsPerf = (chart, activeChartMetrics, t) => {
   const labels = [..._map(chart.x, el => dayjs(el).toDate())]
 

@@ -5,7 +5,6 @@ import React, {
 import { useHistory, useParams, Link } from 'react-router-dom'
 import domToImage from 'dom-to-image'
 import { saveAs } from 'file-saver'
-import bb from 'billboard.js'
 import {
   ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, CurrencyDollarIcon, ChartBarIcon, BoltIcon, BellIcon,
 } from '@heroicons/react/24/outline'
@@ -1355,6 +1354,7 @@ const ViewProject = ({
                     labels: chartOptions.labels,
                     datasets: chartOptions.columns,
                   }}
+                  id='chart'
                   options={chartSettings}
                 />
               </div>

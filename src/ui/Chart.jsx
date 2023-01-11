@@ -1,40 +1,90 @@
-import React, { useEffect } from 'react'
-import bb from 'billboard.js'
-import 'billboard.js/dist/theme/datalab.css'
-import 'billboard.js/dist/billboard.css'
+import React from 'react'
+import {
+  Chart as ChartJS, ArcElement, Tooltip, Legend,
+} from 'chart.js'
+import randomColor from 'randomcolor'
+// eslint-disable-next-line import/no-unresolved
+import { Doughnut } from 'react-chartjs-2'
 
-const Chart = ({ current, children, options }) => {
-  let chartInstance = {}
+import { useSelector } from 'react-redux'
 
-  const destroy = () => {
-    if (chartInstance !== null) {
-      try {
-        chartInstance.destroy()
-      } catch (error) {
-        console.error('[ERROR] Internal billboard.js error', error)
-      } finally {
-        chartInstance = null
-      }
-    }
-  }
+ChartJS.register(ArcElement, Tooltip, Legend)
 
-  const renderChart = () => {
-    if (current !== null) {
-      chartInstance = bb.generate({
-        ...options,
-        bindto: `#${current}`,
-      })
-    }
-  }
+const Chart = ({
+  children, data, callbacks,
+}) => {
+  const theme = useSelector((state) => state.ui.theme.theme)
 
-  useEffect(() => {
-    renderChart()
-    return destroy
+  const colors = randomColor({
+    count: data.labels.length,
+    // hue: theme === 'dark' ? 'purple' : 'blue',
+    luminosity: 'light',
+    format: 'rgba',
+    alpha: 0.6,
   })
+
+  const plugins = {
+    legend: {
+      display: true,
+      labels: {
+        color: theme === 'dark' ? '#c0d6d9' : '#1e2a2f',
+        font: { weight: 500, size: 10, family: "'Inter', 'Cantarell', 'Roboto', 'Oxygen', 'Ubuntu', 'sans-serif'" },
+        usePointStyle: true,
+      },
+    },
+    tooltip: {
+      enabled: true,
+      backgroundColor: theme === 'dark' ? 'rgb(75 85 99)' : 'rgb(255 255 255)',
+      titleFont: {
+        family: "'Inter', 'Cantarell', 'Roboto', 'Oxygen', 'Ubuntu', 'sans-serif'",
+        size: 12,
+        weight: 700,
+      },
+      titleColor: theme === 'dark' ? 'rgb(255 255 255)' : 'rgb(0 0 0)',
+      titleSpacing: 4,
+      bodyColor: theme === 'dark' ? 'rgb(255 255 255)' : 'rgb(0 0 0)',
+      bodyFont: {
+        family: "'Inter', 'Cantarell', 'Roboto', 'Oxygen', 'Ubuntu', 'sans-serif'",
+        size: 12,
+        weight: 500,
+      },
+      bodySpacing: 4,
+      cornerRadius: 6,
+      usePointStyle: true,
+      callbacks: {
+        label: (context) => {
+          return callbacks(context)
+        },
+      },
+    },
+  }
 
   return (
     <div>
-      <div id={current} />
+      <Doughnut
+        style={{ minHeight: '350px' }}
+        data={{
+          labels: data.labels,
+          datasets: [{
+            ...data.datasets,
+            backgroundColor: colors,
+            borderColor: colors,
+            hoverBorderWidth: 13,
+          }],
+        }}
+        options={{
+          // responsive: true,
+          maintainAspectRatio: false,
+          aspectRatio: 2,
+          layout: {
+            padding: {
+              top: 0,
+              bottom: 6,
+            },
+          },
+          plugins,
+        }}
+      />
       {children}
     </div>
   )

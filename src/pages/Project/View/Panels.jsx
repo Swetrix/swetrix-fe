@@ -7,7 +7,6 @@ import {
 } from '@heroicons/react/24/outline'
 import cx from 'clsx'
 import PropTypes from 'prop-types'
-import { pie } from 'billboard.js'
 import _keys from 'lodash/keys'
 import _values from 'lodash/values'
 import _map from 'lodash/map'
@@ -26,6 +25,7 @@ import Progress from 'ui/Progress'
 import PulsatingCircle from 'ui/icons/PulsatingCircle'
 import Modal from 'ui/Modal'
 import Chart from 'ui/Chart'
+import { useSelector } from 'react-redux'
 import LiveVisitorsDropdown from './components/LiveVisitorsDropdown'
 import InteractiveMap from './components/InteractiveMap'
 import { iconClassName } from './ViewProject.helpers'
@@ -296,48 +296,6 @@ const Overview = ({
   )
 }
 
-// Options for circle chart showing the stats of data
-const getPieOptions = (customs, uniques, t) => {
-  const tQuantity = t('project.quantity')
-  const tConversion = t('project.conversion')
-  const tRatio = t('project.ratio')
-  const quantity = _values(customs)
-  const conversion = _map(quantity, (el) => _round((el / uniques) * 100, 2))
-
-  return {
-    tooltip: {
-      contents: {
-        text: {
-          QUANTITY: _values(customs),
-          CONVERSION: conversion,
-        },
-        template: `
-          <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
-            {{
-              <li class='flex'>
-                <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
-                <span>{=NAME}</span>
-              </li>
-              <hr class='border-gray-200 dark:border-gray-600' />
-              <li class='flex justify-between'>
-                <span>${tQuantity}</span>
-                <span class='pl-4'>{=QUANTITY}</span>
-              </li>
-              <li class='flex justify-between'>
-                <span>${tConversion}</span>
-                <span class='pl-4'>{=CONVERSION}%</span>
-              </li>
-              <li class='flex justify-between'>
-                <span>${tRatio}</span>
-                <span class='pl-4'>{=VALUE}</span>
-              </li>
-            }}
-          </ul>`,
-      },
-    },
-  }
-}
-
 // Tabs with custom events like submit form, press button, go to the link rate etc.
 const CustomEvents = ({
   customs, chartData, t,
@@ -346,19 +304,33 @@ const CustomEvents = ({
   const uniques = _sum(chartData.uniques)
   const [chartOptions, setChartOptions] = useState({})
   const [activeFragment, setActiveFragment] = useState(0)
+  const tQuantity = t('project.quantity')
+  const tConversion = t('project.conversion')
+  const tRatio = t('project.ratio')
+  const quantity = _values(customs)
+
+  const callbacks = (context) => {
+    const conversion = _round((context.parsed / uniques) * 100, 2)
+    const ratio = _round((context.parsed / _sum(quantity)) * 100, 2)
+    return `${tQuantity}: ${context.formattedValue} \r ${tRatio}: ${ratio}% \r ${tConversion}: ${conversion}% `
+  }
 
   useEffect(() => {
     if (!_isEmpty(chartData)) {
-      const options = getPieOptions(customs, uniques, t)
       setChartOptions({
-        data: {
-          columns: _map(keys, (ev) => [ev, customs[ev]]),
-          type: pie(),
+        labels: keys,
+        datasets: {
+          label: keys,
+          data: _map(keys, (ev) => customs[ev]),
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointBorderWidth: 0,
+          borderWidth: 2,
+          pointStyle: 'rectRounded',
         },
-        ...options,
       })
     }
-  }, [chartData, customs, t]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [chartData, customs]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // for showing chart circle of stats a data
   if (activeFragment === 1 && !_isEmpty(chartData)) {
@@ -375,8 +347,8 @@ const CustomEvents = ({
           </p>
         ) : (
           <Chart
-            options={chartOptions}
-            current='panels-ce'
+            data={chartOptions}
+            callbacks={callbacks}
           />
         )}
       </PanelContainer>
@@ -498,36 +470,23 @@ const Panel = ({
     const tQuantity = t('project.quantity')
     const tRatio = t('project.ratio')
     const mappedData = _map(data, valueMapper)
+    const quantity = _values(mappedData)
+
+    const callbacks = (context) => {
+      const ratio = _round((context.parsed / _sum(quantity)) * 100, 2)
+      return `${tQuantity}: ${context.formattedValue} \r ${tRatio}: ${ratio}%`
+    }
 
     const options = {
-      data: {
-        columns: _map(data, (e, index) => [index, e]),
-        type: pie(),
-      },
-      tooltip: {
-        contents: {
-          text: {
-            QUANTITY: _values(mappedData),
-          },
-          template: `
-            <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
-              {{
-                <li class='flex'>
-                  <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
-                  <span>{=NAME}</span>
-                </li>
-                <hr class='border-gray-200 dark:border-gray-600' />
-                <li class='flex justify-between'>
-                  <span>${tQuantity}</span>
-                  <span class='pl-4'>{=QUANTITY}</span>
-                </li>
-                <li class='flex justify-between'>
-                  <span>${tRatio}</span>
-                  <span class='pl-4'>{=VALUE}</span>
-                </li>
-              }}
-            </ul>`,
-        },
+      labels: _keys(data),
+      datasets: {
+        label: _map(data, (e, index) => index),
+        data: _map(data, (e) => e),
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        pointBorderWidth: 0,
+        borderWidth: 2,
+        pointStyle: 'rectRounded',
       },
     }
 
@@ -546,8 +505,8 @@ const Panel = ({
           </p>
         ) : (
           <Chart
-            options={options}
-            current={`Panels-${id}`}
+            data={options}
+            callbacks={callbacks}
           />
         )}
       </PanelContainer>
