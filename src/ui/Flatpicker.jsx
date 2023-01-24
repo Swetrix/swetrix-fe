@@ -46,6 +46,30 @@ class FlatPicker extends React.Component {
 
   render() {
     const { value, maxDateMonths } = this.props
+    const { options } = this.props
+
+    if (options) {
+      return (
+        <div>
+          <Flatpickr
+            id='calendar'
+            value={value}
+            options={{
+              mode: 'range',
+              maxDate: 'today',
+              minDate: this.removeMonths(new Date(), maxDateMonths),
+              showMonths: 1,
+              animate: true,
+              altInput: true,
+              position: 'auto',
+              ...options,
+            }}
+            onChange={this.setCustomDate}
+            placeholder='Select a date range...'
+          />
+        </div>
+      )
+    }
 
     return (
       <div className='h-0 flatpicker-custom'>

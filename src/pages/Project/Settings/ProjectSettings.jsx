@@ -22,12 +22,13 @@ import Title from 'components/Title'
 import { withAuthentication, auth } from 'hoc/protected'
 import { isSelfhosted } from 'redux/constants'
 import {
-  createProject, updateProject, deleteProject, resetProject,
+  createProject, updateProject, deleteProject, resetProject, getExportData,
 } from 'api'
 import Input from 'ui/Input'
 import Button from 'ui/Button'
 import Checkbox from 'ui/Checkbox'
 import Modal from 'ui/Modal'
+import FlatPicker from 'ui/Flatpicker'
 import { nanoid } from 'utils/random'
 import { trackCustom } from 'utils/analytics'
 import routes from 'routes'
@@ -63,6 +64,7 @@ const ProjectSettings = ({
   const [projectDeleting, setProjectDeleting] = useState(false)
   const [projectResetting, setProjectResetting] = useState(false)
   const [projectSaving, setProjectSaving] = useState(false)
+  const [dateRange, setDateRange] = useState()
 
   useEffect(() => {
     if (!user.isActive && !isSelfhosted) {
@@ -208,6 +210,10 @@ const ProjectSettings = ({
     }
   }
 
+  const exportDate = () => {
+    getExportData(id, dateRange[0], dateRange[1])
+  }
+
   const onCancel = () => {
     history.push(isSettings ? _replace(routes.project, ':id', id) : routes.dashboard)
   }
@@ -275,6 +281,51 @@ const ProjectSettings = ({
                 error={beenSubmitted ? errors.ipBlacklist : null}
                 isBeta
               />
+              <div className='mt-4'>
+                {_isEmpty(project?.exportDataFilename) ? (
+                  <>
+                    <p className='flex text-sm font-medium text-gray-700 dark:text-gray-200'>
+                      Raw Data Export
+                    </p>
+                    <div className='flex items-center mt-2'>
+                      <FlatPicker
+                        onChange={(date) => setDateRange(date)}
+                        options={{
+                          altInputClass: 'shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:text-gray-50 dark:placeholder-gray-400 dark:border-gray-800 dark:bg-gray-700 rounded-md',
+                        }}
+                        value={dateRange}
+                      />
+                      <Button
+                        className='ml-5'
+                        onClick={exportDate}
+                        secondary
+                        regular
+                      >
+                        export
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Input
+                      name='exportDataFilename'
+                      id='exportDataFilename'
+                      type='text'
+                      label={t('project.settings.exportDataFilename')}
+                      value={process.env.REACT_APP_CDN_URL + project.exportDataFilename}
+                      disabled
+                    />
+                    <Button
+                      className='ml-5'
+                      onClick={() => window.open(process.env.REACT_APP_CDN_URL + project.exportDataFilename)}
+                      secondary
+                      regular
+                    >
+                      Dowland
+                    </Button>
+                  </>
+                )}
+              </div>
               <Checkbox
                 checked={Boolean(form.active)}
                 onChange={handleInput}
