@@ -23,7 +23,7 @@ class FlatPicker extends React.Component {
 
   setCustomDate(dates) {
     const { onChange } = this.props
-
+    console.log('dates', dates)
     if (_size(dates) === 2) {
       onChange(dates)
     }

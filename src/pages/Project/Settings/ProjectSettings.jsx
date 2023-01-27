@@ -211,6 +211,7 @@ const ProjectSettings = ({
   }
 
   const exportDate = () => {
+    console.log('exporting', dateRange)
     getExportData(id, dateRange[0], dateRange[1])
   }
 
