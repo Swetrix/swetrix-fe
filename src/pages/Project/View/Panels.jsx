@@ -26,6 +26,7 @@ import Progress from 'ui/Progress'
 import PulsatingCircle from 'ui/icons/PulsatingCircle'
 import Modal from 'ui/Modal'
 import Chart from 'ui/Chart'
+import Tooltip from 'ui/Tooltip'
 import LiveVisitorsDropdown from './components/LiveVisitorsDropdown'
 import InteractiveMap from './components/InteractiveMap'
 import { iconClassName } from './ViewProject.helpers'
@@ -50,7 +51,7 @@ const PanelContainer = ({
   name, children, noSwitch, icon, type, openModal, activeFragment, setActiveFragment, customTabs,
 }) => (
   <div
-    className={cx('relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden', {
+    className={cx('relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg', {
       'pb-12': !noSwitch,
       'pb-5': noSwitch,
     })}
@@ -65,7 +66,7 @@ const PanelContainer = ({
         )}
         {name}
       </h3>
-      <div className='flex'>
+      <div className='flex items-center'>
         {(checkIfBarsNeeded(type) || checkCustomTabs(type, customTabs)) && (
           <Bars4Icon
             className={cx(iconClassName, 'cursor-pointer', {
@@ -96,13 +97,13 @@ const PanelContainer = ({
         )}
         {/* if this tab using Circle showing stats panel */}
         {(type === 'ce' || type === 'os' || type === 'br' || type === 'dv') && (
-          <ChartPieIcon
-            className={cx(iconClassName, 'ml-2 cursor-pointer', {
-              'text-blue-500': activeFragment === 1,
-              'text-gray-900 dark:text-gray-50': activeFragment === 0,
-            })}
-            onClick={() => setActiveFragment(1)}
-          />
+        <ChartPieIcon
+          className={cx(iconClassName, 'ml-2 cursor-pointer', {
+            'text-blue-500': activeFragment === 1,
+            'text-gray-900 dark:text-gray-50': activeFragment === 0,
+          })}
+          onClick={() => setActiveFragment(1)}
+        />
         )}
         {checkCustomTabs(type, customTabs) && (
           <>
@@ -118,6 +119,11 @@ const PanelContainer = ({
             ))}
           </>
         )}
+        <Tooltip
+          className='ml-2 absolute top-0 left-0'
+          text='Lorem, ipsum dolor sit amet consectetur adipisicing elit. Labore ratione tempora quo. Ipsa iusto culpa ducimus quos earum mollitia ratione!'
+          right
+        />
       </div>
     </div>
     {/* for other tabs */}
