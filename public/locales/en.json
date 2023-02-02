@@ -477,6 +477,20 @@
       "os": "OS name",
       "lt": "Load time"
     },
+    "panelTooltip": {
+      "cc": "Panel shows the countries",
+      "pg": "Panel shows the pages",
+      "lc": "Panel shows the locales",
+      "ref": "Panel shows the referrers",
+      "dv": "Panel shows the device types",
+      "br": "Panel shows the browsers",
+      "os": "Panel shows the OS names",
+      "lt": "Panel shows the load times",
+      "so": "Panel shows the screen orientations",
+      "me": "Panel shows the media types",
+      "ca": "Panel shows the categories",
+      "ce": "Panel shows the custom events"
+    },
     "overview": "Overview",
     "weeklyStats": "Weekly stats",
     "statsFor": "Stats for",

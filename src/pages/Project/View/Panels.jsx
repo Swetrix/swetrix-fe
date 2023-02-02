@@ -48,7 +48,7 @@ const checkIfBarsNeeded = (panelID) => {
 
 // noSwitch - 'previous' and 'next' buttons
 const PanelContainer = ({
-  name, children, noSwitch, icon, type, openModal, activeFragment, setActiveFragment, customTabs,
+  name, children, noSwitch, icon, type, openModal, activeFragment, setActiveFragment, customTabs, tooltipText,
 }) => (
   <div
     className={cx('relative bg-white dark:bg-gray-750 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg', {
@@ -119,11 +119,13 @@ const PanelContainer = ({
             ))}
           </>
         )}
-        <Tooltip
-          className='ml-2 absolute top-0 left-0'
-          text='Lorem, ipsum dolor sit amet consectetur adipisicing elit. Labore ratione tempora quo. Ipsa iusto culpa ducimus quos earum mollitia ratione!'
-          right
-        />
+        {(!_isEmpty(type)) && (
+          <Tooltip
+            className='ml-2 absolute top-0 left-0'
+            text={tooltipText}
+            right
+          />
+        )}
       </div>
     </div>
     {/* for other tabs */}
@@ -374,6 +376,7 @@ const CustomEvents = ({
         type='ce'
         setActiveFragment={setActiveFragment}
         activeFragment={activeFragment}
+        tooltipText={t('project.panelTooltip.ce')}
       >
         {_isEmpty(chartData) ? (
           <p className='mt-1 text-base text-gray-700 dark:text-gray-300'>
@@ -390,7 +393,7 @@ const CustomEvents = ({
   }
 
   return (
-    <PanelContainer name={t('project.customEv')} type='ce' setActiveFragment={setActiveFragment} activeFragment={activeFragment}>
+    <PanelContainer name={t('project.customEv')} type='ce' setActiveFragment={setActiveFragment} activeFragment={activeFragment} tooltipText={t('project.panelTooltip.ce')}>
       <table className='table-fixed'>
         <thead>
           <tr>
@@ -477,6 +480,7 @@ const Panel = ({
         setActiveFragment={setActiveFragment}
         openModal={() => setModal(true)}
         customTabs={customTabs}
+        tooltipText={t('project.panelTooltip.cc')}
       >
         <InteractiveMap
           data={data}
@@ -542,6 +546,7 @@ const Panel = ({
         name={name}
         icon={icon}
         type={id}
+        tooltipText={t(`project.panelTooltip.${id}`)}
         setActiveFragment={setActiveFragment}
         activeFragment={activeFragment}
         customTabs={customTabs}
@@ -571,6 +576,7 @@ const Panel = ({
         name={name}
         icon={icon}
         type={id}
+        tooltipText={t(`project.panelTooltip.${id}`)}
         activeFragment={activeFragment}
         setActiveFragment={setActiveFragment}
         openModal={() => setModal(true)}
@@ -583,7 +589,7 @@ const Panel = ({
   }
 
   return (
-    <PanelContainer name={name} icon={icon} type={id} activeFragment={activeFragment} setActiveFragment={setActiveFragment} customTabs={customTabs}>
+    <PanelContainer name={name} icon={icon} type={id} activeFragment={activeFragment} setActiveFragment={setActiveFragment} customTabs={customTabs} tooltipText={t(`project.panelTooltip.${id}`)}>
       {_isEmpty(data) ? (
         <p className='mt-1 text-base text-gray-700 dark:text-gray-300'>
           {t('project.noParamData')}
