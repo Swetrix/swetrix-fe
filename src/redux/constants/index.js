@@ -13,6 +13,13 @@ const getCustomLabel = (dates, t) => {
   return t('project.custom')
 }
 
+export const FORECAST_MAX_MAPPING = {
+  hour: 72,
+  day: 21,
+  week: 21,
+  month: 12,
+}
+
 export const tbPeriodPairs = (t, tbs, dates) => [{
   label: t('project.today'),
   period: 'today',
@@ -81,6 +88,18 @@ export const tbsFormatMapper = {
   month: '%d %B %Y',
 }
 
+export const tbsFormatMapper24h = {
+  hour: '%H:%M',
+  day: '%d %B',
+  week: '%d %B',
+  month: '%d %B %Y',
+}
+
+export const TimeFormat = {
+  '12-hour': '12-hour',
+  '24-hour': '24-hour',
+}
+
 export const FREE_TIER_KEY = 'free'
 
 // a dedicated variable is needed for paid tier checking
@@ -132,6 +151,7 @@ export const GENERAL_STATS_UPDATE_INTERVAL = 60000
 
 // Functions
 export const getProjectCacheKey = (period, timeBucket) => `${period}${timeBucket}`
+export const getProjectForcastCacheKey = (period, timeBucket, periodToForecast) => `${period}${timeBucket}${periodToForecast}forecast`
 export const getProjectCacheCustomKey = (from, to, timeBucket) => `${from}-${to}-${timeBucket}`
 
 // Cookies
@@ -139,13 +159,15 @@ export const GDPR_REQUEST = 'gdpr_request'
 export const CONFIRMATION_TIMEOUT = 'confirmation_timeout'
 export const LOW_EVENTS_WARNING = 'low_events_warning'
 export const TOKEN = 'access_token'
+export const REFRESH_TOKEN = 'refresh_token'
 
 // List of languages with translations available
-export const whitelist = ['en', 'uk', 'de', 'sv', 'el', 'ru', 'hi', 'zh']
+export const whitelist = ['en', 'uk', 'pl', 'de', 'sv', 'el', 'ru', 'hi', 'zh']
 export const defaultLanguage = 'en'
 export const languages = {
   en: 'English',
   uk: 'Українська',
+  pl: 'Polski',
   de: 'Deutsch',
   sv: 'Svenska',
   el: 'Ελληνικά',
@@ -157,6 +179,7 @@ export const languages = {
 export const languageFlag = {
   en: 'GB',
   uk: 'UA',
+  pl: 'PL',
   de: 'DE',
   sv: 'SE',
   el: 'GR',
@@ -239,26 +262,56 @@ export const THEME_TYPE = {
 
 export const DEFAULT_ALERTS_TAKE = 100
 
-// Eventually this should be fetched from the API, e.g. GET /config route
+// TODO: Eventually this should be fetched from the API, e.g. GET /config route
 export const PLAN_LIMITS = {
   free: {
+    priceMonthly: 0,
+    priceYearly: 0,
     monthlyUsageLimit: 5000,
     maxProjects: 10,
     maxAlerts: 1,
+    legacy: true,
+  },
+  trial: {
+    monthlyUsageLimit: 100000,
+    maxProjects: 20,
+    maxAlerts: 20,
+    legacy: false,
+    priceMonthly: 0,
+    priceYearly: 0,
+  },
+  hobby: {
+    monthlyUsageLimit: 10000,
+    maxProjects: 20,
+    maxAlerts: 10,
+    legacy: false,
+    priceMonthly: 5,
+    priceYearly: 50,
   },
   freelancer: {
     monthlyUsageLimit: 100000,
     maxProjects: 20,
-    maxAlerts: 10,
+    maxAlerts: 20,
+    legacy: false,
+    priceMonthly: 15,
+    priceYearly: 150,
   },
   startup: {
     monthlyUsageLimit: 1000000,
-    maxProjects: 20,
+    maxProjects: 30,
     maxAlerts: 50,
+    legacy: false,
+    priceMonthly: 59,
+    priceYearly: 590,
   },
   enterprise: {
     monthlyUsageLimit: 5000000,
-    maxProjects: 30,
+    maxProjects: 50,
     maxAlerts: 100,
+    legacy: false,
+    priceMonthly: 110,
+    priceYearly: 1100,
   },
 }
+
+export const TRIAL_DAYS = 14

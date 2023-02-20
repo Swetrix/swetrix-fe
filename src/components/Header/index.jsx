@@ -1,5 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid, react/no-unstable-nested-components */
-import React, { memo, Fragment, useRef } from 'react'
+import React, {
+  memo, Fragment, useRef, useMemo,
+} from 'react'
+import PropTypes from 'prop-types'
 import { Link, NavLink } from 'react-router-dom'
 import { HashLink } from 'react-router-hash-link'
 import { useDispatch } from 'react-redux'
@@ -11,6 +14,10 @@ import {
   Bars3Icon, XMarkIcon, DocumentTextIcon, CreditCardIcon, CircleStackIcon, RssIcon,
 } from '@heroicons/react/24/outline'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/solid'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import duration from 'dayjs/plugin/duration'
+import cx from 'clsx'
 
 import routes from 'routes'
 import { authActions } from 'redux/actions/auth'
@@ -20,10 +27,58 @@ import {
 } from 'redux/constants'
 import Dropdown from 'ui/Dropdown'
 
-const Header = ({ authenticated, theme, themeType }) => {
+dayjs.extend(utc)
+dayjs.extend(duration)
+
+const TRIAL_STATUS_MAPPING = {
+  ENDED: 1,
+  ENDS_TODAY: 2,
+  ENDS_TOMORROW: 3,
+  ENDS_IN_X_DAYS: 4,
+}
+
+const Header = ({
+  authenticated, theme, themeType, user,
+}) => {
   const { t, i18n: { language } } = useTranslation('common')
   const dispatch = useDispatch()
   const buttonRef = useRef()
+
+  const [rawStatus, status] = useMemo(() => {
+    const { trialEndDate } = (user || {})
+
+    if (!trialEndDate) {
+      return [null, null]
+    }
+
+    const now = dayjs.utc()
+    const future = dayjs.utc(trialEndDate)
+    const diff = future.diff(now)
+
+    if (diff < 0) {
+      // trial has already ended
+      return [TRIAL_STATUS_MAPPING.ENDED, t('pricing.trialEnded')]
+    }
+
+    if (diff < dayjs.duration(1, 'day').asMilliseconds()) {
+      // trial ends today or tomorrow
+      const isToday = future.isSame(now, 'day')
+      const isTomorrow = future.isSame(now.add(1, 'day'), 'day')
+
+      if (isToday) {
+        return [TRIAL_STATUS_MAPPING.ENDS_TODAY, t('pricing.trialEndsToday')]
+      }
+      if (isTomorrow) {
+        return [TRIAL_STATUS_MAPPING.ENDS_TOMORROW, t('pricing.trialEndsTomorrow')]
+      }
+    }
+
+    // trial ends in more than 1 day
+    const amount = Math.round(dayjs.duration(diff).asDays())
+    return [TRIAL_STATUS_MAPPING.ENDS_IN_X_DAYS, t('pricing.xTrialDaysLeft', { amount })]
+  }, [user, t])
+
+  console.log(authenticated, rawStatus, status)
 
   const logoutHandler = () => {
     dispatch(authActions.logout())
@@ -39,6 +94,7 @@ const Header = ({ authenticated, theme, themeType }) => {
 
   return (
     <Popover className='relative bg-white'>
+      {/* Computer / Laptop / Tablet layout header */}
       <header className='bg-indigo-600 dark:bg-gray-750 relative overflow-x-clip'>
         {themeType === THEME_TYPE.christmas && (
           <div className='santa-claus group'>
@@ -62,15 +118,38 @@ const Header = ({ authenticated, theme, themeType }) => {
         <nav className='mx-auto px-4 sm:px-6 lg:px-8' aria-label='Top'>
           <div className='w-full py-4 flex items-center justify-between border-b border-indigo-500 dark:border-gray-300 lg:border-none'>
             <div className='flex items-center'>
+              {/* Logo */}
               <Link to={routes.main}>
                 <span className='sr-only'>Swetrix</span>
                 {themeType === THEME_TYPE.christmas ? (
-                  <img className='h-10' src='/assets/logo_white_christmas.png' alt='' />
+                  <img className='h-10' src='/assets/logo_white_christmas.png' alt='Swetrix' />
                 ) : (
-                  <img className='h-10' src='/assets/logo_white.svg' alt='' />
+                  <img className='h-10' src='/assets/logo_white.svg' alt='Swetrix' />
                 )}
               </Link>
+
               <div className='hidden ml-10 space-x-1 lg:flex'>
+                {!isSelfhosted && authenticated && user?.planCode === 'trial' && (
+                  <Link
+                    to={routes.billing}
+                    className={cx('flex justify-center items-center text-base select-none font-medium py-2 px-2 rounded-md', {
+                      'text-amber-800 bg-amber-200 dark:bg-amber-300 hover:bg-amber-300 dark:hover:bg-amber-200': rawStatus === TRIAL_STATUS_MAPPING.ENDS_IN_X_DAYS,
+                      'text-rose-800 bg-rose-200 dark:bg-rose-300 hover:bg-rose-300 dark:hover:bg-rose-200': rawStatus === TRIAL_STATUS_MAPPING.ENDS_TODAY || rawStatus === TRIAL_STATUS_MAPPING.ENDS_TOMORROW || rawStatus === TRIAL_STATUS_MAPPING.ENDED,
+                    })}
+                    key='TrialNotification'
+                  >
+                    {status}
+                  </Link>
+                )}
+                {authenticated && user?.planCode === 'none' && (
+                  <Link
+                    to={routes.billing}
+                    className='flex justify-center items-center text-base select-none font-medium py-2 px-2 rounded-md text-rose-800 bg-rose-200 dark:bg-rose-300 hover:bg-rose-300 dark:hover:bg-rose-200'
+                    key='NoSubscription'
+                  >
+                    {t('billing.inactive')}
+                  </Link>
+                )}
                 <a href={BLOG_URL} className='flex justify-center items-center text-base select-none font-medium text-white hover:text-indigo-50 py-2 px-2 dark:hover:bg-gray-700 hover:bg-indigo-500 rounded-md' target='_blank' rel='noreferrer noopener'>
                   <RssIcon className='w-5 h-5 mr-1' />
                   {t('footer.blog')}
@@ -101,6 +180,7 @@ const Header = ({ authenticated, theme, themeType }) => {
               </div>
             </div>
             <div className='hidden md:flex justify-center items-center flex-wrap ml-1 md:ml-10 space-y-1 sm:space-y-0 space-x-2 md:space-x-4'>
+              {/* Theme switch */}
               {theme === 'dark' ? (
                 <div className='transition-all duration-1000 ease-in-out rotate-180'>
                   <SunIcon onClick={switchTheme} className='h-10 w-10 text-gray-200 hover:text-gray-300 cursor-pointer' />
@@ -110,19 +190,23 @@ const Header = ({ authenticated, theme, themeType }) => {
                   <MoonIcon onClick={switchTheme} className='h-10 w-10 text-indigo-100 hover:text-indigo-200 cursor-pointer' />
                 </div>
               )}
+
+              {/* Language selector */}
               <Dropdown
                 items={whitelist}
                 buttonClassName='flex items-center w-full rounded-md border border-gray-300 shadow-sm px-3 md:px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500 dark:text-gray-50 dark:border-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600'
                 selectItemClassName='text-gray-700 block px-4 py-2 text-base cursor-pointer hover:bg-gray-200 dark:text-gray-50 dark:border-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600'
                 title={(
                   <>
-                    <Flag className='rounded-sm mr-1.5' country={languageFlag[language]} size={21} alt='' />
+                    <Flag className='rounded-sm mr-1.5' country={languageFlag[language]} size={21} alt='' aria-hidden='true' />
                     {languages[language]}
                   </>
                 )}
                 labelExtractor={(lng) => (
                   <div className='flex'>
-                    <Flag className='rounded-sm mr-1.5' country={languageFlag[lng]} size={21} alt='' />
+                    <div className='pt-1'>
+                      <Flag className='rounded-sm mr-1.5' country={languageFlag[lng]} size={21} alt={languageFlag[lng]} />
+                    </div>
                     {languages[lng]}
                   </div>
                 )}
@@ -148,7 +232,7 @@ const Header = ({ authenticated, theme, themeType }) => {
                     {t('auth.common.signin')}
                   </Link>
                   {!isSelfhosted && (
-                    <Link to={routes.signup} className='inline-block select-none bg-white dark:bg-gray-700 dark:text-gray-50 py-2 px-3 md:px-4 border border-transparent rounded-md text-base font-medium text-indigo-600 hover:bg-indigo-50 hover:dark:bg-gray-600'>
+                    <Link to={routes.signup} className='inline-block select-none bg-white dark:bg-gray-700 dark:text-gray-50 py-2 px-3 md:px-4 border border-transparent rounded-md text-base font-medium text-indigo-600 hover:bg-indigo-50 hover:dark:bg-gray-600' aria-label={t('titles.signup')}>
                       {t('common.getStarted')}
                     </Link>
                   )}
@@ -156,6 +240,7 @@ const Header = ({ authenticated, theme, themeType }) => {
               )}
             </div>
             <div className='md:hidden flex justify-center items-center'>
+              {/* Theme switch */}
               {theme === 'dark' ? (
                 <div className='transition-all duration-1000 ease-in-out rotate-180'>
                   <SunIcon onClick={switchTheme} className='h-10 w-10 text-gray-200 hover:text-gray-300 cursor-pointer' />
@@ -203,6 +288,7 @@ const Header = ({ authenticated, theme, themeType }) => {
         </nav>
       </header>
 
+      {/* Mobile header popup */}
       <Transition
         as={Fragment}
         enter='duration-200 ease-out'
@@ -220,12 +306,12 @@ const Header = ({ authenticated, theme, themeType }) => {
                   <span className='sr-only'>Swetrix</span>
                   {theme === 'dark' ? (
                     themeType === THEME_TYPE.christmas ? (
-                      <img className='h-10' src='/assets/logo_white_christmas.png' alt='' />
+                      <img className='h-10' src='/assets/logo_white_christmas.png' alt='Swetrix' />
                     ) : (
-                      <img className='h-10' src='/assets/logo_white.svg' alt='' />
+                      <img className='h-10' src='/assets/logo_white.svg' alt='Swetrix' />
                     )
                   ) : (
-                    <img className='h-10' src='/assets/logo_blue.svg' alt='' />
+                    <img className='h-10' src='/assets/logo_blue.svg' alt='Swetrix' />
                   )}
                 </Link>
                 <Popover.Button ref={buttonRef} className='bg-white dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'>
@@ -238,19 +324,22 @@ const Header = ({ authenticated, theme, themeType }) => {
             </div>
             <div className='py-6 px-5 space-y-6'>
               <div className='grid grid-cols-1 gap-y-4'>
+                {/* Language selector */}
                 <Dropdown
                   items={whitelist}
                   buttonClassName='flex items-center w-full rounded-md border border-gray-300 shadow-sm px-3 md:px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500 dark:text-gray-50 dark:border-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600'
                   selectItemClassName='text-gray-700 block px-4 py-2 text-base cursor-pointer hover:bg-gray-200 dark:text-gray-50 dark:border-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600'
                   title={(
                     <>
-                      <Flag className='rounded-sm mr-1.5' country={languageFlag[language]} size={21} alt='' />
+                      <Flag className='rounded-sm mr-1.5' country={languageFlag[language]} size={21} alt='' aria-hidden='true' />
                       {languages[language]}
                     </>
                   )}
                   labelExtractor={(lng) => (
                     <div className='flex'>
-                      <Flag className='rounded-sm mr-1.5' country={languageFlag[lng]} size={21} alt='' />
+                      <div className='pt-1'>
+                        <Flag className='rounded-sm mr-1.5' country={languageFlag[lng]} size={21} alt={languageFlag[lng]} />
+                      </div>
                       {languages[lng]}
                     </div>
                   )}
@@ -258,6 +347,27 @@ const Header = ({ authenticated, theme, themeType }) => {
                 />
                 {authenticated ? (
                   <>
+                    {!isSelfhosted && user?.planCode === 'trial' && (
+                      <Link
+                        to={routes.billing}
+                        className={cx('flex justify-center items-center text-base select-none font-medium py-2 px-2 rounded-md', {
+                          'text-amber-800 bg-amber-200 dark:bg-amber-300 hover:bg-amber-300 dark:hover:bg-amber-200': rawStatus === TRIAL_STATUS_MAPPING.ENDS_IN_X_DAYS,
+                          'text-rose-800 bg-rose-200 dark:bg-rose-300 hover:bg-rose-300 dark:hover:bg-rose-200': rawStatus === TRIAL_STATUS_MAPPING.ENDS_TODAY || rawStatus === TRIAL_STATUS_MAPPING.ENDS_TOMORROW || rawStatus === TRIAL_STATUS_MAPPING.ENDED,
+                        })}
+                        key='TrialNotification'
+                      >
+                        {status}
+                      </Link>
+                    )}
+                    {user?.planCode === 'none' && (
+                      <Link
+                        to={routes.billing}
+                        className='flex justify-center items-center text-base select-none font-medium py-2 px-2 rounded-md text-rose-800 bg-rose-200 dark:bg-rose-300 hover:bg-rose-300 dark:hover:bg-rose-200'
+                        key='NoSubscription'
+                      >
+                        {t('billing.inactive')}
+                      </Link>
+                    )}
                     <div onClick={() => buttonRef.current?.click()}>
                       <Link to={routes.user_settings} className='w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700'>
                         {t('common.you')}
@@ -282,7 +392,7 @@ const Header = ({ authenticated, theme, themeType }) => {
                       </Link>
                     </div>
                     <div onClick={() => buttonRef.current?.click()}>
-                      <Link to={routes.signup} className='w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700'>
+                      <Link to={routes.signup} className='w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700' aria-label={t('titles.signup')}>
                         {t('common.getStarted')}
                       </Link>
                     </div>
@@ -295,6 +405,18 @@ const Header = ({ authenticated, theme, themeType }) => {
       </Transition>
     </Popover>
   )
+}
+
+Header.propTypes = {
+  authenticated: PropTypes.bool.isRequired,
+  theme: PropTypes.string.isRequired,
+  themeType: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  user: PropTypes.object,
+}
+
+Header.defaultProps = {
+  user: {},
 }
 
 export default memo(Header)

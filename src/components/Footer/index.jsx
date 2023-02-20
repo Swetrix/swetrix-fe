@@ -15,7 +15,7 @@ import routes from 'routes'
 
 const navigation = {
   support: [
-    (authenticated) => (authenticated ? { key: 'billing', href: routes.billing } : { key: 'pricing', href: `${routes.main}#pricing` }),
+    (authenticated) => (authenticated ? { key: 'billing', href: routes.billing, internal: true } : { key: 'pricing', href: `${routes.main}#pricing`, internal: true }),
     () => ({ key: 'docs', href: DOCS_URL }),
     () => ({ key: 'contact', href: routes.contact, internal: true }),
   ],
@@ -30,6 +30,7 @@ const navigation = {
   legal: [
     { key: 'privacy', href: routes.privacy },
     { key: 'terms', href: routes.terms },
+    { key: 'cookie', href: routes.cookiePolicy },
   ],
   comparisons: [
     { value: 'Google Analytics', href: SWETRIX_VS_GOOGLE },
@@ -66,21 +67,21 @@ const navigation = {
       name: 'LinkedIn',
       href: LINKEDIN_URL,
       icon: () => (
-        <img className='h-6 w-6 opacity-75 hover:opacity-90 bg-white rounded' aria-hidden='true' src='/assets/linkedin.svg' alt='' />
+        <img className='h-6 w-6 opacity-75 hover:opacity-90 bg-white rounded' aria-hidden='true' src='/assets/linkedin.svg' alt='LinkedIn' />
       ),
     },
     {
       name: 'Firefox Addon',
       href: FIREFOX_ADDON_URL,
       icon: () => (
-        <img className='h-6 w-6 opacity-75 hover:opacity-90' aria-hidden='true' src='/assets/firefox.svg' alt='' />
+        <img className='h-6 w-6 opacity-75 hover:opacity-90' aria-hidden='true' src='/assets/firefox.svg' alt='Firefox' />
       ),
     },
     {
       name: 'Chrome Extension',
       href: CHROME_EXTENSION_URL,
       icon: () => (
-        <img className='h-6 w-6 opacity-75 hover:opacity-90' aria-hidden='true' src='/assets/chrome.svg' alt='' />
+        <img className='h-6 w-6 opacity-75 hover:opacity-90' aria-hidden='true' src='/assets/chrome.svg' alt='Chrome' />
       ),
     },
   ],
@@ -101,12 +102,12 @@ const Footer = ({ minimal, authenticated }) => {
               </Link>
             </div>
             <div className='px-5 py-2'>
-              <Link to={routes.privacy} className='text-base text-gray-300 hover:text-white'>
+              <Link to={routes.privacy} className='text-base text-gray-300 hover:text-white' aria-label={t('footer.pp')}>
                 {t('footer.pp')}
               </Link>
             </div>
             <div className='px-5 py-2'>
-              <Link to={routes.terms} className='text-base text-gray-300 hover:text-white'>
+              <Link to={routes.terms} className='text-base text-gray-300 hover:text-white' aria-label={t('footer.tos')}>
                 {t('footer.tos')}
               </Link>
             </div>
@@ -117,7 +118,7 @@ const Footer = ({ minimal, authenticated }) => {
             </div>
             {!isSelfhosted && (
               <div className='px-5 py-2'>
-                <a href={STATUSPAGE_URL} className='text-base text-gray-300 hover:text-white' target='_blank' rel='noopener noreferrer'>
+                <a href={STATUSPAGE_URL} className='text-base text-gray-300 hover:text-white' target='_blank' rel='noopener noreferrer' aria-label={`${t('footer.status')} (opens in a new tab)`}>
                   {t('footer.status')}
                 </a>
               </div>
@@ -147,16 +148,16 @@ const Footer = ({ minimal, authenticated }) => {
             <div>
               <p className='flex text-gray-300 text-base'>
                 {t('footer.madeIn')}
-                <a className='flex hover:underline hover:opacity-80 text-blue-400 ml-1' href={`https://${language}.wikipedia.org/wiki/Ukraine`} target='_blank' rel='noopener noreferrer'>
-                  <Flag country='UA' size={18} alt='' />
+                <a className='flex hover:underline hover:opacity-80 text-blue-400 ml-1' href={`https://${language}.wikipedia.org/wiki/Ukraine`} target='_blank' rel='noopener noreferrer' aria-label='Ukraine Wikipedia page (opens in a new tab)'>
+                  <Flag country='UA' size={18} alt='' aria-hidden='true' />
                   &nbsp;
                   {t('footer.ukraine')}
                 </a>
               </p>
               <p className='flex text-gray-300 text-base'>
                 {t('footer.hostedIn')}
-                <a className='flex hover:underline hover:opacity-80 text-blue-400 ml-1' href={`https://${language}.wikipedia.org/wiki/European_Union`} target='_blank' rel='noopener noreferrer'>
-                  <Flag country='EU' size={18} alt='' />
+                <a className='flex hover:underline hover:opacity-80 text-blue-400 ml-1' href={`https://${language}.wikipedia.org/wiki/European_Union`} target='_blank' rel='noopener noreferrer' aria-label='European Union Wikipedia page (opens in a new tab)'>
+                  <Flag country='EU' size={18} alt='' aria-hidden='true' />
                   &nbsp;
                   {t('footer.eu')}
                 </a>
@@ -164,7 +165,7 @@ const Footer = ({ minimal, authenticated }) => {
             </div>
             <div className='flex space-x-4'>
               {_map(navigation.social, (item) => (
-                <a key={item.name} href={item.href} title={item.name} target='_blank' rel='noopener noreferrer' className='text-gray-400 hover:text-gray-300'>
+                <a key={item.name} href={item.href} title={item.name} target='_blank' rel='noopener noreferrer' className='text-gray-400 hover:text-gray-300' aria-label={`${item.name} (opens in a new tab)`}>
                   <span className='sr-only'>{item.name}</span>
                   <item.icon className='h-6 w-6' aria-hidden='true' />
                 </a>
@@ -183,7 +184,7 @@ const Footer = ({ minimal, authenticated }) => {
 
                     return (
                       <li key={value}>
-                        <a href={href} className='text-base text-gray-300 hover:text-white' target='_blank' rel='noopener noreferrer'>
+                        <a href={href} className='text-base text-gray-300 hover:text-white' target='_blank' rel='noopener noreferrer' aria-label={`${value} (opens in a new tab)`}>
                           {value}
                         </a>
                       </li>
@@ -197,13 +198,19 @@ const Footer = ({ minimal, authenticated }) => {
                 </h3>
                 <ul className='mt-4 space-y-4'>
                   {_map(navigation.support, (func) => {
-                    const { key, href } = func(authenticated)
+                    const { key, href, internal } = func(authenticated)
 
                     return (
                       <li key={key}>
-                        <HashLink to={href} className='text-base text-gray-300 hover:text-white'>
-                          {t(`footer.${key}`)}
-                        </HashLink>
+                        {internal ? (
+                          <HashLink to={href} className='text-base text-gray-300 hover:text-white'>
+                            {t(`footer.${key}`)}
+                          </HashLink>
+                        ) : (
+                          <a href={href} className='text-base text-gray-300 hover:text-white' target='_blank' rel='noopener noreferrer' aria-label={`${t(`footer.${key}`)} (opens in a new tab)`}>
+                            {t(`footer.${key}`)}
+                          </a>
+                        )}
                       </li>
                     )
                   })}
@@ -223,7 +230,7 @@ const Footer = ({ minimal, authenticated }) => {
                           {t(`footer.${key}`)}
                         </Link>
                       ) : (
-                        <a href={href} className='text-base text-gray-300 hover:text-white' target='_blank' rel='noopener noreferrer'>
+                        <a href={href} className='text-base text-gray-300 hover:text-white' target='_blank' rel='noopener noreferrer' aria-label={`${t(`footer.${key}`)} (opens in a new tab)`}>
                           {t(`footer.${key}`)}
                         </a>
                       )}
@@ -247,9 +254,9 @@ const Footer = ({ minimal, authenticated }) => {
               </div>
             </div>
             <div className='flex gap-5 flex-wrap col-span-2 items-center justify-end'>
-              <img className='h-10 w-auto' src='/assets/pci.png' height='40' width='auto' loading='lazy' alt='' />
-              <img className='h-10 w-auto' src='/assets/visa.png' height='40' width='auto' loading='lazy' alt='' />
-              <img className='h-10 w-auto' src='/assets/mc.png' height='40' width='auto' loading='lazy' alt='' />
+              <img className='h-10 w-auto' src='/assets/pci.png' height='40' width='auto' loading='lazy' alt='PCI DSS' />
+              <img className='h-10 w-auto' src='/assets/visa.png' height='40' width='auto' loading='lazy' alt='Visa' />
+              <img className='h-10 w-auto' src='/assets/mc.png' height='40' width='auto' loading='lazy' alt='Mastercard' />
             </div>
           </div>
         </div>

@@ -16,9 +16,10 @@ import _size from 'lodash/size'
 import _round from 'lodash/round'
 import _fill from 'lodash/fill'
 import _reduce from 'lodash/reduce'
+import _last from 'lodash/last'
 import JSZip from 'jszip'
 
-import { tbsFormatMapper } from 'redux/constants'
+import { TimeFormat, tbsFormatMapper, tbsFormatMapper24h } from 'redux/constants'
 import { getTimeFromSeconds, getStringFromTime, sumArrays } from 'utils/generic'
 import countries from 'utils/isoCountries'
 
@@ -29,6 +30,32 @@ const getAvg = (arr) => {
 
 const getSum = (arr) => {
   return _reduce(arr, (acc, c) => acc + c, 0)
+}
+
+const transformAIChartData = (data) => {
+  const transformedData = {
+    x: [],
+    sdur: [],
+    uniques: [],
+    visits: [],
+  }
+
+  _forEach(data, (d) => {
+    if (d.x) {
+      transformedData.x = d.x
+    }
+    if (d.sdur) {
+      transformedData.sdur = d.sdur
+    }
+    if (d.uniques) {
+      transformedData.uniques = d.uniques
+    }
+    if (d.visits) {
+      transformedData.visits = d.visits
+    }
+  })
+
+  return transformedData
 }
 
 const trendline = (data) => {
@@ -236,9 +263,22 @@ const getColumnsPerf = (chart, activeChartMetrics) => {
 const noRegionPeriods = ['custom', 'yesterday']
 
 // function to get the settings and data for the chart(main diagram)
-const getSettings = (chart, timeBucket, activeChartMetrics, applyRegions) => {
+const getSettings = (chart, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData) => {
   const xAxisSize = _size(chart.x)
+  const lines = []
+  const modifiedChart = { ...chart }
   let regions
+
+  if (!_isEmpty(forecasedChartData)) {
+    lines.push({
+      value: _last(chart?.x),
+      text: 'Forecast',
+    })
+    modifiedChart.x = [...modifiedChart.x, ...forecasedChartData.x]
+    modifiedChart.uniques = [...modifiedChart.uniques, ...forecasedChartData.uniques]
+    modifiedChart.visits = [...modifiedChart.visits, ...forecasedChartData.visits]
+    modifiedChart.sdur = [...modifiedChart.sdur, ...forecasedChartData.sdur]
+  }
 
   if (applyRegions) {
     let regionStart
@@ -288,7 +328,7 @@ const getSettings = (chart, timeBucket, activeChartMetrics, applyRegions) => {
   return {
     data: {
       x: 'x',
-      columns: getColumns(chart, activeChartMetrics),
+      columns: getColumns(modifiedChart, activeChartMetrics),
       types: {
         unique: area(),
         total: area(),
@@ -313,11 +353,18 @@ const getSettings = (chart, timeBucket, activeChartMetrics, applyRegions) => {
         sessionDuration: 'y2',
       },
     },
+    grid: {
+      x: {
+        lines,
+      },
+    },
     axis: {
       x: {
         tick: {
           fit: true,
+          format: timeFormat === TimeFormat['24-hour'] ? (x) => d3.timeFormat(tbsFormatMapper24h[timeBucket])(x) : null,
         },
+        localtime: timeFormat === TimeFormat['24-hour'],
         type: 'timeseries',
       },
       y2: {
@@ -472,7 +519,7 @@ const getSettingsPerf = (chart, timeBucket, activeChartMetrics) => {
 const validTimeBacket = ['hour', 'day', 'week', 'month']
 const validPeriods = ['custom', 'today', 'yesterday', '1d', '7d', '4w', '3M', '12M', '24M']
 const paidPeriods = ['12M', '24M']
-const validFilters = ['cc', 'pg', 'lc', 'ref', 'dv', 'br', 'os', 'so', 'me', 'ca', 'lt']
+const validFilters = ['cc', 'pg', 'lc', 'ref', 'dv', 'br', 'os', 'so', 'me', 'ca', 'lt', 'ev']
 
 const typeNameMapping = (t) => ({
   cc: t('project.mapping.cc'),
@@ -486,6 +533,7 @@ const typeNameMapping = (t) => ({
   me: 'utm_medium',
   ca: 'utm_campaign',
   lt: t('project.mapping.lt'),
+  ev: t('project.event'),
 })
 
 const iconClassName = 'w-6 h-6'
@@ -510,5 +558,8 @@ const getFormatDate = (date) => {
 }
 
 export {
-  iconClassName, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods, validTimeBacket, paidPeriods, noRegionPeriods, getSettings, getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING, CHART_METRICS_MAPPING_PERF, getColumnsPerf, getSettingsPerf,
+  iconClassName, getFormatDate, panelIconMapping, typeNameMapping, validFilters,
+  validPeriods, validTimeBacket, paidPeriods, noRegionPeriods, getSettings,
+  getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING,
+  CHART_METRICS_MAPPING_PERF, getColumnsPerf, getSettingsPerf, transformAIChartData,
 }

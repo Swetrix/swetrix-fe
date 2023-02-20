@@ -4,7 +4,7 @@ import React, {
 import { Switch, Route, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useAlert } from '@blaumaus/react-alert'
-import Snowfall from 'react-snowfall'
+// import Snowfall from 'react-snowfall'
 import cx from 'clsx'
 import _some from 'lodash/some'
 import _includes from 'lodash/includes'
@@ -17,13 +17,16 @@ import Loader from 'ui/Loader'
 
 import ScrollToTop from 'hoc/ScrollToTop'
 import Selfhosted from 'hoc/Selfhosted'
-import { isSelfhosted, THEME_TYPE } from 'redux/constants'
+import {
+  isSelfhosted, // THEME_TYPE,
+} from 'redux/constants'
 import { getAccessToken } from 'utils/accessToken'
 import { authActions } from 'redux/actions/auth'
 import { errorsActions } from 'redux/actions/errors'
 import { alertsActions } from 'redux/actions/alerts'
 import UIActions from 'redux/actions/ui'
 import routes from 'routes'
+import { getRefreshToken } from 'utils/refreshToken'
 import { authMe } from './api'
 
 const MainPage = lazy(() => import('pages/MainPage'))
@@ -46,6 +49,7 @@ const NotFound = lazy(() => import('pages/NotFound'))
 const Changelog = lazy(() => import('pages/Changelog'))
 const About = lazy(() => import('pages/About'))
 const ProjectAlertsSettings = lazy(() => import('pages/Project/Alerts/Settings'))
+const CookiePolicy = lazy(() => import('pages/CookiePolicy'))
 
 const minimalFooterPages = [
   '/projects', '/dashboard', '/settings', '/contact',
@@ -81,12 +85,15 @@ const App = () => {
   const dispatch = useDispatch()
   const location = useLocation()
   const alert = useAlert()
-  const { loading, authenticated } = useSelector(state => state.auth)
+  const {
+    loading, authenticated, user,
+  } = useSelector(state => state.auth)
   const { theme } = useSelector(state => state.ui.theme)
   const { error } = useSelector(state => state.errors)
   const { message, type } = useSelector(state => state.alerts)
   const themeType = useSelector(state => state.ui.theme.type)
   const accessToken = getAccessToken()
+  const refreshToken = getRefreshToken()
 
   useEffect(() => {
     const eventCallback = (data) => {
@@ -121,7 +128,7 @@ const App = () => {
 
   useEffect(() => {
     (async () => {
-      if (accessToken && !authenticated) {
+      if ((accessToken && refreshToken) && !authenticated) {
         try {
           const me = await authMe()
           dispatch(UIActions.setThemeType(me.theme))
@@ -161,13 +168,18 @@ const App = () => {
     (!accessToken || !loading) && (
       // eslint-disable-next-line react/jsx-no-useless-fragment
       <Suspense fallback={<></>}>
-        <Header authenticated={authenticated} theme={theme} themeType={themeType} />
-        {location.pathname === routes.main && (
+        <Header
+          authenticated={authenticated}
+          theme={theme}
+          themeType={themeType}
+          user={user}
+        />
+        {/* {location.pathname === routes.main && (
           <Snowfall />
-        )}
-        {location.pathname !== routes.main && themeType === THEME_TYPE.christmas && (
+        )} */}
+        {/* {location.pathname !== routes.main && themeType === THEME_TYPE.christmas && (
           <Snowfall snowflakeCount={10} />
-        )}
+        )} */}
         <ScrollToTop>
           <Selfhosted>
             <Suspense fallback={<Fallback theme={theme} isMinimalFooter={isMinimalFooter} />}>
@@ -194,6 +206,7 @@ const App = () => {
                 <Route path={routes.about} component={About} exact />
                 <Route path={routes.alert_settings} component={ProjectAlertsSettings} exact />
                 <Route path={routes.create_alert} component={ProjectAlertsSettings} exact />
+                <Route path={routes.cookiePolicy} component={CookiePolicy} exact />
                 <Route path='*' component={NotFound} />
               </Switch>
             </Suspense>

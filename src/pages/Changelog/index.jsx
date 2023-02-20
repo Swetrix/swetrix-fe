@@ -4,6 +4,7 @@ import _map from 'lodash/map'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
 import { HashLink } from 'react-router-hash-link'
+import { Link } from 'react-router-dom'
 
 import { SWETRIX_VS_GOOGLE, DOCS_URL } from 'redux/constants'
 import Title from 'components/Title'
@@ -13,6 +14,51 @@ const INTEGRATIONS_LINK = `${routes.user_settings}#integrations`
 
 // Date format: YYYY-MM-DD
 const changelog = [
+  {
+    date: '2023-02-18',
+    changes: [
+      'Added AI forecasting functionality.',
+      'Migrated to a paid-only model with a free trial. Everyone who had signed up on Swetrix before that change can continue to use their free tier.',
+    ],
+  },
+  {
+    date: '2023-02-09',
+    changes: [
+      'Added an ability to filter data by custom events.',
+      <>
+        Released a public
+        {' '}
+        <a href={`${DOCS_URL}/statistics-api`} className='font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-500' target='_blank' rel='noopener noreferrer'>
+          API Documentation
+        </a>
+        {' '}
+        related to data aggregation.
+      </>,
+      'Fully refactored the authentication system.',
+      'Added support for API keys.',
+    ],
+  },
+  {
+    date: '2023-02-04',
+    changes: [
+      'Added a Polish translation.',
+      <>
+        Added a
+        {' '}
+        <Link to={routes.cookiePolicy} className='font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-500'>
+          Cookie policy
+        </Link>
+        .
+      </>,
+    ],
+  },
+  {
+    date: '2023-01-28',
+    changes: [
+      'Added time notation setting: now you can display chart hours in 12-hour or 24-hour format.',
+      'Fixed live visitors dropdown overlap for non-English languages.',
+    ],
+  },
   {
     date: '2023-01-17',
     changes: [
@@ -55,7 +101,7 @@ const changelog = [
       <>
         Added the comparisons column to the footer. There&apos;s only
         {' '}
-        <a href={SWETRIX_VS_GOOGLE} className='font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-500' target='_blank' rel='noopener noreferrer'>
+        <a href={SWETRIX_VS_GOOGLE} className='font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-500' target='_blank' rel='noopener noreferrer' aria-label='Swetrix to Google Analytics comparison (opens in a new tab)'>
           Google Analytics comparison
         </a>
         {' '}

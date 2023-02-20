@@ -13,7 +13,7 @@ const mapStateToProps = (state) => {
     user: state.auth.user,
     dontRemember: state.auth.dontRemember,
     isPaidTierUsed: state.auth.isPaidTierUsed,
-    themeType: state.ui.theme.type,
+    // themeType: state.ui.theme.type,
   }
 }
 
@@ -40,9 +40,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
   onDeleteProjectCache: () => {
     dispatch(UIActions.deleteProjectCache())
-  },
-  login: (user) => {
-    dispatch(authActions.loginSuccess(user))
   },
   userSharedUpdate: (message) => {
     dispatch(alertsActions.userSharedUpdate(message))
@@ -89,9 +86,9 @@ const mapDispatchToProps = (dispatch) => ({
   setAPIKey: (apiKey) => {
     dispatch(authActions.setApiKey(apiKey))
   },
-  setThemeType: (theme) => {
-    dispatch(UIActions.setThemeType(theme))
-  },
+  // setThemeType: (theme) => {
+  //   dispatch(UIActions.setThemeType(theme))
+  // },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserSettings)

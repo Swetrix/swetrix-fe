@@ -16,8 +16,9 @@ import Button from 'ui/Button'
 import {
   isValidEmail, isValidPassword, MIN_PASSWORD_CHARS, MAX_PASSWORD_CHARS,
 } from 'utils/validator'
-import { HAVE_I_BEEN_PWNED_URL } from 'redux/constants'
+import { HAVE_I_BEEN_PWNED_URL, TRIAL_DAYS } from 'redux/constants'
 import { trackCustom } from 'utils/analytics'
+import _omit from 'lodash/omit'
 
 const Signup = ({ signup }) => {
   const { t } = useTranslation('common')
@@ -70,7 +71,7 @@ const Signup = ({ signup }) => {
   const onSubmit = data => {
     if (!isLoading) {
       setIsLoading(true)
-      signup(data, t, (result) => {
+      signup(_omit(data, 'tos'), t, (result) => {
         if (result) {
           trackCustom('SIGNUP')
         } else {
@@ -105,8 +106,13 @@ const Signup = ({ signup }) => {
       <div className='min-h-page bg-gray-50 dark:bg-gray-800 flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
         <form className='max-w-7xl w-full mx-auto' onSubmit={handleSubmit}>
           <h2 className='mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>
-            {t('titles.signup')}
+            {t('auth.signup.trial', {
+              amount: TRIAL_DAYS,
+            })}
           </h2>
+          <p className='text-lg text-gray-900 dark:text-gray-50'>
+            {t('auth.signup.noCC')}
+          </p>
           <Input
             name='email'
             id='email'
@@ -153,8 +159,8 @@ const Signup = ({ signup }) => {
                   t={t}
                   i18nKey='auth.signup.tos'
                   components={{
-                    tos: <Link to={routes.terms} className='font-medium text-gray-900 dark:text-gray-300 hover:underline' />,
-                    pp: <Link to={routes.privacy} className='font-medium text-gray-900 dark:text-gray-300 hover:underline' />,
+                    tos: <Link to={routes.terms} className='font-medium text-gray-900 dark:text-gray-300 hover:underline' aria-label={t('footer.tos')} />,
+                    pp: <Link to={routes.privacy} className='font-medium text-gray-900 dark:text-gray-300 hover:underline' aria-label={t('footer.pp')} />,
                   }}
                 />
               </span>
