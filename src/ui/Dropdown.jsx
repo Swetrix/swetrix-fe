@@ -46,7 +46,7 @@ const Dropdown = ({
                     role='menuitem'
                     tabIndex='-1'
                     id='menu-item-0'
-                    onClick={() => onSelect(item)}
+                    onClick={(e) => onSelect(item, e)}
                   >
                     {labelExtractor ? labelExtractor(item) : item}
                   </span>
