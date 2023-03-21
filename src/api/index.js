@@ -623,6 +623,17 @@ export const deleteAlert = (id) =>
         : error.response.data.message
     })
 
+export const getExportData = (pid, from, to) =>
+  api
+    .get(`project/export/${pid}?from=${from}&to=${to}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message)
+        ? error.response.data
+        : error.response.data.message
+    })
+
 export const setTimeFormat = (timeFormat) =>
   api
     .put('user/change-time-format', { timeFormat })
