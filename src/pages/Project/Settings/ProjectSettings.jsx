@@ -22,15 +22,17 @@ import Title from 'components/Title'
 import { withAuthentication, auth } from 'hoc/protected'
 import { isSelfhosted } from 'redux/constants'
 import {
-  createProject, updateProject, deleteProject, resetProject,
+  createProject, updateProject, deleteProject, resetProject, deletePartially,
 } from 'api'
 import Input from 'ui/Input'
 import Button from 'ui/Button'
 import Checkbox from 'ui/Checkbox'
 import Modal from 'ui/Modal'
+import FlatPicker from 'ui/Flatpicker'
 import { nanoid } from 'utils/random'
 import { trackCustom } from 'utils/analytics'
 import routes from 'routes'
+import { getFormatDate } from '../View/ViewProject.helpers'
 
 import People from './People'
 import Emails from './Emails'
@@ -64,6 +66,7 @@ const ProjectSettings = ({
   const [projectDeleting, setProjectDeleting] = useState(false)
   const [projectResetting, setProjectResetting] = useState(false)
   const [projectSaving, setProjectSaving] = useState(false)
+  const [dateRange, setDateRange] = useState()
 
   useEffect(() => {
     if (!user.isActive && !isSelfhosted) {
@@ -148,7 +151,14 @@ const ProjectSettings = ({
     if (!projectResetting) {
       setProjectResetting(true)
       try {
-        await resetProject(id)
+        if (!_isEmpty(dateRange)) {
+          await deletePartially(id, {
+            from: getFormatDate(dateRange[0]),
+            to: getFormatDate(dateRange[1]),
+          })
+        } else {
+          await resetProject(id)
+        }
         deleteProjectCache(id)
         projectDeleted(t('project.settings.resetted'))
         history.push(routes.dashboard)
@@ -359,7 +369,24 @@ const ProjectSettings = ({
           submitText={t('project.settings.reset')}
           closeText={t('common.close')}
           title={t('project.settings.qReset')}
-          message={t('project.settings.resetHint')}
+          message={(
+            <>
+              <p className='text-gray-500 dark:text-gray-300 italic mt-1 mb-4 text-sm'>
+                {t('project.settings.resetHint')}
+              </p>
+              <p className='text-gray-500 dark:text-gray-300 italic mt-1 mb-4 text-sm'>
+                if you want to reset the project not all project please select the date range
+              </p>
+              <input type='text' className='h-0 w-0 border-0 p-0 m-0 focus:text-transparent focus:border-transparent focus:shadow-none focus:ring-transparent' />
+              <FlatPicker
+                onChange={(date) => setDateRange(date)}
+                options={{
+                  altInputClass: 'shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:text-gray-50 dark:placeholder-gray-400 dark:border-gray-800 dark:bg-gray-700 rounded-md',
+                }}
+                value={dateRange}
+              />
+            </>
+          )}
           submitType='danger'
           type='error'
           isOpened={showReset}

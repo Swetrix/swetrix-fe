@@ -699,3 +699,14 @@ export const confirmSubscriberInvite = (id, token) =>
         ? error.response.data
         : error.response.data.message
     })
+
+export const deletePartially = (id, data) =>
+  api
+    .delete(`project/partially/${id}?from=${data.from}&to=${data.to}`, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message)
+        ? error.response.data
+        : error.response.data.message
+    })
