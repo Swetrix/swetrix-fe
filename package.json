@@ -50,14 +50,12 @@
     "redux-saga": "^1.2.3",
     "spacetime": "^7.4.1",
     "swetrix": "^2.1.0",
-    "timezone-soft": "^1.4.1",
-    "typescript": "^5.0.2"
+    "timezone-soft": "^1.4.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "analyse": "source-map-explorer 'build/static/js/*.js'",
     "lint": "eslint src"
   },
@@ -77,6 +75,8 @@
       "arrow-body-style": "off",
       "arrow-parens": "off",
       "import/no-cycle": "off",
+      "import/no-unresolved": "off",
+      "import/extensions": "off",
       "import/no-named-as-default": "off",
       "import/no-named-as-default-member": "off",
       "import/prefer-default-export": "off",
@@ -155,6 +155,11 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
+    "@types/lodash": "^4.14.191",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^3.1.0",
     "autoprefixer": "^10.4.14",
     "cross-env": "^7.0.3",
     "eslint": "^8.36.0",
@@ -166,6 +171,9 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.21",
     "source-map-explorer": "^2.5.3",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.2.7",
+    "typescript": "^4.9.3",
+    "vite": "^4.2.0",
+    "vite-tsconfig-paths": "^4.0.7"
   }
 }

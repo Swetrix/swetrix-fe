@@ -1,4 +1,4 @@
-<img src="/public/assets/logo_blue.svg" alt="" height="100" />
+<img src="src/public/assets/logo_blue.svg" alt="" height="100" />
 
 [![Dockerhub pulls](https://img.shields.io/docker/pulls/swetrix/swetrix-fe.svg?style=flat)](https://hub.docker.com/r/swetrix/swetrix-fe)
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/swetrix/swetrix-fe/issues)
@@ -30,8 +30,8 @@ To use it you just just pull `swetrix/swetrixfe` from dockerhub.
 
 #### Docker Environment Variables
 
-The following environment variables are available, alongside their default values.  
-`API_URL` = `https://example.com/` | The URL of the Swetrix API  
+The following environment variables are available, alongside their default values.
+`API_URL` = `https://example.com/` | The URL of the Swetrix API
 `TZ` = `Etc/UTC` | Sets the Timezone of the Container
 
 ## Bugs and security
