@@ -41,6 +41,67 @@ const MAX_NAME_LENGTH = 50
 const MAX_ORIGINS_LENGTH = 300
 const MAX_IPBLACKLIST_LENGTH = 300
 
+const tabDeleteDataModal = [
+  {
+    name: 'all',
+    title: 'project.settings.delete.all',
+  },
+  {
+    name: 'partially',
+    title: 'project.settings.delete.partially',
+  },
+]
+
+const ModalMessage = ({
+  dateRange, setDateRange, setTab, t, tab,
+}) => (
+  <>
+    <p className='text-gray-500 dark:text-gray-300 italic mt-1 mb-4 text-sm'>
+      {t('project.settings.resetHint')}
+    </p>
+    <div className='mt-6'>
+      <nav className='-mb-px flex space-x-6'>
+        {_map(tabDeleteDataModal, (tabDelete) => (
+          <button
+            key={tabDelete.name}
+            type='button'
+            onClick={() => setTab(tabDelete.name)}
+            className={cx('whitespace-nowrap pb-2 px-1 border-b-2 font-medium text-md', {
+              'border-indigo-500 text-indigo-600 dark:text-indigo-500': tabDelete.name === tab,
+              'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-300': tab !== tabDelete.name,
+            })}
+          >
+            {t(tabDelete.title)}
+          </button>
+        ))}
+      </nav>
+    </div>
+    {tab === tabDeleteDataModal[1].name && (
+      <>
+        <p className='text-gray-500 dark:text-gray-300 italic mt-4 mb-4 text-sm'>
+          {t('project.settings.delete.partiallyHint')}
+        </p>
+        <p className='text-gray-500 dark:text-gray-300 italic mt-1 mb-4 text-sm'>
+          if you want to reset the project not all project please select the date range
+        </p>
+        <input type='text' className='h-0 w-0 border-0 p-0 m-0 focus:text-transparent focus:border-transparent focus:shadow-none focus:ring-transparent' />
+        <FlatPicker
+          onChange={(date) => setDateRange(date)}
+          options={{
+            altInputClass: 'shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:text-gray-50 dark:placeholder-gray-400 dark:border-gray-800 dark:bg-gray-700 rounded-md',
+          }}
+          value={dateRange}
+        />
+      </>
+    )}
+    {tab === tabDeleteDataModal[0].name && (
+      <p className='text-gray-500 dark:text-gray-300 italic mt-4 mb-4 text-sm'>
+        {t('project.settings.delete.allHint')}
+      </p>
+    )}
+  </>
+)
+
 const ProjectSettings = ({
   updateProjectFailed, createNewProjectFailed, newProject, projectDeleted, deleteProjectFailed,
   loadProjects, isLoading, projects, showError, removeProject, user, isSharedProject, sharedProjects,
@@ -67,6 +128,7 @@ const ProjectSettings = ({
   const [projectResetting, setProjectResetting] = useState(false)
   const [projectSaving, setProjectSaving] = useState(false)
   const [dateRange, setDateRange] = useState()
+  const [tab, setTab] = useState(tabDeleteDataModal[0].name)
 
   useEffect(() => {
     if (!user.isActive && !isSelfhosted) {
@@ -369,24 +431,7 @@ const ProjectSettings = ({
           submitText={t('project.settings.reset')}
           closeText={t('common.close')}
           title={t('project.settings.qReset')}
-          message={(
-            <>
-              <p className='text-gray-500 dark:text-gray-300 italic mt-1 mb-4 text-sm'>
-                {t('project.settings.resetHint')}
-              </p>
-              <p className='text-gray-500 dark:text-gray-300 italic mt-1 mb-4 text-sm'>
-                if you want to reset the project not all project please select the date range
-              </p>
-              <input type='text' className='h-0 w-0 border-0 p-0 m-0 focus:text-transparent focus:border-transparent focus:shadow-none focus:ring-transparent' />
-              <FlatPicker
-                onChange={(date) => setDateRange(date)}
-                options={{
-                  altInputClass: 'shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:text-gray-50 dark:placeholder-gray-400 dark:border-gray-800 dark:bg-gray-700 rounded-md',
-                }}
-                value={dateRange}
-              />
-            </>
-          )}
+          message={<ModalMessage setDateRange={setDateRange} dateRange={dateRange} setTab={setTab} tab={tab} t={t} />}
           submitType='danger'
           type='error'
           isOpened={showReset}
