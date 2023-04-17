@@ -5,6 +5,31 @@
     filter: blur(150px);
 }
 
+.elepse-blue {
+    background: #2564e15e;
+    filter: blur(125px);
+}
+
+.elepse-sky {
+    background: #cfecfd52;
+    filter: blur(50px);
+}
+
+.elepse-pink {
+    background: #d125e152;
+    filter: blur(125px);
+}
+
+.elepse-blue-neon {
+    background: #7aecfb4b;
+    filter: blur(250px);
+}
+
+.elepse-indigo {
+    background: rgba(149, 66, 232, 0.15);
+    filter: blur(125px);
+}
+
 @-moz-document url-prefix() {
     .filter_blur  {
         width: 300px !important;

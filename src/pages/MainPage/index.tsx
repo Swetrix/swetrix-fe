@@ -249,7 +249,11 @@ const Main = (): JSX.Element => {
             </div>
             {/* end first block with live demo */}
             {/* section Core Analytics Features */}
-            <div className='dark:bg-gray-900 bg-white px-4 pb-24'>
+            <div className='dark:bg-gray-900 bg-white px-4 pb-24 relative'>
+              <div className='elepse-sky absolute w-[197px] h-[408px] rotate-[68deg] -left-[200px] -top-[300px]' />
+              <div className='elepse-blue absolute w-[504px] h-[601px] -left-[326px] rotate-[70deg] -top-[200px]' />
+              <div className='elepse-pink absolute w-[342px] h-[408px] -left-[350px] rotate-[70deg] -top-[100px]' />
+              <div className='elepse-blue-neon absolute w-[665px] h-[638px] -left-[601px] rotate-[70deg]' />
               <section className='flex pt-16 md:pt-48 flex-col-reverse md:flex-row items-center md:items-start md:justify-between max-w-7xl m-auto'>
                 <picture>
                   <source srcSet='/assets/CoreFeaturesLight.webp' type='image/webp' />
@@ -276,7 +280,11 @@ const Main = (): JSX.Element => {
               </section>
               {/* end section Core Analytics Features */}
               {/* section Marketplace & build-in Extensions */}
-              <section className='flex pt-16 flex-col md:flex-row items-center md:justify-between max-w-7xl m-auto'>
+              <section className='flex pt-16 flex-col md:flex-row items-center md:justify-between max-w-7xl m-auto relative'>
+                <div className='elepse-indigo absolute w-[504px] h-[1230px] left-[350px] rotate-[70deg] -top-[55px]' />
+                <div className='elepse-sky absolute w-[197px] h-[408px] rotate-[68deg] 2xl:-right-[550px] -right-[390px] -top-[250px]' />
+                <div className='elepse-pink absolute w-[342px] h-[408px] 2xl:-right-[550px] -right-[350px] rotate-[70deg] -top-[100px]' />
+                <div className='elepse-blue-neon absolute w-[465px] h-[538px] 2xl:-right-[650px] -right-[550px] rotate-[70deg] -top-[200px]' />
                 <div className='max-w-[516px]'>
                   <h2 className='font-extrabold text-4xl text-gray-800 dark:text-white'>
                     {t('main.marketplace.title')}
