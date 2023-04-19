@@ -5,11 +5,10 @@ import cx from 'clsx'
 
 import Button from 'ui/Button'
 import { StateType } from 'redux/store/index'
-import GithubDarkSVG from 'ui/icons/GithubDark'
-import GithubLightSVG from 'ui/icons/GithubLight'
+import TwitterSVG from 'ui/icons/Twitter'
 import { SSO_PROVIDERS } from 'redux/constants'
 
-interface IGithubAuth {
+interface ITwitterAuth {
   setIsLoading: (isLoading: boolean) => void,
   authSSO: (provider: string, dontRemember: boolean, t: (key: string) => string, callback: (res: any) => void) => void
   callback?: any,
@@ -18,7 +17,7 @@ interface IGithubAuth {
   className?: string
 }
 
-const GithubAuth: React.FC<IGithubAuth> = ({
+const TwitterAuth: React.FC<ITwitterAuth> = ({
   setIsLoading, authSSO, dontRemember, callback, isMiniButton, className,
 }) => {
   const { t } = useTranslation()
@@ -27,7 +26,7 @@ const GithubAuth: React.FC<IGithubAuth> = ({
   const googleLogin = async () => {
     setIsLoading(true)
     authSSO(
-      SSO_PROVIDERS.GITHUB,
+      SSO_PROVIDERS.TWITTER,
       dontRemember as boolean,
       t,
       callback,
@@ -43,9 +42,9 @@ const GithubAuth: React.FC<IGithubAuth> = ({
         regular
       >
         {theme === 'dark' ? (
-          <GithubLightSVG className='w-5 h-5' />
+          <TwitterSVG className='w-5 h-5' />
         ) : (
-          <GithubDarkSVG className='w-5 h-5' />
+          <TwitterSVG className='w-5 h-5' />
         )}
       </Button>
     )
@@ -60,21 +59,21 @@ const GithubAuth: React.FC<IGithubAuth> = ({
     >
       <>
         {theme === 'dark' ? (
-          <GithubLightSVG className='w-5 h-5 mr-2' />
+          <TwitterSVG className='w-5 h-5 mr-2' />
         ) : (
-          <GithubDarkSVG className='w-5 h-5 mr-2' />
+          <TwitterSVG className='w-5 h-5 mr-2' />
         )}
-        {t('auth.common.continueWithGithub')}
+        {t('auth.common.continueWithTwitter')}
       </>
     </Button>
   )
 }
 
-GithubAuth.defaultProps = {
+TwitterAuth.defaultProps = {
   dontRemember: false,
   isMiniButton: false,
   callback: () => { },
   className: '',
 }
 
-export default GithubAuth
+export default TwitterAuth

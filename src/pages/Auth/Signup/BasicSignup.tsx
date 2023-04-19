@@ -18,6 +18,7 @@ import { trackCustom } from 'utils/analytics'
 import { useAppDispatch } from 'redux/store'
 import GoogleAuth from 'components/GoogleAuth'
 import GithubAuth from 'components/GithubAuth'
+import TwitterAuth from 'components/TwitterAuth'
 
 interface ISignUpForm {
   email: string,
@@ -198,6 +199,11 @@ const BasicSignup = (): JSX.Element => {
             isMiniButton
           />
           <GithubAuth
+            setIsLoading={setIsLoading}
+            authSSO={authSSO}
+            isMiniButton
+          />
+          <TwitterAuth
             setIsLoading={setIsLoading}
             authSSO={authSSO}
             isMiniButton

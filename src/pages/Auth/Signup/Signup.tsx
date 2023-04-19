@@ -10,6 +10,7 @@ import _isEmpty from 'lodash/isEmpty'
 import Title from 'components/Title'
 import GoogleAuth from 'components/GoogleAuth'
 import GithubAuth from 'components/GithubAuth'
+import TwitterAuth from 'components/TwitterAuth'
 import { withAuthentication, auth } from 'hoc/protected'
 import routes from 'routes'
 import Input from 'ui/Input'
@@ -261,6 +262,13 @@ const Signup = ({ signup, authSSO }: ISignup): JSX.Element => {
               dontRemember={form.dontRemember}
             />
             <GithubAuth
+              className='mt-4 mr-5'
+              setIsLoading={setIsLoading}
+              authSSO={authSSO}
+              callback={signUpCallback}
+              dontRemember={form.dontRemember}
+            />
+            <TwitterAuth
               className='mt-4'
               setIsLoading={setIsLoading}
               authSSO={authSSO}

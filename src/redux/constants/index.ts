@@ -418,4 +418,5 @@ export const SSO_ACTIONS = Object.freeze({
 export const SSO_PROVIDERS = Object.freeze({
   GOOGLE: 'google',
   GITHUB: 'github',
+  TWITTER: 'twitter',
 })
