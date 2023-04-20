@@ -30,6 +30,7 @@ const routes = Object.freeze({
   transfer_confirm: '/project/transfer/confirm',
   transfer_reject: '/project/transfer/cancel',
   socialised: '/socialised',
+  roadmap: '/roadmap',
 })
 
 export default routes

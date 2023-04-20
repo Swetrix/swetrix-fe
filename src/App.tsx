@@ -61,6 +61,7 @@ const MediaAndPress = lazy(() => import('pages/Press'))
 const TransferProjectConfirm = lazy(() => import('pages/Project/Settings/TransferProject/TransferProjectConfirm'))
 const TransferProjectReject = lazy(() => import('pages/Project/Settings/TransferProject/TransferProjectReject'))
 const Socialised = lazy(() => import('pages/Auth/Socialised'))
+const Roadmap = lazy(() => import('pages/Roadmap'))
 
 const minimalFooterPages = [
   '/projects', '/dashboard', '/settings', '/contact',
@@ -233,6 +234,7 @@ const App = () => {
                 <Route path={routes.transfer_confirm} component={TransferProjectConfirm} exact />
                 <Route path={routes.transfer_reject} component={TransferProjectReject} exact />
                 <Route path={routes.socialised} component={Socialised} exact />
+                <Route path={routes.roadmap} component={Roadmap} exact />
                 <Route path='*' component={NotFound} />
               </Switch>
             </Suspense>
