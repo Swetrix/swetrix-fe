@@ -201,16 +201,44 @@ const getColumns = (chart: {
   ]
 
   if (unique) {
-    columns.push(['unique', ...chart.uniques])
+    columns.push({
+      id: 'unique',
+      color: '#000000',
+      data: _map(chart.uniques, (el, index) => ({
+        x: dayjs(chart.x[index]).toDate(),
+        y: _toNumber(el),
+      })),
+    })
     if (trendlines) {
-      columns.push(['trendlineUnique', ...trendline(chart.uniques)])
+      columns.push({
+        id: 'trendlineUnique',
+        color: '#000000',
+        data: _map(trendline(chart.uniques), (el, index) => ({
+          x: dayjs(chart.x[index]).toDate(),
+          y: _toNumber(el),
+        })),
+      })
     }
   }
 
   if (views) {
-    columns.push(['total', ...chart.visits])
+    columns.push({
+      id: 'total',
+      color: '#000000',
+      data: _map(chart.visits, (el, index) => ({
+        x: dayjs(chart.x[index]).toDate(),
+        y: _toNumber(el),
+      })),
+    })
     if (trendlines) {
-      columns.push(['trendlineTotal', ...trendline(chart.visits)])
+      columns.push({
+        id: 'trendlineTotal',
+        color: '#000000',
+        data: _map(trendline(chart.visits), (el, index) => ({
+          x: dayjs(chart.x[index]).toDate(),
+          y: _toNumber(el),
+        })),
+      })
     }
   }
 
@@ -218,9 +246,14 @@ const getColumns = (chart: {
     const bounceArray = _map(chart.uniques, (el, i) => {
       return _round((_toNumber(el) * 100) / _toNumber(chart.visits[i]), 1) || 0
     })
-    columns.push(
-      ['bounce', ...bounceArray],
-    )
+    columns.push({
+      id: 'trendlineBounce',
+      color: '#000000',
+      data: _map(trendline(bounceArray), (el, index) => ({
+        x: dayjs(chart.x[index]).toDate(),
+        y: _toNumber(el),
+      })),
+    })
   }
 
   if (viewsPerUnique) {
@@ -230,11 +263,25 @@ const getColumns = (chart: {
       }
       return _round(_toNumber(el) / _toNumber(chart.uniques[i]), 1)
     })
-    columns.push(['viewsPerUnique', ...viewsPerUniqueArray])
+    columns.push({
+      id: 'viewsPerUnique',
+      color: '#000000',
+      data: _map(viewsPerUniqueArray, (el, index) => ({
+        x: dayjs(chart.x[index]).toDate(),
+        y: _toNumber(el),
+      })),
+    })
   }
 
   if (sessionDuration) {
-    columns.push(['sessionDuration', ...chart.sdur])
+    columns.push({
+      id: 'sessionDuration',
+      color: '#000000',
+      data: _map(chart.sdur, (el, index) => ({
+        x: dayjs(chart.x[index]).toDate(),
+        y: _toNumber(el),
+      })),
+    })
   }
 
   return columns
