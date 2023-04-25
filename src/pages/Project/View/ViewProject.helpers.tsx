@@ -453,13 +453,88 @@ const getSettings = (
 
   return {
     data: [...columns, ...customEventsToData],
+    xScale: {
+      type: 'point',
+    },
+    yScale: {
+      type: 'linear',
+      // min: yAxisMin || 'auto',
+      // max: yAxisMax || 'auto',
+      stacked: true,
+      reverse: false,
+    },
+    axisTop: null,
+    axisRight: null,
+    // enablePoints: valueLabels,
+    // enablePointLabel: valueLabels,
+    axisBottom: {
+      tickSize: 5,
+      tickPadding: 5,
+      tickRotation: -45,
+      legend: chart.x,
+      legendPosition: 'middle',
+      legendOffset: 100,
+    },
+    axisLeft: {
+      tickSize: 5,
+      tickPadding: 5,
+      tickRotation: 0,
+      // legend: yAxisLabel || yAxis,
+      legendPosition: 'middle',
+      legendOffset: -80,
+    },
+    pointSize: 10,
+    pointColor: { theme: 'background' },
+    pointBorderWidth: 2,
+    pointBorderColor: { from: 'serieColor' },
+    pointLabelYOffset: -12,
+    useMesh: true,
+    legends: [
+      {
+        anchor: 'bottom-right',
+        direction: 'column',
+        justify: false,
+        translateX: 120,
+        translateY: 0,
+        itemsSpacing: 2,
+        itemWidth: 100,
+        itemHeight: 20,
+        itemDirection: 'left-to-right',
+        itemOpacity: 0.85,
+        symbolSize: 20,
+        effects: [
+          {
+            on: 'hover',
+            style: {
+              itemOpacity: 1,
+            },
+          },
+        ],
+      },
+    ],
+    tooltip: (point: any) => {
+      console.log(point)
+      return (
+        <ul className='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
+          <li className='font-semibold'>=TITLE</li>
+          <hr className='border-gray-200 dark:border-gray-600' />
+          <li className='flex justify-between'>
+            <div className='flex justify-items-start'>
+              <div className='w-3 h-3 rounded-sm mt-1.5 mr-2' style={{ backgroundColor: point.serieColor }} />
+              <span>{point.serieId}</span>
+            </div>
+            <span className='pl-4'>=VALUe</span>
+          </li>
+        </ul>
+      )
+    },
   }
 }
 
 const getSettingsPerf = (
   chart: {
-  [key: string]: string[]
-},
+    [key: string]: string[]
+  },
   timeBucket: string,
   activeChartMetrics: string,
   rotateXAxias: boolean,
@@ -520,16 +595,16 @@ const getSettingsPerf = (
       },
       contents: {
         template: `
-          <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
-            <li class='font-semibold'>{=TITLE}</li>
-            <hr class='border-gray-200 dark:border-gray-600' />
+          <ul className='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
+            <li className='font-semibold'>{=TITLE}</li>
+            <hr className='border-gray-200 dark:border-gray-600' />
             {{
-              <li class='flex justify-between'>
-                <div class='flex justify-items-start'>
-                  <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
+              <li className='flex justify-between'>
+                <div className='flex justify-items-start'>
+                  <div className='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
                   <span>{=NAME}</span>
                 </div>
-                <span class='pl-4'>{=VALUE}</span>
+                <span className='pl-4'>{=VALUE}</span>
               </li>
             }}
           </ul>`,
@@ -607,4 +682,7 @@ export {
   validPeriods, validTimeBacket, noRegionPeriods, getSettings,
   getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING,
   CHART_METRICS_MAPPING_PERF, getColumnsPerf, getSettingsPerf, transformAIChartData,
+}
+function marginProps(legend: any) {
+  throw new Error('Function not implemented.')
 }
