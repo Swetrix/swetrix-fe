@@ -196,14 +196,12 @@ const getColumns = (chart: {
     views, bounce, viewsPerUnique, unique, trendlines, sessionDuration,
   } = activeChartMetrics
 
-  const columns: any[] = [
-    ['x', ..._map(chart.x, el => dayjs(el).toDate())],
-  ]
+  const columns: any[] = []
 
   if (unique) {
     columns.push({
       id: 'unique',
-      color: '#000000',
+      color: '#2563EB',
       data: _map(chart.uniques, (el, index) => ({
         x: dayjs(chart.x[index]).toDate(),
         y: _toNumber(el),
@@ -212,7 +210,7 @@ const getColumns = (chart: {
     if (trendlines) {
       columns.push({
         id: 'trendlineUnique',
-        color: '#000000',
+        color: '#436abf',
         data: _map(trendline(chart.uniques), (el, index) => ({
           x: dayjs(chart.x[index]).toDate(),
           y: _toNumber(el),
@@ -224,7 +222,7 @@ const getColumns = (chart: {
   if (views) {
     columns.push({
       id: 'total',
-      color: '#000000',
+      color: '#D97706',
       data: _map(chart.visits, (el, index) => ({
         x: dayjs(chart.x[index]).toDate(),
         y: _toNumber(el),
@@ -233,7 +231,7 @@ const getColumns = (chart: {
     if (trendlines) {
       columns.push({
         id: 'trendlineTotal',
-        color: '#000000',
+        color: '#eba14b',
         data: _map(trendline(chart.visits), (el, index) => ({
           x: dayjs(chart.x[index]).toDate(),
           y: _toNumber(el),
@@ -247,9 +245,9 @@ const getColumns = (chart: {
       return _round((_toNumber(el) * 100) / _toNumber(chart.visits[i]), 1) || 0
     })
     columns.push({
-      id: 'trendlineBounce',
-      color: '#000000',
-      data: _map(trendline(bounceArray), (el, index) => ({
+      id: 'bounce',
+      color: '#2AC4B3',
+      data: _map(bounceArray, (el, index) => ({
         x: dayjs(chart.x[index]).toDate(),
         y: _toNumber(el),
       })),
@@ -265,7 +263,7 @@ const getColumns = (chart: {
     })
     columns.push({
       id: 'viewsPerUnique',
-      color: '#000000',
+      color: '#F87171',
       data: _map(viewsPerUniqueArray, (el, index) => ({
         x: dayjs(chart.x[index]).toDate(),
         y: _toNumber(el),
@@ -276,7 +274,7 @@ const getColumns = (chart: {
   if (sessionDuration) {
     columns.push({
       id: 'sessionDuration',
-      color: '#000000',
+      color: '#c945ed',
       data: _map(chart.sdur, (el, index) => ({
         x: dayjs(chart.x[index]).toDate(),
         y: _toNumber(el),
