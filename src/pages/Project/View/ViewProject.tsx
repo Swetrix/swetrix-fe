@@ -10,6 +10,7 @@ import domToImage from 'dom-to-image'
 import { saveAs } from 'file-saver'
 import bb from 'billboard.js'
 import { ResponsiveLine } from '@nivo/line'
+import { BasicTooltip, Tooltip } from '@nivo/tooltip'
 import {
   ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, ChartBarIcon, BoltIcon, BellIcon,
   PresentationChartBarIcon, PresentationChartLineIcon, NoSymbolIcon,
@@ -1724,13 +1725,30 @@ const ViewProject = ({
                   {!_isEmpty(chartOptions) && (
                     <ResponsiveLine
                       data={chartOptions?.data || []}
-                      xScale={{ type: 'point' }}
                       yScale={{
                         type: 'linear',
-                        min: 'auto',
-                        max: 'auto',
                         stacked: true,
-                        reverse: false,
+                      }}
+                      curve='monotoneX'
+                      // pointSymbol={CustomSymbol}
+                      pointSize={16}
+                      pointBorderWidth={1}
+                      pointBorderColor={{
+                        from: 'color',
+                        modifiers: [['darker', 0.3]],
+                      }}
+                      axisLeft={{
+                        tickSize: 10,
+                      }}
+                      tooltip={(props: any) => {
+                        const dayStr = dayjs(props.data.month).format('ll')
+                        return (
+                          <BasicTooltip
+                            id={dayStr}
+                            value={props.value}
+                            color={props.color}
+                          />
+                        )
                       }}
                     />
                   )}
