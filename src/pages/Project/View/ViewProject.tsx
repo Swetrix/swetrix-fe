@@ -1722,36 +1722,7 @@ const ViewProject = ({
                     hidden: checkIfAllMetricsAreDisabled,
                   })}
                 >
-                  {!_isEmpty(chartOptions) && (
-                    <ResponsiveLine
-                      data={chartOptions?.data || []}
-                      yScale={{
-                        type: 'linear',
-                        stacked: true,
-                      }}
-                      curve='monotoneX'
-                      // pointSymbol={CustomSymbol}
-                      pointSize={16}
-                      pointBorderWidth={1}
-                      pointBorderColor={{
-                        from: 'color',
-                        modifiers: [['darker', 0.3]],
-                      }}
-                      axisLeft={{
-                        tickSize: 10,
-                      }}
-                      tooltip={(props: any) => {
-                        const dayStr = dayjs(props.data.month).format('ll')
-                        return (
-                          <BasicTooltip
-                            id={dayStr}
-                            value={props.value}
-                            color={props.color}
-                          />
-                        )
-                      }}
-                    />
-                  )}
+                  <ResponsiveLine {...chartOptions} />
                 </div>
                 <Filters
                   filters={filters}

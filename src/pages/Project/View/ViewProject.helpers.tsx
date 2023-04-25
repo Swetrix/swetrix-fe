@@ -381,14 +381,14 @@ const getSettings = (
   const modifiedChart = { ...chart }
   let regions
   const customEventsToData = customEvents ? _map(_keys(customEvents), (el, index) => {
-    return [{
+    return {
       id: el,
       color: stringToColour(el),
       data: _map(customEvents[el], (item, i) => ({
-        x: dayjs(chart.x[i]).toDate(),
+        x: dayjs(chart.x[i]).toDate().toLocaleDateString(),
         y: _toNumber(item),
       })),
-    }]
+    }
   }) : []
 
   console.log(customEventsToData)
