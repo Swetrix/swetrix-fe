@@ -224,7 +224,7 @@ const getColumns = (chart: {
       id: 'total',
       color: '#D97706',
       data: _map(chart.visits, (el, index) => ({
-        x: dayjs(chart.x[index]).toDate(),
+        x: dayjs(chart.x[index]).toDate().toLocaleDateString(),
         y: _toNumber(el),
       })),
     })
@@ -233,7 +233,7 @@ const getColumns = (chart: {
         id: 'trendlineTotal',
         color: '#eba14b',
         data: _map(trendline(chart.visits), (el, index) => ({
-          x: dayjs(chart.x[index]).toDate(),
+          x: dayjs(chart.x[index]).toDate().toLocaleDateString(),
           y: _toNumber(el),
         })),
       })
@@ -248,7 +248,7 @@ const getColumns = (chart: {
       id: 'bounce',
       color: '#2AC4B3',
       data: _map(bounceArray, (el, index) => ({
-        x: dayjs(chart.x[index]).toDate(),
+        x: dayjs(chart.x[index]).toDate().toLocaleDateString(),
         y: _toNumber(el),
       })),
     })
@@ -265,7 +265,7 @@ const getColumns = (chart: {
       id: 'viewsPerUnique',
       color: '#F87171',
       data: _map(viewsPerUniqueArray, (el, index) => ({
-        x: dayjs(chart.x[index]).toDate(),
+        x: dayjs(chart.x[index]).toDate().toLocaleDateString(),
         y: _toNumber(el),
       })),
     })
@@ -276,7 +276,7 @@ const getColumns = (chart: {
       id: 'sessionDuration',
       color: '#c945ed',
       data: _map(chart.sdur, (el, index) => ({
-        x: dayjs(chart.x[index]).toDate(),
+        x: dayjs(chart.x[index]).toDate().toLocaleDateString(),
         y: _toNumber(el),
       })),
     })
