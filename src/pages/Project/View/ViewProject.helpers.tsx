@@ -203,7 +203,7 @@ const getColumns = (chart: {
       id: 'unique',
       color: '#2563EB',
       data: _map(chart.uniques, (el, index) => ({
-        x: dayjs(chart.x[index]).toDate(),
+        x: dayjs(chart.x[index]).toDate().toLocaleDateString(),
         y: _toNumber(el),
       })),
     })
@@ -212,7 +212,7 @@ const getColumns = (chart: {
         id: 'trendlineUnique',
         color: '#436abf',
         data: _map(trendline(chart.uniques), (el, index) => ({
-          x: dayjs(chart.x[index]).toDate(),
+          x: dayjs(chart.x[index]).toDate().toLocaleDateString(),
           y: _toNumber(el),
         })),
       })
@@ -377,34 +377,32 @@ const getSettings = (
   },
 ) => {
   const xAxisSize = _size(chart.x)
-  const lines = []
+  // const lines = []
   const modifiedChart = { ...chart }
   let regions
-  const customEventsToArray = customEvents ? _map(_keys(customEvents), (el) => {
-    return [el, ...customEvents[el]]
+  const customEventsToData = customEvents ? _map(_keys(customEvents), (el, index) => {
+    return [{
+      id: el,
+      color: stringToColour(el),
+      data: _map(customEvents[el], (item, i) => ({
+        x: dayjs(chart.x[i]).toDate(),
+        y: _toNumber(item),
+      })),
+    }]
   }) : []
 
-  let customEventsColors: {
-    [key: string]: string,
-  } = {}
+  console.log(customEventsToData)
 
-  _forEach(_keys(customEvents), (el) => {
-    customEventsColors = {
-      ...customEventsColors,
-      [el]: stringToColour(el),
-    }
-  })
-
-  if (!_isEmpty(forecasedChartData)) {
-    lines.push({
-      value: _last(chart?.x),
-      text: 'Forecast',
-    })
-    modifiedChart.x = [...modifiedChart.x, ...forecasedChartData.x]
-    modifiedChart.uniques = [...modifiedChart.uniques, ...forecasedChartData.uniques]
-    modifiedChart.visits = [...modifiedChart.visits, ...forecasedChartData.visits]
-    modifiedChart.sdur = [...modifiedChart.sdur, ...forecasedChartData.sdur]
-  }
+  // if (!_isEmpty(forecasedChartData)) {
+  //   lines.push({
+  //     value: _last(chart?.x),
+  //     text: 'Forecast',
+  //   })
+  //   modifiedChart.x = [...modifiedChart.x, ...forecasedChartData.x]
+  //   modifiedChart.uniques = [...modifiedChart.uniques, ...forecasedChartData.uniques]
+  //   modifiedChart.visits = [...modifiedChart.visits, ...forecasedChartData.visits]
+  //   modifiedChart.sdur = [...modifiedChart.sdur, ...forecasedChartData.sdur]
+  // }
 
   const columns = getColumns(modifiedChart, activeChartMetrics)
 
@@ -454,106 +452,7 @@ const getSettings = (
   }
 
   return {
-    data: {
-      x: 'x',
-      columns: [...columns, ...customEventsToArray],
-      types: {
-        unique: chartType === chartTypes.line ? area() : bar(),
-        total: chartType === chartTypes.line ? area() : bar(),
-        bounce: chartType === chartTypes.line ? spline() : bar(),
-        viewsPerUnique: chartType === chartTypes.line ? spline() : bar(),
-        trendlineUnique: spline(),
-        trendlineTotal: spline(),
-        sessionDuration: chartType === chartTypes.line ? spline() : bar(),
-      },
-      colors: {
-        unique: '#2563EB',
-        total: '#D97706',
-        bounce: '#2AC4B3',
-        viewsPerUnique: '#F87171',
-        trendlineUnique: '#436abf',
-        trendlineTotal: '#eba14b',
-        sessionDuration: '#c945ed',
-        ...customEventsColors,
-      },
-      regions,
-      axes: {
-        bounce: 'y2',
-        sessionDuration: 'y2',
-      },
-    },
-    grid: {
-      x: {
-        lines,
-      },
-    },
-    axis: {
-      x: {
-        clipPath: false,
-        tick: {
-          fit: true,
-          rotate: rotateXAxias ? 45 : 0,
-          format: timeFormat === TimeFormat['24-hour'] ? (x: string) => d3.timeFormat(tbsFormatMapper24h[timeBucket])(x) : null,
-        },
-        localtime: timeFormat === TimeFormat['24-hour'],
-        type: 'timeseries',
-      },
-      y2: {
-        show: activeChartMetrics.bounce || activeChartMetrics.sessionDuration,
-        tick: {
-          format: activeChartMetrics.bounce ? (d: string) => `${d}%` : (d: string) => getStringFromTime(getTimeFromSeconds(d)),
-        },
-        min: activeChartMetrics.bounce ? 10 : null,
-        max: activeChartMetrics.bounce ? 100 : null,
-        default: activeChartMetrics.bounce ? [10, 100] : null,
-      },
-    },
-    tooltip: {
-      format: {
-        title: (x: string) => d3.timeFormat(tbsFormatMapper[timeBucket])(x),
-      },
-      contents: {
-        template: `
-          <ul class='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
-            <li class='font-semibold'>{=TITLE}</li>
-            <hr class='border-gray-200 dark:border-gray-600' />
-            {{
-              <li class='flex justify-between'>
-                <div class='flex justify-items-start'>
-                  <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:{=COLOR}></div>
-                  <span>{=NAME}</span>
-                </div>
-                <span class='pl-4'>{=VALUE}</span>
-              </li>
-            }}
-          </ul>`,
-      },
-    },
-    point: {
-      focus: {
-        only: xAxisSize > 1,
-      },
-      pattern: [
-        'circle',
-      ],
-      r: 3,
-    },
-    legend: {
-      usePoint: true,
-      item: {
-        tile: {
-          width: 10,
-        },
-      },
-    },
-    area: {
-      linearGradient: true,
-    },
-    padding: {
-      right: (rotateXAxias && !(activeChartMetrics.bounce || activeChartMetrics.sessionDuration)) && 35,
-      left: 40,
-    },
-    bindto: '#dataChart',
+    data: [...columns, ...customEventsToData],
   }
 }
 

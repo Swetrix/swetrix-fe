@@ -9,6 +9,7 @@ import domToImage from 'dom-to-image'
 // @ts-ignore
 import { saveAs } from 'file-saver'
 import bb from 'billboard.js'
+import { ResponsiveLine } from '@nivo/line'
 import {
   ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, ChartBarIcon, BoltIcon, BellIcon,
   PresentationChartBarIcon, PresentationChartLineIcon, NoSymbolIcon,
@@ -161,7 +162,7 @@ const ViewProject = ({
   const [timeBucket, setTimebucket] = useState<string>(projectViewPrefs ? projectViewPrefs[id]?.timeBucket || periodPairs[3].tbs[1] : periodPairs[3].tbs[1])
   const activePeriod = useMemo(() => _find(periodPairs, p => p.period === period), [period, periodPairs])
   const [chartData, setChartData] = useState<any>({})
-  const [mainChart, setMainChart] = useState<any>(null)
+  const [chartOptions, setChartOptions] = useState<any>({})
   const [dataLoading, setDataLoading] = useState<boolean>(false)
   const [activeChartMetrics, setActiveChartMetrics] = useState<{
     [key: string]: boolean
@@ -211,6 +212,8 @@ const ViewProject = ({
   const rotateXAxias = useMemo(() => (size.width > 0 && size.width < 500), [size])
   const customEventsChartData = useMemo(() => _pickBy(customEventsPrefs[id], (value, keyCustomEvents) => _includes(activeChartMetricsCustomEvents, keyCustomEvents)), [customEventsPrefs, id, activeChartMetricsCustomEvents])
   const [chartType, setChartType] = useState<string>(getItem('chartType') as string || chartTypes.line)
+
+  console.log(chartOptions, 'chartOptions')
 
   const tabs: {
     id: string
@@ -410,18 +413,9 @@ const ViewProject = ({
       setCustomEventsPrefs(id, events)
 
       const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-      const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, events)
+      const chartSetting = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, events)
 
-      if (!_isEmpty(mainChart)) {
-        mainChart.destroy()
-      }
-
-      setMainChart(() => {
-        // @ts-ignore
-        const generete = bb.generate(bbSettings)
-        generete.data.names(dataNames)
-        return generete
-      })
+      setChartOptions(chartSetting)
     } catch (e) {
       console.log('FAILED TO LOAD CUSTOM EVENTS', e)
     } finally {
@@ -510,7 +504,7 @@ const ViewProject = ({
         setIsPanelsDataEmpty(true)
       } else {
         const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-        const bbSettings = getSettings(chart, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChart)
+        const chartSetting = getSettings(chart, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChart)
         setChartData(chart)
 
         setPanelsData({
@@ -520,16 +514,7 @@ const ViewProject = ({
         })
 
         if (activeTab === PROJECT_TABS.traffic) {
-          if (!_isEmpty(mainChart)) {
-            mainChart.destroy()
-          }
-
-          setMainChart(() => {
-            // @ts-ignore
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNames)
-            return generete
-          })
+          setChartOptions(chartSetting)
         }
 
         setIsPanelsDataEmpty(false)
@@ -596,7 +581,7 @@ const ViewProject = ({
         setIsPanelsDataEmptyPerf(true)
       } else {
         const { chart: chartPerf } = dataPerf
-        const bbSettings = getSettingsPerf(chartPerf, timeBucket, activeChartMetricsPerf, rotateXAxias, chartType)
+        const chartSettings = getSettingsPerf(chartPerf, timeBucket, activeChartMetricsPerf, rotateXAxias, chartType)
         setChartDataPerf(chartPerf)
 
         setPanelsDataPerf({
@@ -605,16 +590,7 @@ const ViewProject = ({
         })
 
         if (activeTab === PROJECT_TABS.performance) {
-          if (!_isEmpty(mainChart)) {
-            mainChart.destroy()
-          }
-
-          setMainChart(() => {
-            // @ts-ignore
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNamesPerf)
-            return generete
-          })
+          // setChartOptionsPerf(chartSettings)
         }
 
         setIsPanelsDataEmptyPerf(false)
@@ -851,61 +827,27 @@ const ViewProject = ({
 
   useEffect(() => {
     if (activeTab === PROJECT_TABS.traffic) {
-      if (!isLoading && !_isEmpty(chartData) && !_isEmpty(mainChart)) {
-        if (activeChartMetrics.views || activeChartMetrics.unique || activeChartMetrics.viewsPerUnique || activeChartMetrics.trendlines) {
-          mainChart.load({
-            columns: getColumns(chartData, activeChartMetrics),
-          })
-        }
+      if (!isLoading && !_isEmpty(chartData)) {
+        const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
+        const chartSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChartData)
 
-        if (activeChartMetrics.bounce || activeChartMetrics.sessionDuration || activeChartMetrics.views || activeChartMetrics.unique || !activeChartMetrics.bounce || !activeChartMetrics.sessionDuration) {
-          const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-          const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChartData)
-
-          if (!_isEmpty(mainChart)) {
-            mainChart.destroy()
-          }
-
-          setMainChart(() => {
-            // @ts-ignore
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNames)
-            return generete
-          })
-        }
-
-        if (!activeChartMetrics.views) {
-          mainChart.unload({
-            ids: 'total',
-          })
-        }
-
-        if (!activeChartMetrics.unique) {
-          mainChart.unload({
-            ids: 'unique',
-          })
-        }
-
-        if (!activeChartMetrics.viewsPerUnique) {
-          mainChart.unload({
-            ids: 'viewsPerUnique',
-          })
-        }
+        setChartOptions(chartSettings)
       }
-    } else if (!isLoading && !_isEmpty(chartDataPerf) && !_isEmpty(mainChart)) {
-      const bbSettings = getSettingsPerf(chartDataPerf, timeBucket, activeChartMetricsPerf, rotateXAxias, chartType)
-
-      if (!_isEmpty(mainChart)) {
-        mainChart.destroy()
-      }
-
-      setMainChart(() => {
-        // @ts-ignore
-        const generete = bb.generate(bbSettings)
-        generete.data.names(dataNamesPerf)
-        return generete
-      })
     }
+    //  else if (!isLoading && !_isEmpty(chartDataPerf) && !_isEmpty(mainChart)) {
+    //   const bbSettings = getSettingsPerf(chartDataPerf, timeBucket, activeChartMetricsPerf, rotateXAxias, chartType)
+
+    //   if (!_isEmpty(mainChart)) {
+    //     mainChart.destroy()
+    //   }
+
+    //   setMainChart(() => {
+    //     // @ts-ignore
+    //     const generete = bb.generate(bbSettings)
+    //     generete.data.names(dataNamesPerf)
+    //     return generete
+    //   })
+    // }
   }, [isLoading, activeChartMetrics, chartData, chartDataPerf, activeChartMetricsPerf]) // eslint-disable-line
 
   // Initialising Swetrix SDK instance
@@ -1779,7 +1721,19 @@ const ViewProject = ({
                     hidden: checkIfAllMetricsAreDisabled,
                   })}
                 >
-                  <div className='h-80 mt-8' id='dataChart' />
+                  {!_isEmpty(chartOptions) && (
+                    <ResponsiveLine
+                      data={chartOptions?.data || []}
+                      xScale={{ type: 'point' }}
+                      yScale={{
+                        type: 'linear',
+                        min: 'auto',
+                        max: 'auto',
+                        stacked: true,
+                        reverse: false,
+                      }}
+                    />
+                  )}
                 </div>
                 <Filters
                   filters={filters}
