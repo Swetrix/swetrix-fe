@@ -460,8 +460,6 @@ const getSettings = (
       type: 'linear',
       // min: yAxisMin || 'auto',
       // max: yAxisMax || 'auto',
-      stacked: true,
-      reverse: false,
     },
     axisTop: null,
     axisRight: null,
@@ -512,19 +510,22 @@ const getSettings = (
         ],
       },
     ],
-    tooltip: (point: any) => {
+    enableSlices: 'x',
+    sliceTooltip: (point: any) => {
       console.log(point)
       return (
         <ul className='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
-          <li className='font-semibold'>=TITLE</li>
+          <li className='font-semibold'>{point.slice.points[0].data.x}</li>
           <hr className='border-gray-200 dark:border-gray-600' />
-          <li className='flex justify-between'>
-            <div className='flex justify-items-start'>
-              <div className='w-3 h-3 rounded-sm mt-1.5 mr-2' style={{ backgroundColor: point.serieColor }} />
-              <span>{point.serieId}</span>
-            </div>
-            <span className='pl-4'>=VALUe</span>
-          </li>
+          {_map(point.slice.points, (el, index) => (
+            <li className='flex justify-between' key={index}>
+              <div className='flex justify-items-start'>
+                <div className='w-3 h-3 rounded-sm mt-1.5 mr-2' style={{ backgroundColor: el.borderColor }} />
+                <span>{el.serieId}</span>
+              </div>
+              <span className='pl-4'>{el.data.y}</span>
+            </li>
+          ))}
         </ul>
       )
     },
