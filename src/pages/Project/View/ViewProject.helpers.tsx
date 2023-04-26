@@ -453,33 +453,34 @@ const getSettings = (
 
   return {
     data: [...columns, ...customEventsToData],
-    xScale: {
-      type: 'point',
+    margin: {
+      top: 0, right: 50, bottom: 50, left: 60,
     },
+    xScale: { type: 'point' },
     yScale: {
       type: 'linear',
-      // min: yAxisMin || 'auto',
-      // max: yAxisMax || 'auto',
+      min: 'auto',
+      max: 'auto',
+      stacked: true,
+      reverse: false,
     },
     axisTop: null,
     axisRight: null,
-    // enablePoints: valueLabels,
-    // enablePointLabel: valueLabels,
     axisBottom: {
-      tickSize: 5,
-      tickPadding: 5,
-      tickRotation: -45,
-      legend: chart.x,
-      legendPosition: 'middle',
-      legendOffset: 100,
-    },
-    axisLeft: {
+      orient: 'bottom',
       tickSize: 5,
       tickPadding: 5,
       tickRotation: 0,
-      // legend: yAxisLabel || yAxis,
+      legendOffset: 36,
       legendPosition: 'middle',
-      legendOffset: -80,
+    },
+    axisLeft: {
+      orient: 'left',
+      tickSize: 5,
+      tickPadding: 5,
+      tickRotation: 0,
+      legendOffset: -40,
+      legendPosition: 'middle',
     },
     pointSize: 10,
     pointColor: { theme: 'background' },
@@ -492,18 +493,21 @@ const getSettings = (
         anchor: 'bottom-right',
         direction: 'column',
         justify: false,
-        translateX: 120,
+        translateX: 100,
         translateY: 0,
-        itemsSpacing: 2,
-        itemWidth: 100,
-        itemHeight: 20,
+        itemsSpacing: 0,
         itemDirection: 'left-to-right',
-        itemOpacity: 0.85,
-        symbolSize: 20,
+        itemWidth: 80,
+        itemHeight: 20,
+        itemOpacity: 0.75,
+        symbolSize: 12,
+        symbolShape: 'circle',
+        symbolBorderColor: 'rgba(0, 0, 0, .5)',
         effects: [
           {
             on: 'hover',
             style: {
+              itemBackground: 'rgba(0, 0, 0, .03)',
               itemOpacity: 1,
             },
           },
@@ -512,7 +516,6 @@ const getSettings = (
     ],
     enableSlices: 'x',
     sliceTooltip: (point: any) => {
-      console.log(point)
       return (
         <ul className='bg-gray-100 dark:text-gray-50 dark:bg-gray-700 rounded-md shadow-md px-3 py-1'>
           <li className='font-semibold'>{point.slice.points[0].data.x}</li>
