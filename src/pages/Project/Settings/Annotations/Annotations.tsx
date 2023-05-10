@@ -14,10 +14,6 @@ import _map from 'lodash/map'
 import _toLower from 'lodash/toLower'
 import FlatPicker from 'ui/Flatpicker'
 
-import {
-  removeSubscriber, getSubscribers, updateSubscriber,
-} from 'api'
-
 import { isValidEmail } from 'utils/validator'
 import useOnClickOutside from 'hooks/useOnClickOutside'
 import { reportFrequencyForEmailsOptions } from 'redux/constants'
@@ -90,61 +86,28 @@ const ModalMessage = ({
 )
 
 const AnnotationsList = ({
-  data, onRemove, t, setAnnotations, genericError, language, reportTypeNotifiction,
+  data, onRemove, t, language,
 }: {
   data: {
     id: string
     addedAt: string
-    isConfirmed: boolean
-    projectId: string
-    email: string
-    reportFrequency: string
+    name: string
   }
   onRemove: (id: string) => void
   t: (key: string, options?: {
     [key: string]: string | number | boolean | undefined
   }) => string
-  setAnnotations: (value: ISubscribers[] | ((prevVar: ISubscribers[]) => ISubscribers[])) => void;
-  genericError: (message: string) => void
   language: string
-  reportTypeNotifiction: (message: string) => void
 }) => {
-  const [open, setOpen] = useState<boolean>(false)
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
-  const openRef = useRef<HTMLDivElement>(null)
-  useOnClickOutside(openRef, () => setOpen(false))
   const {
-    id, addedAt, isConfirmed, projectId, email, reportFrequency,
+    id, addedAt, name,
   } = data
-
-  const changeRole = async (reportType: {
-    value: string
-    label: string
-  }) => {
-    try {
-      const results = await updateSubscriber(projectId, id, { reportFrequency: reportType.value })
-      setAnnotations((prev) => {
-        const newEmails = _map(prev, (item) => {
-          if (item.id === results.id) {
-            return results
-          }
-          return item
-        })
-        return newEmails
-      })
-      reportTypeNotifiction(t('apiNotifications.roleUpdated'))
-    } catch (e) {
-      console.error(`[ERROR] Error while updating user's role: ${e}`)
-      genericError(t('apiNotifications.roleUpdateError'))
-    }
-
-    setOpen(false)
-  }
 
   return (
     <tr className='dark:bg-slate-800'>
       <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-white sm:pl-6'>
-        {email}
+        {name}
       </td>
       <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-white'>
         {language === 'en'
@@ -152,61 +115,20 @@ const AnnotationsList = ({
           : dayjs(addedAt).locale(language).format('D MMMM, YYYY')}
       </td>
       <td className='relative whitespace-nowrap py-4 text-right text-sm font-medium pr-2'>
-        {isConfirmed ? (
-          <div ref={openRef}>
-            <button
-              onClick={() => setOpen(!open)}
-              type='button'
-              className='inline-flex items-center shadow-sm pl-2 pr-1 py-0.5 border border-gray-200 dark:border-gray-600 text-sm leading-5 font-medium rounded-full bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600'
-            >
-              {t(`profileSettings.${_toLower(reportFrequency)}`)}
-              <ChevronDownIcon
-                style={{ transform: open ? 'rotate(180deg)' : '' }}
-                className='w-4 h-4 pt-px ml-0.5'
-              />
-            </button>
-            {open && (
-              <ul className='text-left origin-top-right absolute z-10 right-0 mt-2 w-72 rounded-md shadow-lg bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-gray-700 focus:outline-none'>
-                {_map(reportFrequencyForEmailsOptions, (item) => (
-                  <li onClick={() => changeRole(item)} className='p-4 hover:bg-indigo-600 group cursor-pointer flex justify-between items-center' key={item.value}>
-                    <div>
-                      <p className='font-bold text-gray-700 dark:text-gray-200 group-hover:text-gray-200'>
-                        {t(`profileSettings.${_toLower(item.label)}`)}
-                      </p>
-                    </div>
-                    {reportFrequency === item.value && (
-                      <span className='text-indigo-600 group-hover:text-gray-200'>
-                        <CheckIcon className='w-7 h-7 pt-px ml-1' />
-                      </span>
-                    )}
-                  </li>
-                ))}
-                <li onClick={() => { setOpen(false); setShowDeleteModal(true) }} className='p-4 hover:bg-gray-200 dark:hover:bg-gray-700 group cursor-pointer flex justify-between items-center'>
-                  <div>
-                    <p className='font-bold text-red-600 dark:text-red-500'>
-                      {t('project.settings.removeMember')}
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            )}
-          </div>
-        ) : (
-          <div className='flex items-center justify-end'>
-            <WarningPin
-              label={t('common.pending')}
-              className='inline-flex items-center shadow-sm px-2.5 py-0.5 mr-3'
-            />
-            <Button
-              type='button'
-              className='bg-white text-indigo-700 rounded-md text-base font-medium hover:bg-indigo-50 dark:text-gray-50 dark:border-gray-600 dark:bg-slate-800 dark:hover:bg-slate-700'
-              small
-              onClick={() => setShowDeleteModal(true)}
-            >
-              <TrashIcon className='h-4 w-4' />
-            </Button>
-          </div>
-        )}
+        <div className='flex items-center justify-end'>
+          <WarningPin
+            label={t('common.pending')}
+            className='inline-flex items-center shadow-sm px-2.5 py-0.5 mr-3'
+          />
+          <Button
+            type='button'
+            className='bg-white text-indigo-700 rounded-md text-base font-medium hover:bg-indigo-50 dark:text-gray-50 dark:border-gray-600 dark:bg-slate-800 dark:hover:bg-slate-700'
+            small
+            onClick={() => setShowDeleteModal(true)}
+          >
+            <TrashIcon className='h-4 w-4' />
+          </Button>
+        </div>
       </td>
       <td>
         <Modal
@@ -220,7 +142,7 @@ const AnnotationsList = ({
           submitText={t('common.yes')}
           type='confirmed'
           closeText={t('common.no')}
-          title={t('project.settings.removeUser', { user: email })}
+          title={t('project.settings.removeAnnotation')}
           message={t('project.settings.removeReportConfirm')}
           isOpened={showDeleteModal}
         />
@@ -295,14 +217,17 @@ const Annotations = ({
 
   const getSubcribersAsync = async () => {
     try {
-      const { subscribers, count } = await getSubscribers(projectId, paggination.page - 1, paggination.limit)
+      const { annotions, count } = {
+        annotions: [],
+        count: 0,
+      } // await getSubscribers(projectId, paggination.page - 1, paggination.limit)
       setPaggination(oldPaggination => ({
         ...oldPaggination,
         count,
       }))
-      setAnnotations(subscribers)
+      setAnnotations(annotions)
     } catch (e) {
-      console.error(`[ERROR] Error while getting subscribers: ${e}`)
+      console.error(`[ERROR] Error while getting annotations: ${e}`)
     } finally {
       setLoading(false)
     }
@@ -384,10 +309,10 @@ const Annotations = ({
     setErrors({})
   }
 
-  const onRemove = async (email: string) => {
+  const onRemove = async (name: string) => {
     try {
-      await removeSubscriber(projectId, email)
-      const results = _filter(annotations, s => s.id !== email)
+      // await removeSubscriber(projectId, email)
+      const results = _filter(annotations, s => s.id !== name)
       setAnnotations(results)
       removeAnnotations(t('apiNotifications.emailDelete'))
     } catch (e) {
