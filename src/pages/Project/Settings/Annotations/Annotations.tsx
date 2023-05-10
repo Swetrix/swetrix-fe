@@ -25,7 +25,7 @@ import Loader from 'ui/Loader'
 import Beta from 'ui/Beta'
 import cx from 'clsx'
 import { WarningPin } from 'ui/Pin'
-import { ISubscribers } from 'redux/models/ISubscribers'
+import { IAnnotations } from 'redux/models/IAnnotations'
 
 const ModalMessage = ({
   project, handleInput, beenSubmitted, errors, form, t, setForm,
@@ -207,7 +207,7 @@ const Annotations = ({
     date?: string,
   }>({})
   const [validated, setValidated] = useState<boolean>(false)
-  const [annotations, setAnnotations] = useState<ISubscribers[]>([])
+  const [annotations, setAnnotations] = useState<IAnnotations[]>([])
   const [loading, setLoading] = useState(true)
   const [paggination, setPaggination] = useState({
     page: 1,
@@ -278,7 +278,7 @@ const Annotations = ({
     setValidated(false)
 
     try {
-      const results = [] as unknown as ISubscribers // await addSubscriber(projectId, { date: form.date, name: form.name })
+      const results = [] as unknown as IAnnotations // await addSubscriber(projectId, { date: form.date, name: form.name })
       setAnnotations([...annotations, results])
       addAnnotations(t('apiNotifications.userInvited'))
     } catch (e) {
@@ -375,9 +375,6 @@ const Annotations = ({
                           onRemove={onRemove}
                           t={t}
                           language={language}
-                          setAnnotations={setAnnotations}
-                          genericError={genericError}
-                          reportTypeNotifiction={reportTypeNotifiction}
                         />
                       ))}
                     </tbody>
