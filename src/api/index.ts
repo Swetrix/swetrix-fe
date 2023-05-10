@@ -955,3 +955,18 @@ export const getAnnotations = (
       debug('%s', error)
       throw error
     })
+
+export const createAnnotation = (
+  pid: string,
+  data: {
+    name: string
+    date: string
+  },
+) =>
+  api
+    .post(`project/${pid}/annotations`, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
