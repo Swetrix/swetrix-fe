@@ -14,13 +14,13 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
       message,
     }))
   },
-  addEmail: (message: string, type = 'success') => {
+  addAnnotations: (message: string, type = 'success') => {
     dispatch(alertsActions.generateAlerts({
       message,
       type,
     }))
   },
-  removeEmail: (message: string, type = 'success') => {
+  removeAnnotations: (message: string, type = 'success') => {
     dispatch(alertsActions.generateAlerts({
       message,
       type,

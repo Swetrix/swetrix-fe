@@ -275,11 +275,11 @@ const NoSubscribers = ({ t }: {
 )
 
 const Annotations = ({
-  genericError, addEmail, removeEmail, projectId, projectName, reportTypeNotifiction,
+  genericError, addAnnotations, removeAnnotations, projectId, projectName, reportTypeNotifiction,
 }: {
   genericError: (message: string, type?: string) => void
-  addEmail: (message: string, type?: string) => void
-  removeEmail: (message: string) => void
+  addAnnotations: (message: string, type?: string) => void
+  removeAnnotations: (message: string) => void
   projectId: string
   projectName: string
   reportTypeNotifiction: (message: string, type?: string) => void
@@ -370,10 +370,10 @@ const Annotations = ({
     try {
       const results = await addSubscriber(projectId, { reportFrequency: form.reportFrequency, email: form.email })
       setAnnotations([...annotations, results])
-      addEmail(t('apiNotifications.userInvited'))
+      addAnnotations(t('apiNotifications.userInvited'))
     } catch (e) {
       console.error(`[ERROR] Error while inviting a user: ${e}`)
-      addEmail(t('apiNotifications.userInviteError'), 'error')
+      addAnnotations(t('apiNotifications.userInviteError'), 'error')
     }
 
     // a timeout is needed to prevent the flicker of data fields in the modal when closing
@@ -404,7 +404,7 @@ const Annotations = ({
       await removeSubscriber(projectId, email)
       const results = _filter(annotations, s => s.id !== email)
       setAnnotations(results)
-      removeEmail(t('apiNotifications.emailDelete'))
+      removeAnnotations(t('apiNotifications.emailDelete'))
     } catch (e) {
       console.error(`[ERROR] Error while deleting a email: ${e}`)
       genericError(t('apiNotifications.emailDeleteError'))
@@ -515,8 +515,8 @@ const Annotations = ({
 Annotations.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   genericError: PropTypes.func.isRequired,
-  addEmail: PropTypes.func.isRequired,
-  removeEmail: PropTypes.func.isRequired,
+  addAnnotations: PropTypes.func.isRequired,
+  removeAnnotations: PropTypes.func.isRequired,
 }
 
 export default Annotations
