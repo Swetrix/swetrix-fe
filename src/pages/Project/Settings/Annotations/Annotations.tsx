@@ -1,8 +1,8 @@
 import React, {
-  useState, useEffect, useRef,
+  useState, useEffect,
 } from 'react'
 import {
-  TrashIcon, InboxStackIcon, ChevronDownIcon, CheckIcon,
+  TrashIcon, InboxStackIcon,
 } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
@@ -11,19 +11,15 @@ import _keys from 'lodash/keys'
 import _isEmpty from 'lodash/isEmpty'
 import _filter from 'lodash/filter'
 import _map from 'lodash/map'
-import _toLower from 'lodash/toLower'
 import FlatPicker from 'ui/Flatpicker'
 
 import { isValidEmail } from 'utils/validator'
-import useOnClickOutside from 'hooks/useOnClickOutside'
-import { reportFrequencyForEmailsOptions } from 'redux/constants'
 
 import Input from 'ui/Input'
 import Button from 'ui/Button'
 import Modal from 'ui/Modal'
 import Loader from 'ui/Loader'
 import Beta from 'ui/Beta'
-import cx from 'clsx'
 import { WarningPin } from 'ui/Pin'
 import { IAnnotations } from 'redux/models/IAnnotations'
 
