@@ -12,9 +12,10 @@ import _isEmpty from 'lodash/isEmpty'
 import _filter from 'lodash/filter'
 import _map from 'lodash/map'
 import _toLower from 'lodash/toLower'
+import FlatPicker from 'ui/Flatpicker'
 
 import {
-  addSubscriber, removeSubscriber, getSubscribers, updateSubscriber,
+  removeSubscriber, getSubscribers, updateSubscriber,
 } from 'api'
 
 import { isValidEmail } from 'utils/validator'
@@ -31,22 +32,23 @@ import { WarningPin } from 'ui/Pin'
 import { ISubscribers } from 'redux/models/ISubscribers'
 
 const ModalMessage = ({
-  project, handleInput, beenSubmitted, errors, form, t,
+  project, handleInput, beenSubmitted, errors, form, t, setForm,
 }: {
   project: string
   handleInput: (e: React.ChangeEvent<HTMLInputElement>) => void
   beenSubmitted: boolean
   errors: {
-    email?: string
-    reportFrequency?: string
+    name?: string
+    date?: string
   }
   form: {
-    email: string
-    reportFrequency: string
+    name: string
+    date: Date | null
   }
   t: (key: string, options?: {
     [key: string]: string | number | boolean | undefined
   }) => string
+  setForm: any
 }): JSX.Element => (
   <div>
     <h2 className='text-xl font-bold text-gray-700 dark:text-gray-200'>
@@ -56,55 +58,34 @@ const ModalMessage = ({
       {t('project.settings.inviteDesc')}
     </p>
     <Input
-      name='email'
-      id='email'
-      type='email'
-      label={t('auth.common.email')}
-      value={form.email}
+      name='name'
+      id='name'
+      type='name'
+      label={t('auth.common.name')}
+      value={form.name}
       placeholder='you@example.com'
       className='mt-4'
       onChange={handleInput}
-      error={beenSubmitted && errors.email}
+      error={beenSubmitted && errors.name}
     />
-    <fieldset className='mt-4'>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label className='block text-sm font-medium text-gray-700 dark:text-gray-300' htmlFor='role'>
-        {t('project.annotations.reportFrequency')}
-      </label>
-      <div className={cx('mt-1 bg-white rounded-md -space-y-px dark:bg-slate-900', { 'border-red-300 border': errors.reportFrequency })}>
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        {_map(reportFrequencyForEmailsOptions, (item, index) => (
-          <div key={item.value}>
-            {/*  eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            <label className={cx('dark:border-gray-500 relative border p-4 flex cursor-pointer border-gray-200', {
-              'bg-indigo-50 border-indigo-200 dark:bg-indigo-500 dark:border-indigo-800 z-10': item.value === form.reportFrequency,
-              'border-gray-200': form.reportFrequency !== item.value,
-              'rounded-tl-md rounded-tr-md': index === 0,
-              'rounded-bl-md rounded-br-md': index === reportFrequencyForEmailsOptions.length - 1,
-            })}
-            >
-              <input
-                name='reportFrequency'
-                className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
-                id='reportFrequency'
-                type='radio'
-                value={item.value}
-                onChange={handleInput}
-              />
-              <div className='ml-3 flex flex-col'>
-                <span className={cx('block text-sm font-medium', { 'text-indigo-900 dark:text-white': form.reportFrequency === item.value, 'text-gray-700 dark:text-gray-200': form.reportFrequency !== item.value })}>
-                  {t(`profileSettings.${item.value}`)}
-                </span>
-              </div>
-            </label>
-          </div>
-        ))}
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      </div>
-      {errors.reportFrequency && (
-        <p className='mt-2 text-sm text-red-600 dark:text-red-500' id='email-error'>{errors.reportFrequency}</p>
-      )}
-    </fieldset>
+    <p className='text-gray-500 dark:text-gray-300 mt-4 mb-2 text-sm'>
+      {t('project.settings.selectDate')}
+    </p>
+    <input type='text' className='h-0 w-0 border-0 p-0 m-0 focus:text-transparent focus:border-transparent focus:shadow-none focus:ring-transparent' />
+    <FlatPicker
+      onChange={(date) => {
+        console.log(date)
+        setForm((prev: any) => ({
+          ...prev,
+          date: dayjs(date[0]).format('YYYY-MM-DD'),
+        }))
+      }}
+      options={{
+        altInputClass: 'shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:text-gray-50 dark:placeholder-gray-400 dark:border-gray-800 dark:bg-slate-800 rounded-md',
+        mode: 'single',
+      }}
+      value={form.date}
+    />
   </div>
 )
 
@@ -292,16 +273,16 @@ const Annotations = ({
     i18n: { language: string },
   } = useTranslation('common')
   const [form, setForm] = useState<{
-    email: string,
-    reportFrequency: string,
+    name: string,
+    date: Date | null,
   }>({
-    email: '',
-    reportFrequency: reportFrequencyForEmailsOptions[3].value,
+    name: '',
+    date: null,
   })
   const [beenSubmitted, setBeenSubmitted] = useState<boolean>(false)
   const [errors, setErrors] = useState<{
-    email?: string,
-    reportFrequency?: string,
+    name?: string,
+    date?: string,
   }>({})
   const [validated, setValidated] = useState<boolean>(false)
   const [annotations, setAnnotations] = useState<ISubscribers[]>([])
@@ -333,12 +314,16 @@ const Annotations = ({
 
   const validate = () => {
     const allErrors: {
-      email?: string,
-      reportFrequency?: string,
+      name?: string,
+      date?: string,
     } = {}
 
-    if (!isValidEmail(form.email)) {
-      allErrors.email = t('auth.common.badEmailError')
+    if (!isValidEmail(form.name)) {
+      allErrors.name = t('auth.common.badEmailError')
+    }
+
+    if (!form.date) {
+      allErrors.date = t('auth.common.requiredField')
     }
 
     const valid = _isEmpty(_keys(allErrors))
@@ -368,7 +353,7 @@ const Annotations = ({
     setValidated(false)
 
     try {
-      const results = await addSubscriber(projectId, { reportFrequency: form.reportFrequency, email: form.email })
+      const results = [] as unknown as ISubscribers // await addSubscriber(projectId, { date: form.date, name: form.name })
       setAnnotations([...annotations, results])
       addAnnotations(t('apiNotifications.userInvited'))
     } catch (e) {
@@ -377,7 +362,7 @@ const Annotations = ({
     }
 
     // a timeout is needed to prevent the flicker of data fields in the modal when closing
-    setTimeout(() => setForm({ email: '', reportFrequency: '' }), 300)
+    setTimeout(() => setForm({ name: '', date: null }), 300)
   }
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -395,7 +380,7 @@ const Annotations = ({
   const closeModal = () => {
     setShowModal(false)
     // a timeout is needed to prevent the flicker of data fields in the modal when closing
-    setTimeout(() => setForm({ email: '', reportFrequency: '' }), 300)
+    setTimeout(() => setForm({ name: '', date: null }), 300)
     setErrors({})
   }
 
@@ -504,6 +489,7 @@ const Annotations = ({
             handleInput={handleInput}
             errors={errors}
             beenSubmitted={beenSubmitted}
+            setForm={setForm}
           />
         )}
         isOpened={showModal}
