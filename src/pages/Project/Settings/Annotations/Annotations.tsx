@@ -69,7 +69,7 @@ const ModalMessage = ({
     <fieldset className='mt-4'>
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className='block text-sm font-medium text-gray-700 dark:text-gray-300' htmlFor='role'>
-        {t('project.emails.reportFrequency')}
+        {t('project.annotations.reportFrequency')}
       </label>
       <div className={cx('mt-1 bg-white rounded-md -space-y-px dark:bg-slate-900', { 'border-red-300 border': errors.reportFrequency })}>
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -304,7 +304,7 @@ const Annotations = ({
     reportFrequency?: string,
   }>({})
   const [validated, setValidated] = useState<boolean>(false)
-  const [emails, setEmails] = useState<ISubscribers[]>([])
+  const [annotations, setAnnotations] = useState<ISubscribers[]>([])
   const [loading, setLoading] = useState(true)
   const [paggination, setPaggination] = useState({
     page: 1,
@@ -369,7 +369,7 @@ const Annotations = ({
 
     try {
       const results = await addSubscriber(projectId, { reportFrequency: form.reportFrequency, email: form.email })
-      setEmails([...emails, results])
+      setAnnotations([...annotations, results])
       addEmail(t('apiNotifications.userInvited'))
     } catch (e) {
       console.error(`[ERROR] Error while inviting a user: ${e}`)
@@ -402,8 +402,8 @@ const Annotations = ({
   const onRemove = async (email: string) => {
     try {
       await removeSubscriber(projectId, email)
-      const results = _filter(emails, s => s.id !== email)
-      setEmails(results)
+      const results = _filter(annotations, s => s.id !== email)
+      setAnnotations(results)
       removeEmail(t('apiNotifications.emailDelete'))
     } catch (e) {
       console.error(`[ERROR] Error while deleting a email: ${e}`)
@@ -416,13 +416,13 @@ const Annotations = ({
       <div className='flex justify-between items-center mb-3'>
         <div>
           <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
-            {t('project.emails.title')}
+            {t('project.annotations.title')}
             <div className='ml-5'>
               <Beta />
             </div>
           </h3>
           <p className='text-sm text-gray-500 dark:text-gray-400'>
-            {t('project.emails.description')}
+            {t('project.annotations.description')}
           </p>
         </div>
         <Button
@@ -434,7 +434,7 @@ const Annotations = ({
         >
           <>
             <InboxStackIcon className='w-5 h-5 mr-1' />
-            {t('project.emails.add')}
+            {t('project.annotations.add')}
           </>
         </Button>
       </div>
@@ -442,13 +442,13 @@ const Annotations = ({
         <div className='mt-3 flex flex-col'>
           <div className='-my-2 -mx-4 overflow-x-auto md:overflow-x-visible sm:-mx-6 lg:-mx-8'>
             <div className='inline-block min-w-full py-2 md:px-6 lg:px-8'>
-              {(!loading && !_isEmpty(emails)) && (
+              {(!loading && !_isEmpty(annotations)) && (
                 <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                     <thead>
                       <tr className='dark:bg-slate-800'>
                         <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 dark:text-white'>
-                          {t('auth.common.email')}
+                          {t('auth.common.annotations')}
                         </th>
                         <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white'>
                           {t('auth.common.addedOn')}
@@ -458,7 +458,7 @@ const Annotations = ({
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-300 dark:divide-gray-600'>
-                      {_map(emails, email => (
+                      {_map(annotations, email => (
                         <AnnotationsList
                           data={email}
                           key={email.id}
@@ -474,7 +474,7 @@ const Annotations = ({
                   </table>
                 </div>
               )}
-              {_isEmpty(emails) && (
+              {_isEmpty(annotations) && (
                 <NoSubscribers t={t} />
               )}
               {loading && (
@@ -492,7 +492,7 @@ const Annotations = ({
             className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm bg-indigo-600 hover:bg-indigo-700'
             onClick={handleSubmit}
           >
-            {t('project.emails.add')}
+            {t('project.annotations.add')}
           </button>
         )}
         closeText={t('common.cancel')}
