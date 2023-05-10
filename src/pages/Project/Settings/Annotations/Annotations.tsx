@@ -23,7 +23,7 @@ import Beta from 'ui/Beta'
 import { WarningPin } from 'ui/Pin'
 import { IAnnotations } from 'redux/models/IAnnotations'
 
-import { createAnnotation } from 'api'
+import { createAnnotation, deleteAnnotation } from 'api'
 
 const ModalMessage = ({
   project, handleInput, beenSubmitted, errors, form, t, setForm,
@@ -68,7 +68,7 @@ const ModalMessage = ({
     <input type='text' className='h-0 w-0 border-0 p-0 m-0 focus:text-transparent focus:border-transparent focus:shadow-none focus:ring-transparent' />
     <FlatPicker
       onChange={(date) => {
-        console.log(date)
+        console.log('date')
         setForm((prev: any) => ({
           ...prev,
           date: dayjs(date[0]).format('YYYY-MM-DD'),
@@ -241,7 +241,9 @@ const Annotations = ({
       date?: string,
     } = {}
 
-    if (!isValidEmail(form.name)) {
+    console.log(form)
+
+    if (!form.name) {
       allErrors.name = t('auth.common.badEmailError')
     }
 
@@ -250,6 +252,7 @@ const Annotations = ({
     }
 
     const valid = _isEmpty(_keys(allErrors))
+    console.log(allErrors)
 
     setErrors(allErrors)
     setValidated(valid)
@@ -276,7 +279,10 @@ const Annotations = ({
     setValidated(false)
 
     try {
-      const results = [] as unknown as IAnnotations // await addSubscriber(projectId, { date: form.date, name: form.name })
+      // @ts-ignore
+      const results = await createAnnotation(projectId, { date: form.date, name: form.name })
+      console.log('results')
+      // await addSubscriber(projectId, { date: form.date, name: form.name })
       setAnnotations([...annotations, results])
       addAnnotations(t('apiNotifications.userInvited'))
     } catch (e) {
@@ -291,6 +297,7 @@ const Annotations = ({
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     e.stopPropagation()
+    console.log('sssssssssssssss')
 
     setBeenSubmitted(true)
     if (validated) {
