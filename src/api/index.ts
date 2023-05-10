@@ -970,3 +970,19 @@ export const createAnnotation = (
       debug('%s', error)
       throw error
     })
+
+export const updateAnnotation = (
+  pid: string,
+  id: string,
+  data: {
+    name: string
+    date: string
+  },
+) =>
+  api
+    .patch(`project/${pid}/annotations/${id}`, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
