@@ -243,7 +243,7 @@ AnnotationsList.defaultProps = {
   data: {},
 }
 
-const NoSubscribers = ({ t }: {
+const NoAnnotations = ({ t }: {
   t: (string: string) => string,
 }): JSX.Element => (
   <div className='flex flex-col py-6 sm:px-6 lg:px-8'>
@@ -460,7 +460,7 @@ const Annotations = ({
                 </div>
               )}
               {_isEmpty(annotations) && (
-                <NoSubscribers t={t} />
+                <NoAnnotations t={t} />
               )}
               {loading && (
                 <Loader />
