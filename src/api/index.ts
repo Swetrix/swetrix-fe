@@ -942,3 +942,16 @@ export const getUserFlow = (
         ? error.response.data
         : error.response.data.message
     })
+
+export const getAnnotations = (
+  pid: string,
+  take: number = 100,
+  skip: number = 0,
+) =>
+  api
+    .get(`project/${pid}/annotations?limit=${take}&offset=${skip}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
