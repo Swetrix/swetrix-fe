@@ -43,7 +43,7 @@ const ModalMessage = ({
   }
   form: {
     name: string
-    date: Date | null
+    date: Date | undefined
   }
   t: (key: string, options?: {
     [key: string]: string | number | boolean | undefined
@@ -52,23 +52,23 @@ const ModalMessage = ({
 }): JSX.Element => (
   <div>
     <h2 className='text-xl font-bold text-gray-700 dark:text-gray-200'>
-      {t('project.settings.inviteTo', { project })}
+      {t('project.settings.annotainos')}
     </h2>
-    <p className='mt-2 text-base text-gray-700 dark:text-gray-200'>
-      {t('project.settings.inviteDesc')}
+    <p className=' text-base text-gray-700 dark:text-gray-200'>
+      {t('project.settings.annotainosDescription')}
     </p>
     <Input
       name='name'
       id='name'
-      type='name'
+      type='text'
       label={t('auth.common.name')}
       value={form.name}
-      placeholder='you@example.com'
+      placeholder='annotainos name'
       className='mt-4'
       onChange={handleInput}
       error={beenSubmitted && errors.name}
     />
-    <p className='text-gray-500 dark:text-gray-300 mt-4 mb-2 text-sm'>
+    <p className='text-gray-500 dark:text-gray-300 text-sm'>
       {t('project.settings.selectDate')}
     </p>
     <input type='text' className='h-0 w-0 border-0 p-0 m-0 focus:text-transparent focus:border-transparent focus:shadow-none focus:ring-transparent' />
@@ -232,7 +232,7 @@ const AnnotationsList = ({
 AnnotationsList.propTypes = {
   data: PropTypes.shape({
     created: PropTypes.string,
-    email: PropTypes.string,
+    name: PropTypes.string,
   }),
   onRemove: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
@@ -274,10 +274,10 @@ const Annotations = ({
   } = useTranslation('common')
   const [form, setForm] = useState<{
     name: string,
-    date: Date | null,
+    date: Date | undefined,
   }>({
     name: '',
-    date: null,
+    date: undefined,
   })
   const [beenSubmitted, setBeenSubmitted] = useState<boolean>(false)
   const [errors, setErrors] = useState<{
@@ -362,7 +362,7 @@ const Annotations = ({
     }
 
     // a timeout is needed to prevent the flicker of data fields in the modal when closing
-    setTimeout(() => setForm({ name: '', date: null }), 300)
+    setTimeout(() => setForm({ name: '', date: undefined }), 300)
   }
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -380,7 +380,7 @@ const Annotations = ({
   const closeModal = () => {
     setShowModal(false)
     // a timeout is needed to prevent the flicker of data fields in the modal when closing
-    setTimeout(() => setForm({ name: '', date: null }), 300)
+    setTimeout(() => setForm({ name: '', date: undefined }), 300)
     setErrors({})
   }
 
