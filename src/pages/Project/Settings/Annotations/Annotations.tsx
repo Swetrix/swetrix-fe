@@ -23,6 +23,8 @@ import Beta from 'ui/Beta'
 import { WarningPin } from 'ui/Pin'
 import { IAnnotations } from 'redux/models/IAnnotations'
 
+import { createAnnotation } from 'api'
+
 const ModalMessage = ({
   project, handleInput, beenSubmitted, errors, form, t, setForm,
 }: {
