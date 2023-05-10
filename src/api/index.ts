@@ -986,3 +986,12 @@ export const updateAnnotation = (
       debug('%s', error)
       throw error
     })
+
+export const deleteAnnotation = (pid: string, id: string) =>
+  api
+    .delete(`project/${pid}/annotations/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
