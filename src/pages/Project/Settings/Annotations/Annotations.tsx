@@ -109,7 +109,7 @@ const ModalMessage = ({
 )
 
 const AnnotationsList = ({
-  data, onRemove, t, setEmails, emailFailed, language, reportTypeNotifiction,
+  data, onRemove, t, setAnnotations, emailFailed, language, reportTypeNotifiction,
 }: {
   data: {
     id: string
@@ -123,7 +123,7 @@ const AnnotationsList = ({
   t: (key: string, options?: {
     [key: string]: string | number | boolean | undefined
   }) => string
-  setEmails: (value: ISubscribers[] | ((prevVar: ISubscribers[]) => ISubscribers[])) => void;
+  setAnnotations: (value: ISubscribers[] | ((prevVar: ISubscribers[]) => ISubscribers[])) => void;
   emailFailed: (message: string) => void
   language: string
   reportTypeNotifiction: (message: string) => void
@@ -142,7 +142,7 @@ const AnnotationsList = ({
   }) => {
     try {
       const results = await updateSubscriber(projectId, id, { reportFrequency: reportType.value })
-      setEmails((prev) => {
+      setAnnotations((prev) => {
         const newEmails = _map(prev, (item) => {
           if (item.id === results.id) {
             return results
@@ -319,7 +319,7 @@ const Annotations = ({
         ...oldPaggination,
         count,
       }))
-      setEmails(subscribers)
+      setAnnotations(subscribers)
     } catch (e) {
       console.error(`[ERROR] Error while getting subscribers: ${e}`)
     } finally {
@@ -465,7 +465,7 @@ const Annotations = ({
                           onRemove={onRemove}
                           t={t}
                           language={language}
-                          setEmails={setEmails}
+                          setAnnotations={setAnnotations}
                           emailFailed={emailFailed}
                           reportTypeNotifiction={reportTypeNotifiction}
                         />
