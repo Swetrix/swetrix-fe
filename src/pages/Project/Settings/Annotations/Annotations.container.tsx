@@ -9,7 +9,7 @@ const mapStateToProps = (state: StateType) => ({
 })
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
-  emailFailed: (message: string) => {
+  genericError: (message: string) => {
     dispatch(errorsActions.genericError({
       message,
     }))

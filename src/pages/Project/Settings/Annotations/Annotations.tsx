@@ -109,7 +109,7 @@ const ModalMessage = ({
 )
 
 const AnnotationsList = ({
-  data, onRemove, t, setAnnotations, emailFailed, language, reportTypeNotifiction,
+  data, onRemove, t, setAnnotations, genericError, language, reportTypeNotifiction,
 }: {
   data: {
     id: string
@@ -124,7 +124,7 @@ const AnnotationsList = ({
     [key: string]: string | number | boolean | undefined
   }) => string
   setAnnotations: (value: ISubscribers[] | ((prevVar: ISubscribers[]) => ISubscribers[])) => void;
-  emailFailed: (message: string) => void
+  genericError: (message: string) => void
   language: string
   reportTypeNotifiction: (message: string) => void
 }) => {
@@ -154,7 +154,7 @@ const AnnotationsList = ({
       reportTypeNotifiction(t('apiNotifications.roleUpdated'))
     } catch (e) {
       console.error(`[ERROR] Error while updating user's role: ${e}`)
-      emailFailed(t('apiNotifications.roleUpdateError'))
+      genericError(t('apiNotifications.roleUpdateError'))
     }
 
     setOpen(false)
@@ -275,9 +275,9 @@ const NoSubscribers = ({ t }: {
 )
 
 const Annotations = ({
-  emailFailed, addEmail, removeEmail, projectId, projectName, reportTypeNotifiction,
+  genericError, addEmail, removeEmail, projectId, projectName, reportTypeNotifiction,
 }: {
-  emailFailed: (message: string, type?: string) => void
+  genericError: (message: string, type?: string) => void
   addEmail: (message: string, type?: string) => void
   removeEmail: (message: string) => void
   projectId: string
@@ -407,7 +407,7 @@ const Annotations = ({
       removeEmail(t('apiNotifications.emailDelete'))
     } catch (e) {
       console.error(`[ERROR] Error while deleting a email: ${e}`)
-      emailFailed(t('apiNotifications.emailDeleteError'))
+      genericError(t('apiNotifications.emailDeleteError'))
     }
   }
 
@@ -466,7 +466,7 @@ const Annotations = ({
                           t={t}
                           language={language}
                           setAnnotations={setAnnotations}
-                          emailFailed={emailFailed}
+                          genericError={genericError}
                           reportTypeNotifiction={reportTypeNotifiction}
                         />
                       ))}
@@ -514,7 +514,7 @@ const Annotations = ({
 
 Annotations.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  emailFailed: PropTypes.func.isRequired,
+  genericError: PropTypes.func.isRequired,
   addEmail: PropTypes.func.isRequired,
   removeEmail: PropTypes.func.isRequired,
 }
