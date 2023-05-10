@@ -18,6 +18,7 @@ import { IProject, IOverall, IProjectNames } from 'redux/models/IProject'
 import { IAlerts } from 'redux/models/IAlerts'
 import { ISharedProject } from 'redux/models/ISharedProject'
 import { ISubscribers } from 'redux/models/ISubscribers'
+import { IAnnotations } from 'redux/models/IAnnotations'
 
 const debug = Debug('swetrix:api')
 // @ts-ignore
@@ -950,7 +951,7 @@ export const getAnnotations = (
 ) =>
   api
     .get(`project/${pid}/annotations?limit=${take}&offset=${skip}`)
-    .then((response) => response.data)
+    .then((response): IAnnotations[] => response.data)
     .catch((error) => {
       debug('%s', error)
       throw error
@@ -965,7 +966,7 @@ export const createAnnotation = (
 ) =>
   api
     .post(`project/${pid}/annotations`, data)
-    .then((response) => response.data)
+    .then((response): IAnnotations => response.data)
     .catch((error) => {
       debug('%s', error)
       throw error
@@ -981,7 +982,7 @@ export const updateAnnotation = (
 ) =>
   api
     .patch(`project/${pid}/annotations/${id}`, data)
-    .then((response) => response.data)
+    .then((response): IAnnotations => response.data)
     .catch((error) => {
       debug('%s', error)
       throw error
