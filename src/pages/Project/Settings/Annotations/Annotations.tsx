@@ -20,7 +20,6 @@ import Button from 'ui/Button'
 import Modal from 'ui/Modal'
 import Loader from 'ui/Loader'
 import Beta from 'ui/Beta'
-import { WarningPin } from 'ui/Pin'
 import { IAnnotations } from 'redux/models/IAnnotations'
 
 import { createAnnotation, deleteAnnotation } from 'api'
@@ -114,10 +113,6 @@ const AnnotationsList = ({
       </td>
       <td className='relative whitespace-nowrap py-4 text-right text-sm font-medium pr-2'>
         <div className='flex items-center justify-end'>
-          <WarningPin
-            label={t('common.pending')}
-            className='inline-flex items-center shadow-sm px-2.5 py-0.5 mr-3'
-          />
           <Button
             type='button'
             className='bg-white text-indigo-700 rounded-md text-base font-medium hover:bg-indigo-50 dark:text-gray-50 dark:border-gray-600 dark:bg-slate-800 dark:hover:bg-slate-700'
