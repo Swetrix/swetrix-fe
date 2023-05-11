@@ -10,7 +10,7 @@ import dayjs from 'dayjs'
 import _keys from 'lodash/keys'
 import _isEmpty from 'lodash/isEmpty'
 import _filter from 'lodash/filter'
-import _find from 'lodash/find'
+import _findIndex from 'lodash/findIndex'
 import _map from 'lodash/map'
 import FlatPicker from 'ui/Flatpicker'
 
@@ -23,7 +23,9 @@ import Loader from 'ui/Loader'
 import Beta from 'ui/Beta'
 import { IAnnotations } from 'redux/models/IAnnotations'
 
-import { createAnnotation, deleteAnnotation, updateAnnotation } from 'api'
+import {
+  createAnnotation, deleteAnnotation, updateAnnotation, getAnnotations,
+} from 'api'
 
 const ModalMessage = ({
   project, handleInput, beenSubmitted, errors, form, t, setForm,
@@ -285,14 +287,11 @@ const Annotations = ({
     try {
       if (form.isEdit) {
         // @ts-ignore
-        await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
-        const editAnnot = _find(annotations, s => s.id === editAnnotationId)
-
-        if (editAnnot) {
-          // @ts-ignore
-          editAnnot.date = form.date
-          editAnnot.name = form.name
-        }
+        const result = await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
+        const editIndex = _findIndex(annotations, s => s.id === editAnnotationId)
+        const newAnnotations = [...annotations.slice(0, editIndex), result, ...annotations.slice(editIndex + 1)]
+        setAnnotations(newAnnotations)
+        // @ts-ignore
       } else {
         // @ts-ignore
         const results = await createAnnotation(projectId, { date: form.date, name: form.name })
