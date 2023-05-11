@@ -2,7 +2,7 @@ import React, {
   useState, useEffect,
 } from 'react'
 import {
-  TrashIcon, InboxStackIcon,
+  TrashIcon, PencilIcon, InboxStackIcon,
 } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import _keys from 'lodash/keys'
 import _isEmpty from 'lodash/isEmpty'
 import _filter from 'lodash/filter'
+import _find from 'lodash/find'
 import _map from 'lodash/map'
 import FlatPicker from 'ui/Flatpicker'
 
@@ -22,7 +23,7 @@ import Loader from 'ui/Loader'
 import Beta from 'ui/Beta'
 import { IAnnotations } from 'redux/models/IAnnotations'
 
-import { createAnnotation, deleteAnnotation } from 'api'
+import { createAnnotation, deleteAnnotation, updateAnnotation } from 'api'
 
 const ModalMessage = ({
   project, handleInput, beenSubmitted, errors, form, t, setForm,
@@ -83,7 +84,7 @@ const ModalMessage = ({
 )
 
 const AnnotationsList = ({
-  data, onRemove, t, language,
+  data, onRemove, t, language, showEditModal,
 }: {
   data: {
     id: string
@@ -94,7 +95,8 @@ const AnnotationsList = ({
   t: (key: string, options?: {
     [key: string]: string | number | boolean | undefined
   }) => string
-  language: string
+  language: string,
+  showEditModal: (id: string) => void
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const {
@@ -112,7 +114,15 @@ const AnnotationsList = ({
           : dayjs(addedAt).locale(language).format('D MMMM, YYYY')}
       </td>
       <td className='relative whitespace-nowrap py-4 text-right text-sm font-medium pr-2'>
-        <div className='flex items-center justify-end'>
+        <div className='flex gap-3 items-center justify-end'>
+          <Button
+            type='button'
+            className='bg-white text-indigo-700 rounded-md text-base font-medium hover:bg-indigo-50 dark:text-gray-50 dark:border-gray-600 dark:bg-slate-800 dark:hover:bg-slate-700'
+            small
+            onClick={() => showEditModal(id)}
+          >
+            <PencilIcon className='h-4 w-4' />
+          </Button>
           <Button
             type='button'
             className='bg-white text-indigo-700 rounded-md text-base font-medium hover:bg-indigo-50 dark:text-gray-50 dark:border-gray-600 dark:bg-slate-800 dark:hover:bg-slate-700'
@@ -181,6 +191,7 @@ const Annotations = ({
   reportTypeNotifiction: (message: string, type?: string) => void
 }): JSX.Element => {
   const [showModal, setShowModal] = useState<boolean>(false)
+  const [editAnnotationId, setEditAnnotationId] = useState<string>('')
   const { t, i18n: { language } }: {
     t: (string: string, options?: {
       [key: string]: string | number | boolean | undefined | null
@@ -190,9 +201,11 @@ const Annotations = ({
   const [form, setForm] = useState<{
     name: string,
     date: Date | undefined,
+    isEdit: boolean,
   }>({
     name: '',
     date: undefined,
+    isEdit: false,
   })
   const [beenSubmitted, setBeenSubmitted] = useState<boolean>(false)
   const [errors, setErrors] = useState<{
@@ -274,19 +287,33 @@ const Annotations = ({
     setValidated(false)
 
     try {
-      // @ts-ignore
-      const results = await createAnnotation(projectId, { date: form.date, name: form.name })
-      console.log('results')
-      // await addSubscriber(projectId, { date: form.date, name: form.name })
-      setAnnotations([...annotations, results])
-      addAnnotations(t('apiNotifications.userInvited'))
+      console.log('isEdit', form.isEdit)
+      if (form.isEdit) {
+        console.log('sss')
+        // @ts-ignore
+        await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
+        const editAnnot = _find(annotations, s => s.id === editAnnotationId)
+
+        console.log(editAnnot)
+        if (editAnnot) {
+          // @ts-ignore
+          editAnnot.date = form.date
+          editAnnot.name = form.name
+        }
+        console.log('aaa')
+      } else {
+        // @ts-ignore
+        const results = await createAnnotation(projectId, { date: form.date, name: form.name })
+        setAnnotations([...annotations, results])
+        addAnnotations(t('apiNotifications.userInvited'))
+      }
     } catch (e) {
       console.error(`[ERROR] Error while inviting a user: ${e}`)
       addAnnotations(t('apiNotifications.userInviteError'), 'error')
     }
 
     // a timeout is needed to prevent the flicker of data fields in the modal when closing
-    setTimeout(() => setForm({ name: '', date: undefined }), 300)
+    setTimeout(() => setForm({ name: '', date: undefined, isEdit: false }), 300)
   }
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -305,8 +332,17 @@ const Annotations = ({
   const closeModal = () => {
     setShowModal(false)
     // a timeout is needed to prevent the flicker of data fields in the modal when closing
-    setTimeout(() => setForm({ name: '', date: undefined }), 300)
+    setTimeout(() => setForm({ name: '', date: undefined, isEdit: false }), 300)
     setErrors({})
+  }
+
+  const showEditModal = (id: string) => {
+    setForm(oldForm => ({
+      ...oldForm,
+      isEdit: true,
+    }))
+    setEditAnnotationId(id)
+    setShowModal(true)
   }
 
   console.log(annotations, 'ANNOT')
@@ -376,6 +412,7 @@ const Annotations = ({
                           onRemove={onRemove}
                           t={t}
                           language={language}
+                          showEditModal={showEditModal}
                         />
                       ))}
                     </tbody>
