@@ -68,7 +68,6 @@ const ModalMessage = ({
     <input type='text' className='h-0 w-0 border-0 p-0 m-0 focus:text-transparent focus:border-transparent focus:shadow-none focus:ring-transparent' />
     <FlatPicker
       onChange={(date) => {
-        console.log('date')
         setForm((prev: any) => ({
           ...prev,
           date: dayjs(date[0]).format('YYYY-MM-DD'),
@@ -249,8 +248,6 @@ const Annotations = ({
       date?: string,
     } = {}
 
-    console.log(form)
-
     if (!form.name) {
       allErrors.name = t('auth.common.badEmailError')
     }
@@ -260,7 +257,6 @@ const Annotations = ({
     }
 
     const valid = _isEmpty(_keys(allErrors))
-    console.log(allErrors)
 
     setErrors(allErrors)
     setValidated(valid)
@@ -287,20 +283,16 @@ const Annotations = ({
     setValidated(false)
 
     try {
-      console.log('isEdit', form.isEdit)
       if (form.isEdit) {
-        console.log('sss')
         // @ts-ignore
         await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
         const editAnnot = _find(annotations, s => s.id === editAnnotationId)
 
-        console.log(editAnnot)
         if (editAnnot) {
           // @ts-ignore
           editAnnot.date = form.date
           editAnnot.name = form.name
         }
-        console.log('aaa')
       } else {
         // @ts-ignore
         const results = await createAnnotation(projectId, { date: form.date, name: form.name })
@@ -319,8 +311,6 @@ const Annotations = ({
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     e.stopPropagation()
-    console.log('sssssssssssssss')
-
     setBeenSubmitted(true)
     if (validated) {
       onSubmit()
@@ -345,7 +335,6 @@ const Annotations = ({
     setShowModal(true)
   }
 
-  console.log(annotations, 'ANNOT')
   const onRemove = async (name: string) => {
     try {
       await deleteAnnotation(projectId, name)

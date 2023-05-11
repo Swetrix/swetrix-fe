@@ -27,8 +27,6 @@ const Input = ({
   const identifier = id || name || type
   const isError = !_isEmpty(error)
 
-  // console.log(isError, 'SSSSSSSSSSSSS')
-
   return (
     <div className={className}>
       <div
