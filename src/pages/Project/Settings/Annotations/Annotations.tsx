@@ -309,9 +309,10 @@ const Annotations = ({
     setErrors({})
   }
 
+  console.log(annotations, 'ANNOT')
   const onRemove = async (name: string) => {
     try {
-      // await removeSubscriber(projectId, email)
+      await deleteAnnotation(projectId, name)
       const results = _filter(annotations, s => s.id !== name)
       setAnnotations(results)
       removeAnnotations(t('apiNotifications.emailDelete'))
