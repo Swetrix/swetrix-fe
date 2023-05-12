@@ -26,6 +26,8 @@ import { IAnnotations } from 'redux/models/IAnnotations'
 import {
   createAnnotation, deleteAnnotation, updateAnnotation, getAnnotations,
 } from 'api'
+import { ENTRIES_PER_PAGE_ANNOTATIONS } from 'redux/constants'
+import Pagination from 'ui/Pagination'
 
 const ModalMessage = ({
   project, handleInput, beenSubmitted, errors, form, t, setForm,
@@ -214,25 +216,25 @@ const Annotations = ({
     date?: string,
   }>({})
   const [validated, setValidated] = useState<boolean>(false)
-  const [annotations, setAnnotations] = useState<IAnnotations[]>([])
+  const [annotions, setAnnotions] = useState<IAnnotations[]>([])
   const [loading, setLoading] = useState(true)
   const [paggination, setPaggination] = useState({
     page: 1,
     limit: 10,
-    total: 0,
+    count: 0,
   })
+  const pageAmount: number = Math.ceil(paggination.count / paggination.limit)
 
   const getSubcribersAsync = async () => {
     try {
-      const { annotions, count } = {
-        annotions: [],
-        count: 0,
-      } // await getSubscribers(projectId, paggination.page - 1, paggination.limit)
+      // @ts-ignore
+      const { annotations, count } = await getAnnotations(projectId) // await getSubscribers(projectId, paggination.page - 1, paggination.limit)
+      console.log(annotations, count)
       setPaggination(oldPaggination => ({
         ...oldPaggination,
         count,
       }))
-      setAnnotations(annotions)
+      setAnnotions(annotations)
     } catch (e) {
       console.error(`[ERROR] Error while getting annotations: ${e}`)
     } finally {
@@ -285,17 +287,17 @@ const Annotations = ({
     setValidated(false)
 
     try {
-      if (form.isEdit) {
+      if (form.isEdit) { // if there was an edit, then call updateAnnotations, otherwise addAnnotations
         // @ts-ignore
         const result = await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
-        const editIndex = _findIndex(annotations, s => s.id === editAnnotationId)
-        const newAnnotations = [...annotations.slice(0, editIndex), result, ...annotations.slice(editIndex + 1)]
-        setAnnotations(newAnnotations)
+        const editIndex = _findIndex(annotions, s => s.id === editAnnotationId)
+        const newAnnotations = [...annotions.slice(0, editIndex), result, ...annotions.slice(editIndex + 1)]
+        setAnnotions(newAnnotations)
         // @ts-ignore
       } else {
         // @ts-ignore
         const results = await createAnnotation(projectId, { date: form.date, name: form.name })
-        setAnnotations([...annotations, results])
+        setAnnotions([...annotions, results])
         addAnnotations(t('apiNotifications.userInvited'))
       }
     } catch (e) {
@@ -337,14 +339,16 @@ const Annotations = ({
   const onRemove = async (name: string) => {
     try {
       await deleteAnnotation(projectId, name)
-      const results = _filter(annotations, s => s.id !== name)
-      setAnnotations(results)
+      const results = _filter(annotions, s => s.id !== name)
+      setAnnotions(results)
       removeAnnotations(t('apiNotifications.emailDelete'))
     } catch (e) {
       console.error(`[ERROR] Error while deleting a email: ${e}`)
       genericError(t('apiNotifications.emailDeleteError'))
     }
   }
+
+  console.log(paggination)
 
   return (
     <div className='mt-6 mb-6'>
@@ -377,7 +381,7 @@ const Annotations = ({
         <div className='mt-3 flex flex-col'>
           <div className='-my-2 -mx-4 overflow-x-auto md:overflow-x-visible sm:-mx-6 lg:-mx-8'>
             <div className='inline-block min-w-full py-2 md:px-6 lg:px-8'>
-              {(!loading && !_isEmpty(annotations)) && (
+              {(!loading && !_isEmpty(annotions)) && (
                 <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                     <thead>
@@ -393,7 +397,7 @@ const Annotations = ({
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-300 dark:divide-gray-600'>
-                      {_map(annotations, email => (
+                      {_map(annotions, email => (
                         <AnnotationsList
                           data={email}
                           key={email.id}
@@ -407,7 +411,7 @@ const Annotations = ({
                   </table>
                 </div>
               )}
-              {_isEmpty(annotations) && (
+              {_isEmpty(annotions) && (
                 <NoAnnotations t={t} />
               )}
               {loading && (
@@ -415,6 +419,18 @@ const Annotations = ({
               )}
             </div>
           </div>
+          {/* {(tabProjects === tabForOwnedProject && pageAmount > 1) && ( */}
+          <Pagination
+            className='mt-2'
+            page={paggination.page}
+            pageAmount={pageAmount}
+            setPage={(page) => setPaggination(oldPaggination => ({
+              ...oldPaggination,
+              page,
+            }))}
+            total={paggination.count}
+          />
+          {/* )} */}
         </div>
       </div>
       <Modal
