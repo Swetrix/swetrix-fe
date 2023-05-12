@@ -225,14 +225,10 @@ const Annotations = ({
   })
   const pageAmount: number = Math.ceil(paggination.count / paggination.limit)
 
-  console.log(annotions, paggination)
-
   const getSubcribersAsync = async () => {
     try {
-      console.log((paggination.page - 1) * paggination.limit, 'sssss')
       // @ts-ignore
       const { annotations, count } = await getAnnotations(projectId, paggination.limit, (paggination.page - 1) * paggination.limit) // await getSubscribers(projectId, paggination.page - 1, paggination.limit)
-      console.log(annotations, count)
       setPaggination(oldPaggination => ({
         ...oldPaggination,
         count,
@@ -354,8 +350,6 @@ const Annotations = ({
       genericError(t('apiNotifications.emailDeleteError'))
     }
   }
-
-  console.log(annotions)
 
   return (
     <div className='mt-6 mb-6'>
