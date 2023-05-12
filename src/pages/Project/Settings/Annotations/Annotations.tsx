@@ -225,6 +225,8 @@ const Annotations = ({
   })
   const pageAmount: number = Math.ceil(paggination.count / paggination.limit)
 
+  console.log(annotions, paggination)
+
   const getSubcribersAsync = async () => {
     try {
       console.log((paggination.page - 1) * paggination.limit, 'sssss')
@@ -245,7 +247,7 @@ const Annotations = ({
 
   useEffect(() => {
     getSubcribersAsync()
-  }, [paggination.page]) // eslint-disable-line
+  }, [paggination.page, paggination.count]) // eslint-disable-line
 
   const validate = () => {
     const allErrors: {
@@ -294,6 +296,8 @@ const Annotations = ({
         const editIndex = _findIndex(annotions, s => s.id === editAnnotationId)
         const newAnnotations = [...annotions.slice(0, editIndex), result, ...annotions.slice(editIndex + 1)]
         setAnnotions(newAnnotations)
+        addAnnotations(t('apiNotifications.userEdited'))
+
         // @ts-ignore
       } else {
         // @ts-ignore
@@ -301,6 +305,7 @@ const Annotations = ({
         setAnnotions([...annotions, results])
         addAnnotations(t('apiNotifications.userInvited'))
       }
+      getSubcribersAsync()
     } catch (e) {
       console.error(`[ERROR] Error while inviting a user: ${e}`)
       addAnnotations(t('apiNotifications.userInviteError'), 'error')
@@ -343,13 +348,14 @@ const Annotations = ({
       const results = _filter(annotions, s => s.id !== name)
       setAnnotions(results)
       removeAnnotations(t('apiNotifications.emailDelete'))
+      getSubcribersAsync()
     } catch (e) {
       console.error(`[ERROR] Error while deleting a email: ${e}`)
       genericError(t('apiNotifications.emailDeleteError'))
     }
   }
 
-  console.log(paggination)
+  console.log(annotions)
 
   return (
     <div className='mt-6 mb-6'>
@@ -420,7 +426,7 @@ const Annotations = ({
               )}
             </div>
           </div>
-          {/* {(tabProjects === tabForOwnedProject && pageAmount > 1) && ( */}
+          {(pageAmount > 1) && (
           <Pagination
             className='mt-2'
             page={paggination.page}
@@ -431,7 +437,7 @@ const Annotations = ({
             }))}
             total={paggination.count}
           />
-          {/* )} */}
+          )}
         </div>
       </div>
       <Modal
