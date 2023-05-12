@@ -227,8 +227,9 @@ const Annotations = ({
 
   const getSubcribersAsync = async () => {
     try {
+      console.log((paggination.page - 1) * paggination.limit, 'sssss')
       // @ts-ignore
-      const { annotations, count } = await getAnnotations(projectId) // await getSubscribers(projectId, paggination.page - 1, paggination.limit)
+      const { annotations, count } = await getAnnotations(projectId, paggination.limit, (paggination.page - 1) * paggination.limit) // await getSubscribers(projectId, paggination.page - 1, paggination.limit)
       console.log(annotations, count)
       setPaggination(oldPaggination => ({
         ...oldPaggination,
@@ -244,7 +245,7 @@ const Annotations = ({
 
   useEffect(() => {
     getSubcribersAsync()
-  }, []) // eslint-disable-line
+  }, [paggination.page]) // eslint-disable-line
 
   const validate = () => {
     const allErrors: {
