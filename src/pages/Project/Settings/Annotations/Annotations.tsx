@@ -26,7 +26,6 @@ import { IAnnotations } from 'redux/models/IAnnotations'
 import {
   createAnnotation, deleteAnnotation, updateAnnotation, getAnnotations,
 } from 'api'
-import { ENTRIES_PER_PAGE_ANNOTATIONS } from 'redux/constants'
 import Pagination from 'ui/Pagination'
 
 const ModalMessage = ({
@@ -228,14 +227,15 @@ const Annotations = ({
 
   console.log(annotions)
 
-  const getSubcribersAsync = async () => {
+  const getAnnotationsAsync = async () => {
     try {
       // @ts-ignore
-      const { annotations, count } = await getAnnotations(projectId, paggination.limit, (paggination.page - 1) * paggination.limit) // await getSubscribers(projectId, paggination.page - 1, paggination.limit)
+      const { annotations, count } = await getAnnotations(projectId, paggination.limit, (paggination.page - 1) * paggination.limit)
       setPaggination(oldPaggination => ({
         ...oldPaggination,
         count,
       }))
+      setProjectAnnotations(projectId, annotations)
       setAnnotions(annotations)
     } catch (e) {
       console.error(`[ERROR] Error while getting annotations: ${e}`)
@@ -245,7 +245,7 @@ const Annotations = ({
   }
 
   useEffect(() => {
-    getSubcribersAsync()
+    getAnnotationsAsync()
   }, [paggination.page, paggination.count]) // eslint-disable-line
 
   const validate = () => {
@@ -291,9 +291,10 @@ const Annotations = ({
     try {
       if (form.isEdit) { // if there was an edit, then call updateAnnotations, otherwise addAnnotations
         // @ts-ignore
-        const result = await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
+        const results = await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
         const editIndex = _findIndex(annotions, s => s.id === editAnnotationId)
-        const newAnnotations = [...annotions.slice(0, editIndex), result, ...annotions.slice(editIndex + 1)]
+        const newAnnotations = [...annotions.slice(0, editIndex), results, ...annotions.slice(editIndex + 1)]
+        setProjectAnnotations(projectId, newAnnotations)
         setAnnotions(newAnnotations)
         addAnnotations(t('apiNotifications.userEdited'))
 
@@ -301,11 +302,11 @@ const Annotations = ({
       } else {
         // @ts-ignore
         const results = await createAnnotation(projectId, { date: form.date, name: form.name })
-        setProjectAnnotations(projectId, [...annotions, results])
         setAnnotions([...annotions, results])
+        setProjectAnnotations(projectId, [...annotions, results])
         addAnnotations(t('apiNotifications.userInvited'))
       }
-      getSubcribersAsync()
+      getAnnotationsAsync()
     } catch (e) {
       console.error(`[ERROR] Error while inviting a user: ${e}`)
       addAnnotations(t('apiNotifications.userInviteError'), 'error')
@@ -347,8 +348,9 @@ const Annotations = ({
       await deleteAnnotation(projectId, name)
       const results = _filter(annotions, s => s.id !== name)
       setAnnotions(results)
+      setProjectAnnotations(projectId, results)
       removeAnnotations(t('apiNotifications.emailDelete'))
-      getSubcribersAsync()
+      getAnnotationsAsync()
     } catch (e) {
       console.error(`[ERROR] Error while deleting a email: ${e}`)
       genericError(t('apiNotifications.emailDeleteError'))
