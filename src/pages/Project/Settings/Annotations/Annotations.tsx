@@ -220,7 +220,7 @@ const Annotations = ({
   const [loading, setLoading] = useState(true)
   const [paggination, setPaggination] = useState({
     page: 1,
-    limit: 5,
+    limit: 10,
     count: 0,
   })
   const pageAmount: number = Math.ceil(paggination.count / paggination.limit)
