@@ -1,12 +1,14 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 import _filter from 'lodash/filter'
 import _findIndex from 'lodash/findIndex'
+import _find from 'lodash/find'
 import _map from 'lodash/map'
 import { tabForOwnedProject, PROJECT_TABS } from 'redux/constants'
 import { setItem, getItem } from 'utils/localstorage'
 import { IProject, ICaptchaProject, ILiveStats } from 'redux/models/IProject'
 import { ISharedProject } from 'redux/models/ISharedProject'
 import { IAlerts } from 'redux/models/IAlerts'
+import { IAnnotations } from 'redux/models/IAnnotations'
 
 interface IInitialState {
     projects: IProject[]
@@ -196,6 +198,15 @@ const projectsSlice = createSlice({
     setProjectTab(state, { payload }: PayloadAction<string>) {
       state.projectTab = payload
     },
+
+    setProjectAnnotations(state, { payload }: PayloadAction<{
+      idProject: string,
+      annotations: IAnnotations[]
+    }>) {
+      const findProject = _findIndex(state.projects, (project) => project.id === payload.idProject)
+      state.projects[findProject].annotations = payload.annotations
+    },
+
     reset(state) {
       state.projects = []
       state.sharedProjects = []

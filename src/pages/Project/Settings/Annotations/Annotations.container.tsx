@@ -2,6 +2,8 @@ import { connect } from 'react-redux'
 import { errorsActions } from 'redux/reducers/errors'
 import { alertsActions } from 'redux/reducers/alerts'
 import { StateType, AppDispatch } from 'redux/store'
+import { IAnnotations } from 'redux/models/IAnnotations'
+import UIActions from 'redux/reducers/ui'
 import Annotations from './Annotations'
 
 const mapStateToProps = (state: StateType) => ({
@@ -12,6 +14,12 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
   genericError: (message: string) => {
     dispatch(errorsActions.genericError({
       message,
+    }))
+  },
+  setProjectAnnotations: (idProject: string, annotations: IAnnotations[]) => {
+    dispatch(UIActions.setProjectAnnotations({
+      idProject,
+      annotations,
     }))
   },
   addAnnotations: (message: string, type = 'success') => {

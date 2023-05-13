@@ -184,11 +184,12 @@ const NoAnnotations = ({ t }: {
 )
 
 const Annotations = ({
-  genericError, addAnnotations, removeAnnotations, projectId, projectName, reportTypeNotifiction,
+  genericError, addAnnotations, removeAnnotations, setProjectAnnotations, projectId, projectName, reportTypeNotifiction,
 }: {
   genericError: (message: string, type?: string) => void
   addAnnotations: (message: string, type?: string) => void
   removeAnnotations: (message: string) => void
+  setProjectAnnotations: (idProject: string, annotations: IAnnotations[]) => void
   projectId: string
   projectName: string
   reportTypeNotifiction: (message: string, type?: string) => void
@@ -224,6 +225,8 @@ const Annotations = ({
     count: 0,
   })
   const pageAmount: number = Math.ceil(paggination.count / paggination.limit)
+
+  console.log(annotions)
 
   const getSubcribersAsync = async () => {
     try {
@@ -298,6 +301,7 @@ const Annotations = ({
       } else {
         // @ts-ignore
         const results = await createAnnotation(projectId, { date: form.date, name: form.name })
+        setProjectAnnotations(projectId, [...annotions, results])
         setAnnotions([...annotions, results])
         addAnnotations(t('apiNotifications.userInvited'))
       }

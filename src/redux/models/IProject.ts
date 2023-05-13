@@ -1,3 +1,5 @@
+import { IAnnotations } from './IAnnotations'
+
 export interface IOvervallObject {
     thisWeek?: number
     lastWeek?: number
@@ -54,6 +56,7 @@ export interface IProject {
     isPublicVisitors?: boolean
     isPublic?: boolean
     isTransferring?: boolean
+    annotations: IAnnotations[]
 }
 
 export interface ICaptchaProject {

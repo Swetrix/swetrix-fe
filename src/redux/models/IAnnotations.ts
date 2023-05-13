@@ -3,4 +3,6 @@ export interface IAnnotations {
   name: string
   date: string
   addedAt: string
+  projectId: string
+  updatedAt: string
 }
