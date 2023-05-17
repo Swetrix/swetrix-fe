@@ -136,7 +136,11 @@ class FlatPicker extends React.Component<FlatPickerProps, {
 // @ts-ignore
 FlatPicker.propTypes = {
   onChange: PropTypes.func,
-  value: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+  value: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+    PropTypes.instanceOf(Date),
+    PropTypes.string,
+  ]),
   maxDateMonths: PropTypes.number,
 }
 
