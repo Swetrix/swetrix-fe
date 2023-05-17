@@ -12,6 +12,7 @@ import _isEmpty from 'lodash/isEmpty'
 import _filter from 'lodash/filter'
 import _findIndex from 'lodash/findIndex'
 import _map from 'lodash/map'
+import _find from 'lodash/find'
 import FlatPicker from 'ui/Flatpicker'
 
 import { isValidEmail } from 'utils/validator'
@@ -40,7 +41,7 @@ const ModalMessage = ({
   }
   form: {
     name: string
-    date: Date | undefined
+    date: Date | undefined | string
   }
   t: (key: string, options?: {
     [key: string]: string | number | boolean | undefined
@@ -86,7 +87,7 @@ const ModalMessage = ({
 )
 
 const AnnotationsList = ({
-  data, onRemove, t, language, showEditModal,
+  data, onRemove, t, language, showEditModal, onEdit,
 }: {
   data: {
     id: string
@@ -97,8 +98,9 @@ const AnnotationsList = ({
   t: (key: string, options?: {
     [key: string]: string | number | boolean | undefined
   }) => string
-  language: string,
+  language: string
   showEditModal: (id: string) => void
+  onEdit: () => void
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const {
@@ -121,7 +123,7 @@ const AnnotationsList = ({
             type='button'
             className='bg-white text-indigo-700 rounded-md text-base font-medium hover:bg-indigo-50 dark:text-gray-50 dark:border-gray-600 dark:bg-slate-800 dark:hover:bg-slate-700'
             small
-            onClick={() => showEditModal(id)}
+            onClick={onEdit}
           >
             <PencilIcon className='h-4 w-4' />
           </Button>
@@ -203,7 +205,7 @@ const Annotations = ({
   } = useTranslation('common')
   const [form, setForm] = useState<{
     name: string,
-    date: Date | undefined,
+    date: Date | undefined | string,
     isEdit: boolean,
   }>({
     name: '',
@@ -355,6 +357,19 @@ const Annotations = ({
     }
   }
 
+  const onEdit = (annotainoId: string) => {
+    const annotation = _find(annotions, (a: IAnnotations) => a.id === annotainoId)
+    if (annotation) {
+      setForm({
+        name: annotation.name,
+        date: annotation.date,
+        isEdit: true,
+      })
+      setEditAnnotationId(annotation.id)
+      setShowModal(true)
+    }
+  }
+
   return (
     <div className='mt-6 mb-6'>
       <div className='flex justify-between items-center mb-3'>
@@ -410,6 +425,7 @@ const Annotations = ({
                           t={t}
                           language={language}
                           showEditModal={showEditModal}
+                          onEdit={() => onEdit(email.id)}
                         />
                       ))}
                     </tbody>

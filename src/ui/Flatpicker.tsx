@@ -19,7 +19,7 @@ if (getItem('colour-theme') === 'light') {
 
 interface FlatPickerProps {
   onChange?: (dates: Date[]) => void,
-  value?: Date[] | Date,
+  value?: Date[] | Date | string,
   maxDateMonths?: number,
   options?: any,
   maxRange?: number,
