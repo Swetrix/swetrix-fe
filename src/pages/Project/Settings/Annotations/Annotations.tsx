@@ -104,7 +104,7 @@ const AnnotationsList = ({
   const {
     id, addedAt, name,
   } = data
-// 
+
   return (
     <tr className='dark:bg-slate-800'>
       <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-white sm:pl-6'>
