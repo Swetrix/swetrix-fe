@@ -10,12 +10,9 @@ import dayjs from 'dayjs'
 import _keys from 'lodash/keys'
 import _isEmpty from 'lodash/isEmpty'
 import _filter from 'lodash/filter'
-import _findIndex from 'lodash/findIndex'
 import _map from 'lodash/map'
 import _find from 'lodash/find'
 import FlatPicker from 'ui/Flatpicker'
-
-import { isValidEmail } from 'utils/validator'
 
 import Input from 'ui/Input'
 import Button from 'ui/Button'
@@ -219,13 +216,7 @@ const Annotations = ({
     date?: string,
   }>({})
   const [validated, setValidated] = useState<boolean>(false)
-  const annotationsProject = useMemo(() => _filter(annotationsProjects, (item: IAnnotations) => {
-    if (item.projectId === projectId) {
-      return 1
-    }
-    return 0
-  }), [annotationsProjects, projectId])
-  console.log(annotationsProject)
+  const annotationsProject: IAnnotations[] = useMemo(() => _filter(annotationsProjects, (a: IAnnotations) => a.projectId === projectId), [annotationsProjects, projectId])
   const [loading, setLoading] = useState(true)
   const [paggination, setPaggination] = useState({
     page: 1,
@@ -301,10 +292,18 @@ const Annotations = ({
       }
 
       if (form.isEdit) {
-        const results = await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
-        const editIndex = _findIndex(annotationsProjects, s => s.id === editAnnotationId)
-        const newAnnotations = [...annotationsProjects.slice(0, editIndex), results, ...annotationsProjects.slice(editIndex + 1)]
-        setAnnotations(newAnnotations)
+        await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
+        const newAnnnotations = _map(annotationsProjects, (a: IAnnotations) => {
+          if (a.id === editAnnotationId) {
+            return {
+              ...a,
+              name: form.name,
+              date: form.date ? form.date : a.date,
+            }
+          }
+          return a
+        })
+        setAnnotations(newAnnnotations)
         addAnnotations(t('apiNotifications.userEdited'))
       } else {
         const results = await createAnnotation(projectId, { date: form.date, name: form.name })
@@ -362,7 +361,7 @@ const Annotations = ({
   }
 
   const onEdit = (annotainoId: string) => {
-    const annotation = _find(annotationsProjects, (a: IAnnotations) => a.id === annotainoId)
+    const annotation = _find(annotationsProject, (a: IAnnotations) => a.id === annotainoId)
     if (annotation) {
       setForm({
         name: annotation.name,
@@ -405,13 +404,13 @@ const Annotations = ({
         <div className='mt-3 flex flex-col'>
           <div className='-my-2 -mx-4 overflow-x-auto md:overflow-x-visible sm:-mx-6 lg:-mx-8'>
             <div className='inline-block min-w-full py-2 md:px-6 lg:px-8'>
-              {_isEmpty(annotationsProjects) && (
+              {_isEmpty(annotationsProject) && (
                 <NoAnnotations t={t} />
               )}
               {loading && (
                 <Loader />
               )}
-              {(!loading && !_isEmpty(annotationsProjects)) && (
+              {(!loading && !_isEmpty(annotationsProject)) && (
                 <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                     <thead>
@@ -427,7 +426,7 @@ const Annotations = ({
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-300 dark:divide-gray-600'>
-                      {_map(annotationsProjects, email => (
+                      {_map(annotationsProject, email => (
                         <AnnotationsList
                           data={email}
                           key={email.id}
