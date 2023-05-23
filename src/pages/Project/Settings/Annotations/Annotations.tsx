@@ -86,11 +86,7 @@ const ModalMessage = ({
 const AnnotationsList = ({
   data, onRemove, t, language, showEditModal, onEdit,
 }: {
-  data: {
-    id: string
-    addedAt: string
-    name: string
-  }
+  data: IAnnotations
   onRemove: (id: string) => void
   t: (key: string, options?: {
     [key: string]: string | number | boolean | undefined
@@ -101,13 +97,18 @@ const AnnotationsList = ({
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const {
-    id, addedAt, name,
+    id, addedAt, name, date,
   } = data
 
   return (
     <tr className='dark:bg-slate-800'>
       <td className='whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 dark:text-white sm:pl-6'>
         {name}
+      </td>
+      <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-white'>
+        {language === 'en'
+          ? dayjs(date).locale(language).format('MMMM D, YYYY')
+          : dayjs(date).locale(language).format('D MMMM, YYYY')}
       </td>
       <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-white'>
         {language === 'en'
@@ -419,6 +420,9 @@ const Annotations = ({
                           {t('auth.common.annotations')}
                         </th>
                         <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white'>
+                          {t('auth.common.date')}
+                        </th>
+                        <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white'>
                           {t('auth.common.addedOn')}
                         </th>
                         <th scope='col' />
@@ -426,15 +430,15 @@ const Annotations = ({
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-300 dark:divide-gray-600'>
-                      {_map(annotationsProject, email => (
+                      {_map(annotationsProject, (item: IAnnotations[]) => (
                         <AnnotationsList
-                          data={email}
-                          key={email.id}
+                          data={item}
+                          key={item.id}
                           onRemove={onRemove}
                           t={t}
                           language={language}
                           showEditModal={showEditModal}
-                          onEdit={() => onEdit(email.id)}
+                          onEdit={() => onEdit(item.id)}
                         />
                       ))}
                     </tbody>
