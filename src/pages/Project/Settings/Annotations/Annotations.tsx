@@ -295,7 +295,7 @@ const Annotations = ({
     setValidated(false)
 
     try {
-      if (true) {
+      if (!form.name || !form.date) {
         genericError(t('auth.common.requiredField'))
         return
       }
