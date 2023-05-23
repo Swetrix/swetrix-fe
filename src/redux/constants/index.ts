@@ -18,7 +18,6 @@ export const FORECAST_MAX_MAPPING: {
 } = {
   hour: 72,
   day: 21,
-  week: 21,
   month: 12,
 }
 
@@ -50,17 +49,17 @@ export const tbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[]
 }, {
   label: t('project.lastXWeeks', { amount: 4 }),
   period: '4w',
-  tbs: ['day', 'week'],
+  tbs: ['day'],
   countDays: 28,
 }, {
   label: t('project.lastXMonths', { amount: 3 }),
   period: '3M',
-  tbs: ['week', 'month'],
+  tbs: ['month'],
   countDays: 90,
 }, {
   label: t('project.lastXMonths', { amount: 12 }),
   period: '12M',
-  tbs: ['week', 'month'],
+  tbs: ['month'],
   countDays: 365,
 }, {
   label: t('project.lastXMonths', { amount: 24 }),
@@ -123,36 +122,32 @@ export const timeBucketToDays: {
 }[] = [
   { lt: 1, tb: ['hour'] }, // 1 days
   { lt: 7, tb: ['hour', 'day'] }, // 7 days
-  { lt: 28, tb: ['day', 'week'] }, // 4 weeks
-  { lt: 366, tb: ['week', 'month'] }, // 12 months
+  { lt: 28, tb: ['day'] }, // 4 weeks
+  { lt: 366, tb: ['month'] }, // 12 months
   { lt: 732, tb: ['month'] }, // 24 months
 ]
 
 export const tbsFormatMapper: IStringObject = {
   hour: '%I %p',
   day: '%d %b',
-  week: '%d %b',
   month: '%b %Y',
 }
 
 export const tbsFormatMapperTooltip: IStringObject = {
   hour: '%d %b %I %p',
   day: '%d %b',
-  week: '%d %b',
   month: '%b %Y',
 }
 
 export const tbsFormatMapperTooltip24h: IStringObject = {
   hour: '%d %b %H:%M',
   day: '%d %b',
-  week: '%d %b',
   month: '%b %Y',
 }
 
 export const tbsFormatMapper24h: IStringObject = {
   hour: '%H:%M',
   day: '%d %b',
-  week: '%d %b',
   month: '%b %Y',
 }
 
@@ -379,64 +374,153 @@ export const THEME_TYPE: IStringObject = {
 
 export const DEFAULT_ALERTS_TAKE: number = 100
 
-// TODO: Eventually this should be fetched from the API, e.g. GET /config route
-export const PLAN_LIMITS: {
-  [key: string]: {
-    monthlyUsageLimit: number
-    maxProjects: number
-    maxAlerts: number
-    legacy: boolean
-    priceMonthly: number
-    priceYearly: number
+const EUR = {
+  symbol: '€',
+  code: 'EUR',
+}
+
+const USD = {
+  symbol: '$',
+  code: 'USD',
+}
+
+const GBP = {
+  symbol: '£',
+  code: 'GBP',
+}
+
+type ICurrencies = {
+  [key in 'EUR' | 'USD' | 'GBP']: {
+    symbol: string
+    code: string
   }
-} = {
+}
+
+export const CURRENCIES: ICurrencies = {
+  EUR, USD, GBP,
+}
+
+// TODO: Eventually this should be fetched from the API, e.g. GET /config route
+export const PLAN_LIMITS = {
   free: {
-    priceMonthly: 0,
-    priceYearly: 0,
     monthlyUsageLimit: 5000,
     maxProjects: 10,
     maxAlerts: 1,
     legacy: true,
+    price: {
+      USD: {
+        monthly: 0,
+        yearly: 0,
+      },
+      EUR: {
+        monthly: 0,
+        yearly: 0,
+      },
+      GBP: {
+        monthly: 0,
+        yearly: 0,
+      },
+    },
   },
   trial: {
     monthlyUsageLimit: 100000,
     maxProjects: 20,
     maxAlerts: 20,
     legacy: false,
-    priceMonthly: 0,
-    priceYearly: 0,
+    price: {
+      USD: {
+        monthly: 0,
+        yearly: 0,
+      },
+      EUR: {
+        monthly: 0,
+        yearly: 0,
+      },
+      GBP: {
+        monthly: 0,
+        yearly: 0,
+      },
+    },
   },
   hobby: {
     monthlyUsageLimit: 10000,
     maxProjects: 20,
     maxAlerts: 10,
     legacy: false,
-    priceMonthly: 5,
-    priceYearly: 50,
+    price: {
+      USD: {
+        monthly: 5,
+        yearly: 50,
+      },
+      EUR: {
+        monthly: 5,
+        yearly: 50,
+      },
+      GBP: {
+        monthly: 4,
+        yearly: 40,
+      },
+    },
   },
   freelancer: {
     monthlyUsageLimit: 100000,
     maxProjects: 20,
     maxAlerts: 20,
     legacy: false,
-    priceMonthly: 15,
-    priceYearly: 150,
+    price: {
+      USD: {
+        monthly: 15,
+        yearly: 150,
+      },
+      EUR: {
+        monthly: 15,
+        yearly: 150,
+      },
+      GBP: {
+        monthly: 14,
+        yearly: 140,
+      },
+    },
   },
   startup: {
     monthlyUsageLimit: 1000000,
     maxProjects: 30,
     maxAlerts: 50,
     legacy: false,
-    priceMonthly: 59,
-    priceYearly: 590,
+    price: {
+      USD: {
+        monthly: 59,
+        yearly: 590,
+      },
+      EUR: {
+        monthly: 57,
+        yearly: 570,
+      },
+      GBP: {
+        monthly: 49,
+        yearly: 490,
+      },
+    },
   },
   enterprise: {
     monthlyUsageLimit: 5000000,
     maxProjects: 50,
     maxAlerts: 100,
     legacy: false,
-    priceMonthly: 110,
-    priceYearly: 1100,
+    price: {
+      USD: {
+        monthly: 110,
+        yearly: 1100,
+      },
+      EUR: {
+        monthly: 110,
+        yearly: 1100,
+      },
+      GBP: {
+        monthly: 95,
+        yearly: 950,
+      },
+    },
   },
 }
 

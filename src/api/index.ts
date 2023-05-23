@@ -21,8 +21,13 @@ import { ISubscribers } from 'redux/models/ISubscribers'
 import { IAnnotations } from 'redux/models/IAnnotations'
 
 const debug = Debug('swetrix:api')
+
+const envApiURL = process.env.REACT_APP_RUNNING_DEV_SCRIPT === 'true'
+  ? process.env.REACT_APP_API_STAGING_URL
+  : process.env.REACT_APP_API_URL
+
 // @ts-ignore
-const baseURL: string = isSelfhosted ? window.env.API_URL : process.env.REACT_APP_API_URL
+const baseURL: string = isSelfhosted ? window.env.API_URL : envApiURL
 
 const api = axios.create({
   baseURL,
@@ -928,13 +933,14 @@ export const getUserFlow = (
   pid: string,
   tb: string = 'hour',
   period: string = '3d',
+  filters: string[] = [],
   from: string = '',
   to: string = '',
   timezone: string = '',
 ) =>
   api
     .get(
-      `log/user-flow?pid=${pid}&timeBucket=${tb}&period=${period}&from=${from}&to=${to}&timezone=${timezone}`,
+      `log/user-flow?pid=${pid}&timeBucket=${tb}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}`,
     )
     .then((response) => response.data)
     .catch((error) => {
@@ -995,4 +1001,14 @@ export const deleteAnnotation = (pid: string, id: string) =>
     .catch((error) => {
       debug('%s', error)
       throw error
+ 
+export const getPaymentMetainfo = () =>
+  api
+    .get('user/metainfo')
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message)
+        ? error.response.data
+        : error.response.data.message
     })

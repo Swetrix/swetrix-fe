@@ -32,6 +32,7 @@ import _pickBy from 'lodash/pickBy'
 import _every from 'lodash/every'
 import _size from 'lodash/size'
 import _truncate from 'lodash/truncate'
+import _isString from 'lodash/isString'
 import PropTypes from 'prop-types'
 import * as SwetrixSDK from '@swetrix/sdk'
 
@@ -83,11 +84,7 @@ interface IProjectView extends IProject {
   isPublicVisitors?: boolean,
 }
 
-const ViewProject = ({
-  projects, isLoading: _isLoading, showError, cache, cachePerf, setProjectCache, projectViewPrefs, setProjectViewPrefs, setPublicProject,
-  setLiveStatsForProject, authenticated, timezone, user, sharedProjects, extensions, generateAlert, setProjectCachePerf,
-  projectTab, setProjectTab, setProjects, setProjectForcastCache, customEventsPrefs, setCustomEventsPrefs, liveStats,
-}: {
+interface IViewProject {
   projects: IProjectView[],
   extensions: any,
   isLoading: boolean,
@@ -119,7 +116,13 @@ const ViewProject = ({
   customEventsPrefs: any,
   setCustomEventsPrefs: (pid: string, data: any) => void,
   liveStats: ILiveStats,
-}) => {
+}
+
+const ViewProject = ({
+  projects, isLoading: _isLoading, showError, cache, cachePerf, setProjectCache, projectViewPrefs, setProjectViewPrefs, setPublicProject,
+  setLiveStatsForProject, authenticated, timezone, user, sharedProjects, extensions, generateAlert, setProjectCachePerf,
+  projectTab, setProjectTab, setProjects, setProjectForcastCache, customEventsPrefs, setCustomEventsPrefs, liveStats,
+}: IViewProject) => {
   const { t, i18n: { language } }: {
     t: (key: string, options?: {
       [key: string]: string | number | null,
@@ -200,6 +203,7 @@ const ViewProject = ({
 
     return projectTab || PROJECT_TABS.traffic
   })
+  const [pgActiveFragment, setPgActiveFragment] = useState<number>(0)
 
   // TODO: THIS SHOULD BE MOVED TO REDUCERS WITH CACHE FUNCTIONALITY
   // I PUT IT HERE JUST TO SEE IF IT WORKS WELL
@@ -284,6 +288,11 @@ const ViewProject = ({
       },
     ]
   }, [t])
+
+  const pgPanelNameMapping = [
+    tnMapping.pg, // when fragment 0 is selected
+    tnMapping.userFlow, // when fragment 1 is selected
+  ]
 
   const activeTabLabel = useMemo(() => _find(tabs, tab => tab.id === activeTab)?.label, [tabs, activeTab])
 
@@ -484,6 +493,7 @@ const ViewProject = ({
     setIsActiveCompare(false)
     setDateRangeCompare(null)
     setDataChartCompare({})
+    setDataChartPerfCompare({})
     setActivePeriodCompare(periodPairsCompare[0].period)
   }
 
@@ -545,7 +555,7 @@ const ViewProject = ({
         }
 
         if (!_isEmpty(fromCompare) && !_isEmpty(toCompare)) {
-          if (!_isEmpty(cache[id]) && !_isEmpty(cache[id][keyCompare])) {
+          if (!_isEmpty(cache[id]) && !_isEmpty(cache[id][keyCompare]) && _isEmpty(newFilters || filters)) {
             dataCompare = cache[id][keyCompare]
           } else {
             dataCompare = await getProjectCompareData(id, timeBucket, '', newFilters || filters, fromCompare, toCompare, timezone)
@@ -567,7 +577,7 @@ const ViewProject = ({
         key = getProjectCacheKey(period, timeBucket)
       }
 
-      if (!forced && !_isEmpty(cache[id]) && !_isEmpty(cache[id][key])) {
+      if (!forced && !_isEmpty(cache[id]) && !_isEmpty(cache[id][key]) && !_isEmpty(newFilters || filters)) {
         data = cache[id][key]
       } else {
         if (period === 'custom' && dateRange) {
@@ -649,6 +659,7 @@ const ViewProject = ({
     } catch (e) {
       setAnalyticsLoading(false)
       setDataLoading(false)
+      setIsPanelsDataEmpty(true)
       console.error('[ERROR](loadAnalytics) Loading analytics data failed')
       console.error(e)
     }
@@ -710,7 +721,7 @@ const ViewProject = ({
         }
 
         if (!_isEmpty(fromCompare) && !_isEmpty(toCompare)) {
-          if (!_isEmpty(cache[id]) && !_isEmpty(cache[id][keyCompare])) {
+          if (!_isEmpty(cache[id]) && !_isEmpty(cache[id][keyCompare]) && _isEmpty(newFilters || filtersPerf)) {
             dataCompare = cache[id][keyCompare]
           } else {
             dataCompare = await getPerfData(id, timeBucket, '', newFilters || filtersPerf, fromCompare, toCompare, timezone)
@@ -788,6 +799,7 @@ const ViewProject = ({
     } catch (e) {
       setAnalyticsLoading(false)
       setDataLoading(false)
+      setIsPanelsDataEmptyPerf(true)
       console.error('[ERROR](loadAnalytics) Loading analytics data failed')
       console.error(e)
     }
@@ -991,11 +1003,6 @@ const ViewProject = ({
   }
 
   useEffect(() => {
-    loadAnalytics()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [forecasedChartData])
-
-  useEffect(() => {
     // @ts-ignore
     const url = new URL(window.location)
     url.searchParams.delete('tab')
@@ -1066,8 +1073,11 @@ const ViewProject = ({
   // Initialising Swetrix SDK instance
   useEffect(() => {
     let sdk: any | null = null
-    if (!_isEmpty(extensions)) {
-      const processedExtensions = _map(extensions, (ext) => {
+
+    const filteredExtensions = _filter(extensions, (ext) => _isString(ext.fileURL))
+
+    if (!_isEmpty(filteredExtensions)) {
+      const processedExtensions = _map(filteredExtensions, (ext) => {
         const { id: extId, fileURL } = ext
         return {
           id: extId,
@@ -1291,12 +1301,12 @@ const ViewProject = ({
         loadAnalytics()
       }
     }
-    if (areFiltersPerfParsed) {
+    if (areFiltersPerfParsed && areTimeBucketParsed && arePeriodParsed) {
       if (activeTab === PROJECT_TABS.performance) {
         loadAnalyticsPerf()
       }
     }
-  }, [project, period, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t, activeTab, areFiltersPerfParsed]) // eslint-disable-line
+  }, [project, period, chartType, filters, forecasedChartData, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t, activeTab, areFiltersPerfParsed]) // eslint-disable-line
 
   useEffect(() => {
     if (!_isEmpty(activeChartMetricsCustomEvents)) {
@@ -1553,16 +1563,6 @@ const ViewProject = ({
     setItem('chartType', type)
     setChartType(type)
   }
-
-  // useEffect to change chart if we change chart type
-  useEffect(() => {
-    if (activeTab === PROJECT_TABS.performance) {
-      loadAnalyticsPerf()
-    } else {
-      loadAnalytics()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chartType])
 
   // loadAnalytics when compare period change or compare selected
   useEffect(() => {
@@ -1897,13 +1897,7 @@ const ViewProject = ({
                               {_find(chartMetricsPerf, ({ id: chartId }) => chartId === activeChartMetricsPerf)?.label}
                             </p>
                           )}
-                          labelExtractor={(pair) => {
-                            const {
-                              label,
-                            } = pair
-
-                            return label
-                          }}
+                          labelExtractor={(pair) => pair.label}
                           keyExtractor={(pair) => pair.id}
                           onSelect={({ id: pairID }) => {
                             switchActiveChartMetric(pairID)
@@ -2062,6 +2056,7 @@ const ViewProject = ({
                           icon={panelIcon}
                           id={type}
                           onFilter={filterHandler}
+                          activeTab={activeTab}
                           name={panelName}
                           data={panelsData.data[type]}
                           customTabs={customTabs}
@@ -2077,6 +2072,7 @@ const ViewProject = ({
                         <Panel
                           t={t}
                           key={type}
+                          activeTab={activeTab}
                           icon={panelIcon}
                           id={type}
                           onFilter={filterHandler}
@@ -2097,6 +2093,7 @@ const ViewProject = ({
                           id={type}
                           onFilter={filterHandler}
                           name={panelName}
+                          activeTab={activeTab}
                           data={panelsData.data[type]}
                           customTabs={customTabs}
                           rowMapper={(rowName) => (
@@ -2113,6 +2110,7 @@ const ViewProject = ({
                           key={type}
                           icon={panelIcon}
                           id={type}
+                          activeTab={activeTab}
                           onFilter={filterHandler}
                           name={panelName}
                           data={panelsData.data[type]}
@@ -2130,12 +2128,15 @@ const ViewProject = ({
                           icon={panelIcon}
                           id={type}
                           onFilter={filterHandler}
-                          name={panelName}
+                          onFragmentChange={setPgActiveFragment}
+                          name={pgPanelNameMapping[pgActiveFragment]}
                           data={panelsData.data[type]}
                           customTabs={customTabs}
                           period={period}
+                          activeTab={activeTab}
                           pid={id}
                           timeBucket={timeBucket}
+                          filters={filters}
                           from={dateRange ? getFormatDate(dateRange[0]) : null}
                           to={dateRange ? getFormatDate(dateRange[1]) : null}
                           timezone={timezone}
@@ -2149,6 +2150,7 @@ const ViewProject = ({
                         key={type}
                         icon={panelIcon}
                         id={type}
+                        activeTab={activeTab}
                         onFilter={filterHandler}
                         name={panelName}
                         data={panelsData.data[type]}
@@ -2206,6 +2208,7 @@ const ViewProject = ({
                           id={type}
                           onFilter={filterHandler}
                           name={panelName}
+                          activeTab={activeTab}
                           data={panelsDataPerf.data[type]}
                           customTabs={customTabs}
                           rowMapper={(rowName) => (
@@ -2225,6 +2228,7 @@ const ViewProject = ({
                           id={type}
                           onFilter={filterHandler}
                           name={panelName}
+                          activeTab={activeTab}
                           data={panelsDataPerf.data[type]}
                           customTabs={customTabs}
                           valueMapper={(value) => getStringFromTime(getTimeFromSeconds(value), true)}

@@ -27,7 +27,9 @@ import JSZip from 'jszip'
 import {
   TimeFormat, chartTypes, tbsFormatMapper, tbsFormatMapper24h, tbsFormatMapperTooltip, tbsFormatMapperTooltip24h,
 } from 'redux/constants'
-import { getTimeFromSeconds, getStringFromTime, sumArrays } from 'utils/generic'
+import {
+  getTimeFromSeconds, getStringFromTime, sumArrays, nFormatter,
+} from 'utils/generic'
 import countries from 'utils/isoCountries'
 import _toNumber from 'lodash/toNumber'
 import _toString from 'lodash/toString'
@@ -552,6 +554,11 @@ const getSettings = (
         localtime: timeFormat === TimeFormat['24-hour'],
         type: 'timeseries',
       },
+      y: {
+        tick: {
+          format: (d: number) => nFormatter(d, 1),
+        },
+      },
       y2: {
         show: activeChartMetrics.bounce || activeChartMetrics.sessionDuration,
         tick: {
@@ -913,6 +920,7 @@ const typeNameMapping = (t: (str: string) => string) => ({
   ca: 'utm_campaign',
   lt: t('project.mapping.lt'),
   ev: t('project.event'),
+  userFlow: t('main.competitiveFeatures.usfl'),
 })
 
 const iconClassName = 'w-6 h-6'
