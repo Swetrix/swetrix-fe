@@ -296,7 +296,7 @@ const Annotations = ({
 
     try {
       if (true) {
-        genericError(t('apiNotifications.requiredFields'))
+        genericError(t('auth.common.requiredField'))
         return
       }
 
