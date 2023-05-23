@@ -34,6 +34,7 @@ import countries from 'utils/isoCountries'
 import _toNumber from 'lodash/toNumber'
 import _toString from 'lodash/toString'
 import _includes from 'lodash/includes'
+import { IAnnotations } from 'redux/models/IAnnotations'
 
 const getAvg = (arr: any) => {
   const total = _reduce(arr, (acc, c) => acc + c, 0)
@@ -408,6 +409,7 @@ const getSettings = (
   },
   rotateXAxias: boolean,
   chartType: string,
+  annotations: IAnnotations[],
   customEvents?: {
     [key: string]: string[],
   },
@@ -433,6 +435,16 @@ const getSettings = (
         ...customEventsColors,
         [el]: stringToColour(el),
       }
+    })
+  }
+
+  if (!_isEmpty(annotations)) {
+    _forEach(annotations, (el) => {
+      console.log(el)
+      lines.push({
+        value: el.date,
+        text: el.name,
+      })
     })
   }
 

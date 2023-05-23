@@ -6,6 +6,7 @@ import { alertsActions } from 'redux/reducers/alerts'
 import { StateType, AppDispatch } from 'redux/store'
 import { IProject } from 'redux/models/IProject'
 import { ISharedProject } from 'redux/models/ISharedProject'
+import { IAnnotations } from 'redux/models/IAnnotations'
 
 import ViewProject from './ViewProject'
 
@@ -25,6 +26,7 @@ const mapStateToProps = (state: StateType) => {
       projectTab: state.ui.projects.projectTab,
       customEventsPrefs: state.ui.cache.customEventsPrefs,
       liveStats: state.ui.projects.liveStats,
+      annotationsProjects: state.ui.projects.annotations,
     }
   }
 
@@ -42,6 +44,7 @@ const mapStateToProps = (state: StateType) => {
     projectTab: state.ui.projects.projectTab,
     customEventsPrefs: state.ui.cache.customEventsPrefs,
     liveStats: state.ui.projects.liveStats,
+    annotationsProjects: state.ui.projects.annotations,
   }
 }
 
@@ -110,6 +113,11 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     dispatch(UIActions.setCustomEventsPrefs({
       pid,
       data,
+    }))
+  },
+  setAnnotations: (annotations: IAnnotations[]) => {
+    dispatch(UIActions.setAnnotations({
+      annotations,
     }))
   },
 })

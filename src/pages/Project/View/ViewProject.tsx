@@ -50,6 +50,7 @@ import {
 import { IUser } from 'redux/models/IUser'
 import { IProject, ILiveStats } from 'redux/models/IProject'
 import { IProjectForShared, ISharedProject } from 'redux/models/ISharedProject'
+import { IAnnotations } from 'redux/models/IAnnotations'
 import Button from 'ui/Button'
 import Loader from 'ui/Loader'
 import Dropdown from 'ui/Dropdown'
@@ -60,7 +61,7 @@ import Robot from 'ui/icons/Robot'
 import Forecast from 'modals/Forecast'
 import routes from 'routes'
 import {
-  getProjectData, getProject, getOverallStats, getLiveVisitors, getPerfData, getProjectDataCustomEvents, getProjectCompareData,
+  getProjectData, getProject, getOverallStats, getLiveVisitors, getPerfData, getProjectDataCustomEvents, getProjectCompareData, getAnnotations,
 } from 'api'
 import { getChartPrediction } from 'api/ai'
 import {
@@ -116,12 +117,15 @@ interface IViewProject {
   customEventsPrefs: any,
   setCustomEventsPrefs: (pid: string, data: any) => void,
   liveStats: ILiveStats,
+  annotationsProjects: IAnnotations[],
+  setAnnotations: (i: IAnnotations[]) => void,
 }
 
 const ViewProject = ({
   projects, isLoading: _isLoading, showError, cache, cachePerf, setProjectCache, projectViewPrefs, setProjectViewPrefs, setPublicProject,
   setLiveStatsForProject, authenticated, timezone, user, sharedProjects, extensions, generateAlert, setProjectCachePerf,
   projectTab, setProjectTab, setProjects, setProjectForcastCache, customEventsPrefs, setCustomEventsPrefs, liveStats,
+  annotationsProjects, setAnnotations,
 }: IViewProject) => {
   const { t, i18n: { language } }: {
     t: (key: string, options?: {
@@ -256,6 +260,23 @@ const ViewProject = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActiveCompare, period])
   const [sessionDurationAVGCompare, setSessionDurationAVGCompare] = useState<any>(null)
+
+  // state for annotation on chart
+  const annotationsProject = useMemo(() => _filter(annotationsProjects, (item) => item.projectId === id), [annotationsProjects, id])
+
+  const getAnnotationsAsync = async () => {
+    try {
+      // @ts-ignore
+      const { annotations } = await getAnnotations(id, 100, 0)
+      setAnnotations(annotations)
+    } catch (e) {
+      console.error(`[ERROR] Error while getting annotations: ${e}`)
+    }
+  }
+
+  useEffect(() => {
+    getAnnotationsAsync()
+  }, [])
 
   const tabs: {
     id: string
@@ -468,7 +489,7 @@ const ViewProject = ({
       setCustomEventsPrefs(id, events)
 
       const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-      const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, events)
+      const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, annotationsProject, events)
       setMainChart(() => {
         // @ts-ignore
         const generete = bb.generate(bbSettings)
@@ -633,7 +654,7 @@ const ViewProject = ({
         setIsPanelsDataEmpty(true)
       } else {
         const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-        const bbSettings = getSettings(chart, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChart, dataCompare?.chart)
+        const bbSettings = getSettings(chart, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, annotationsProject, customEventsChart, dataCompare?.chart)
         setChartData(chart)
 
         setPanelsData({
@@ -1030,7 +1051,7 @@ const ViewProject = ({
 
         if (activeChartMetrics.bounce || activeChartMetrics.sessionDuration || activeChartMetrics.views || activeChartMetrics.unique || !activeChartMetrics.bounce || !activeChartMetrics.sessionDuration) {
           const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-          const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChartData, dataChartCompare)
+          const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, annotationsProject, customEventsChartData, dataChartCompare)
 
           setMainChart(() => {
             // @ts-ignore
