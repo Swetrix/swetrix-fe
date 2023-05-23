@@ -440,7 +440,24 @@ const getSettings = (
 
   if (!_isEmpty(annotations)) {
     _forEach(annotations, (el) => {
-      console.log(el)
+      if (_isEmpty(el) && _isEmpty(el.date) && _isEmpty(el.name)) {
+        return
+      }
+
+      if (timeBucket === 'hour') {
+        return
+      }
+
+      if (timeBucket === 'month') {
+        console.log('el.date', el.date)
+        lines.push({
+          // @ts-ignore
+          value: el.date.slice(0, 7),
+          text: el.name,
+        })
+        return
+      }
+
       lines.push({
         value: el.date,
         text: el.name,

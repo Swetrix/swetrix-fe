@@ -430,7 +430,7 @@ const Annotations = ({
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-300 dark:divide-gray-600'>
-                      {_map(annotationsProject, (item: IAnnotations[]) => (
+                      {_map(annotationsProject, (item: IAnnotations) => (
                         <AnnotationsList
                           data={item}
                           key={item.id}
@@ -469,7 +469,7 @@ const Annotations = ({
             className='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm bg-indigo-600 hover:bg-indigo-700'
             onClick={handleSubmit}
           >
-            {t('project.annotations.add')}
+            {form?.isEdit ? t('common.save') : t('common.add')}
           </button>
         )}
         closeText={t('common.cancel')}
