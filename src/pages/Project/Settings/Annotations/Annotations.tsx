@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect,
+  useState, useEffect, useMemo,
 } from 'react'
 import {
   TrashIcon, PencilIcon, InboxStackIcon,
@@ -185,15 +185,16 @@ const NoAnnotations = ({ t }: {
 )
 
 const Annotations = ({
-  genericError, addAnnotations, removeAnnotations, setProjectAnnotations, projectId, projectName, reportTypeNotifiction,
+  genericError, addAnnotations, removeAnnotations, setAnnotations, projectId, projectName, reportTypeNotifiction, annotationsProjects,
 }: {
   genericError: (message: string, type?: string) => void
   addAnnotations: (message: string, type?: string) => void
   removeAnnotations: (message: string) => void
-  setProjectAnnotations: (idProject: string, annotations: IAnnotations[]) => void
+  setAnnotations: (item: IAnnotations[]) => void
   projectId: string
   projectName: string
   reportTypeNotifiction: (message: string, type?: string) => void
+  annotationsProjects: IAnnotations[]
 }): JSX.Element => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [editAnnotationId, setEditAnnotationId] = useState<string>('')
@@ -218,7 +219,13 @@ const Annotations = ({
     date?: string,
   }>({})
   const [validated, setValidated] = useState<boolean>(false)
-  const [annotions, setAnnotions] = useState<IAnnotations[]>([])
+  const annotationsProject = useMemo(() => _filter(annotationsProjects, (item: IAnnotations) => {
+    if (item.projectId === projectId) {
+      return 1
+    }
+    return 0
+  }), [annotationsProjects, projectId])
+  console.log(annotationsProject)
   const [loading, setLoading] = useState(true)
   const [paggination, setPaggination] = useState({
     page: 1,
@@ -235,8 +242,7 @@ const Annotations = ({
         ...oldPaggination,
         count,
       }))
-      setProjectAnnotations(projectId, annotations)
-      setAnnotions(annotations)
+      setAnnotations(annotations)
     } catch (e) {
       console.error(`[ERROR] Error while getting annotations: ${e}`)
     } finally {
@@ -289,21 +295,20 @@ const Annotations = ({
     setValidated(false)
 
     try {
-      if (form.isEdit) { // if there was an edit, then call updateAnnotations, otherwise addAnnotations
-        // @ts-ignore
-        const results = await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
-        const editIndex = _findIndex(annotions, s => s.id === editAnnotationId)
-        const newAnnotations = [...annotions.slice(0, editIndex), results, ...annotions.slice(editIndex + 1)]
-        setProjectAnnotations(projectId, newAnnotations)
-        setAnnotions(newAnnotations)
-        addAnnotations(t('apiNotifications.userEdited'))
+      if (true) {
+        genericError(t('apiNotifications.requiredFields'))
+        return
+      }
 
-        // @ts-ignore
+      if (form.isEdit) {
+        const results = await updateAnnotation(projectId, editAnnotationId, { date: form.date, name: form.name })
+        const editIndex = _findIndex(annotationsProjects, s => s.id === editAnnotationId)
+        const newAnnotations = [...annotationsProjects.slice(0, editIndex), results, ...annotationsProjects.slice(editIndex + 1)]
+        setAnnotations(newAnnotations)
+        addAnnotations(t('apiNotifications.userEdited'))
       } else {
-        // @ts-ignore
         const results = await createAnnotation(projectId, { date: form.date, name: form.name })
-        setAnnotions([...annotions, results])
-        setProjectAnnotations(projectId, [...annotions, results])
+        setAnnotations([...annotationsProjects, results])
         addAnnotations(t('apiNotifications.userInvited'))
       }
       getAnnotationsAsync()
@@ -346,9 +351,8 @@ const Annotations = ({
   const onRemove = async (name: string) => {
     try {
       await deleteAnnotation(projectId, name)
-      const results = _filter(annotions, s => s.id !== name)
-      setAnnotions(results)
-      setProjectAnnotations(projectId, results)
+      const results = _filter(annotationsProjects, s => s.id !== name)
+      setAnnotations(results)
       removeAnnotations(t('apiNotifications.emailDelete'))
       getAnnotationsAsync()
     } catch (e) {
@@ -358,7 +362,7 @@ const Annotations = ({
   }
 
   const onEdit = (annotainoId: string) => {
-    const annotation = _find(annotions, (a: IAnnotations) => a.id === annotainoId)
+    const annotation = _find(annotationsProjects, (a: IAnnotations) => a.id === annotainoId)
     if (annotation) {
       setForm({
         name: annotation.name,
@@ -401,7 +405,13 @@ const Annotations = ({
         <div className='mt-3 flex flex-col'>
           <div className='-my-2 -mx-4 overflow-x-auto md:overflow-x-visible sm:-mx-6 lg:-mx-8'>
             <div className='inline-block min-w-full py-2 md:px-6 lg:px-8'>
-              {(!loading && !_isEmpty(annotions)) && (
+              {_isEmpty(annotationsProjects) && (
+                <NoAnnotations t={t} />
+              )}
+              {loading && (
+                <Loader />
+              )}
+              {(!loading && !_isEmpty(annotationsProjects)) && (
                 <div className='shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
                   <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                     <thead>
@@ -417,7 +427,7 @@ const Annotations = ({
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-300 dark:divide-gray-600'>
-                      {_map(annotions, email => (
+                      {_map(annotationsProjects, email => (
                         <AnnotationsList
                           data={email}
                           key={email.id}
@@ -431,12 +441,6 @@ const Annotations = ({
                     </tbody>
                   </table>
                 </div>
-              )}
-              {_isEmpty(annotions) && (
-                <NoAnnotations t={t} />
-              )}
-              {loading && (
-                <Loader />
               )}
             </div>
           </div>

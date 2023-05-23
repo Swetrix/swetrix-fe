@@ -30,6 +30,7 @@ interface IInitialState {
     alerts: IAlerts[]
     subscribers: any[]
     liveStats: ILiveStats
+    annotations: IAnnotations[]
 }
 
 const initialState: IInitialState = {
@@ -52,6 +53,7 @@ const initialState: IInitialState = {
   alerts: [],
   subscribers: [],
   liveStats: {},
+  annotations: [],
 }
 
 const projectsSlice = createSlice({
@@ -199,12 +201,12 @@ const projectsSlice = createSlice({
       state.projectTab = payload
     },
 
-    setProjectAnnotations(state, { payload }: PayloadAction<{
-      idProject: string,
+    setAnnotations(state, { payload }: PayloadAction<{
       annotations: IAnnotations[]
     }>) {
-      const findProject = _findIndex(state.projects, (project) => project.id === payload.idProject)
-      state.projects[findProject].annotations = payload.annotations
+      const { annotations } = payload
+
+      state.annotations = annotations
     },
 
     reset(state) {

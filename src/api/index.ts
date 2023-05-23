@@ -967,7 +967,7 @@ export const createAnnotation = (
   pid: string,
   data: {
     name: string
-    date: string
+    date: string | Date
   },
 ) =>
   api
@@ -983,7 +983,7 @@ export const updateAnnotation = (
   id: string,
   data: {
     name: string
-    date: string
+    date: string | Date
   },
 ) =>
   api

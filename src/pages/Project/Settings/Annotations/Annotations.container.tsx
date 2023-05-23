@@ -8,6 +8,7 @@ import Annotations from './Annotations'
 
 const mapStateToProps = (state: StateType) => ({
   user: state.auth.user,
+  annotationsProjects: state.ui.projects.annotations,
 })
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
@@ -16,9 +17,8 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
       message,
     }))
   },
-  setProjectAnnotations: (idProject: string, annotations: IAnnotations[]) => {
-    dispatch(UIActions.setProjectAnnotations({
-      idProject,
+  setAnnotations: (annotations: IAnnotations[]) => {
+    dispatch(UIActions.setAnnotations({
       annotations,
     }))
   },
