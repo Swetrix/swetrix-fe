@@ -352,6 +352,11 @@ const ViewProject = ({
         active: activeChartMetrics[CHART_METRICS_MAPPING.viewsPerUnique],
       },
       {
+        id: CHART_METRICS_MAPPING.annotations,
+        label: t('dashboard.annotations'),
+        active: activeChartMetrics[CHART_METRICS_MAPPING.annotations],
+      },
+      {
         id: CHART_METRICS_MAPPING.trendlines,
         label: t('dashboard.trendlines'),
         active: activeChartMetrics[CHART_METRICS_MAPPING.trendlines],

@@ -439,7 +439,7 @@ const getSettings = (
     })
   }
 
-  if (!_isEmpty(annotations)) {
+  if (!_isEmpty(annotations) && activeChartMetrics.annotations) {
     // text?: string;
     // axis?: string;
     // position?: string;
