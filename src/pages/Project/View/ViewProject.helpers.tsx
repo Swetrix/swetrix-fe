@@ -180,6 +180,7 @@ const CHART_METRICS_MAPPING = {
   trendlines: 'trendlines',
   sessionDuration: 'sessionDuration',
   customEvents: 'customEvents',
+  annotations: 'annotations',
 }
 
 const FILTER_CHART_METRICS_MAPPING_FOR_COMPARE = ['bounce', 'viewsPerUnique', 'trendlines', 'customEvents']
@@ -439,6 +440,10 @@ const getSettings = (
   }
 
   if (!_isEmpty(annotations)) {
+    // text?: string;
+    // axis?: string;
+    // position?: string;
+    // class?: string;
     _forEach(annotations, (el) => {
       if (_isEmpty(el) && _isEmpty(el.date) && _isEmpty(el.name)) {
         return
@@ -454,6 +459,8 @@ const getSettings = (
           // @ts-ignore
           value: el.date.slice(0, 7),
           text: el.name,
+          position: 'middle',
+          class: 'annotation',
         })
         return
       }
@@ -461,6 +468,8 @@ const getSettings = (
       lines.push({
         value: el.date,
         text: el.name,
+        position: 'middle',
+        class: 'annotation',
       })
     })
   }

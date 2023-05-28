@@ -179,6 +179,7 @@ const ViewProject = ({
     [CHART_METRICS_MAPPING.sessionDuration]: false,
     [CHART_METRICS_MAPPING.bounce]: false,
     [CHART_METRICS_MAPPING.viewsPerUnique]: false,
+    [CHART_METRICS_MAPPING.annotations]: false,
     [CHART_METRICS_MAPPING.trendlines]: false,
   })
   const [activeChartMetricsPerf, setActiveChartMetricsPerf] = useState<string>(CHART_METRICS_MAPPING_PERF.timing)
