@@ -39,6 +39,7 @@ import { getFormatDate } from '../View/ViewProject.helpers'
 
 import People from './People'
 import Emails from './Emails'
+import Annotations from './Annotations'
 
 const MAX_NAME_LENGTH = 50
 const MAX_ORIGINS_LENGTH = 300
@@ -473,6 +474,12 @@ const ProjectSettings = ({
                   </div>
                 )}
               </div>
+              {!isSelfhosted && (
+                <>
+                  <hr className='mt-8 xs:mt-2 sm:mt-5 border-gray-200 dark:border-gray-600' />
+                  <Annotations projectId={id} projectName={project.name} />
+                </>
+              )}
               {!isSelfhosted && (
                 <>
                   <hr className='mt-8 xs:mt-2 sm:mt-5 border-gray-200 dark:border-gray-600' />

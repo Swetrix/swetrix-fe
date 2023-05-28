@@ -18,6 +18,7 @@ import { IProject, IOverall, IProjectNames } from 'redux/models/IProject'
 import { IAlerts } from 'redux/models/IAlerts'
 import { ISharedProject } from 'redux/models/ISharedProject'
 import { ISubscribers } from 'redux/models/ISubscribers'
+import { IAnnotations } from 'redux/models/IAnnotations'
 
 const debug = Debug('swetrix:api')
 
@@ -953,6 +954,64 @@ export const getUserFlow = (
     .get(
       `log/user-flow?pid=${pid}&timeBucket=${tb}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}`,
     )
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message)
+        ? error.response.data
+        : error.response.data.message
+    })
+
+export const getAnnotations = (
+  pid: string,
+  take: number = 100,
+  skip: number = 0,
+) =>
+  api
+    .get(`project/${pid}/annotations?limit=${take}&offset=${skip}`)
+    .then((response): {
+      annotations: IAnnotations[]
+      count: number
+    } => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
+
+export const createAnnotation = (
+  pid: string,
+  data: {
+    name: string
+    date: string | Date
+  },
+) =>
+  api
+    .post(`project/${pid}/annotations`, data)
+    .then((response): IAnnotations => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
+
+export const updateAnnotation = (
+  pid: string,
+  id: string,
+  data: {
+    name: string
+    date: string | Date
+  },
+) =>
+  api
+    .patch(`project/${pid}/annotations/${id}`, data)
+    .then((response): IAnnotations => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
+
+export const deleteAnnotation = (pid: string, id: string) =>
+  api
+    .delete(`project/${pid}/annotations/${id}`)
     .then((response) => response.data)
     .catch((error) => {
       debug('%s', error)

@@ -34,6 +34,7 @@ import countries from 'utils/isoCountries'
 import _toNumber from 'lodash/toNumber'
 import _toString from 'lodash/toString'
 import _includes from 'lodash/includes'
+import { IAnnotations } from 'redux/models/IAnnotations'
 
 const getAvg = (arr: any) => {
   const total = _reduce(arr, (acc, c) => acc + c, 0)
@@ -179,6 +180,7 @@ const CHART_METRICS_MAPPING = {
   trendlines: 'trendlines',
   sessionDuration: 'sessionDuration',
   customEvents: 'customEvents',
+  annotations: 'annotations',
 }
 
 const FILTER_CHART_METRICS_MAPPING_FOR_COMPARE = ['bounce', 'viewsPerUnique', 'trendlines', 'customEvents']
@@ -408,6 +410,7 @@ const getSettings = (
   },
   rotateXAxias: boolean,
   chartType: string,
+  annotations: IAnnotations[],
   customEvents?: {
     [key: string]: string[],
   },
@@ -433,6 +436,40 @@ const getSettings = (
         ...customEventsColors,
         [el]: stringToColour(el),
       }
+    })
+  }
+
+  if (!_isEmpty(annotations) && activeChartMetrics.annotations) {
+    // text?: string;
+    // axis?: string;
+    // position?: string;
+    // class?: string;
+    _forEach(annotations, (el) => {
+      if (_isEmpty(el) && _isEmpty(el.date) && _isEmpty(el.name)) {
+        return
+      }
+
+      if (timeBucket === 'hour') {
+        return
+      }
+
+      if (timeBucket === 'month') {
+        lines.push({
+          // @ts-ignore
+          value: el.date.slice(0, 7),
+          text: el.name,
+          position: 'middle',
+          class: 'annotation',
+        })
+        return
+      }
+
+      lines.push({
+        value: el.date,
+        text: el.name,
+        position: 'middle',
+        class: 'annotation',
+      })
     })
   }
 
