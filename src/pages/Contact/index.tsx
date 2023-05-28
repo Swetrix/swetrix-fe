@@ -3,9 +3,12 @@ import React, { useEffect } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 
 import {
-  CONTACT_EMAIL, TWITTER_URL, TWITTER_USERNAME, DISCORD_URL,
+  CONTACT_EMAIL, TWITTER_URL, TWITTER_USERNAME, DISCORD_URL, isSelfhosted,
 } from 'redux/constants'
 import Title from 'components/Title'
+import { loadScript } from 'utils/generic'
+
+const CHAT_WIDGET_URL = 'https://chat.swetrix.com/js/widget.js'
 
 const Contact = (): JSX.Element => {
   const { t }: {
@@ -13,10 +16,20 @@ const Contact = (): JSX.Element => {
   } = useTranslation('common')
 
   useEffect(() => {
+    if (isSelfhosted) {
+      return () => {}
+    }
+
     const intergram = document.querySelector('#intergramPlaceholder')
 
     if (!intergram) {
       return () => {}
+    }
+
+    const intergramScript = document.querySelector('#intergram')
+
+    if (!intergramScript) {
+      loadScript(CHAT_WIDGET_URL, 'intergram')
     }
 
     intergram.classList.remove('hidden')

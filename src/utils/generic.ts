@@ -79,9 +79,14 @@ export const openBrowserWindow = (url: string, width: number, height: number) =>
   return window.open(url, '', `width=${width},height=${height},top=${(window.innerHeight - height) / 2},left=${(window.innerWidth - width) / 2}`)
 }
 
-export const loadScript = (url: string) => {
+export const loadScript = (url: string, id?: string) => {
   const script = document.createElement('script')
   script.src = url
   script.async = true
+
+  if (id) {
+    script.id = id
+  }
+
   document.body.appendChild(script)
 }
