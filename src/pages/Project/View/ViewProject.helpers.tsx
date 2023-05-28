@@ -454,7 +454,6 @@ const getSettings = (
       }
 
       if (timeBucket === 'month') {
-        console.log('el.date', el.date)
         lines.push({
           // @ts-ignore
           value: el.date.slice(0, 7),

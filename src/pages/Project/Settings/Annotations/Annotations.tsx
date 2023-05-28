@@ -228,7 +228,6 @@ const Annotations = ({
 
   const getAnnotationsAsync = async () => {
     try {
-      // @ts-ignore
       const { annotations, count } = await getAnnotations(projectId, paggination.limit, (paggination.page - 1) * paggination.limit)
       setPaggination(oldPaggination => ({
         ...oldPaggination,

@@ -957,7 +957,10 @@ export const getAnnotations = (
 ) =>
   api
     .get(`project/${pid}/annotations?limit=${take}&offset=${skip}`)
-    .then((response): IAnnotations[] => response.data)
+    .then((response): {
+      annotations: IAnnotations[]
+      count: number
+    } => response.data)
     .catch((error) => {
       debug('%s', error)
       throw error

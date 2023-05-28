@@ -267,7 +267,6 @@ const ViewProject = ({
 
   const getAnnotationsAsync = async () => {
     try {
-      // @ts-ignore
       const { annotations } = await getAnnotations(id, 100, 0)
       setAnnotations(annotations)
     } catch (e) {
