@@ -96,8 +96,8 @@ const PanelContainer = ({
         {(checkIfBarsNeeded(type) || checkCustomTabs(type, customTabs)) && (
           <Bars4Icon
             className={cx(iconClassName, 'cursor-pointer', {
-              'text-blue-500': activeFragment === 0,
-              'text-gray-900 dark:text-gray-50': activeFragment === 1,
+              'text-blue-500 dark:text-gray-50': activeFragment === 0,
+              'text-gray-900 dark:text-slate-300': activeFragment === 1,
             })}
             onClick={() => setActiveFragment(0)}
           />
@@ -108,8 +108,8 @@ const PanelContainer = ({
           <>
             <MapIcon
               className={cx(iconClassName, 'ml-2 cursor-pointer', {
-                'text-blue-500': activeFragment === 1,
-                'text-gray-900 dark:text-gray-50': activeFragment === 0,
+                'text-blue-500 dark:text-gray-50': activeFragment === 1,
+                'text-gray-900 dark:text-slate-500': activeFragment === 0,
               })}
               onClick={() => setActiveFragment(1)}
             />
@@ -126,8 +126,8 @@ const PanelContainer = ({
           <>
             <RectangleGroupIcon
               className={cx(iconClassName, 'ml-2 cursor-pointer', {
-                'text-blue-500': activeFragment === 1,
-                'text-gray-900 dark:text-gray-50': activeFragment === 0,
+                'text-blue-500 dark:text-gray-50': activeFragment === 1,
+                'text-gray-900 dark:text-slate-500': activeFragment === 0,
               })}
               onClick={() => setActiveFragment(1)}
             />

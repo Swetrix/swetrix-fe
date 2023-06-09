@@ -2113,7 +2113,7 @@ const ViewProject = ({
                         title={t('project.barChart')}
                         onClick={() => setChartTypeOnClick(chartTypes.bar)}
                         className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:outline-none focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
-                          'text-indigo-600 dark:text-indigo-500 shadow-md': chartType === chartTypes.bar,
+                          'text-indigo-600 dark:text-gray-50 shadow-md': chartType === chartTypes.bar,
                           'text-gray-400 dark:text-gray-500': chartType !== chartTypes.bar,
                         })}
                       >
@@ -2124,7 +2124,7 @@ const ViewProject = ({
                         title={t('project.lineChart')}
                         onClick={() => setChartTypeOnClick(chartTypes.line)}
                         className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:!outline-0 focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
-                          'text-indigo-600 dark:text-indigo-500 shadow-md': chartType === chartTypes.line,
+                          'text-indigo-600 dark:text-gray-50 shadow-md': chartType === chartTypes.line,
                           'text-gray-400 dark:text-gray-500': chartType !== chartTypes.line,
                         })}
                       >
