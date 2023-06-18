@@ -3,6 +3,9 @@ import * as build from '@remix-run/dev/server-build'
 
 export const onRequest = createPagesFunctionHandler({
   build,
-  getLoadContext: (context) => context.env,
+  getLoadContext({ env }) {
+    console.log(env)
+    return env
+  },
   mode: process.env.NODE_ENV,
 })

@@ -48,9 +48,9 @@ const options = {
   transition: transitions.SCALE,
 }
 
-if (isBrowser && process.env.NODE_ENV !== 'production') {
-  localStorage.debug = 'swetrix:*'
-}
+// if (isBrowser && context.NODE_ENV !== 'production') {
+//   localStorage.debug = 'swetrix:*'
+// }
 
 const FONTS_PROVIDER = 'https://fonts.bunny.net'
 const FONTS_URL = 'https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800'
@@ -94,20 +94,20 @@ export const meta: V2_MetaFunction = () => [
 
 // removeObsoleteAuthTokens()
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request, context }: LoaderArgs) {
   const { url } = request
   const locale = detectLanguage(request)
   const theme = detectTheme(request)
-
+  console.log(context)
   const REMIX_ENV = {
-    NODE_ENV: process.env.NODE_ENV,
-    AIAPI_URL: process.env.AIAPI_URL,
-    API_URL: process.env.API_URL,
-    API_STAGING_URL: process.env.API_STAGING_URL,
-    CDN_URL: process.env.CDN_URL,
-    BLOG_URL: process.env.BLOG_URL,
-    SELFHOSTED: process.env.REACT_APP_SELFHOSTED,
-    STAGING: process.env.STAGING,
+    NODE_ENV: context.NODE_ENV,
+    AIAPI_URL: context.AIAPI_URL,
+    API_URL: context.API_URL,
+    API_STAGING_URL: context.API_STAGING_URL,
+    CDN_URL: context.CDN_URL,
+    BLOG_URL: context.BLOG_URL,
+    SELFHOSTED: context.REACT_APP_SELFHOSTED,
+    STAGING: context.STAGING,
   }
 
   return json({
