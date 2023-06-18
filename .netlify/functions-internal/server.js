@@ -13430,20 +13430,72 @@ var import_jsx_dev_runtime = require("react/jsx-dev-runtime"), ABORT_DELAY = 5e3
   autoLastmod: !1,
   priority: 0.8
 });
-async function handleRequest(request, responseStatusCode, responseHeaders, remixContext) {
+function handleRequest(request, responseStatusCode, responseHeaders, remixContext) {
+  return (0, import_isbot.default)(request.headers.get("user-agent")) ? handleBotRequest(
+    request,
+    responseStatusCode,
+    responseHeaders,
+    remixContext
+  ) : handleBrowserRequest(
+    request,
+    responseStatusCode,
+    responseHeaders,
+    remixContext
+  );
+}
+function handleBotRequest(request, responseStatusCode, responseHeaders, remixContext) {
+  return new Promise((resolve2, reject) => {
+    let shellRendered = !1, { pipe, abort } = (0, import_server.renderToPipeableStream)(
+      /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(
+        import_react.RemixServer,
+        {
+          context: remixContext,
+          url: request.url,
+          abortDelay: ABORT_DELAY
+        },
+        void 0,
+        !1,
+        {
+          fileName: "app/entry.server.tsx",
+          lineNumber: 61,
+          columnNumber: 7
+        },
+        this
+      ),
+      {
+        onAllReady() {
+          shellRendered = !0;
+          let body = new import_node_stream.PassThrough();
+          responseHeaders.set("Content-Type", "text/html"), resolve2(
+            new import_node.Response(body, {
+              headers: responseHeaders,
+              status: responseStatusCode
+            })
+          ), pipe(body);
+        },
+        onShellError(error) {
+          reject(error);
+        },
+        onError(error) {
+          responseStatusCode = 500, shellRendered && console.error(error);
+        }
+      }
+    );
+    setTimeout(abort, ABORT_DELAY);
+  });
+}
+async function handleBrowserRequest(request, responseStatusCode, responseHeaders, remixContext) {
   if (isSitemapUrl(request))
     return await sitemap(request, remixContext);
   let instance = (0, import_i18next.createInstance)(), lng = detectLanguage(request), ns = i18next_server_default.getRouteNamespaces(remixContext);
-  await instance.use(import_react_i18next.initReactI18next).use(import_i18next_fs_backend2.default).init({
+  return await instance.use(import_react_i18next.initReactI18next).use(import_i18next_fs_backend2.default).init({
     ...i18n_default,
     lng,
     ns,
     backend: {
       loadPath: (0, import_node_path2.resolve)("./public/locales/{{lng}}.json")
     }
-  });
-  let callbackName = (0, import_isbot.default)(request.headers.get("user-agent")) ? "onAllReady" : "onShellReady";
-  return new Promise((resolve2, reject) => {
+  }), new Promise((resolve2, reject) => {
     let shellRendered = !1, { pipe, abort } = (0, import_server.renderToPipeableStream)(
       /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(import_react_i18next.I18nextProvider, { i18n: instance, children: /* @__PURE__ */ (0, import_jsx_dev_runtime.jsxDEV)(
         import_react.RemixServer,
@@ -13456,17 +13508,17 @@ async function handleRequest(request, responseStatusCode, responseHeaders, remix
         !1,
         {
           fileName: "app/entry.server.tsx",
-          lineNumber: 62,
+          lineNumber: 132,
           columnNumber: 9
         },
         this
       ) }, void 0, !1, {
         fileName: "app/entry.server.tsx",
-        lineNumber: 61,
+        lineNumber: 131,
         columnNumber: 7
       }, this),
       {
-        onAllReady() {
+        onShellReady() {
           shellRendered = !0;
           let body = new import_node_stream.PassThrough();
           responseHeaders.set("Content-Type", "text/html"), resolve2(

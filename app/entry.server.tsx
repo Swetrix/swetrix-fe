@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import type { EntryContext } from '@remix-run/node'
 import { PassThrough } from 'node:stream'
 import { resolve as feResolve } from 'node:path'
@@ -22,7 +23,82 @@ const { isSitemapUrl, sitemap } = createSitemapGenerator({
   priority: 0.8,
 })
 
-export default async function handleRequest(
+export default function handleRequest(
+  request: Request,
+  responseStatusCode: number,
+  responseHeaders: Headers,
+  remixContext: EntryContext,
+) {
+  return isbot(request.headers.get('user-agent'))
+    ? handleBotRequest(
+      request,
+      responseStatusCode,
+      responseHeaders,
+      remixContext,
+    )
+    : handleBrowserRequest(
+      request,
+      responseStatusCode,
+      responseHeaders,
+      remixContext,
+    )
+}
+
+function handleBotRequest(
+  request: Request,
+  responseStatusCode: number,
+  responseHeaders: Headers,
+  remixContext: EntryContext,
+) {
+  // const callbackName = isbot(request.headers.get('user-agent'))
+  //   ? 'onAllReady'
+  //   : 'onShellReady'
+
+  return new Promise((resolve, reject) => {
+    let shellRendered = false
+
+    const { pipe, abort } = renderToPipeableStream(
+      <RemixServer
+        context={remixContext}
+        url={request.url}
+        abortDelay={ABORT_DELAY}
+      />,
+      {
+        onAllReady() {
+          shellRendered = true
+          const body = new PassThrough()
+
+          responseHeaders.set('Content-Type', 'text/html')
+
+          resolve(
+            new Response(body, {
+              headers: responseHeaders,
+              status: responseStatusCode,
+            }),
+          )
+
+          pipe(body)
+        },
+        onShellError(error: unknown) {
+          reject(error)
+        },
+        onError(error: unknown) {
+          responseStatusCode = 500
+          // Log streaming rendering errors from inside the shell.  Don't log
+          // errors encountered during initial shell rendering since they'll
+          // reject and get logged in handleDocumentRequest.
+          if (shellRendered) {
+            console.error(error)
+          }
+        },
+      },
+    )
+
+    setTimeout(abort, ABORT_DELAY)
+  })
+}
+
+async function handleBrowserRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
@@ -49,14 +125,8 @@ export default async function handleRequest(
       },
     })
 
-  const callbackName = isbot(request.headers.get('user-agent'))
-    ? 'onAllReady'
-    : 'onShellReady'
-
   return new Promise((resolve, reject) => {
-    const didError = false
     let shellRendered = false
-
     const { pipe, abort } = renderToPipeableStream(
       <I18nextProvider i18n={instance}>
         <RemixServer
@@ -66,7 +136,7 @@ export default async function handleRequest(
         />
       </I18nextProvider>,
       {
-        onAllReady() {
+        onShellReady() {
           shellRendered = true
           const body = new PassThrough()
 
