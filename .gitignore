@@ -141,3 +141,6 @@ yarn.lock
 
 # remix.run
 /public/build
+
+# netlify
+/.netlify
