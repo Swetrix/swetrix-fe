@@ -25,7 +25,6 @@
     "@remix-run/node": "^1.17.1",
     "@remix-run/netlify": "^1.17.1",
     "@remix-run/react": "^1.17.1",
-    "@remix-run/serve": "^1.17.1",
     "@swetrix/sdk": "^1.0.0",
     "@tailwindcss/forms": "^0.5.3",
     "@testing-library/jest-dom": "^5.16.5",
@@ -183,6 +182,7 @@
   "devDependencies": {
     "@remix-run/dev": "^1.17.1",
     "@remix-run/eslint-config": "^1.17.1",
+    "@remix-run/serve": "^1.17.1",
     "@tailwindcss/typography": "^0.5.9",
     "@testing-library/react": "^14.0.0",
     "@types/debug": "^4.1.8",
