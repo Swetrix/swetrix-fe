@@ -1,7 +1,7 @@
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
   ignoredRouteFiles: ['**/.*'],
-  appDirectory: 'app',
+  // appDirectory: 'app',
   // assetsBuildDirectory: "public/build",
   // serverBuildPath: "build/index.js",
   // publicPath: "/build/",
@@ -12,7 +12,7 @@ module.exports = {
   serverBuildPath: '.netlify/functions-internal/server.js',
   tailwind: true,
   postcss: true,
-  serverModuleFormat: 'cjs',
+  // serverModuleFormat: 'cjs',
   future: {
     v2_errorBoundary: true,
     v2_meta: true,
@@ -30,5 +30,5 @@ module.exports = {
     'internmap',
     'robust-predicates',
   ],
-  serverMinify: process.env.NODE_ENV === 'production',
+  // serverMinify: process.env.NODE_ENV === 'production',
 }
