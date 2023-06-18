@@ -54,7 +54,8 @@ export default async function handleRequest(
     : 'onShellReady'
 
   return new Promise((resolve, reject) => {
-    let didError = false
+    const didError = false
+    let shellRendered = false
 
     const { pipe, abort } = renderToPipeableStream(
       <I18nextProvider i18n={instance}>
@@ -65,23 +66,32 @@ export default async function handleRequest(
         />
       </I18nextProvider>,
       {
-        [callbackName]: () => {
+        onAllReady() {
+          shellRendered = true
           const body = new PassThrough()
+
           responseHeaders.set('Content-Type', 'text/html')
+
           resolve(
             new Response(body, {
               headers: responseHeaders,
-              status: didError ? 500 : responseStatusCode,
+              status: responseStatusCode,
             }),
           )
+
           pipe(body)
         },
         onShellError(error: unknown) {
           reject(error)
         },
         onError(error: unknown) {
-          console.error(error)
-          didError = true
+          responseStatusCode = 500
+          // Log streaming rendering errors from inside the shell.  Don't log
+          // errors encountered during initial shell rendering since they'll
+          // reject and get logged in handleDocumentRequest.
+          if (shellRendered) {
+            console.error(error)
+          }
         },
       },
     )

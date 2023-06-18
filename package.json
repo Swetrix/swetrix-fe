@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@blaumaus/react-alert": "^7.0.5",
+    "@netlify/functions": "^1.4.0",
     "@headlessui/react": "^1.7.15",
     "@heroicons/react": "^2.0.18",
     "@nivo/core": "^0.83.0",
