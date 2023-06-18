@@ -141,3 +141,10 @@ yarn.lock
 
 # remix.run
 /public/build
+
+
+/.cache
+/functions/\[\[path\]\].js
+/functions/\[\[path\]\].js.map
+/public/build
+.dev.vars

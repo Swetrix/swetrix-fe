@@ -1,9 +1,7 @@
-import { PassThrough } from 'node:stream'
 import { resolve as feResolve } from 'node:path'
 import { createInstance } from 'i18next'
 import { I18nextProvider, initReactI18next } from 'react-i18next'
 import FSBackend from 'i18next-fs-backend'
-import { Response } from '@remix-run/node'
 import { RemixServer } from '@remix-run/react'
 import isbot from 'isbot'
 import { createSitemapGenerator } from 'remix-sitemap'
@@ -13,8 +11,6 @@ import { renderToReadableStream } from 'react-dom/server'
 import { MAIN_URL } from './redux/constants'
 import i18next from './i18next.server'
 import i18n, { detectLanguage } from './i18n'
-
-const ABORT_DELAY = 5_000
 
 const { isSitemapUrl, sitemap } = createSitemapGenerator({
   siteUrl: MAIN_URL,

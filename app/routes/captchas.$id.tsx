@@ -1,5 +1,5 @@
 import CaptchaView from 'pages/Captcha/View'
-import type { LinksFunction } from '@remix-run/node'
+import type { LinksFunction } from '@remix-run/cloudflare'
 import ProjectViewStyle from 'styles/ProjectViewStyle.css'
 
 export const links: LinksFunction = () => [

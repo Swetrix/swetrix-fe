@@ -1,7 +1,7 @@
 import ViewProject from 'pages/Project/View'
-import type { LinksFunction, LoaderArgs } from '@remix-run/node'
+import type { LinksFunction, LoaderArgs } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
-import { json } from '@remix-run/node'
+import { json } from '@remix-run/cloudflare'
 import { detectTheme } from 'utils/server'
 import ProjectViewStyle from 'styles/ProjectViewStyle.css'
 

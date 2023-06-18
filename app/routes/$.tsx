@@ -1,6 +1,6 @@
-import type { LoaderFunction } from '@remix-run/node'
+import type { LoaderFunction } from '@remix-run/cloudflare'
 import type { SitemapFunction } from 'remix-sitemap'
-import { json } from '@remix-run/node'
+import { json } from '@remix-run/cloudflare'
 import NotFound from 'pages/NotFound'
 
 export const sitemap: SitemapFunction = () => ({

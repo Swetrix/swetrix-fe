@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useEffect } from 'react'
-import type { LinksFunction } from '@remix-run/node'
+import type { LinksFunction } from '@remix-run/cloudflare'
 import _map from 'lodash/map'
 import bb, {
   bar, line,

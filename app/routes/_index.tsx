@@ -1,7 +1,7 @@
 import MainPage from 'pages/MainPage'
-import type { LoaderArgs } from '@remix-run/node'
+import type { LoaderArgs } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
-import { json } from '@remix-run/node'
+import { json } from '@remix-run/cloudflare'
 import type { SitemapFunction } from 'remix-sitemap'
 
 import { detectTheme } from 'utils/server'

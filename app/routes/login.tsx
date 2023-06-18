@@ -1,7 +1,7 @@
 import Signin from 'pages/Auth/Signin'
-import type { HeadersFunction, LoaderArgs } from '@remix-run/node'
+import type { HeadersFunction, LoaderArgs } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
-import { json } from '@remix-run/node'
+import { json } from '@remix-run/cloudflare'
 
 import { detectTheme } from 'utils/server'
 

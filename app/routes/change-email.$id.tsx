@@ -1,6 +1,6 @@
 import VerifyEmail from 'pages/Auth/VerifyEmail'
 import type { SitemapFunction } from 'remix-sitemap'
-import type { HeadersFunction } from '@remix-run/node'
+import type { HeadersFunction } from '@remix-run/cloudflare'
 
 export const headers: HeadersFunction = () => {
   return {

@@ -1,5 +1,5 @@
 import ForgotPassword from 'pages/Auth/ForgotPassword'
-import type { HeadersFunction } from '@remix-run/node'
+import type { HeadersFunction } from '@remix-run/cloudflare'
 
 export const headers: HeadersFunction = () => {
   return {
