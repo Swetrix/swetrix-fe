@@ -123,7 +123,7 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
   updateUserProfileAsync: (
     data: Partial<IUser>,
     successMessage: string,
-    callback = (e: any) => {},
+    callback = (e: any) => { },
   ) => {
     dispatch(
       sagaActions.updateUserProfileAsync(data, (res: any) => {

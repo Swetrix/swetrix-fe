@@ -11,7 +11,12 @@ import _findIndex from 'lodash/findIndex'
 import _map from 'lodash/map'
 import _keys from 'lodash/keys'
 import {
-  EnvelopeIcon, ExclamationTriangleIcon, ArrowDownTrayIcon, CurrencyDollarIcon, ClipboardDocumentIcon, ChevronDownIcon,
+  EnvelopeIcon,
+  ExclamationTriangleIcon,
+  ArrowDownTrayIcon,
+  CurrencyDollarIcon,
+  ClipboardDocumentIcon,
+  ChevronDownIcon,
 } from '@heroicons/react/24/outline'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
@@ -19,8 +24,14 @@ import utc from 'dayjs/plugin/utc'
 import cx from 'clsx'
 
 import {
-  reportFrequencies, DEFAULT_TIMEZONE, WEEKLY_REPORT_FREQUENCY, CONFIRMATION_TIMEOUT,
-  GDPR_REQUEST, GDPR_EXPORT_TIMEFRAME, TimeFormat, isSelfhosted,
+  reportFrequencies,
+  DEFAULT_TIMEZONE,
+  WEEKLY_REPORT_FREQUENCY,
+  CONFIRMATION_TIMEOUT,
+  GDPR_REQUEST,
+  GDPR_EXPORT_TIMEFRAME,
+  TimeFormat,
+  isSelfhosted,
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import { ISharedProject } from 'redux/models/ISharedProject'
@@ -33,12 +44,19 @@ import Select from 'ui/Select'
 import Checkbox from 'ui/Checkbox'
 import PaidFeature from 'modals/PaidFeature'
 import TimezonePicker from 'ui/TimezonePicker'
-import { isValidEmail, isValidPassword, MIN_PASSWORD_CHARS } from 'utils/validator'
+import {
+  isValidEmail,
+  isValidPassword,
+  MIN_PASSWORD_CHARS,
+} from 'utils/validator'
 import routes from 'routesPath'
 import { trackCustom } from 'utils/analytics'
 import { getCookie, setCookie } from 'utils/cookie'
 import {
-  confirmEmail, exportUserData, generateApiKey, deleteApiKey, // setTheme,
+  confirmEmail,
+  exportUserData,
+  generateApiKey,
+  deleteApiKey, // setTheme,
 } from 'api'
 import ProjectList from './components/ProjectList'
 import TwoFA from './components/TwoFA'
@@ -51,35 +69,53 @@ dayjs.extend(utc)
 const timeFormatArray = _map(TimeFormat, (key) => key)
 
 interface IProps {
-  onDelete: (t: (key: string) => string, callback: () => void) => void,
-  onDeleteProjectCache: () => void,
-  removeProject: (id: string) => void,
-  removeShareProject: (id: string) => void,
-  setUserShareData: (data: Partial<ISharedProject>, id: string) => void,
-  setProjectsShareData: (data: Partial<ISharedProject>, id: string) => void,
-  userSharedUpdate: (message: string) => void,
-  sharedProjectError: (message: string) => void,
-  updateUserData: (data: Partial<IUser>) => void,
-  genericError: (message: string) => void,
-  onGDPRExportFailed: (message: string) => void,
-  updateProfileFailed: (message: string) => void,
-  updateUserProfileAsync: (data: IUser, successMessage: string, callback?: (e: any) => {}) => void,
-  accountUpdated: (t: string) => void,
-  setAPIKey: (key: string | null) => void,
-  user: IUser,
-  dontRemember: boolean,
-  isPaidTierUsed: boolean,
-  linkSSO: (t: (key: string) => string, callback: (e: any) => void, provider: string) => void,
-  unlinkSSO: (t: (key: string) => string, callback: (e: any) => void, provider: string) => void,
-  theme: string,
-  updateShowLiveVisitorsInTitle: (show: boolean, callback: (isSuccess: boolean) => void) => void,
-  updateReceiveLoginNotifications: (show: boolean, callback: (isSuccess: boolean) => void) => void,
+  onDelete: (t: (key: string) => string, callback: () => void) => void;
+  onDeleteProjectCache: () => void;
+  removeProject: (id: string) => void;
+  removeShareProject: (id: string) => void;
+  setUserShareData: (data: Partial<ISharedProject>, id: string) => void;
+  setProjectsShareData: (data: Partial<ISharedProject>, id: string) => void;
+  userSharedUpdate: (message: string) => void;
+  sharedProjectError: (message: string) => void;
+  updateUserData: (data: Partial<IUser>) => void;
+  genericError: (message: string) => void;
+  onGDPRExportFailed: (message: string) => void;
+  updateProfileFailed: (message: string) => void;
+  updateUserProfileAsync: (
+    data: IUser,
+    successMessage: string,
+    callback?: (e: any) => {}
+  ) => void;
+  accountUpdated: (t: string) => void;
+  setAPIKey: (key: string | null) => void;
+  user: IUser;
+  dontRemember: boolean;
+  isPaidTierUsed: boolean;
+  linkSSO: (
+    t: (key: string) => string,
+    callback: (e: any) => void,
+    provider: string
+  ) => void;
+  unlinkSSO: (
+    t: (key: string) => string,
+    callback: (e: any) => void,
+    provider: string
+  ) => void;
+  theme: string;
+  updateShowLiveVisitorsInTitle: (
+    show: boolean,
+    callback: (isSuccess: boolean) => void
+  ) => void;
+  updateReceiveLoginNotifications: (
+    show: boolean,
+    callback: (isSuccess: boolean) => void
+  ) => void;
 }
 
 interface IForm extends Partial<IUser> {
-  repeat: string,
-  password: string,
-  email: string
+  repeat: string;
+  password: string;
+  email: string;
 }
 
 const UserSettings = ({
@@ -175,7 +211,7 @@ const UserSettings = ({
     setValidated(valid)
   }
 
-  const onSubmit = (data: any, callback = () => {}) => {
+  const onSubmit = (data: any, callback = () => { }) => {
     delete data.repeat
     // eslint-disable-next-line no-restricted-syntax
     for (const key in data) {
@@ -283,7 +319,7 @@ const UserSettings = ({
     })
   }
 
-  const handleIntegrationSave = (data: any, callback = () => {}) => {
+  const handleIntegrationSave = (data: any, callback = () => { }) => {
     setBeenSubmitted(true)
 
     if (validated) {
