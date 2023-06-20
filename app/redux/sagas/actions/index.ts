@@ -129,6 +129,13 @@ const updateShowLiveVisitorsInTitle = (show: boolean, callback: (isSuccess: bool
   },
 })
 
+const updateReceiveLoginNotifications = (show: boolean, callback: (isSuccess: boolean) => void) => ({
+  type: types.UPDATE_RECEIVE_LOGIN_NOTIFICATIONS,
+  payload: {
+    show, callback,
+  },
+})
+
 const sagaActions = {
   loadProjects,
   loadSharedProjects,
@@ -148,6 +155,7 @@ const sagaActions = {
   loadMetainfo,
   loadUsageinfo,
   updateShowLiveVisitorsInTitle,
+  updateReceiveLoginNotifications,
 }
 
 export default sagaActions

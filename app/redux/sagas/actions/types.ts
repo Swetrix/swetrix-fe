@@ -16,6 +16,7 @@ const sagaTypes = Object.freeze({
   AUTH_SSO: 'AUTH_SSO',
   LINK_SSO: 'LINK_SSO',
   UNLINK_SSO: 'UNLINK_SSO',
+  UPDATE_RECEIVE_LOGIN_NOTIFICATIONS: 'UPDATE_RECEIVE_LOGIN_NOTIFICATIONS',
 })
 
 export default sagaTypes

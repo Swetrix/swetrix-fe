@@ -9,6 +9,7 @@ import ssoAuth from '../workers/sso_auth'
 import ssoLink from '../workers/sso_link'
 import ssoUnlink from '../workers/sso_unlink'
 import updateShowLiveVisitorsInTitle from '../workers/update_show_live_visitors_in_title'
+import updateReceiveLoginNotifications from '../workers/update_receive_login_notifications'
 import sagaTypes from '../../actions/types'
 
 function* watchLogin() {
@@ -61,11 +62,17 @@ function* watchUpdateShowLiveVisitorsInTitle() {
   yield takeLatest(sagaTypes.UPDATE_SHOW_LIVE_VISITORS_IN_TITLE, updateShowLiveVisitorsInTitle)
 }
 
+function* watchUpdateReceiveLoginNotifications() {
+  // @ts-ignore
+  yield takeLatest(sagaTypes.UPDATE_RECEIVE_LOGIN_NOTIFICATIONS, updateReceiveLoginNotifications)
+}
+
 export default function* watchAuth() {
   yield all([
     call(watchLogin), call(watchSignup), call(watchVerifyEmail),
     call(watchUpdateUserProfile), call(watchDeleteUserProfile),
     call(watchLogout), call(watchAuthSSO), call(watchLinkSSO),
     call(watchUnlinkSSO), call(watchUpdateShowLiveVisitorsInTitle),
+    call(watchUpdateReceiveLoginNotifications),
   ])
 }
