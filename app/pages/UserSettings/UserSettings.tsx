@@ -107,7 +107,7 @@ const UserSettings = ({
   updateShowLiveVisitorsInTitle,
   updateReceiveLoginNotifications,
 }: IProps): JSX.Element => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const {
     t,
   }: {
@@ -117,179 +117,174 @@ const UserSettings = ({
         [key: string]: string | number | null;
       }
     ) => string;
-  } = useTranslation("common");
+  } = useTranslation('common')
 
   const [form, setForm] = useState<IForm>({
-    email: user.email || "",
-    password: "",
-    repeat: "",
-    timeFormat: user.timeFormat || TimeFormat["12-hour"],
-  });
-  const [showPasswordFields, setShowPasswordFields] = useState<boolean>(false);
+    email: user.email || '',
+    password: '',
+    repeat: '',
+    timeFormat: user.timeFormat || TimeFormat['12-hour'],
+  })
+  const [showPasswordFields, setShowPasswordFields] = useState<boolean>(false)
   const [timezone, setTimezone] = useState<string>(
-    user.timezone || DEFAULT_TIMEZONE
-  );
-  const [isPaidFeatureOpened, setIsPaidFeatureOpened] =
-    useState<boolean>(false);
-  const [timezoneChanged, setTimezoneChanged] = useState<boolean>(false);
+    user.timezone || DEFAULT_TIMEZONE,
+  )
+  const [isPaidFeatureOpened, setIsPaidFeatureOpened] = useState<boolean>(false)
+  const [timezoneChanged, setTimezoneChanged] = useState<boolean>(false)
   const [reportFrequency, setReportFrequency] = useState<string>(
-    user.reportFrequency
-  );
-  const [validated, setValidated] = useState<boolean>(false);
+    user.reportFrequency,
+  )
+  const [validated, setValidated] = useState<boolean>(false)
   const [errors, setErrors] = useState<{
     [key: string]: string;
-  }>({});
-  const [beenSubmitted, setBeenSubmitted] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [showAPIDeleteModal, setShowAPIDeleteModal] = useState<boolean>(false);
-  const [showExportModal, setShowExportModal] = useState<boolean>(false);
-  const [error, setError] = useState<null | string>(null);
-  const [copied, setCopied] = useState<boolean>(false);
-  const translatedFrequencies: string[] = _map(reportFrequencies, (key) =>
-    t(`profileSettings.${key}`)
-  ); // useMemo(_map(reportFrequencies, (key) => t(`profileSettings.${key}`)), [t])
-  const translatedTimeFormat: string[] = _map(TimeFormat, (key) =>
-    t(`profileSettings.${key}`)
-  ); // useMemo(_map(TimeFormat, (key) => t(`profileSettings.${key}`)), [t])
-  const [settingUpdating, setSettingUpdating] = useState<boolean>(false);
+  }>({})
+  const [beenSubmitted, setBeenSubmitted] = useState<boolean>(false)
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [showAPIDeleteModal, setShowAPIDeleteModal] = useState<boolean>(false)
+  const [showExportModal, setShowExportModal] = useState<boolean>(false)
+  const [error, setError] = useState<null | string>(null)
+  const [copied, setCopied] = useState<boolean>(false)
+  const translatedFrequencies: string[] = _map(reportFrequencies, (key) => t(`profileSettings.${key}`)) // useMemo(_map(reportFrequencies, (key) => t(`profileSettings.${key}`)), [t])
+  const translatedTimeFormat: string[] = _map(TimeFormat, (key) => t(`profileSettings.${key}`)) // useMemo(_map(TimeFormat, (key) => t(`profileSettings.${key}`)), [t])
+  const [settingUpdating, setSettingUpdating] = useState<boolean>(false)
 
-  const copyTimerRef = useRef(null);
+  const copyTimerRef = useRef(null)
 
   const validate = () => {
     const allErrors = {} as {
       [key: string]: string;
-    };
+    }
 
     if (!isValidEmail(form.email)) {
-      allErrors.email = t("auth.common.badEmailError");
+      allErrors.email = t('auth.common.badEmailError')
     }
 
     if (_size(form.password) > 0 && !isValidPassword(form.password)) {
-      allErrors.password = t("auth.common.xCharsError", {
+      allErrors.password = t('auth.common.xCharsError', {
         amount: MIN_PASSWORD_CHARS,
-      });
+      })
     }
 
     if (form.password !== form.repeat) {
-      allErrors.repeat = t("auth.common.noMatchError");
+      allErrors.repeat = t('auth.common.noMatchError')
     }
 
-    const valid = _isEmpty(_keys(allErrors));
+    const valid = _isEmpty(_keys(allErrors))
 
-    setErrors(allErrors);
-    setValidated(valid);
-  };
+    setErrors(allErrors)
+    setValidated(valid)
+  }
 
   const onSubmit = (data: any, callback = () => {}) => {
-    delete data.repeat;
+    delete data.repeat
     // eslint-disable-next-line no-restricted-syntax
     for (const key in data) {
-      if (data[key] === "") {
-        delete data[key];
+      if (data[key] === '') {
+        delete data[key]
       }
     }
 
-    updateUserProfileAsync(data, t("profileSettings.updated"));
-  };
+    updateUserProfileAsync(data, t('profileSettings.updated'))
+  }
 
   useEffect(() => {
-    validate();
+    validate()
   }, [form]); // eslint-disable-line
 
   useEffect(() => {
     return () => {
       // @ts-ignore
-      clearTimeout(copyTimerRef.current);
-    };
-  }, []);
+      clearTimeout(copyTimerRef.current)
+    }
+  }, [])
 
   const _setTimezone = (value: string) => {
-    setTimezoneChanged(true);
-    setTimezone(value);
-  };
+    setTimezoneChanged(true)
+    setTimezone(value)
+  }
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = event;
-    const value = target.type === "checkbox" ? target.checked : target.value;
+    const { target } = event
+    const value = target.type === 'checkbox' ? target.checked : target.value
 
     setForm((prevForm) => ({
       ...prevForm,
       [target.name]: value,
-    }));
-  };
+    }))
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setBeenSubmitted(true);
+    e.preventDefault()
+    e.stopPropagation()
+    setBeenSubmitted(true)
 
     if (validated) {
-      onSubmit(form);
+      onSubmit(form)
     }
-  };
+  }
 
   const handleTimezoneSave = () => {
-    setBeenSubmitted(true);
+    setBeenSubmitted(true)
 
     if (validated) {
       // if the timezone updates, we need to delete all project cache to refetch it with the new timezone setting afterwards
       if (timezoneChanged) {
-        onDeleteProjectCache();
+        onDeleteProjectCache()
       }
 
       onSubmit({
         ...form,
         timezone,
-      });
+      })
     }
-  };
+  }
 
   const handleShowLiveVisitorsSave = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     if (settingUpdating) {
-      return;
+      return
     }
 
-    const { checked } = e.target;
+    const { checked } = e.target
 
-    setSettingUpdating(true);
+    setSettingUpdating(true)
     updateShowLiveVisitorsInTitle(checked, (isSuccess: boolean) => {
-      setSettingUpdating(false);
+      setSettingUpdating(false)
 
       if (isSuccess) {
-        accountUpdated(t("profileSettings.updated"));
-        return;
+        accountUpdated(t('profileSettings.updated'))
+        return
       }
 
-      genericError(t("apiNotifications.somethingWentWrong"));
-    });
-  };
+      genericError(t('apiNotifications.somethingWentWrong'))
+    })
+  }
 
   const handleReceiveLoginNotifications = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     if (settingUpdating) {
-      return;
+      return
     }
 
-    const { checked } = e.target;
+    const { checked } = e.target
 
-    setSettingUpdating(true);
+    setSettingUpdating(true)
     updateReceiveLoginNotifications(checked, (isSuccess: boolean) => {
-      setSettingUpdating(false);
+      setSettingUpdating(false)
 
       if (isSuccess) {
-        accountUpdated(t("profileSettings.updated"));
-        return;
+        accountUpdated(t('profileSettings.updated'))
+        return
       }
 
-      genericError(t("apiNotifications.somethingWentWrong"));
-    });
-  };
+      genericError(t('apiNotifications.somethingWentWrong'))
+    })
+  }
 
   const handleIntegrationSave = (data: any, callback = () => {}) => {
-    setBeenSubmitted(true);
+    setBeenSubmitted(true)
 
     if (validated) {
       onSubmit(
@@ -297,123 +292,123 @@ const UserSettings = ({
           ...form,
           ...data,
         },
-        callback
-      );
+        callback,
+      )
     }
-  };
+  }
 
   const handleReportSave = () => {
-    setBeenSubmitted(true);
+    setBeenSubmitted(true)
 
     if (validated) {
       onSubmit({
         ...form,
         reportFrequency,
-      });
+      })
     }
-  };
+  }
 
   const _setReportFrequency = (value: string) => {
     if (!isPaidTierUsed && value === WEEKLY_REPORT_FREQUENCY) {
-      setIsPaidFeatureOpened(true);
-      return;
+      setIsPaidFeatureOpened(true)
+      return
     }
 
-    setReportFrequency(value);
-  };
+    setReportFrequency(value)
+  }
 
   const reportIconExtractor = (_: any, index: number) => {
     if (
-      !isPaidTierUsed &&
-      reportFrequencies[index] === WEEKLY_REPORT_FREQUENCY
+      !isPaidTierUsed
+      && reportFrequencies[index] === WEEKLY_REPORT_FREQUENCY
     ) {
-      return <CurrencyDollarIcon className="w-5 h-5 mr-1" />;
+      return <CurrencyDollarIcon className='w-5 h-5 mr-1' />
     }
 
-    return null;
-  };
+    return null
+  }
 
   const setToClipboard = (value: string) => {
     if (!copied) {
-      navigator.clipboard.writeText(value);
-      setCopied(true);
+      navigator.clipboard.writeText(value)
+      setCopied(true)
       // @ts-ignore
       copyTimerRef.current = setTimeout(() => {
-        setCopied(false);
-      }, 2000);
+        setCopied(false)
+      }, 2000)
     }
-  };
+  }
 
   const _onDelete = () => {
     onDelete(t, () => {
-      navigate(routes.main);
-    });
-  };
+      navigate(routes.main)
+    })
+  }
 
   const onExport = async (exportedAt: string) => {
     try {
       if (
-        getCookie(GDPR_REQUEST) ||
-        (!_isNull(exportedAt) &&
-          !dayjs().isAfter(
-            dayjs.utc(exportedAt).add(GDPR_EXPORT_TIMEFRAME, "day"),
-            "day"
+        getCookie(GDPR_REQUEST)
+        || (!_isNull(exportedAt)
+          && !dayjs().isAfter(
+            dayjs.utc(exportedAt).add(GDPR_EXPORT_TIMEFRAME, 'day'),
+            'day',
           ))
       ) {
         onGDPRExportFailed(
-          t("profileSettings.tryAgainInXDays", {
+          t('profileSettings.tryAgainInXDays', {
             amount: GDPR_EXPORT_TIMEFRAME,
-          })
-        );
-        return;
+          }),
+        )
+        return
       }
-      await exportUserData();
+      await exportUserData()
 
-      trackCustom("GDPR_EXPORT");
-      accountUpdated(t("profileSettings.reportSent"));
-      setCookie(GDPR_REQUEST, true, 1209600); // setting cookie for 14 days
+      trackCustom('GDPR_EXPORT')
+      accountUpdated(t('profileSettings.reportSent'))
+      setCookie(GDPR_REQUEST, true, 1209600) // setting cookie for 14 days
     } catch (e) {
-      updateProfileFailed(e as string);
+      updateProfileFailed(e as string)
     }
-  };
+  }
 
   const onEmailConfirm = async (errorCallback: any) => {
     if (getCookie(CONFIRMATION_TIMEOUT)) {
-      updateProfileFailed(t("profileSettings.confTimeout"));
-      return;
+      updateProfileFailed(t('profileSettings.confTimeout'))
+      return
     }
 
     try {
-      const res = await confirmEmail();
+      const res = await confirmEmail()
 
       if (res) {
-        setCookie(CONFIRMATION_TIMEOUT, true, 600);
-        accountUpdated(t("profileSettings.confSent"));
+        setCookie(CONFIRMATION_TIMEOUT, true, 600)
+        accountUpdated(t('profileSettings.confSent'))
       } else {
-        errorCallback(t("profileSettings.noConfLeft"));
+        errorCallback(t('profileSettings.noConfLeft'))
       }
     } catch (e) {
-      updateProfileFailed(e as string);
+      updateProfileFailed(e as string)
     }
-  };
+  }
 
   const onApiKeyGenerate = async () => {
     try {
-      const res = await generateApiKey();
-      setAPIKey(res.apiKey);
+      const res = await generateApiKey()
+      setAPIKey(res.apiKey)
     } catch (e) {
-      updateProfileFailed(e as string);
+      updateProfileFailed(e as string)
     }
-  };
+  }
 
   const onApiKeyDelete = async () => {
     try {
-      await deleteApiKey();
-      setAPIKey(null);
+      await deleteApiKey()
+      setAPIKey(null)
     } catch (e) {
-      updateProfileFailed(e as string);
+      updateProfileFailed(e as string)
     }
-  };
+  }
 
   // const setAsyncThemeType = async (theme) => {
   //   try {
@@ -425,41 +420,41 @@ const UserSettings = ({
   // }
 
   const setAsyncTimeFormat = async () => {
-    setBeenSubmitted(true);
+    setBeenSubmitted(true)
 
     if (validated) {
       onSubmit({
         ...form,
-      });
+      })
     }
-  };
+  }
 
   const toggleShowPasswordFields = () => {
     setForm((prev) => ({
       ...prev,
-      password: "",
-      repeat: "",
-    }));
-    setShowPasswordFields((prev) => !prev);
-  };
+      password: '',
+      repeat: '',
+    }))
+    setShowPasswordFields((prev) => !prev)
+  }
 
   return (
-    <div className="min-h-min-footer bg-gray-50 dark:bg-slate-900 flex flex-col py-6 px-4 sm:px-6 lg:px-8">
-      <form className="max-w-7xl w-full mx-auto" onSubmit={handleSubmit}>
-        <h2 className="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50">
-          {t("titles.profileSettings")}
+    <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900 flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
+      <form className='max-w-7xl w-full mx-auto' onSubmit={handleSubmit}>
+        <h2 className='mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>
+          {t('titles.profileSettings')}
         </h2>
-        <h3 className="mt-2 text-lg font-bold text-gray-900 dark:text-gray-50">
-          {t("profileSettings.general")}
+        <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+          {t('profileSettings.general')}
         </h3>
         <Input
-          name="email"
-          id="email"
-          type="email"
-          label={t("auth.common.email")}
+          name='email'
+          id='email'
+          type='email'
+          label={t('auth.common.email')}
           value={form.email}
-          placeholder="you@example.com"
-          className="mt-4"
+          placeholder='you@example.com'
+          className='mt-4'
           onChange={handleInput}
           error={beenSubmitted ? errors.email : null}
           disabled={isSelfhosted}
@@ -468,44 +463,44 @@ const UserSettings = ({
           <>
             <span
               onClick={toggleShowPasswordFields}
-              className="flex items-center cursor-pointer max-w-max text-gray-900 dark:text-gray-50 hover:underline"
+              className='flex items-center cursor-pointer max-w-max text-gray-900 dark:text-gray-50 hover:underline'
             >
-              {t("auth.common.changePassword")}
+              {t('auth.common.changePassword')}
               <ChevronDownIcon
-                className={cx("w-4 h-4 ml-2", {
-                  "rotate-180": showPasswordFields,
+                className={cx('w-4 h-4 ml-2', {
+                  'rotate-180': showPasswordFields,
                 })}
               />
             </span>
             {showPasswordFields && (
-              <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6 mt-4">
+              <div className='grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6 mt-4'>
                 <Input
-                  name="password"
-                  id="password"
-                  type="password"
-                  label={t("auth.common.password")}
-                  hint={t("auth.common.hint", { amount: MIN_PASSWORD_CHARS })}
+                  name='password'
+                  id='password'
+                  type='password'
+                  label={t('auth.common.password')}
+                  hint={t('auth.common.hint', { amount: MIN_PASSWORD_CHARS })}
                   value={form.password}
-                  placeholder={t("auth.common.password")}
-                  className="sm:col-span-3"
+                  placeholder={t('auth.common.password')}
+                  className='sm:col-span-3'
                   onChange={handleInput}
                   error={beenSubmitted ? errors.password : null}
                 />
                 <Input
-                  name="repeat"
-                  id="repeat"
-                  type="password"
-                  label={t("auth.common.repeat")}
+                  name='repeat'
+                  id='repeat'
+                  type='password'
+                  label={t('auth.common.repeat')}
                   value={form.repeat}
-                  placeholder={t("auth.common.repeat")}
-                  className="sm:col-span-3"
+                  placeholder={t('auth.common.repeat')}
+                  className='sm:col-span-3'
                   onChange={handleInput}
                   error={beenSubmitted ? errors.repeat : null}
                 />
               </div>
             )}
-            <Button className="mt-4" type="submit" primary large>
-              {t("profileSettings.update")}
+            <Button className='mt-4' type='submit' primary large>
+              {t('profileSettings.update')}
             </Button>
           </>
         )}
@@ -526,104 +521,100 @@ const UserSettings = ({
             </div>
           </div> */}
         {/* Timezone selector */}
-        <hr className="mt-5 border-gray-200 dark:border-gray-600" />
-        <h3 className="mt-2 text-lg font-bold text-gray-900 dark:text-gray-50 flex items-center">
-          {t("profileSettings.timezone")}
-          <div className="ml-5">
+        <hr className='mt-5 border-gray-200 dark:border-gray-600' />
+        <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50 flex items-center'>
+          {t('profileSettings.timezone')}
+          <div className='ml-5'>
             <Beta />
           </div>
         </h3>
-        <div className="grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4">
+        <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
           <div>
             <TimezonePicker value={timezone} onChange={_setTimezone} />
           </div>
         </div>
-        <Button className="mt-4" onClick={handleTimezoneSave} primary large>
-          {t("common.save")}
+        <Button className='mt-4' onClick={handleTimezoneSave} primary large>
+          {t('common.save')}
         </Button>
         {/* Timeformat selector (12 / 24 hour format) */}
-        <hr className="mt-5 border-gray-200 dark:border-gray-600" />
-        <h3 className="mt-2 text-lg font-bold text-gray-900 dark:text-gray-50">
-          {t("profileSettings.timeFormat")}
+        <hr className='mt-5 border-gray-200 dark:border-gray-600' />
+        <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+          {t('profileSettings.timeFormat')}
         </h3>
-        <div className="grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4">
+        <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
           <div>
             <Select
               title={t(`profileSettings.${form.timeFormat}`)}
-              label={t("profileSettings.selectTimeFormat")}
-              className="w-full"
+              label={t('profileSettings.selectTimeFormat')}
+              className='w-full'
               items={translatedTimeFormat}
-              onSelect={(f) =>
-                setForm((prev) => ({
-                  ...prev,
-                  timeFormat:
+              onSelect={(f) => setForm((prev) => ({
+                ...prev,
+                timeFormat:
                     timeFormatArray[
                       _findIndex(translatedTimeFormat, (freq) => freq === f)
                     ],
-                }))
-              }
+              }))}
             />
           </div>
         </div>
-        <Button className="mt-4" onClick={setAsyncTimeFormat} primary large>
-          {t("common.save")}
+        <Button className='mt-4' onClick={setAsyncTimeFormat} primary large>
+          {t('common.save')}
         </Button>
 
         {!isSelfhosted && (
           <>
             {/* Email reports frequency selector (e.g. monthly, weekly, etc.) */}
-            <hr className="mt-5 border-gray-200 dark:border-gray-600" />
-            <h3 className="mt-2 text-lg font-bold text-gray-900 dark:text-gray-50">
-              {t("profileSettings.email")}
+            <hr className='mt-5 border-gray-200 dark:border-gray-600' />
+            <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+              {t('profileSettings.email')}
             </h3>
-            <div className="grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4">
+            <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
               <div>
                 <Select
                   title={t(`profileSettings.${reportFrequency}`)}
-                  label={t("profileSettings.frequency")}
-                  className="w-full"
+                  label={t('profileSettings.frequency')}
+                  className='w-full'
                   items={translatedFrequencies}
                   iconExtractor={reportIconExtractor}
-                  onSelect={(f) =>
-                    _setReportFrequency(
-                      reportFrequencies[
-                        _findIndex(translatedFrequencies, (freq) => freq === f)
-                      ]
-                    )
-                  }
+                  onSelect={(f) => _setReportFrequency(
+                    reportFrequencies[
+                      _findIndex(translatedFrequencies, (freq) => freq === f)
+                    ],
+                  )}
                 />
               </div>
             </div>
-            <Button className="mt-4" onClick={handleReportSave} primary large>
-              {t("common.save")}
+            <Button className='mt-4' onClick={handleReportSave} primary large>
+              {t('common.save')}
             </Button>
           </>
         )}
 
         {/* UI Settings */}
-        <hr className="mt-5 border-gray-200 dark:border-gray-600" />
-        <h3 className="mt-2 text-lg font-bold text-gray-900 dark:text-gray-50">
-          {t("profileSettings.uiSettings")}
+        <hr className='mt-5 border-gray-200 dark:border-gray-600' />
+        <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+          {t('profileSettings.uiSettings')}
         </h3>
         <Checkbox
           checked={user.showLiveVisitorsInTitle}
           onChange={handleShowLiveVisitorsSave}
           disabled={settingUpdating}
-          name="active"
-          id="active"
-          className="mt-4"
-          label={t("profileSettings.showVisitorsInTitle")}
+          name='active'
+          id='active'
+          className='mt-4'
+          label={t('profileSettings.showVisitorsInTitle')}
         />
 
         {!isSelfhosted && (
           <>
-            <hr className="mt-5 border-gray-200 dark:border-gray-600" />
+            <hr className='mt-5 border-gray-200 dark:border-gray-600' />
             {/* Integrations setup */}
             <h3
-              id="integrations"
-              className="flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50"
+              id='integrations'
+              className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'
             >
-              {t("profileSettings.integrations")}
+              {t('profileSettings.integrations')}
             </h3>
             <Integrations
               user={user}
@@ -635,52 +626,52 @@ const UserSettings = ({
               checked={user.receiveLoginNotifications}
               onChange={handleReceiveLoginNotifications}
               disabled={settingUpdating}
-              name="active"
-              id="active"
-              className="mt-4"
-              label={t("profileSettings.receiveLoginNotifications")}
+              name='active'
+              id='active'
+              className='mt-4'
+              label={t('profileSettings.receiveLoginNotifications')}
             />
-            <hr className="mt-5 border-gray-200 dark:border-gray-600" />
+            <hr className='mt-5 border-gray-200 dark:border-gray-600' />
 
             {/* API access setup */}
-            <h3 className="flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50">
-              {t("profileSettings.apiKey")}
-              <div className="ml-5">
+            <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+              {t('profileSettings.apiKey')}
+              <div className='ml-5'>
                 <Beta />
               </div>
             </h3>
             {user.apiKey ? (
               <>
-                <p className="max-w-prose text-base text-gray-900 dark:text-gray-50">
-                  {t("profileSettings.apiKeyWarning")}
+                <p className='max-w-prose text-base text-gray-900 dark:text-gray-50'>
+                  {t('profileSettings.apiKeyWarning')}
                 </p>
-                <p className="mt-4 max-w-prose text-base text-gray-900 dark:text-gray-50">
-                  {t("profileSettings.apiKey")}
+                <p className='mt-4 max-w-prose text-base text-gray-900 dark:text-gray-50'>
+                  {t('profileSettings.apiKey')}
                 </p>
-                <div className="grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2">
-                  <div className="relative group">
+                <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2'>
+                  <div className='relative group'>
                     <Input
-                      name="apiKey"
-                      id="apiKey"
-                      type="text"
-                      className="pr-9"
+                      name='apiKey'
+                      id='apiKey'
+                      type='text'
+                      className='pr-9'
                       value={user.apiKey}
                       onChange={handleInput}
                       disabled
                     />
-                    <div className="absolute right-2 top-3">
-                      <div className="group relative">
+                    <div className='absolute right-2 top-3'>
+                      <div className='group relative'>
                         <Button
-                          type="button"
-                          onClick={() => setToClipboard(user.apiKey || "")}
-                          className="opacity-70 hover:opacity-100"
+                          type='button'
+                          onClick={() => setToClipboard(user.apiKey || '')}
+                          className='opacity-70 hover:opacity-100'
                           noBorder
                         >
                           <>
-                            <ClipboardDocumentIcon className="w-6 h-6" />
+                            <ClipboardDocumentIcon className='w-6 h-6' />
                             {copied && (
-                              <div className="animate-appear bg-white dark:bg-slate-800 cursor-auto rounded p-1 absolute sm:top-0 top-0.5 right-8 text-xs text-green-600">
-                                {t("common.copied")}
+                              <div className='animate-appear bg-white dark:bg-slate-800 cursor-auto rounded p-1 absolute sm:top-0 top-0.5 right-8 text-xs text-green-600'>
+                                {t('common.copied')}
                               </div>
                             )}
                           </>
@@ -691,29 +682,29 @@ const UserSettings = ({
                 </div>
               </>
             ) : (
-              <p className="max-w-prose text-base text-gray-900 dark:text-gray-50">
-                {t("profileSettings.noApiKey")}
+              <p className='max-w-prose text-base text-gray-900 dark:text-gray-50'>
+                {t('profileSettings.noApiKey')}
               </p>
             )}
             {user.apiKey ? (
               <Button
-                className="mt-4"
+                className='mt-4'
                 onClick={() => setShowAPIDeleteModal(true)}
                 danger
                 large
               >
-                {t("profileSettings.deleteApiKeyBtn")}
+                {t('profileSettings.deleteApiKeyBtn')}
               </Button>
             ) : (
-              <Button className="mt-4" onClick={onApiKeyGenerate} primary large>
-                {t("profileSettings.addApiKeyBtn")}
+              <Button className='mt-4' onClick={onApiKeyGenerate} primary large>
+                {t('profileSettings.addApiKeyBtn')}
               </Button>
             )}
 
             {/* 2FA setting */}
-            <hr className="mt-5 border-gray-200 dark:border-gray-600" />
-            <h3 className="flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50">
-              {t("profileSettings.2fa")}
+            <hr className='mt-5 border-gray-200 dark:border-gray-600' />
+            <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+              {t('profileSettings.2fa')}
             </h3>
             <TwoFA
               user={user}
@@ -723,12 +714,12 @@ const UserSettings = ({
             />
 
             {/* Socialisations setup */}
-            <hr className="mt-5 border-gray-200 dark:border-gray-600" />
+            <hr className='mt-5 border-gray-200 dark:border-gray-600' />
             <h3
-              id="socialisations"
-              className="flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50"
+              id='socialisations'
+              className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'
             >
-              {t("profileSettings.socialisations")}
+              {t('profileSettings.socialisations')}
             </h3>
             <Socialisations
               user={user}
@@ -739,44 +730,44 @@ const UserSettings = ({
             />
 
             {/* Shared projects setting */}
-            <hr className="mt-5 border-gray-200 dark:border-gray-600" />
-            <h3 className="flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50">
-              {t("profileSettings.shared")}
+            <hr className='mt-5 border-gray-200 dark:border-gray-600' />
+            <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+              {t('profileSettings.shared')}
             </h3>
             <div>
               {!_isEmpty(user.sharedProjects) ? (
-                <div className="mt-3 flex flex-col">
-                  <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                      <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                        <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
+                <div className='mt-3 flex flex-col'>
+                  <div className='-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8'>
+                    <div className='inline-block min-w-full py-2 align-middle md:px-6 lg:px-8'>
+                      <div className='overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+                        <table className='min-w-full divide-y divide-gray-300 dark:divide-gray-600'>
                           <thead>
-                            <tr className="dark:bg-slate-800">
+                            <tr className='dark:bg-slate-800'>
                               <th
-                                scope="col"
-                                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 dark:text-white"
+                                scope='col'
+                                className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 dark:text-white'
                               >
-                                {t("profileSettings.sharedTable.project")}
+                                {t('profileSettings.sharedTable.project')}
                               </th>
                               <th
-                                scope="col"
-                                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white"
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white'
                               >
-                                {t("profileSettings.sharedTable.role")}
+                                {t('profileSettings.sharedTable.role')}
                               </th>
                               <th
-                                scope="col"
-                                className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white"
+                                scope='col'
+                                className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white'
                               >
-                                {t("profileSettings.sharedTable.joinedOn")}
+                                {t('profileSettings.sharedTable.joinedOn')}
                               </th>
                               <th
-                                scope="col"
-                                className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                                scope='col'
+                                className='relative py-3.5 pl-3 pr-4 sm:pr-6'
                               />
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-gray-300 dark:divide-gray-600">
+                          <tbody className='divide-y divide-gray-300 dark:divide-gray-600'>
                             {_map(user.sharedProjects, (item) => (
                               <ProjectList
                                 key={item.id}
@@ -799,36 +790,36 @@ const UserSettings = ({
                 <NoSharedProjects t={t} />
               )}
             </div>
-            <hr className="mt-5 border-gray-200 dark:border-gray-600" />
+            <hr className='mt-5 border-gray-200 dark:border-gray-600' />
             {!user.isActive && (
               <div
-                className="flex cursor-pointer mt-4 pl-0 underline text-blue-600 hover:text-indigo-800 dark:hover:text-indigo-600"
+                className='flex cursor-pointer mt-4 pl-0 underline text-blue-600 hover:text-indigo-800 dark:hover:text-indigo-600'
                 onClick={() => onEmailConfirm(setError)}
               >
-                <EnvelopeIcon className="mt-0.5 mr-2 w-6 h-6 text-blue-500" />
-                {t("profileSettings.noLink")}
+                <EnvelopeIcon className='mt-0.5 mr-2 w-6 h-6 text-blue-500' />
+                {t('profileSettings.noLink')}
               </div>
             )}
-            <div className="flex justify-between mt-4">
+            <div className='flex justify-between mt-4'>
               <Button
                 onClick={() => setShowExportModal(true)}
                 semiSmall
                 primary
               >
                 <>
-                  <ArrowDownTrayIcon className="w-5 h-5 mr-1" />
-                  {t("profileSettings.requestExport")}
+                  <ArrowDownTrayIcon className='w-5 h-5 mr-1' />
+                  {t('profileSettings.requestExport')}
                 </>
               </Button>
               <Button
-                className="ml-3"
+                className='ml-3'
                 onClick={() => setShowModal(true)}
                 semiSmall
                 danger
               >
                 <>
-                  <ExclamationTriangleIcon className="w-5 h-5 mr-1" />
-                  {t("profileSettings.delete")}
+                  <ExclamationTriangleIcon className='w-5 h-5 mr-1' />
+                  {t('profileSettings.delete')}
                 </>
               </Button>
             </div>
@@ -843,57 +834,57 @@ const UserSettings = ({
       <Modal
         onClose={() => setShowExportModal(false)}
         onSubmit={() => {
-          setShowExportModal(false);
-          onExport(user.exportedAt);
+          setShowExportModal(false)
+          onExport(user.exportedAt)
         }}
-        submitText={t("common.continue")}
-        closeText={t("common.close")}
-        title={t("profileSettings.dataExport")}
-        type="info"
-        message={t("profileSettings.exportConfirmation")}
+        submitText={t('common.continue')}
+        closeText={t('common.close')}
+        title={t('profileSettings.dataExport')}
+        type='info'
+        message={t('profileSettings.exportConfirmation')}
         isOpened={showExportModal}
       />
       <Modal
         onClose={() => setShowModal(false)}
         onSubmit={() => {
-          setShowModal(false);
-          _onDelete();
+          setShowModal(false)
+          _onDelete()
         }}
-        submitText={t("profileSettings.aDelete")}
-        closeText={t("common.close")}
-        title={t("profileSettings.qDelete")}
-        submitType="danger"
-        type="error"
-        message={t("profileSettings.deactivateConfirmation")}
+        submitText={t('profileSettings.aDelete')}
+        closeText={t('common.close')}
+        title={t('profileSettings.qDelete')}
+        submitType='danger'
+        type='error'
+        message={t('profileSettings.deactivateConfirmation')}
         isOpened={showModal}
       />
       <Modal
         onClose={() => setShowAPIDeleteModal(false)}
         onSubmit={() => {
-          setShowAPIDeleteModal(false);
-          onApiKeyDelete();
+          setShowAPIDeleteModal(false)
+          onApiKeyDelete()
         }}
-        submitText={t("profileSettings.deleteApiKeyBtn")}
-        closeText={t("common.close")}
-        title={t("profileSettings.apiKeyDelete")}
-        submitType="danger"
-        type="error"
-        message={t("profileSettings.apiKeyDeleteConf")}
+        submitText={t('profileSettings.deleteApiKeyBtn')}
+        closeText={t('common.close')}
+        title={t('profileSettings.apiKeyDelete')}
+        submitType='danger'
+        type='error'
+        message={t('profileSettings.apiKeyDeleteConf')}
         isOpened={showAPIDeleteModal}
       />
       <Modal
         onClose={() => {
-          setError(null);
+          setError(null)
         }}
-        closeText={t("common.gotIt")}
-        type="error"
-        title={t("common.error")}
+        closeText={t('common.gotIt')}
+        type='error'
+        title={t('common.error')}
         message={error}
         isOpened={Boolean(error)}
       />
     </div>
-  );
-};
+  )
+}
 
 UserSettings.propTypes = {
   onDelete: PropTypes.func.isRequired,
