@@ -13,7 +13,7 @@ import cx from 'clsx'
 import Modal from 'ui/Modal'
 import Spin from 'ui/icons/Spin'
 import {
-  CONTACT_EMAIL, paddleLanguageMapping, PLAN_LIMITS, CURRENCIES,
+  CONTACT_EMAIL, paddleLanguageMapping, PLAN_LIMITS, CURRENCIES, TRIAL_DAYS,
 } from 'redux/constants'
 import { errorsActions } from 'redux/reducers/errors'
 import { alertsActions } from 'redux/reducers/alerts'
