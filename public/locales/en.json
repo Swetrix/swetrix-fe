@@ -708,7 +708,7 @@
     "customEvents": "Custom events: {{quantity}} ({{percentage}}%)",
     "captcha": "CAPTCHA events: {{quantity}} ({{percentage}}%)",
     "gotoUsage": "Go to plan usage",
-    "freeTrial": "20 days free trial"
+    "freeTrial": "{{quantity}} days free trial"
   },
   "modals": {
     "paidFeature": {
