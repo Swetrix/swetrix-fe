@@ -197,6 +197,11 @@ const PricingItem = ({
       )}
       <div className='p-6 border-none'>
         <h2 className='text-lg leading-6 font-semibold text-[#4D4D4D] dark:text-gray-50 text-center'>{tier.name}</h2>
+        {tier.planCode === 'hobby' && !authenticated && (
+          <p className='absolute top-0 py-1.5 px-4 bg-indigo-600 dark:bg-indigo-700 rounded-full text-xs font-semibold uppercase tracking-wide text-white transform -translate-y-1/2'>
+            {t('pricing.freeTrial')}
+          </p>
+        )}
         {tier.mostPopular && !authenticated && (
           <p className='absolute top-0 py-1.5 px-4 bg-indigo-600 dark:bg-indigo-700 rounded-full text-xs font-semibold uppercase tracking-wide text-white transform -translate-y-1/2'>
             {t('pricing.mostPopular')}

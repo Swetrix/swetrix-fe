@@ -707,7 +707,8 @@
     "pageviews": "Pageview events: {{quantity}} ({{percentage}}%)",
     "customEvents": "Custom events: {{quantity}} ({{percentage}}%)",
     "captcha": "CAPTCHA events: {{quantity}} ({{percentage}}%)",
-    "gotoUsage": "Go to plan usage"
+    "gotoUsage": "Go to plan usage",
+    "freeTrial": "20 days free trial"
   },
   "modals": {
     "paidFeature": {
