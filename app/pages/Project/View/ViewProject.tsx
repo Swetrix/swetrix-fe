@@ -1041,8 +1041,14 @@ const ViewProject = ({
     column: string
     filter: string
   }[]) => {
-    let newFilters
-    let newFiltersPerf
+    let newFilters: {
+      column: string
+      filter: string[]
+    }[] = []
+    let newFiltersPerf: {
+      column: string
+      filter: string[]
+    }[] = []
 
     _forEach(items, (item) => {
       const { column, filter }: {
@@ -1061,7 +1067,6 @@ const ViewProject = ({
           url.searchParams.delete(columnPerf)
           const { pathname, search } = url
           navigate(`${pathname}${search}`)
-          setFiltersPerf(newFiltersPerf)
         } else {
           newFiltersPerf = [
             ...filtersPerf,
@@ -1073,15 +1078,24 @@ const ViewProject = ({
           url.searchParams.append(columnPerf, filter)
           const { pathname, search } = url
           navigate(`${pathname}${search}`)
-          setFiltersPerf(newFiltersPerf)
         }
       } else {
       // eslint-disable-next-line no-lonely-if
-        if (_find(filters, (f) => f.column === column) /* && f.filter === filter) */) {
+        if (_find(newFilters, (f) => f.column === column) /* && f.filter === filter) */) {
         // selected filter is already included into the filters array -> removing it
         // removing filter from the state
-          newFilters = _filter(filters, (f) => f.column !== column)
-          setFilters(newFilters)
+          newFilters = _map(newFilters, (f) => {
+            if (f.column === column) {
+              return {
+                ...f,
+                filter: _includes(f.filter, filter) ? _filter(f.filter, (i) => i !== filter) : [f.filter, filter],
+              }
+            }
+            return {
+              ...f,
+              filter: [filter],
+            }
+          })
 
           // removing filter from the page URL
 
@@ -1094,10 +1108,9 @@ const ViewProject = ({
         // selected filter is not present in the filters array -> applying it
         // sroting filter in the state
           newFilters = [
-            ...filters,
-            { column, filters, isExclusive },
+            ...newFilters,
+            { column, filter: [filter] },
           ]
-          setFilters(newFilters)
 
           // storing filter in the page URL
 
@@ -1111,8 +1124,11 @@ const ViewProject = ({
     })
 
     if (activeTab === PROJECT_TABS.performance) {
+      setFiltersPerf(newFiltersPerf)
       loadAnalyticsPerf(true, newFiltersPerf)
     } else {
+      setFilters(newFilters)
+      console.log(newFilters)
       loadAnalytics(true, newFilters)
     }
   }
