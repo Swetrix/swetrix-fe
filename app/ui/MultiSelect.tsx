@@ -27,8 +27,6 @@ const MultiSelect = ({
           <div
             className='w-full cursor-pointer'
             onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
               setSelected(!selected)
             }}
           >
