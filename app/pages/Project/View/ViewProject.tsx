@@ -76,6 +76,7 @@ import {
 import CCRow from './components/CCRow'
 import RefRow from './components/RefRow'
 import NoEvents from './components/NoEvents'
+import SearchFilters from './components/SearchFilters'
 import Filters from './components/Filters'
 import CountryDropdown from './components/CountryDropdown'
 import ProjectAlertsView from '../Alerts/View'
@@ -1847,7 +1848,7 @@ const ViewProject = ({
                       <button
                         type='button'
                         title={t('project.search')}
-                        onClick={setShowFiltersSearch}
+                        onClick={() => setShowFiltersSearch(true)}
                         className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                           'cursor-not-allowed opacity-50': isLoading || dataLoading,
                         })}
@@ -2487,6 +2488,15 @@ const ViewProject = ({
           onSubmit={onForecastSubmit}
           activeTB={t(`project.${timeBucket}`)}
           tb={timeBucket}
+        />
+        <SearchFilters
+          t={t}
+          showModal={showFiltersSearch}
+          setShowModal={setShowFiltersSearch}
+          setProjectFilter={(items) => {
+            console.log(items)
+          }}
+          pid={id}
         />
       </>
     )
