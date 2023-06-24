@@ -118,11 +118,19 @@ const SearchFilters = ({
                     filter: string[]
                   }[]) => {
                     if (_some(oldItems, (i) => i?.column === filterType)) {
+                      if (_some(oldItems, (i) => i?.column === filterType && _includes(i?.filter, item))) {
+                        return _filter(oldItems, (i) => i.column !== filterType).concat({
+                          column: filterType,
+                          filter: _filter(_find(oldItems, (i) => i.column === filterType)?.filter || [], (i) => i !== item),
+                        })
+                      }
+
                       return _filter(oldItems, (i) => i?.column !== filterType).concat({
                         column: filterType,
                         filter: [..._find(oldItems, (i) => i?.column === filterType)?.filter || [], item],
                       })
                     }
+
                     return oldItems.concat({
                       column: filterType,
                       filter: [item],
