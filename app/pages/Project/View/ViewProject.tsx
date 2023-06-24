@@ -1041,13 +1041,20 @@ const ViewProject = ({
     column: string
     filter: string[]
   }[]) => {
+    const newFilters = _filter(items, (item) => {
+      return _isEmpty(item.filter)
+    })
     if (activeTab === PROJECT_TABS.performance) {
-      setFiltersPerf(items)
-      loadAnalyticsPerf(true, items)
+      // @ts-ignore
+      const url = new URL(window.location)
+
+
+      setFiltersPerf(newFilters)
+      loadAnalyticsPerf(true, newFilters)
     } else {
-      setFilters(items)
-      console.log(items)
-      loadAnalytics(true, items)
+      setFilters(newFilters)
+      console.log(newFilters)
+      loadAnalytics(true, newFilters)
     }
   }
 
