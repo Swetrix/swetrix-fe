@@ -38,6 +38,7 @@ import { trackCustom } from 'utils/analytics'
 import routes from 'routesPath'
 import Dropdown from 'ui/Dropdown'
 import MultiSelect from 'ui/MultiSelect'
+import CCRow from '../View/components/CCRow'
 import { getFormatDate } from '../View/ViewProject.helpers'
 
 import People from './People'
@@ -63,7 +64,7 @@ const tabDeleteDataModal = [
 ]
 
 const ModalMessage = ({
-  dateRange, setDateRange, setTab, t, tab, pid, activeFilter, setActiveFilter, filterType, setFilterType,
+  dateRange, setDateRange, setTab, t, tab, pid, activeFilter, setActiveFilter, filterType, setFilterType, language,
 }: {
   dateRange: Date[],
   setDateRange: (a: Date[]) => void,
@@ -77,6 +78,7 @@ const ModalMessage = ({
   setActiveFilter: any,
   filterType: string,
   setFilterType: (a: string) => void,
+  language: string,
 }): JSX.Element => {
   const [filterList, setFilterList] = useState<string[]>([])
   const [searchList, setSearchList] = useState<string[]>([])
@@ -161,7 +163,22 @@ const ModalMessage = ({
               <MultiSelect
                 className='max-w-max'
                 items={searchList}
-                labelExtractor={(item) => item}
+                // eslint-disable-next-line react/no-unstable-nested-components
+                labelExtractor={(item) => {
+                  if (filterType === 'cc') {
+                    return <CCRow rowName={item} language={language} />
+                  }
+
+                  return item
+                }}
+                // eslint-disable-next-line react/no-unstable-nested-components
+                itemExtractor={(item) => {
+                  if (filterType === 'cc') {
+                    return <CCRow rowName={item} language={language} />
+                  }
+
+                  return item
+                }}
                 keyExtractor={(item) => item}
                 label={activeFilter}
                 searchPlaseholder={t('project.search')}
@@ -223,10 +240,13 @@ const ProjectSettings = ({
   dashboardPaginationPage: number,
   dashboardPaginationPageShared: number,
 }) => {
-  const { t }: {
+  const { t, i18n: { language } }: {
     t: (key: string, options?: {
       [key: string]: string | number | null
     }) => string,
+    i18n: {
+      language: string,
+    },
   } = useTranslation('common')
   const { pathname } = useLocation()
   // @ts-ignore
@@ -673,7 +693,7 @@ const ProjectSettings = ({
         submitText={t('project.settings.reset')}
         closeText={t('common.close')}
         title={t('project.settings.qReset')}
-        message={<ModalMessage setDateRange={setDateRange} dateRange={dateRange} setTab={setTab} tab={tab} t={t} pid={id} activeFilter={activeFilter} setActiveFilter={setActiveFilter} filterType={filterType} setFilterType={setFilterType} />}
+        message={<ModalMessage setDateRange={setDateRange} dateRange={dateRange} setTab={setTab} tab={tab} t={t} pid={id} activeFilter={activeFilter} setActiveFilter={setActiveFilter} filterType={filterType} setFilterType={setFilterType} language={language} />}
         submitType='danger'
         type='error'
         isOpened={showReset}
