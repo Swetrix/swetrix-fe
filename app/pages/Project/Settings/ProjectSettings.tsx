@@ -166,7 +166,7 @@ const ModalMessage = ({
                 items={searchList}
                 // eslint-disable-next-line react/no-unstable-nested-components
                 labelExtractor={(item) => {
-                  if (filterType === 'cc') {
+                  if (filterType === 'cc' || countries.getName(item, language)) {
                     return <CCRow rowName={item} language={language} />
                   }
 
