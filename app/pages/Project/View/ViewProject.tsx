@@ -28,6 +28,7 @@ import _uniqBy from 'lodash/uniqBy'
 import _findIndex from 'lodash/findIndex'
 import _startsWith from 'lodash/startsWith'
 import _debounce from 'lodash/debounce'
+import _forEach from 'lodash/forEach'
 import _some from 'lodash/some'
 import _pickBy from 'lodash/pickBy'
 import _every from 'lodash/every'
@@ -1034,6 +1035,80 @@ const ViewProject = ({
     } else {
       loadAnalytics(true, newFilters)
     }
+  }
+
+  const onFilterSearch = (items: {
+    column: string
+    filter: string
+  }[]) => {
+    let newFilters
+    let newFiltersPerf
+
+    _forEach(items, (item) => {
+      const { column, filter }: {
+        column: string
+        filter: string
+      } = item
+      const isExclusive = false
+      const columnPerf = `${column}_perf`
+
+      if (activeTab === PROJECT_TABS.performance) {
+        if (_find(filtersPerf, (f) => f.column === column)) {
+          newFiltersPerf = _filter(filtersPerf, (f) => f.column !== column)
+
+          // @ts-ignore
+          const url = new URL(window.location)
+          url.searchParams.delete(columnPerf)
+          const { pathname, search } = url
+          navigate(`${pathname}${search}`)
+          setFiltersPerf(newFiltersPerf)
+        } else {
+          newFiltersPerf = [
+            ...filtersPerf,
+            { column, filter, isExclusive },
+          ]
+
+          // @ts-ignore
+          const url = new URL(window.location)
+          url.searchParams.append(columnPerf, filter)
+          const { pathname, search } = url
+          navigate(`${pathname}${search}`)
+          setFiltersPerf(newFiltersPerf)
+        }
+      } else {
+      // eslint-disable-next-line no-lonely-if
+        if (_find(filters, (f) => f.column === column) /* && f.filter === filter) */) {
+        // selected filter is already included into the filters array -> removing it
+        // removing filter from the state
+          newFilters = _filter(filters, (f) => f.column !== column)
+          setFilters(newFilters)
+
+          // removing filter from the page URL
+
+          // @ts-ignore
+          const url = new URL(window.location)
+          url.searchParams.delete(column)
+          const { pathname, search } = url
+          navigate(`${pathname}${search}`)
+        } else {
+        // selected filter is not present in the filters array -> applying it
+        // sroting filter in the state
+          newFilters = [
+            ...filters,
+            { column, filters, isExclusive },
+          ]
+          setFilters(newFilters)
+
+          // storing filter in the page URL
+
+          // @ts-ignore
+          const url = new URL(window.location)
+          url.searchParams.append(column, filter)
+          const { pathname, search } = url
+          navigate(`${pathname}${search}`)
+        }
+      }
+    })
   }
 
   // this function is used for requesting the data from the API when the exclusive filter is changed
