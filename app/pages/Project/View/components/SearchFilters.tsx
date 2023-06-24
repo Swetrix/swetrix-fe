@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
+import _some from 'lodash/some'
 import _isEmpty from 'lodash/isEmpty'
-import _includes from 'lodash/includes'
+import _find from 'lodash/find'
 import _filter from 'lodash/filter'
+import _map from 'lodash/map'
 
 import Modal from 'ui/Modal'
 import MultiSelect from 'ui/MultiSelect'
@@ -15,14 +17,20 @@ const SearchFilters = ({
   t, setProjectFilter, pid, showModal, setShowModal,
 }: {
   t: (key: string) => string,
-  setProjectFilter: (filter: string[]) => void
+  setProjectFilter: (filter: {
+    type: string
+    filters: string[]
+  }[]) => void
   pid: string
   showModal: boolean
   setShowModal: (show: boolean) => void
 }) => {
   const [filterType, setFilterType] = useState<string>('')
   const [filterList, setFilterList] = useState<string[]>([])
-  const [activeFilter, setActiveFilter] = useState<string[]>([])
+  const [activeFilter, setActiveFilter] = useState<{
+    type: string
+    filters: string[]
+  }[]>([])
 
   const getFiltersList = async () => {
     if (!_isEmpty(filterType)) {
@@ -69,15 +77,35 @@ const SearchFilters = ({
                   items={filterList}
                   labelExtractor={(item) => item}
                   keyExtractor={(item) => item}
-                  label={activeFilter}
+                  label={_map(activeFilter, (i) => i.filters)}
                   placholder={t('project.settings.reseted.filtersPlaceholder')}
-                  onSelect={(item: string) => setActiveFilter((oldItems: string[]) => {
-                    if (_includes(oldItems, item)) {
-                      return _filter(oldItems, (i) => i !== item)
+                  onSelect={(item: string) => setActiveFilter((oldItems: {
+                    type: string
+                    filters: string[]
+                  }[]) => {
+                    if (_some(oldItems, (i) => i?.type === filterType)) {
+                      return _filter(oldItems, (i) => i?.type !== filterType).concat({
+                        type: filterType,
+                        filters: [..._find(oldItems, (i) => i?.type === filterType)?.filters || [], item],
+                      })
                     }
-                    return [...oldItems, item]
+                    return oldItems.concat({
+                      type: filterType,
+                      filters: [item],
+                    })
                   })}
-                  onRemove={(item: string) => setActiveFilter((oldItems: string[]) => _filter(oldItems, (i) => i !== item))}
+                  onRemove={(item: string) => setActiveFilter((oldItems: {
+                    type: string
+                    filters: string[]
+                  }[]) => {
+                    if (_some(oldItems, (i) => i.type === filterType)) {
+                      return _filter(oldItems, (i) => i.type !== filterType).concat({
+                        type: filterType,
+                        filters: _filter(_find(oldItems, (i) => i.type === filterType)?.filters || [], (i) => i !== item),
+                      })
+                    }
+                    return oldItems
+                  })}
                 />
               ) : (
                 <p className='text-gray-500 dark:text-gray-300 italic mt-4 mb-4 text-sm'>
