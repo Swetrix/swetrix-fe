@@ -1042,7 +1042,7 @@ const ViewProject = ({
     filter: string[]
   }[]) => {
     const newFilters = _filter(items, (item) => {
-      return _isEmpty(item.filter)
+      return !_isEmpty(item.filter)
     })
     if (activeTab === PROJECT_TABS.performance) {
       // @ts-ignore
