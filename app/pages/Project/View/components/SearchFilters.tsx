@@ -14,8 +14,10 @@ import { FILTERS_PANELS_ORDER } from 'redux/constants'
 
 import { getFilters } from 'api'
 
+import CCRow from './CCRow'
+
 const SearchFilters = ({
-  t, setProjectFilter, pid, showModal, setShowModal,
+  t, setProjectFilter, pid, showModal, setShowModal, language,
 }: {
   t: (key: string) => string,
   setProjectFilter: (filter: {
@@ -25,6 +27,7 @@ const SearchFilters = ({
   pid: string
   showModal: boolean
   setShowModal: (show: boolean) => void
+  language: string
 }) => {
   const [filterType, setFilterType] = useState<string>('')
   const [searchList, setSearchList] = useState<string[]>([])
@@ -85,7 +88,20 @@ const SearchFilters = ({
                 <MultiSelect
                   className='max-w-max'
                   items={searchList}
-                  labelExtractor={(item) => item}
+                  // eslint-disable-next-line react/no-unstable-nested-components
+                  itemExtractor={(item) => {
+                    if (filterType === 'cc') {
+                      return <CCRow rowName={item} language={language} />
+                    }
+                    return item
+                  }}
+                  // eslint-disable-next-line react/no-unstable-nested-components
+                  labelExtractor={(item) => {
+                    if (filterType === 'cc') {
+                      return <CCRow rowName={item} language={language} />
+                    }
+                    return item
+                  }}
                   keyExtractor={(item) => item}
                   label={filters}
                   placholder={t('project.settings.reseted.filtersPlaceholder')}

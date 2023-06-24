@@ -88,7 +88,7 @@ const MultiSelect = ({
                     })}
                     >
                       <div className='w-full items-center flex break-words'>
-                        <div className='mx-2 leading-6'>{itemExtractor ? itemExtractor(item) : item}</div>
+                        <div className='mx-2 leading-6 flex'>{itemExtractor ? itemExtractor(item) : item}</div>
                       </div>
                     </div>
                   </div>

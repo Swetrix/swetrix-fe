@@ -2542,6 +2542,7 @@ const ViewProject = ({
           setShowModal={setShowFiltersSearch}
           setProjectFilter={onFilterSearch}
           pid={id}
+          language={language}
         />
       </>
     )
