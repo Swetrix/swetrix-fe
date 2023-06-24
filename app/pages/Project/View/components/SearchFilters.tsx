@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 
 import _some from 'lodash/some'
 import _isEmpty from 'lodash/isEmpty'
 import _find from 'lodash/find'
 import _filter from 'lodash/filter'
+import _forEach from 'lodash/forEach'
 
 import Modal from 'ui/Modal'
 import MultiSelect from 'ui/MultiSelect'
@@ -30,6 +31,13 @@ const SearchFilters = ({
     type: string
     filters: string[]
   }[]>([])
+  const filters: string[] = useMemo(() => {
+    let filtersArray: string[] = []
+    _forEach(activeFilter, (item) => {
+      filtersArray = [...filtersArray, ...item.filters]
+    })
+    return filtersArray
+  }, [activeFilter])
 
   const getFiltersList = async () => {
     if (!_isEmpty(filterType)) {
@@ -76,7 +84,7 @@ const SearchFilters = ({
                   items={filterList}
                   labelExtractor={(item) => item}
                   keyExtractor={(item) => item}
-                  label={_find(activeFilter, (i) => i?.type === filterType)?.filters || []}
+                  label={filters}
                   placholder={t('project.settings.reseted.filtersPlaceholder')}
                   onSelect={(item: string) => setActiveFilter((oldItems: {
                     type: string
