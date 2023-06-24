@@ -75,10 +75,7 @@ const SearchFilters = ({
                   items={filterList}
                   labelExtractor={(item: {
                     filter: string
-                  }) => {
-                    console.log(item)
-                    return item.filter
-                  }}
+                  }) => item.filter}
                   keyExtractor={(item: {
                     filter: string
                   }) => item.filter}
