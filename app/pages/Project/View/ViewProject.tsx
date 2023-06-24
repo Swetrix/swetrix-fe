@@ -1047,13 +1047,38 @@ const ViewProject = ({
     if (activeTab === PROJECT_TABS.performance) {
       // @ts-ignore
       const url = new URL(window.location)
+      // if url includes items[index].filter[index] delete it if not append
+      _forEach(items, (item) => {
+        if (url.searchParams.has(`${item.column}_perf`)) {
+          url.searchParams.delete(`${item.column}_perf`)
+        }
+        _forEach(item.filter, (filter) => {
+          url.searchParams.append(`${item.column}_perf`, filter)
+        })
+      })
 
+      const { pathname, search } = url
+      navigate(`${pathname}${search}`)
 
       setFiltersPerf(newFilters)
       loadAnalyticsPerf(true, newFilters)
     } else {
+      // @ts-ignore
+      const url = new URL(window.location)
+      // if url includes items[index].filter[index] delete it if not append
+      _forEach(items, (item) => {
+        if (url.searchParams.has(item.column)) {
+          url.searchParams.delete(item.column)
+        }
+        _forEach(item.filter, (filter) => {
+          url.searchParams.append(item.column, filter)
+        })
+      })
+
+      const { pathname, search } = url
+      navigate(`${pathname}${search}`)
+
       setFilters(newFilters)
-      console.log(newFilters)
       loadAnalytics(true, newFilters)
     }
   }
