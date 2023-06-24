@@ -6,6 +6,7 @@ import _find from 'lodash/find'
 import _filter from 'lodash/filter'
 import _forEach from 'lodash/forEach'
 import _includes from 'lodash/includes'
+import countries from 'utils/isoCountries'
 
 import Modal from 'ui/Modal'
 import MultiSelect from 'ui/MultiSelect'
@@ -108,6 +109,11 @@ const SearchFilters = ({
                   searchPlaseholder={t('project.search')}
                   onSearch={(search: string) => {
                     if (search.length > 0) {
+                      if (filterType === 'cc') {
+                        setSearchList(_filter(filterList, (item) => _includes(countries.getName(item, language), search)))
+                        return
+                      }
+
                       setSearchList(_filter(filterList, (item) => _includes(item, search)))
                     } else {
                       setSearchList(filterList)
