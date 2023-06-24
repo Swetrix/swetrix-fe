@@ -35,6 +35,7 @@ import Checkbox from 'ui/Checkbox'
 import Modal from 'ui/Modal'
 import FlatPicker from 'ui/Flatpicker'
 import { trackCustom } from 'utils/analytics'
+import countries from 'utils/isoCountries'
 import routes from 'routesPath'
 import Dropdown from 'ui/Dropdown'
 import MultiSelect from 'ui/MultiSelect'
@@ -184,6 +185,11 @@ const ModalMessage = ({
                 searchPlaseholder={t('project.search')}
                 onSearch={(search: string) => {
                   if (search.length > 0) {
+                    if (filterType === 'cc') {
+                      setSearchList(_filter(filterList, (item) => _includes(countries.getName(item, language), search)))
+                      return
+                    }
+
                     setSearchList(_filter(filterList, (item) => _includes(item, search)))
                   } else {
                     setSearchList(filterList)
