@@ -58,11 +58,11 @@ const MultiSelect = ({
             </div>
           </div>
           {selected && (
-            <div className=' shadow top-100 bg-white dark:bg-slate-800 z-40 w-full lef-0 rounded max-h-select overflow-y-auto max-h-[200px]'>
+            <div className=' shadow top-100 bg-white dark:bg-slate-800 z-40 w-full lef-0 rounded max-h-select overflow-y-auto overflow-x-hidden max-h-[200px]'>
               <div className='flex flex-col w-full'>
                 {_map(items, (item) => (
                   <div key={keyExtractor ? `${keyExtractor(item)}select` : `${item}select`} onClick={() => onSelect(item)} className='cursor-pointer w-full border-gray-100 dark:border-slate-500 rounded-t border-b hover:bg-indigo-100 dark:hover:bg-slate-700'>
-                    <div className={cx('flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-indigo-100 dark:hover:border-slate-700', {
+                    <div className={cx('overflow-x-auto flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-indigo-100 dark:hover:border-slate-700', {
                       '!border-indigo-500 border-l-2 dark:!border-slate-400': _includes(label, item),
                     })}
                     >
