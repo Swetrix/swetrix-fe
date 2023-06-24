@@ -1109,6 +1109,12 @@ const ViewProject = ({
         }
       }
     })
+
+    if (activeTab === PROJECT_TABS.performance) {
+      loadAnalyticsPerf(true, newFiltersPerf)
+    } else {
+      loadAnalytics(true, newFilters)
+    }
   }
 
   // this function is used for requesting the data from the API when the exclusive filter is changed
