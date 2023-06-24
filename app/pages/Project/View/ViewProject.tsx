@@ -1039,13 +1039,13 @@ const ViewProject = ({
 
   const onFilterSearch = (items: {
     column: string
-    filter: string
+    filter: string[]
   }[]) => {
-    let newFilters: {
+    const newFilters: {
       column: string
       filter: string[]
     }[] = []
-    let newFiltersPerf: {
+    const newFiltersPerf: {
       column: string
       filter: string[]
     }[] = []
@@ -1058,69 +1058,7 @@ const ViewProject = ({
       const isExclusive = false
       const columnPerf = `${column}_perf`
 
-      if (activeTab === PROJECT_TABS.performance) {
-        if (_find(filtersPerf, (f) => f.column === column)) {
-          newFiltersPerf = _filter(filtersPerf, (f) => f.column !== column)
-
-          // @ts-ignore
-          const url = new URL(window.location)
-          url.searchParams.delete(columnPerf)
-          const { pathname, search } = url
-          navigate(`${pathname}${search}`)
-        } else {
-          newFiltersPerf = [
-            ...filtersPerf,
-            { column, filter, isExclusive },
-          ]
-
-          // @ts-ignore
-          const url = new URL(window.location)
-          url.searchParams.append(columnPerf, filter)
-          const { pathname, search } = url
-          navigate(`${pathname}${search}`)
-        }
-      } else {
-      // eslint-disable-next-line no-lonely-if
-        if (_find(newFilters, (f) => f.column === column) /* && f.filter === filter) */) {
-        // selected filter is already included into the filters array -> removing it
-        // removing filter from the state
-          newFilters = _map(newFilters, (f) => {
-            if (f.column === column) {
-              return {
-                ...f,
-                filter: _includes(f.filter, filter) ? _filter(f.filter, (i) => i !== filter) : [f.filter, filter],
-              }
-            }
-            return {
-              ...f,
-              filter: [filter],
-            }
-          })
-
-          // removing filter from the page URL
-
-          // @ts-ignore
-          const url = new URL(window.location)
-          url.searchParams.delete(column)
-          const { pathname, search } = url
-          navigate(`${pathname}${search}`)
-        } else {
-        // selected filter is not present in the filters array -> applying it
-        // sroting filter in the state
-          newFilters = [
-            ...newFilters,
-            { column, filter: [filter] },
-          ]
-
-          // storing filter in the page URL
-
-          // @ts-ignore
-          const url = new URL(window.location)
-          url.searchParams.append(column, filter)
-          const { pathname, search } = url
-          navigate(`${pathname}${search}`)
-        }
-      }
+      console.log(item)
     })
 
     if (activeTab === PROJECT_TABS.performance) {

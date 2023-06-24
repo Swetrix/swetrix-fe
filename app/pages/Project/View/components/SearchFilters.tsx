@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
+import _some from 'lodash/some'
 import _isEmpty from 'lodash/isEmpty'
 import _find from 'lodash/find'
 import _filter from 'lodash/filter'
@@ -16,8 +17,8 @@ const SearchFilters = ({
 }: {
   t: (key: string) => string,
   setProjectFilter: (filter: {
-    column: string
-    filter: string
+    type: string
+    filters: string[]
   }[]) => void
   pid: string
   showModal: boolean
@@ -26,8 +27,8 @@ const SearchFilters = ({
   const [filterType, setFilterType] = useState<string>('')
   const [filterList, setFilterList] = useState<string[]>([])
   const [activeFilter, setActiveFilter] = useState<{
-    column: string
-    filter: string
+    type: string
+    filters: string[]
   }[]>([])
 
   const getFiltersList = async () => {
@@ -73,42 +74,35 @@ const SearchFilters = ({
                 <MultiSelect
                   className='max-w-max'
                   items={filterList}
-                  labelExtractor={(item: {
-                    filter: string
-                  }) => item.filter}
-                  keyExtractor={(item: {
-                    filter: string
-                  }) => item.filter}
-                  label={activeFilter}
+                  labelExtractor={(item) => item}
+                  keyExtractor={(item) => item}
+                  label={_find(activeFilter, (i) => i?.type === filterType)?.filters || []}
                   placholder={t('project.settings.reseted.filtersPlaceholder')}
                   onSelect={(item: string) => setActiveFilter((oldItems: {
-                    column: string
-                    filter: string
+                    type: string
+                    filters: string[]
                   }[]) => {
-                    if (_find(oldItems, (i) => i.filter === item)) {
-                      return _filter(oldItems, (i) => {
-                        return i.filter !== item
+                    if (_some(oldItems, (i) => i?.type === filterType)) {
+                      return _filter(oldItems, (i) => i?.type !== filterType).concat({
+                        type: filterType,
+                        filters: [..._find(oldItems, (i) => i?.type === filterType)?.filters || [], item],
                       })
                     }
-
-                    return [...oldItems, {
-                      column: filterType,
-                      filter: item,
-                    }]
+                    return oldItems.concat({
+                      type: filterType,
+                      filters: [item],
+                    })
                   })}
-                  onRemove={(item: {
-                    column: string
-                    filter: string
-                  }) => setActiveFilter((oldItems: {
-                    column: string
-                    filter: string
+                  onRemove={(item: string) => setActiveFilter((oldItems: {
+                    type: string
+                    filters: string[]
                   }[]) => {
-                    if (_find(oldItems, (i) => i.filter === item.filter)) {
-                      return _filter(oldItems, (i) => {
-                        return i.filter !== item.filter
+                    if (_some(oldItems, (i) => i.type === filterType)) {
+                      return _filter(oldItems, (i) => i.type !== filterType).concat({
+                        type: filterType,
+                        filters: _filter(_find(oldItems, (i) => i.type === filterType)?.filters || [], (i) => i !== item),
                       })
                     }
-
                     return oldItems
                   })}
                 />

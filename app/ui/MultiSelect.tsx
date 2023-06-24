@@ -28,6 +28,7 @@ const MultiSelect = ({
             className='w-full cursor-pointer'
             onClick={(e) => {
               e.preventDefault()
+              e.stopPropagation()
               setSelected(!selected)
             }}
           >
@@ -37,7 +38,12 @@ const MultiSelect = ({
                   <div key={keyExtractor ? keyExtractor(item) : item} className='flex justify-center items-center m-1 font-medium py-1 px-2 rounded-full text-indigo-700 dark:text-gray-50 bg-indigo-100 dark:bg-slate-800 border border-indigo-300 dark:border-slate-500'>
                     <div className='text-xs font-normal leading-none max-w-full flex-initial break-words'>{labelExtractor ? labelExtractor(item) : item}</div>
                     <div className='flex flex-auto flex-row-reverse'>
-                      <div onClick={() => onRemove(item)}>
+                      <div onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        onRemove(item)
+                      }}
+                      >
                         <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' className='feather feather-x cursor-pointer hover:text-indigo-400 rounded-full w-4 h-4 ml-2'>
                           <line x1='18' y1='6' x2='6' y2='18' />
                           <line x1='6' y1='6' x2='18' y2='18' />
