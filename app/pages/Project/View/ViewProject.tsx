@@ -1041,33 +1041,13 @@ const ViewProject = ({
     column: string
     filter: string[]
   }[]) => {
-    const newFilters: {
-      column: string
-      filter: string[]
-    }[] = []
-    const newFiltersPerf: {
-      column: string
-      filter: string[]
-    }[] = []
-
-    _forEach(items, (item) => {
-      const { column, filter }: {
-        column: string
-        filter: string
-      } = item
-      const isExclusive = false
-      const columnPerf = `${column}_perf`
-
-      console.log(item)
-    })
-
     if (activeTab === PROJECT_TABS.performance) {
-      setFiltersPerf(newFiltersPerf)
-      loadAnalyticsPerf(true, newFiltersPerf)
+      setFiltersPerf(items)
+      loadAnalyticsPerf(true, items)
     } else {
-      setFilters(newFilters)
-      console.log(newFilters)
-      loadAnalytics(true, newFilters)
+      setFilters(items)
+      console.log(items)
+      loadAnalytics(true, items)
     }
   }
 
