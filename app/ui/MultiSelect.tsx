@@ -34,7 +34,7 @@ const MultiSelect = ({
               <div className='flex flex-auto flex-wrap'>
                 {!_isEmpty(label) ? _map(label, (item) => (
                   <div key={keyExtractor ? keyExtractor(item) : item} className='flex justify-center items-center m-1 font-medium py-1 px-2 rounded-full text-indigo-700 dark:text-gray-50 bg-indigo-100 dark:bg-slate-800 border border-indigo-300 dark:border-slate-500'>
-                    <div className='text-xs font-normal leading-none max-w-full flex-initial'>{labelExtractor ? labelExtractor(item) : item}</div>
+                    <div className='text-xs font-normal leading-none max-w-full flex-initial break-words'>{labelExtractor ? labelExtractor(item) : item}</div>
                     <div className='flex flex-auto flex-row-reverse'>
                       <div onClick={() => onRemove(item)}>
                         <svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' className='feather feather-x cursor-pointer hover:text-indigo-400 rounded-full w-4 h-4 ml-2'>
@@ -45,7 +45,7 @@ const MultiSelect = ({
                     </div>
                   </div>
                 )) : (
-                  <p className='text-gray-300 dark:text-gray-50 flex justify-center items-center'>{placholder}</p>
+                  <p className='text-gray-300 dark:text-gray-50 flex justify-center items-center px-2'>{placholder}</p>
                 )}
               </div>
               <div className='text-gray-300 w-8 py-1 pl-2 pr-1 border-l flex items-center border-gray-200'>
@@ -66,7 +66,7 @@ const MultiSelect = ({
                       '!border-indigo-500 border-l-2 dark:!border-slate-400': _includes(label, item),
                     })}
                     >
-                      <div className='w-full items-center flex'>
+                      <div className='w-full items-center flex break-words'>
                         <div className='mx-2 leading-6'>{labelExtractor ? labelExtractor(item) : item}</div>
                       </div>
                     </div>

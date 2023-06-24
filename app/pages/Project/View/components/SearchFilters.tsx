@@ -65,7 +65,7 @@ const SearchFilters = ({
               <div className='h-2' />
               {(filterType && !_isEmpty(filterList)) ? (
                 <MultiSelect
-                  className='w-full max-w-[400px]'
+                  className='max-w-max'
                   items={filterList}
                   labelExtractor={(item) => item}
                   keyExtractor={(item) => item}
