@@ -542,6 +542,7 @@
     "support": "Contact support"
   },
   "project": {
+    "search": "Search",
     "ad": "Want these stats for your website?",
     "noExist": "The selected project does not exist",
     "geo": "Geolocation",
