@@ -73,8 +73,15 @@ const SearchFilters = ({
                 <MultiSelect
                   className='max-w-max'
                   items={filterList}
-                  labelExtractor={(item) => item.filters}
-                  keyExtractor={(item) => item}
+                  labelExtractor={(item: {
+                    filter: string
+                  }) => {
+                    console.log(item)
+                    return item.filter
+                  }}
+                  keyExtractor={(item: {
+                    filter: string
+                  }) => item.filter}
                   label={activeFilter}
                   placholder={t('project.settings.reseted.filtersPlaceholder')}
                   onSelect={(item: string) => setActiveFilter((oldItems: {
