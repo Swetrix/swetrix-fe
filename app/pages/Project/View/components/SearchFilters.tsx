@@ -18,8 +18,8 @@ const SearchFilters = ({
 }: {
   t: (key: string) => string,
   setProjectFilter: (filter: {
-    type: string
-    filters: string
+    column: string
+    filter: string
   }[]) => void
   pid: string
   showModal: boolean
@@ -28,8 +28,8 @@ const SearchFilters = ({
   const [filterType, setFilterType] = useState<string>('')
   const [filterList, setFilterList] = useState<string[]>([])
   const [activeFilter, setActiveFilter] = useState<{
-    type: string
-    filters: string
+    column: string
+    filter: string
   }[]>([])
 
   const getFiltersList = async () => {
@@ -80,27 +80,27 @@ const SearchFilters = ({
                   label={activeFilter}
                   placholder={t('project.settings.reseted.filtersPlaceholder')}
                   onSelect={(item: string) => setActiveFilter((oldItems: {
-                    type: string
-                    filters: string
+                    column: string
+                    filter: string
                   }[]) => {
-                    if (_find(oldItems, (i) => i.filters === item)) {
+                    if (_find(oldItems, (i) => i.filter === item)) {
                       return _filter(oldItems, (i) => {
-                        return i.filters !== item
+                        return i.filter !== item
                       })
                     }
 
                     return [...oldItems, {
-                      type: filterType,
-                      filters: item,
+                      column: filterType,
+                      filter: item,
                     }]
                   })}
                   onRemove={(item: string) => setActiveFilter((oldItems: {
-                    type: string
-                    filters: string
+                    column: string
+                    filter: string
                   }[]) => {
-                    if (_find(oldItems, (i) => i.filters === item)) {
+                    if (_find(oldItems, (i) => i.filter === item)) {
                       return _filter(oldItems, (i) => {
-                        return i.filters !== item
+                        return i.filter !== item
                       })
                     }
 
