@@ -79,11 +79,13 @@ const ModalMessage = ({
   setFilterType: (a: string) => void,
 }): JSX.Element => {
   const [filterList, setFilterList] = useState<string[]>([])
+  const [searchList, setSearchList] = useState<string[]>([])
 
   const getFiltersList = async () => {
     if (!_isEmpty(filterType)) {
       const res = await getFilters(pid, filterType)
       setFilterList(res)
+      setSearchList(res)
       if (!_isEmpty(activeFilter)) {
         setActiveFilter([])
       }
@@ -158,10 +160,18 @@ const ModalMessage = ({
             {(filterType && !_isEmpty(filterList)) ? (
               <MultiSelect
                 className='max-w-max'
-                items={filterList}
+                items={searchList}
                 labelExtractor={(item) => item}
                 keyExtractor={(item) => item}
                 label={activeFilter}
+                searchPlaseholder={t('project.search')}
+                onSearch={(search: string) => {
+                  if (search.length > 0) {
+                    setSearchList(_filter(filterList, (item) => _includes(item, search)))
+                  } else {
+                    setSearchList(filterList)
+                  }
+                }}
                 placholder={t('project.settings.reseted.filtersPlaceholder')}
                 onSelect={(item: string) => setActiveFilter((oldItems: string[]) => {
                   if (_includes(oldItems, item)) {
