@@ -44,9 +44,9 @@ const SearchFilters = ({
         setShowModal(false)
       }}
       size='large'
-      submitText={t('project.settings.reset')}
+      submitText={t('project.applyFilters')}
       closeText={t('common.close')}
-      title={t('project.settings.qReset')}
+      title={t('project.searchFilters')}
       message={
         (
           <div className='min-h-[410px]'>
@@ -88,8 +88,8 @@ const SearchFilters = ({
           </div>
         )
       }
-      submitType='danger'
-      type='error'
+      submitType='regular'
+      type='info'
       isOpened={showModal}
     />
   )
