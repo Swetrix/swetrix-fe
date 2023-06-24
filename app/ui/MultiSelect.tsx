@@ -36,7 +36,7 @@ const MultiSelect = ({
               <div className='flex flex-auto flex-wrap'>
                 {!_isEmpty(label) ? _map(label, (item) => (
                   <div key={keyExtractor ? keyExtractor(item) : item} className='flex justify-center items-center m-1 font-medium py-1 px-2 rounded-full text-indigo-700 dark:text-gray-50 bg-indigo-100 dark:bg-slate-800 border border-indigo-300 dark:border-slate-500'>
-                    <div className='text-xs font-normal leading-none max-w-full flex-initial break-words'>{labelExtractor ? labelExtractor(item) : item}</div>
+                    <div className='text-xs font-normal leading-none max-w-full flex-initial break-words flex'>{labelExtractor ? labelExtractor(item) : item}</div>
                     <div className='flex flex-auto flex-row-reverse'>
                       <div onClick={(e) => {
                         e.preventDefault()
