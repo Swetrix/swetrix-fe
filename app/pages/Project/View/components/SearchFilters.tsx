@@ -5,6 +5,7 @@ import _isEmpty from 'lodash/isEmpty'
 import _find from 'lodash/find'
 import _filter from 'lodash/filter'
 import _forEach from 'lodash/forEach'
+import _includes from 'lodash/includes'
 
 import Modal from 'ui/Modal'
 import MultiSelect from 'ui/MultiSelect'
@@ -26,6 +27,7 @@ const SearchFilters = ({
   setShowModal: (show: boolean) => void
 }) => {
   const [filterType, setFilterType] = useState<string>('')
+  const [searchList, setSearchList] = useState<string[]>([])
   const [filterList, setFilterList] = useState<string[]>([])
   const [activeFilter, setActiveFilter] = useState<{
     column: string
@@ -43,6 +45,7 @@ const SearchFilters = ({
     if (!_isEmpty(filterType)) {
       const res = await getFilters(pid, filterType)
       setFilterList(res)
+      setSearchList(res)
     }
   }
 
@@ -81,11 +84,18 @@ const SearchFilters = ({
               {(filterType && !_isEmpty(filterList)) ? (
                 <MultiSelect
                   className='max-w-max'
-                  items={filterList}
+                  items={searchList}
                   labelExtractor={(item) => item}
                   keyExtractor={(item) => item}
                   label={filters}
                   placholder={t('project.settings.reseted.filtersPlaceholder')}
+                  onSearch={(search: string) => {
+                    if (search.length > 0) {
+                      setSearchList(_filter(filterList, (item) => _includes(item, search)))
+                    } else {
+                      setSearchList(filterList)
+                    }
+                  }}
                   onSelect={(item: string) => setActiveFilter((oldItems: {
                     column: string
                     filter: string[]

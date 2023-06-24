@@ -5,7 +5,7 @@ import _includes from 'lodash/includes'
 import _isEmpty from 'lodash/isEmpty'
 
 const MultiSelect = ({
-  onRemove, onSelect, items, labelExtractor, keyExtractor, label, hint, placholder, className, itemExtractor,
+  onRemove, onSelect, items, labelExtractor, keyExtractor, label, hint, placholder, className, itemExtractor, searchPlaseholder, onSearch,
 }: {
   className?: string
   onRemove: (item: any) => void
@@ -16,6 +16,8 @@ const MultiSelect = ({
   label: any[]
   hint?: string
   placholder?: string
+  searchPlaseholder?: string
+  onSearch?: (search: string) => void
   itemExtractor?: (item: any) => string
 }) => {
   const [selected, setSelected] = useState(false)
@@ -65,6 +67,20 @@ const MultiSelect = ({
           {selected && (
             <div className=' shadow top-100 bg-white dark:bg-slate-800 z-40 w-full lef-0 rounded max-h-select overflow-y-auto overflow-x-hidden max-h-[200px]'>
               <div className='flex flex-col w-full'>
+                {onSearch && (
+                <div className='cursor-pointer w-full border-gray-100 dark:border-slate-500 rounded-t border-b hover:bg-indigo-100 dark:hover:bg-slate-700'>
+                  <input
+                    className='overflow-x-auto flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-indigo-100 dark:hover:border-slate-700'
+                    placeholder={searchPlaseholder}
+                    onChange={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      onSearch(e.target.value || '')
+                    }}
+                    type='text'
+                  />
+                </div>
+                )}
                 {_map(items, (item) => (
                   <div key={keyExtractor ? `${keyExtractor(item)}select` : `${item}select`} onClick={() => onSelect(item)} className='cursor-pointer w-full border-gray-100 dark:border-slate-500 rounded-t border-b hover:bg-indigo-100 dark:hover:bg-slate-700'>
                     <div className={cx('overflow-x-auto flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-indigo-100 dark:hover:border-slate-700', {
@@ -96,6 +112,8 @@ MultiSelect.defaultProps = {
   hint: '',
   placholder: 'Select...',
   itemExtractor: (item: any) => item,
+  searchPlaseholder: 'Search...',
+  onSearch: (e: string) => {},
 }
 
 export default MultiSelect
