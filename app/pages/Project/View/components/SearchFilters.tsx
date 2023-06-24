@@ -96,13 +96,16 @@ const SearchFilters = ({
                       filter: item,
                     }]
                   })}
-                  onRemove={(item: string) => setActiveFilter((oldItems: {
+                  onRemove={(item: {
+                    column: string
+                    filter: string
+                  }) => setActiveFilter((oldItems: {
                     column: string
                     filter: string
                   }[]) => {
-                    if (_find(oldItems, (i) => i.filter === item)) {
+                    if (_find(oldItems, (i) => i.filter === item.filter)) {
                       return _filter(oldItems, (i) => {
-                        return i.filter !== item
+                        return i.filter !== item.filter
                       })
                     }
 
