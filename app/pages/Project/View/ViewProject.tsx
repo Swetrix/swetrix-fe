@@ -2574,9 +2574,7 @@ const ViewProject = ({
           t={t}
           showModal={showFiltersSearch}
           setShowModal={setShowFiltersSearch}
-          setProjectFilter={(items) => {
-            console.log(items)
-          }}
+          setProjectFilter={onFilterSearch}
           pid={id}
         />
       </>
