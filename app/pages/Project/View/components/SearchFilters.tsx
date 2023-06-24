@@ -89,6 +89,7 @@ const SearchFilters = ({
                   keyExtractor={(item) => item}
                   label={filters}
                   placholder={t('project.settings.reseted.filtersPlaceholder')}
+                  searchPlaseholder={t('project.search')}
                   onSearch={(search: string) => {
                     if (search.length > 0) {
                       setSearchList(_filter(filterList, (item) => _includes(item, search)))
