@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
 
-import _some from 'lodash/some'
 import _isEmpty from 'lodash/isEmpty'
 import _find from 'lodash/find'
 import _filter from 'lodash/filter'
-import _map from 'lodash/map'
 
 import Modal from 'ui/Modal'
 import MultiSelect from 'ui/MultiSelect'
