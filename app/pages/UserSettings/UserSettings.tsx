@@ -57,6 +57,7 @@ import {
   exportUserData,
   generateApiKey,
   deleteApiKey, // setTheme,
+  reciveLoginNotification,
 } from 'api'
 import ProjectList from './components/ProjectList'
 import TwoFA from './components/TwoFA'
@@ -261,7 +262,7 @@ const UserSettings = ({
     })
   }
 
-  const handleReceiveLoginNotifications = (
+  const handleReceiveLoginNotifications = async (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     if (settingUpdating) {
@@ -271,16 +272,16 @@ const UserSettings = ({
     const { checked } = e.target
 
     setSettingUpdating(true)
-    updateReceiveLoginNotifications(checked, (isSuccess: boolean) => {
-      setSettingUpdating(false)
 
-      if (isSuccess) {
-        accountUpdated(t('profileSettings.updated'))
-        return
-      }
-
+    try {
+      await reciveLoginNotification(checked)
+      updateUserData({
+        receiveLoginNotifications: checked,
+      })
+      accountUpdated(t('profileSettings.updated'))
+    } catch {
       genericError(t('apiNotifications.somethingWentWrong'))
-    })
+    }
   }
 
   const handleIntegrationSave = (data: any, callback = () => { }) => {
@@ -551,9 +552,9 @@ const UserSettings = ({
               onSelect={(f) => setForm((prev) => ({
                 ...prev,
                 timeFormat:
-                    timeFormatArray[
-                      _findIndex(translatedTimeFormat, (freq) => freq === f)
-                    ],
+                  timeFormatArray[
+                    _findIndex(translatedTimeFormat, (freq) => freq === f)
+                  ],
               }))}
             />
           </div>
