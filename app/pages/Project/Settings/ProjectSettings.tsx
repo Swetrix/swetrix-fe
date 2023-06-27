@@ -15,6 +15,7 @@ import _split from 'lodash/split'
 import _keys from 'lodash/keys'
 import _filter from 'lodash/filter'
 import _map from 'lodash/map'
+import _toUpper from 'lodash/toUpper'
 import _includes from 'lodash/includes'
 import PropTypes from 'prop-types'
 import { ExclamationTriangleIcon, TrashIcon, RocketLaunchIcon } from '@heroicons/react/24/outline'
@@ -186,11 +187,11 @@ const ModalMessage = ({
                 onSearch={(search: string) => {
                   if (search.length > 0) {
                     if (filterType === 'cc') {
-                      setSearchList(_filter(filterList, (item) => _includes(countries.getName(item, language).toLocaleUpperCase(), search.toLocaleUpperCase())))
+                      setSearchList(_filter(filterList, (item) => _includes(_toUpper(countries.getName(item, language)), _toUpper(search))))
                       return
                     }
 
-                    setSearchList(_filter(filterList, (item) => _includes(item.toLocaleUpperCase(), search.toLocaleUpperCase())))
+                    setSearchList(_filter(filterList, (item) => _includes(_toUpper(item), _toUpper(search))))
                   } else {
                     setSearchList(filterList)
                   }
