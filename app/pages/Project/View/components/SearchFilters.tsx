@@ -87,7 +87,7 @@ const SearchFilters = ({
                 items={searchList}
                   // eslint-disable-next-line react/no-unstable-nested-components
                 itemExtractor={(item) => {
-                  if (filterType === 'cc') {
+                  if (filterType === 'cc' || countries.getName(item, language)) {
                     return <CCRow cc={item} language={language} />
                   }
                   return item
