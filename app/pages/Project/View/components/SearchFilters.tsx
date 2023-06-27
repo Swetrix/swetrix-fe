@@ -104,6 +104,14 @@ const SearchFilters = ({
             <div className='h-2' />
             {(filterType && !_isEmpty(filterList)) ? (
               <>
+                <Checkbox
+                  checked={Boolean(overrideCurrentlyFilters)}
+                  onChange={(e) => setOverrideCurrentlyFilters(e.target.checked)}
+                  name='overrideCurrentlyFilters'
+                  id='overrideCurrentlyFilters'
+                  className='mt-4'
+                  label={t('project.overrideCurrentlyFilters')}
+                />
                 <MultiSelect
                   className='max-w-max'
                   items={searchList}
@@ -178,14 +186,6 @@ const SearchFilters = ({
 
                     return newItems
                   })}
-                />
-                <Checkbox
-                  checked={Boolean(overrideCurrentlyFilters)}
-                  onChange={(e) => setOverrideCurrentlyFilters(e.target.checked)}
-                  name='overrideCurrentlyFilters'
-                  id='overrideCurrentlyFilters'
-                  className='mt-4'
-                  label={t('project.overrideCurrentlyFilters')}
                 />
               </>
             ) : (
