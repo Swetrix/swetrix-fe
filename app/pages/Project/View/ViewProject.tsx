@@ -1059,8 +1059,6 @@ const ViewProject = ({
 
       const { pathname, search } = url
       navigate(`${pathname}${search}`)
-
-      setFiltersPerf(newFilters)
       loadAnalyticsPerf(true, newFilters)
     } else {
       // @ts-ignore
@@ -1077,8 +1075,6 @@ const ViewProject = ({
 
       const { pathname, search } = url
       navigate(`${pathname}${search}`)
-
-      setFilters(newFilters)
       loadAnalytics(true, newFilters)
     }
   }
