@@ -166,7 +166,7 @@ const ModalMessage = ({
                 items={searchList}
                 // eslint-disable-next-line react/no-unstable-nested-components
                 labelExtractor={(item) => {
-                  if (filterType === 'cc' || countries.getName(item, language)) {
+                  if (filterType === 'cc') {
                     return <CCRow cc={item} language={language} />
                   }
 
@@ -174,7 +174,7 @@ const ModalMessage = ({
                 }}
                 // eslint-disable-next-line react/no-unstable-nested-components
                 itemExtractor={(item) => {
-                  if (filterType === 'cc' || countries.getName(item, language)) {
+                  if (filterType === 'cc') {
                     return <CCRow cc={item} language={language} />
                   }
 
