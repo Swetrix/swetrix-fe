@@ -582,7 +582,7 @@ const ProjectSettings = ({
             />
             <Checkbox
               checked={Boolean(form.public)}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 if (!form.isPasswordProtected) {
                   handleInput(e)
                 }
