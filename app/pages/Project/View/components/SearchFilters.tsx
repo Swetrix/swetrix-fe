@@ -27,7 +27,7 @@ const SearchFilters = ({
   setProjectFilter: (filter: {
     column: string
     filter: string[]
-  }[]) => void
+  }[], override: boolean) => void
   pid: string
   showModal: boolean
   setShowModal: (show: boolean) => void
@@ -81,10 +81,9 @@ const SearchFilters = ({
     <Modal
       onClose={() => {
         setShowModal(false)
-        // setSearchList(filterList)
       }}
       onSubmit={() => {
-        setProjectFilter(activeFilter)
+        setProjectFilter(activeFilter, overrideCurrentlyFilters)
         setShowModal(false)
       }}
       size='large'

@@ -48,7 +48,7 @@ import {
   tbPeriodPairs, getProjectCacheKey, LIVE_VISITORS_UPDATE_INTERVAL, DEFAULT_TIMEZONE, CDN_URL, isDevelopment,
   timeBucketToDays, getProjectCacheCustomKey, MAX_MONTHS_IN_PAST, PROJECT_TABS, TimeFormat, getProjectForcastCacheKey, chartTypes, roleAdmin,
   TRAFFIC_PANELS_ORDER, PERFORMANCE_PANELS_ORDER, isSelfhosted, tbPeriodPairsCompare, PERIOD_PAIRS_COMPARE, filtersPeriodPairs, IS_ACTIVE_COMPARE,
-  PROJECTS_PROTECTED, getProjectCacheCustomKeyPerf, isBrowser, TITLE_SUFFIX,
+  PROJECTS_PROTECTED, getProjectCacheCustomKeyPerf, isBrowser, TITLE_SUFFIX, FILTERS_PANELS_ORDER,
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import { IProject, ILiveStats } from 'redux/models/IProject'
@@ -1040,14 +1040,22 @@ const ViewProject = ({
   const onFilterSearch = (items: {
     column: string
     filter: string[]
-  }[]) => {
+  }[], override: boolean) => {
     const newFilters = _filter(items, (item) => {
       return !_isEmpty(item.filter)
     })
     if (activeTab === PROJECT_TABS.performance) {
       // @ts-ignore
       const url = new URL(window.location)
-      // if url includes items[index].filter[index] delete it if not append
+
+      if (override) {
+        _forEach(FILTERS_PANELS_ORDER, (value) => {
+          if (url.searchParams.has(`${value}_perf`)) {
+            url.searchParams.delete(`${value}_perf`)
+          }
+        })
+      }
+
       _forEach(items, (item) => {
         if (url.searchParams.has(`${item.column}_perf`)) {
           url.searchParams.delete(`${item.column}_perf`)
@@ -1059,11 +1067,28 @@ const ViewProject = ({
 
       const { pathname, search } = url
       navigate(`${pathname}${search}`)
+
+      if (!override) {
+        loadAnalyticsPerf(true, [
+          ...filtersPerf,
+          ...newFilters,
+        ])
+        return
+      }
+
       loadAnalyticsPerf(true, newFilters)
     } else {
       // @ts-ignore
       const url = new URL(window.location)
-      // if url includes items[index].filter[index] delete it if not append
+
+      if (override) {
+        _forEach(FILTERS_PANELS_ORDER, (value) => {
+          if (url.searchParams.has(value)) {
+            url.searchParams.delete(value)
+          }
+        })
+      }
+
       _forEach(items, (item) => {
         if (url.searchParams.has(item.column)) {
           url.searchParams.delete(item.column)
@@ -1075,6 +1100,15 @@ const ViewProject = ({
 
       const { pathname, search } = url
       navigate(`${pathname}${search}`)
+
+      if (!override) {
+        loadAnalytics(true, [
+          ...filters,
+          ...newFilters,
+        ])
+        return
+      }
+
       loadAnalytics(true, newFilters)
     }
   }
