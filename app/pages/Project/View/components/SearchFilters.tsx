@@ -67,6 +67,7 @@ const SearchFilters = ({
     if (!showModal) {
       setSearchList(filterList)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showModal])
 
   useEffect(() => {
