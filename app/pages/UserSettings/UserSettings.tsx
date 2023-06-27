@@ -69,47 +69,29 @@ dayjs.extend(utc)
 const timeFormatArray = _map(TimeFormat, (key) => key)
 
 interface IProps {
-  onDelete: (t: (key: string) => string, callback: () => void) => void;
-  onDeleteProjectCache: () => void;
-  removeProject: (id: string) => void;
-  removeShareProject: (id: string) => void;
-  setUserShareData: (data: Partial<ISharedProject>, id: string) => void;
-  setProjectsShareData: (data: Partial<ISharedProject>, id: string) => void;
-  userSharedUpdate: (message: string) => void;
-  sharedProjectError: (message: string) => void;
-  updateUserData: (data: Partial<IUser>) => void;
-  genericError: (message: string) => void;
-  onGDPRExportFailed: (message: string) => void;
-  updateProfileFailed: (message: string) => void;
-  updateUserProfileAsync: (
-    data: IUser,
-    successMessage: string,
-    callback?: (e: any) => {}
-  ) => void;
-  accountUpdated: (t: string) => void;
-  setAPIKey: (key: string | null) => void;
-  user: IUser;
-  dontRemember: boolean;
-  isPaidTierUsed: boolean;
-  linkSSO: (
-    t: (key: string) => string,
-    callback: (e: any) => void,
-    provider: string
-  ) => void;
-  unlinkSSO: (
-    t: (key: string) => string,
-    callback: (e: any) => void,
-    provider: string
-  ) => void;
-  theme: string;
-  updateShowLiveVisitorsInTitle: (
-    show: boolean,
-    callback: (isSuccess: boolean) => void
-  ) => void;
-  updateReceiveLoginNotifications: (
-    show: boolean,
-    callback: (isSuccess: boolean) => void
-  ) => void;
+  onDelete: (t: (key: string) => string, callback: () => void) => void,
+  onDeleteProjectCache: () => void,
+  removeProject: (id: string) => void,
+  removeShareProject: (id: string) => void,
+  setUserShareData: (data: Partial<ISharedProject>, id: string) => void,
+  setProjectsShareData: (data: Partial<ISharedProject>, id: string) => void,
+  userSharedUpdate: (message: string) => void,
+  sharedProjectError: (message: string) => void,
+  updateUserData: (data: Partial<IUser>) => void,
+  genericError: (message: string) => void,
+  onGDPRExportFailed: (message: string) => void,
+  updateProfileFailed: (message: string) => void,
+  updateUserProfileAsync: (data: IUser, successMessage: string, callback?: (e: any) => {}) => void,
+  accountUpdated: (t: string) => void,
+  setAPIKey: (key: string | null) => void,
+  user: IUser,
+  dontRemember: boolean,
+  isPaidTierUsed: boolean,
+  linkSSO: (t: (key: string) => string, callback: (e: any) => void, provider: string) => void,
+  unlinkSSO: (t: (key: string) => string, callback: (e: any) => void, provider: string) => void,
+  theme: string,
+  updateShowLiveVisitorsInTitle: (show: boolean, callback: (isSuccess: boolean) => void) => void,
+  logoutAll: () => void,
 }
 
 interface IForm extends Partial<IUser> {
@@ -119,29 +101,11 @@ interface IForm extends Partial<IUser> {
 }
 
 const UserSettings = ({
-  onDelete,
-  onDeleteProjectCache,
-  removeProject,
-  removeShareProject,
-  setUserShareData,
-  setProjectsShareData,
-  userSharedUpdate,
-  sharedProjectError,
-  updateUserData,
-  genericError,
-  onGDPRExportFailed,
-  updateProfileFailed,
-  updateUserProfileAsync,
-  accountUpdated,
-  setAPIKey,
-  user,
-  dontRemember,
-  isPaidTierUsed, // setThemeType, themeType,
-  linkSSO,
-  unlinkSSO,
-  theme,
-  updateShowLiveVisitorsInTitle,
-  updateReceiveLoginNotifications,
+  onDelete, onDeleteProjectCache, removeProject, removeShareProject, setUserShareData,
+  setProjectsShareData, userSharedUpdate, sharedProjectError, updateUserData,
+  genericError, onGDPRExportFailed, updateProfileFailed, updateUserProfileAsync,
+  accountUpdated, setAPIKey, user, dontRemember, isPaidTierUsed, // setThemeType, themeType,
+  linkSSO, unlinkSSO, theme, updateShowLiveVisitorsInTitle, logoutAll,
 }: IProps): JSX.Element => {
   const navigate = useNavigate()
   const {
@@ -614,9 +578,7 @@ const UserSettings = ({
                   items={translatedFrequencies}
                   iconExtractor={reportIconExtractor}
                   onSelect={(f) => _setReportFrequency(
-                    reportFrequencies[
-                      _findIndex(translatedFrequencies, (freq) => freq === f)
-                    ],
+                    reportFrequencies[_findIndex(translatedFrequencies, (freq) => freq === f)],
                   )}
                 />
               </div>
@@ -646,10 +608,7 @@ const UserSettings = ({
           <>
             <hr className='mt-5 border-gray-200 dark:border-gray-600' />
             {/* Integrations setup */}
-            <h3
-              id='integrations'
-              className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'
-            >
+            <h3 id='integrations' className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
               {t('profileSettings.integrations')}
             </h3>
             <Integrations
@@ -723,12 +682,7 @@ const UserSettings = ({
               </p>
             )}
             {user.apiKey ? (
-              <Button
-                className='mt-4'
-                onClick={() => setShowAPIDeleteModal(true)}
-                danger
-                large
-              >
+              <Button className='mt-4' onClick={() => setShowAPIDeleteModal(true)} danger large>
                 {t('profileSettings.deleteApiKeyBtn')}
               </Button>
             ) : (
@@ -751,10 +705,7 @@ const UserSettings = ({
 
             {/* Socialisations setup */}
             <hr className='mt-5 border-gray-200 dark:border-gray-600' />
-            <h3
-              id='socialisations'
-              className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'
-            >
+            <h3 id='socialisations' className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
               {t('profileSettings.socialisations')}
             </h3>
             <Socialisations
@@ -797,10 +748,7 @@ const UserSettings = ({
                               >
                                 {t('profileSettings.sharedTable.joinedOn')}
                               </th>
-                              <th
-                                scope='col'
-                                className='relative py-3.5 pl-3 pr-4 sm:pr-6'
-                              />
+                              <th scope='col' className='relative py-3.5 pl-3 pr-4 sm:pr-6' />
                             </tr>
                           </thead>
                           <tbody className='divide-y divide-gray-300 dark:divide-gray-600'>
@@ -836,12 +784,8 @@ const UserSettings = ({
                 {t('profileSettings.noLink')}
               </div>
             )}
-            <div className='flex justify-between mt-4'>
-              <Button
-                onClick={() => setShowExportModal(true)}
-                semiSmall
-                primary
-              >
+            <div className='flex flex-wrap justify-center sm:justify-between gap-2 mt-4'>
+              <Button onClick={() => setShowExportModal(true)} semiSmall primary>
                 <>
                   <ArrowDownTrayIcon className='w-5 h-5 mr-1' />
                   {t('profileSettings.requestExport')}
@@ -858,6 +802,21 @@ const UserSettings = ({
                   {t('profileSettings.delete')}
                 </>
               </Button>
+              <div className='flex justify-center flex-wrap gap-2'>
+                <Button onClick={logoutAll} semiSmall semiDanger>
+                  <>
+                    {/* We need this div for the button to match the height of the button after it */}
+                    <div className='h-5' />
+                    {t('profileSettings.logoutAll')}
+                  </>
+                </Button>
+                <Button onClick={() => setShowModal(true)} semiSmall danger>
+                  <>
+                    <ExclamationTriangleIcon className='w-5 h-5 mr-1' />
+                    {t('profileSettings.delete')}
+                  </>
+                </Button>
+              </div>
             </div>
           </>
         )}

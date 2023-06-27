@@ -44,7 +44,7 @@ const refreshAuthLogic = (failedRequest: { response: AxiosResponse }) =>
     })
     .catch((error) => {
       store.dispatch(authActions.logout())
-      store.dispatch(sagaActions.logout(true))
+      store.dispatch(sagaActions.logout(true, false))
       return Promise.reject(error)
     })
 
@@ -95,6 +95,15 @@ export const logoutApi = (refreshToken: string | null) =>
       throw _isEmpty(error.response.data?.message)
         ? error.response.data
         : error.response.data.message
+    })
+
+export const logoutAllApi = () =>
+  api
+    .post(`${baseURL}v1/auth/logout-all`)
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw new Error(error.respon)
     })
 
 export const refreshToken = () =>
@@ -1040,4 +1049,22 @@ export const getUsageInfo = () =>
       throw _isEmpty(error.response.data?.message)
         ? error.response.data
         : error.response.data.message
+    })
+
+export const getFilters = (pid: string, type: string) =>
+  api
+    .get(`log/filters?pid=${pid}&type=${type}`)
+    .then((response): string[] => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
+
+export const resetFilters = (pid: string, type: string, filters: string[]) =>
+  api
+    .delete(`project/reset-filters/${pid}?type=${type}&filters=${JSON.stringify(filters)}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
     })

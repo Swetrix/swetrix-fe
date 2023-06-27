@@ -165,11 +165,9 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
   ) => {
     dispatch(sagaActions.updateShowLiveVisitorsInTitle(show, callback))
   },
-  updateReceiveLoginNotifications: (
-    show: boolean,
-    callback: (isSuccess: boolean) => void,
-  ) => {
-    dispatch(sagaActions.updateReceiveLoginNotifications(show, callback))
+  logoutAll: () => {
+    dispatch(authActions.logout())
+    dispatch(sagaActions.logout(false, true))
   },
 })
 

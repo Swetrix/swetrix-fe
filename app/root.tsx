@@ -2,6 +2,7 @@ import type {
   LinksFunction, LoaderArgs, V2_MetaFunction, HeadersFunction,
 } from '@remix-run/node'
 import { json } from '@remix-run/node'
+import { useState } from 'react'
 import {
   Links,
   LiveReload,
@@ -9,10 +10,19 @@ import {
   Scripts,
   useLoaderData,
   ScrollRestoration,
+  isRouteErrorResponse,
+  useRouteError,
 } from '@remix-run/react'
 import { store } from 'redux/store'
-import { isDevelopment, whitelist, isBrowser } from 'redux/constants'
+import {
+  whitelist, isBrowser, CONTACT_EMAIL, LS_THEME_SETTING,
+} from 'redux/constants'
+import {
+  getCookie,
+} from 'utils/cookie'
+import { ExclamationTriangleIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline'
 import { Provider } from 'react-redux'
+import clsx from 'clsx'
 import _map from 'lodash/map'
 // @ts-ignore
 import { transitions, positions, Provider as AlertProvider } from '@blaumaus/react-alert'
@@ -25,7 +35,7 @@ import { useChangeLanguage } from 'remix-i18next'
 import { useTranslation } from 'react-i18next'
 import AppWrapper from 'App'
 import { detectLanguage } from 'i18n'
-import { detectTheme, getPageMeta } from 'utils/server'
+import { detectTheme, getPageMeta, isAuthenticated } from 'utils/server'
 
 import mainCss from 'styles/index.css'
 import tailwindCss from 'styles/tailwind.css'
@@ -67,22 +77,8 @@ export const links: LinksFunction = () => [
 ]
 
 export const meta: V2_MetaFunction = () => [
-  { charSet: 'utf-8' },
-  { name: 'theme-color', content: '#818cf8' },
-  { name: 'description', content: 'Ultimate open-source analytics to satisfy all your needs' },
-  { name: 'twitter:title', content: 'Swetrix | Ultimate open-source analytics to satisfy all your needs' },
-  { name: 'twitter:site', content: '@swetrix' },
-  { name: 'twitter:description', content: 'Swetrix is a cookie-less, fully opensource and privacy-first web analytics service which provides a huge variety of services' },
-  { name: 'twitter:card', content: 'summary_large_image' },
-  { property: 'og:title', content: 'Swetrix' },
-  { property: 'og:description', content: 'Ultimate open-source analytics to satisfy all your needs' },
+  { property: 'twitter:image', content: 'https://swetrix.com/assets/og_image.png' },
   { property: 'og:image', content: 'https://swetrix.com/assets/og_image.png' },
-  { property: 'og:site_name', content: 'Swetrix' },
-  { property: 'og:url', content: 'https://swetrix.com' },
-  { property: 'og:type', content: 'website' },
-  { name: 'google', content: 'notranslate' },
-  // { name: 'apple-mobile-web-app-title', content: 'Swetrix' },
-  // { name: 'application-name', content: 'Swetrix' },
 ]
 
 export const headers: HeadersFunction = () => ({
@@ -107,10 +103,92 @@ export const headers: HeadersFunction = () => ({
 
 // removeObsoleteAuthTokens()
 
+export function ErrorBoundary() {
+  const error = useRouteError()
+  const [crashStackShown, setCrashStackShown] = useState(false)
+
+  return (
+    <html lang='en' className={getCookie(LS_THEME_SETTING) || 'light'}>
+      <head>
+        <meta charSet='utf-8' />
+        <title>The app has crashed..</title>
+        <Links />
+      </head>
+      <body>
+        {/* Using style because for some reason min-h-screen doesn't work */}
+        <div style={{ minHeight: '100vh' }} className='pt-16 pb-12 flex flex-col bg-gray-50 dark:bg-slate-900'>
+          <div className='flex-grow flex flex-col justify-center max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8'>
+            <div className='flex-shrink-0 flex justify-center'>
+              <ExclamationTriangleIcon className='h-24 w-auto text-yellow-400 dark:text-yellow-600' />
+            </div>
+            <div className='py-8'>
+              <div className='text-center'>
+                <h1 className='text-4xl font-extrabold text-gray-900 dark:text-gray-50 tracking-tight sm:text-5xl'>Uh-oh..</h1>
+                <p className='mt-2 text-base font-medium text-gray-800 dark:text-gray-300'>
+                  The app has crashed. We are sorry about that :(
+                  <br />
+                  Please, tell us about it at
+                  {' '}
+                  {CONTACT_EMAIL}
+                </p>
+                <p className='mt-6 text-base font-medium text-gray-800 dark:text-gray-300'>
+                  {isRouteErrorResponse(error) ? (
+                    <>
+                      <span>
+                        {error.status}
+                        {' '}
+                        {error.statusText}
+                      </span>
+                      <span>
+                        {error.data}
+                      </span>
+                    </>
+                  ) : error instanceof Error ? (
+                    <>
+                      {error.message}
+                      <br />
+                      <span onClick={() => setCrashStackShown(prev => !prev)} className='flex justify-center items-center text-base text-gray-800 dark:text-gray-300 cursor-pointer hover:underline'>
+                        {crashStackShown ? (
+                          <>
+                            Hide crash stack
+                            <ChevronUpIcon className='w-4 h-4 ml-2' />
+                          </>
+                        ) : (
+                          <>
+                            Show crash stack
+                            <ChevronDownIcon className='w-4 h-4 ml-2' />
+                          </>
+                        )}
+                      </span>
+                      {crashStackShown && (
+                        <span className='text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line'>
+                          {error.stack}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      Unknown error
+                    </>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  )
+}
+
 export async function loader({ request }: LoaderArgs) {
   const { url } = request
   const locale = detectLanguage(request)
   const theme = detectTheme(request)
+  const isAuthed = isAuthenticated(request)
 
   const REMIX_ENV = {
     NODE_ENV: process.env.NODE_ENV,
@@ -124,7 +202,7 @@ export async function loader({ request }: LoaderArgs) {
   }
 
   return json({
-    locale, url, theme, REMIX_ENV,
+    locale, url, theme, REMIX_ENV, isAuthed,
   })
 }
 
@@ -134,7 +212,7 @@ export const handle = {
 
 export default function App() {
   const {
-    locale, url, theme, REMIX_ENV,
+    locale, url, theme, REMIX_ENV, isAuthed,
   } = useLoaderData<typeof loader>()
   const { i18n, t } = useTranslation('common')
   const { title } = getPageMeta(t, url)
@@ -150,8 +228,23 @@ export default function App() {
   return (
     <html className={theme} lang={locale} dir={i18n.dir()}>
       <head>
-        <Meta />
+        <meta charSet='utf-8' />
         <title>{title}</title>
+        <meta name='theme-color' content='#818cf8' />
+        <meta name='description' content='Ultimate open-source analytics to satisfy all your needs' />
+        <meta name='twitter:title' content='Swetrix | Ultimate open-source analytics to satisfy all your needs' />
+        <meta name='twitter:site' content='@swetrix' />
+        <meta name='twitter:description' content='Swetrix is a cookie-less, fully opensource and privacy-first web analytics service which provides a huge variety of services' />
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta property='og:title' content='Swetrix' />
+        <meta property='og:description' content='Ultimate open-source analytics to satisfy all your needs' />
+        <meta property='og:site_name' content='Swetrix' />
+        <meta property='og:url' content='https://swetrix.com' />
+        <meta property='og:type' content='website' />
+        <meta name='google' content='notranslate' />
+        {/* <meta name='apple-mobile-web-app-title' content='Swetrix' /> */}
+        {/* <meta name='application-name' content='Swetrix' /> */}
+        <Meta />
         <meta name='viewport' content='width=device-width,initial-scale=1' />
         <Links />
         {theme === 'dark' && <link rel='stylesheet' href={FlatpickrDarkCss} />}
@@ -169,24 +262,23 @@ export default function App() {
           }}
         />
       </head>
-      <body>
-        <div className='loader' id='loader'>
-          <div className='loader-head'>
-            <div className='first' />
-            <div className='second' />
-          </div>
-          <div className='logo-frame'>
-            <img className='logo-frame-img' width='361' height='80' src='/assets/logo_blue.png' alt='Swetrix' />
-          </div>
-        </div>
+      <body
+        className={clsx({
+          'bg-white': theme === 'light',
+          'bg-slate-900': theme === 'dark',
+        })}
+      >
         <Provider store={store}>
           <AlertProvider template={AlertTemplate} {...options}>
-            <AppWrapper ssrTheme={theme} />
-            <ScrollRestoration />
-            <Scripts />
-            {isDevelopment && <LiveReload />}
+            <AppWrapper
+              ssrTheme={theme}
+              ssrAuthenticated={isAuthed}
+            />
           </AlertProvider>
         </Provider>
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
       </body>
     </html>
   )
