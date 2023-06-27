@@ -92,14 +92,14 @@ const SearchFilters = ({
                   // eslint-disable-next-line react/no-unstable-nested-components
                   itemExtractor={(item) => {
                     if (filterType === 'cc') {
-                      return <CCRow rowName={item} language={language} />
+                      return <CCRow cc={item} language={language} />
                     }
                     return item
                   }}
                   // eslint-disable-next-line react/no-unstable-nested-components
                   labelExtractor={(item) => {
                     if (filterType === 'cc' || countries.getName(item, language)) {
-                      return <CCRow rowName={item} language={language} />
+                      return <CCRow cc={item} language={language} />
                     }
                     return item
                   }}
