@@ -973,8 +973,8 @@ const ViewProject = ({
     const columnPerf = `${column}_perf`
 
     if (activeTab === PROJECT_TABS.performance) {
-      if (_find(filtersPerf, (f) => f.column === column)) {
-        newFiltersPerf = _filter(filtersPerf, (f) => f.column !== column)
+      if (_find(filtersPerf, (f) => f.filter === filter)) {
+        newFiltersPerf = _filter(filtersPerf, (f) => f.filter !== filter)
 
         // @ts-ignore
         const url = new URL(window.location)
@@ -997,10 +997,10 @@ const ViewProject = ({
       }
     } else {
       // eslint-disable-next-line no-lonely-if
-      if (_find(filters, (f) => f.column === column) /* && f.filter === filter) */) {
+      if (_find(filters, (f) => f.filter === filter) /* && f.filter === filter) */) {
         // selected filter is already included into the filters array -> removing it
         // removing filter from the state
-        newFilters = _filter(filters, (f) => f.column !== column)
+        newFilters = _filter(filters, (f) => f.filter !== filter)
         setFilters(newFilters)
 
         // removing filter from the page URL
