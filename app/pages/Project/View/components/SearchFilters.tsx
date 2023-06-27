@@ -33,8 +33,8 @@ const SearchFilters = ({
   language: string
 }) => {
   const [filterType, setFilterType] = useState<string>('')
-  const [searchList, setSearchList] = useState<string[]>([])
   const [filterList, setFilterList] = useState<string[]>([])
+  const [searchList, setSearchList] = useState<string[]>([])
   const [activeFilter, setActiveFilter] = useState<{
     column: string
     filter: string[]
@@ -64,13 +64,22 @@ const SearchFilters = ({
   }
 
   useEffect(() => {
+    if (!showModal) {
+      setSearchList(filterList)
+    }
+  }, [showModal])
+
+  useEffect(() => {
     getFiltersList()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType])
 
   return (
     <Modal
-      onClose={() => setShowModal(false)}
+      onClose={() => {
+        setShowModal(false)
+        // setSearchList(filterList)
+      }}
       onSubmit={() => {
         setProjectFilter(activeFilter)
         setShowModal(false)
