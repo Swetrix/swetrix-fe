@@ -543,6 +543,8 @@
   },
   "project": {
     "search": "Search",
+    "advancedFilters": "Advanced filters",
+    "applyFilters": "Apply filters",
     "ad": "Want these stats for your website?",
     "noExist": "The selected project does not exist",
     "geo": "Geolocation",
