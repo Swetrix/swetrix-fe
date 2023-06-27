@@ -45,6 +45,14 @@ const SearchFilters = ({
     return filtersArray
   }, [activeFilter])
 
+  const isCountryIncluded = useMemo(() => {
+    if (_some(activeFilter, (item) => item.column === 'cc')) {
+      return true
+    }
+
+    return false
+  }, [activeFilter])
+
   const getFiltersList = async () => {
     if (!_isEmpty(filterType)) {
       const res = await getFilters(pid, filterType)
@@ -87,16 +95,18 @@ const SearchFilters = ({
                 items={searchList}
                   // eslint-disable-next-line react/no-unstable-nested-components
                 itemExtractor={(item) => {
-                  if (filterType === 'cc' || countries.getName(item, language)) {
+                  if (filterType === 'cc') {
                     return <CCRow cc={item} language={language} />
                   }
+
                   return item
                 }}
                   // eslint-disable-next-line react/no-unstable-nested-components
                 labelExtractor={(item) => {
-                  if (filterType === 'cc' || countries.getName(item, language)) {
+                  if (isCountryIncluded && _some(activeFilter, (i) => i.column === 'cc' && _includes(i.filter, item))) {
                     return <CCRow cc={item} language={language} />
                   }
+
                   return item
                 }}
                 keyExtractor={(item) => item}
