@@ -4,6 +4,7 @@ import _some from 'lodash/some'
 import _isEmpty from 'lodash/isEmpty'
 import _find from 'lodash/find'
 import _filter from 'lodash/filter'
+import _map from 'lodash/map'
 import _forEach from 'lodash/forEach'
 import _includes from 'lodash/includes'
 import countries from 'utils/isoCountries'
@@ -152,13 +153,17 @@ const SearchFilters = ({
                     column: string
                     filter: string[]
                   }[]) => {
-                  if (_some(oldItems, (i) => i.column === filterType)) {
-                    return _filter(oldItems, (i) => i.column !== filterType).concat({
-                      column: filterType,
-                      filter: _filter(_find(oldItems, (i) => i.column === filterType)?.filter || [], (i) => i !== item),
-                    })
-                  }
-                  return oldItems
+                  const newItems = _map(oldItems, (i) => {
+                    if (_includes(i.filter, item)) {
+                      return {
+                        column: i.column,
+                        filter: _filter(i.filter, (j) => j !== item),
+                      }
+                    }
+                    return i
+                  })
+
+                  return newItems
                 })}
               />
             ) : (
