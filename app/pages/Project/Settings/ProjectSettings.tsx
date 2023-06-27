@@ -27,7 +27,7 @@ import { IProject } from 'redux/models/IProject'
 import { IUser } from 'redux/models/IUser'
 import { IProjectForShared, ISharedProject } from 'redux/models/ISharedProject'
 import {
-  createProject, updateProject, deleteProject, resetProject, transferProject, deletePartially, getFilters, resetFilters,
+  createProject, updateProject, deleteProject, resetProject, transferProject, deletePartially, getFilters, resetFilters, reciveLoginNotification,
 } from 'api'
 import Input from 'ui/Input'
 import Button from 'ui/Button'
