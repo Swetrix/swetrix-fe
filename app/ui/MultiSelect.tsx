@@ -69,9 +69,9 @@ const MultiSelect = ({
             <div className=' shadow top-100 bg-white dark:bg-slate-800 z-40 w-full lef-0 rounded max-h-select overflow-y-auto overflow-x-hidden max-h-[200px]'>
               <div className='flex flex-col w-full'>
                 {onSearch && (
-                <div className='relative cursor-pointer w-full border-gray-100 dark:border-slate-500 rounded-t border-b hover:bg-indigo-100 dark:hover:bg-slate-700'>
+                <div className='relative cursor-pointer w-full border-gray-100 dark:border-slate-700 rounded-t border-b hover:bg-indigo-100 dark:hover:bg-slate-700'>
                   <input
-                    className='overflow-x-auto flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-indigo-100 dark:hover:border-slate-700'
+                    className='overflow-x-auto flex w-full items-center p-2 pl-2 bg-white dark:bg-slate-800 border-transparent border-l-2 relative hover:border-b-indigo-100 dark:hover:border-b-slate-700 focus:outline-none focus:border-transparent focus:ring-0 focus:box-shadow-none'
                     placeholder={searchPlaseholder}
                     onChange={(e) => {
                       e.preventDefault()
