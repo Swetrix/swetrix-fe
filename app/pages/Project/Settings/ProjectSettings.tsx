@@ -186,7 +186,7 @@ const ModalMessage = ({
                 onSearch={(search: string) => {
                   if (search.length > 0) {
                     if (filterType === 'cc') {
-                      setSearchList(_filter(filterList, (item) => _includes(countries.getName(item.toLocaleUpperCase(), language), search.toLocaleUpperCase())))
+                      setSearchList(_filter(filterList, (item) => _includes(countries.getName(item, language).toLocaleUpperCase(), search.toLocaleUpperCase())))
                       return
                     }
 

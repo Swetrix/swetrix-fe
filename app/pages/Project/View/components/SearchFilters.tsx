@@ -7,6 +7,7 @@ import _filter from 'lodash/filter'
 import _map from 'lodash/map'
 import _forEach from 'lodash/forEach'
 import _includes from 'lodash/includes'
+import _toUpper from 'lodash/toUpper'
 import countries from 'utils/isoCountries'
 
 import Modal from 'ui/Modal'
@@ -117,11 +118,11 @@ const SearchFilters = ({
                 onSearch={(search: string) => {
                   if (search.length > 0) {
                     if (filterType === 'cc') {
-                      setSearchList(_filter(filterList, (item) => _includes(countries.getName(item, language).toLocaleUpperCase(), search.toLocaleUpperCase())))
+                      setSearchList(_filter(filterList, (item) => _includes(_toUpper(countries.getName(item, language)), _toUpper(search))))
                       return
                     }
 
-                    setSearchList(_filter(filterList, (item) => _includes(item.toLocaleUpperCase(), search.toLocaleUpperCase())))
+                    setSearchList(_filter(filterList, (item) => _includes(_toUpper(item), _toUpper(search))))
                   } else {
                     setSearchList(filterList)
                   }
