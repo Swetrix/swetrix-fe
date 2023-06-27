@@ -117,11 +117,11 @@ const SearchFilters = ({
                 onSearch={(search: string) => {
                   if (search.length > 0) {
                     if (filterType === 'cc') {
-                      setSearchList(_filter(filterList, (item) => _includes(countries.getName(item, language), search)))
+                      setSearchList(_filter(filterList, (item) => _includes(countries.getName(item, language).toLocaleUpperCase(), search.toLocaleUpperCase())))
                       return
                     }
 
-                    setSearchList(_filter(filterList, (item) => _includes(item, search)))
+                    setSearchList(_filter(filterList, (item) => _includes(item.toLocaleUpperCase(), search.toLocaleUpperCase())))
                   } else {
                     setSearchList(filterList)
                   }
