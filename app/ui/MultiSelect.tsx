@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import cx from 'clsx'
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import _map from 'lodash/map'
 import _includes from 'lodash/includes'
 import _isEmpty from 'lodash/isEmpty'
@@ -68,7 +69,7 @@ const MultiSelect = ({
             <div className=' shadow top-100 bg-white dark:bg-slate-800 z-40 w-full lef-0 rounded max-h-select overflow-y-auto overflow-x-hidden max-h-[200px]'>
               <div className='flex flex-col w-full'>
                 {onSearch && (
-                <div className='cursor-pointer w-full border-gray-100 dark:border-slate-500 rounded-t border-b hover:bg-indigo-100 dark:hover:bg-slate-700'>
+                <div className='relative cursor-pointer w-full border-gray-100 dark:border-slate-500 rounded-t border-b hover:bg-indigo-100 dark:hover:bg-slate-700'>
                   <input
                     className='overflow-x-auto flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative hover:border-indigo-100 dark:hover:border-slate-700'
                     placeholder={searchPlaseholder}
@@ -79,6 +80,7 @@ const MultiSelect = ({
                     }}
                     type='text'
                   />
+                  <MagnifyingGlassIcon className='absolute right-2 top-[0.7rem] h-5 w-5 text-gray-400 dark:text-gray-300' aria-hidden='true' />
                 </div>
                 )}
                 {_map(items, (item) => (
