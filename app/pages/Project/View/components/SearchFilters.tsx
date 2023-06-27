@@ -12,6 +12,7 @@ import countries from 'utils/isoCountries'
 
 import Modal from 'ui/Modal'
 import MultiSelect from 'ui/MultiSelect'
+import Checkbox from 'ui/Checkbox'
 import Dropdown from 'ui/Dropdown'
 import { FILTERS_PANELS_ORDER } from 'redux/constants'
 
@@ -39,6 +40,7 @@ const SearchFilters = ({
     column: string
     filter: string[]
   }[]>([])
+  const [overrideCurrentlyFilters, setOverrideCurrentlyFilters] = useState<boolean>(false)
   const filters: string[] = useMemo(() => {
     let filtersArray: string[] = []
     _forEach(activeFilter, (item) => {
@@ -102,81 +104,91 @@ const SearchFilters = ({
             />
             <div className='h-2' />
             {(filterType && !_isEmpty(filterList)) ? (
-              <MultiSelect
-                className='max-w-max'
-                items={searchList}
+              <>
+                <MultiSelect
+                  className='max-w-max'
+                  items={searchList}
                   // eslint-disable-next-line react/no-unstable-nested-components
-                itemExtractor={(item) => {
-                  if (filterType === 'cc') {
-                    return <CCRow cc={item} language={language} />
-                  }
-
-                  return item
-                }}
-                  // eslint-disable-next-line react/no-unstable-nested-components
-                labelExtractor={(item) => {
-                  if (isCountryIncluded && _some(activeFilter, (i) => i.column === 'cc' && _includes(i.filter, item))) {
-                    return <CCRow cc={item} language={language} />
-                  }
-
-                  return item
-                }}
-                keyExtractor={(item) => item}
-                label={filters}
-                placholder={t('project.settings.reseted.filtersPlaceholder')}
-                searchPlaseholder={t('project.search')}
-                onSearch={(search: string) => {
-                  if (search.length > 0) {
+                  itemExtractor={(item) => {
                     if (filterType === 'cc') {
-                      setSearchList(_filter(filterList, (item) => _includes(_toUpper(countries.getName(item, language)), _toUpper(search))))
-                      return
+                      return <CCRow cc={item} language={language} />
                     }
 
-                    setSearchList(_filter(filterList, (item) => _includes(_toUpper(item), _toUpper(search))))
-                  } else {
-                    setSearchList(filterList)
-                  }
-                }}
-                onSelect={(item: string) => setActiveFilter((oldItems: {
+                    return item
+                  }}
+                  // eslint-disable-next-line react/no-unstable-nested-components
+                  labelExtractor={(item) => {
+                    if (isCountryIncluded && _some(activeFilter, (i) => i.column === 'cc' && _includes(i.filter, item))) {
+                      return <CCRow cc={item} language={language} />
+                    }
+
+                    return item
+                  }}
+                  keyExtractor={(item) => item}
+                  label={filters}
+                  placholder={t('project.settings.reseted.filtersPlaceholder')}
+                  searchPlaseholder={t('project.search')}
+                  onSearch={(search: string) => {
+                    if (search.length > 0) {
+                      if (filterType === 'cc') {
+                        setSearchList(_filter(filterList, (item) => _includes(_toUpper(countries.getName(item, language)), _toUpper(search))))
+                        return
+                      }
+
+                      setSearchList(_filter(filterList, (item) => _includes(_toUpper(item), _toUpper(search))))
+                    } else {
+                      setSearchList(filterList)
+                    }
+                  }}
+                  onSelect={(item: string) => setActiveFilter((oldItems: {
                     column: string
                     filter: string[]
                   }[]) => {
-                  if (_some(oldItems, (i) => i?.column === filterType)) {
-                    if (_some(oldItems, (i) => i?.column === filterType && _includes(i?.filter, item))) {
-                      return _filter(oldItems, (i) => i.column !== filterType).concat({
+                    if (_some(oldItems, (i) => i?.column === filterType)) {
+                      if (_some(oldItems, (i) => i?.column === filterType && _includes(i?.filter, item))) {
+                        return _filter(oldItems, (i) => i.column !== filterType).concat({
+                          column: filterType,
+                          filter: _filter(_find(oldItems, (i) => i.column === filterType)?.filter || [], (i) => i !== item),
+                        })
+                      }
+
+                      return _filter(oldItems, (i) => i?.column !== filterType).concat({
                         column: filterType,
-                        filter: _filter(_find(oldItems, (i) => i.column === filterType)?.filter || [], (i) => i !== item),
+                        filter: [..._find(oldItems, (i) => i?.column === filterType)?.filter || [], item],
                       })
                     }
 
-                    return _filter(oldItems, (i) => i?.column !== filterType).concat({
+                    return oldItems.concat({
                       column: filterType,
-                      filter: [..._find(oldItems, (i) => i?.column === filterType)?.filter || [], item],
+                      filter: [item],
                     })
-                  }
-
-                  return oldItems.concat({
-                    column: filterType,
-                    filter: [item],
-                  })
-                })}
-                onRemove={(item: string) => setActiveFilter((oldItems: {
+                  })}
+                  onRemove={(item: string) => setActiveFilter((oldItems: {
                     column: string
                     filter: string[]
                   }[]) => {
-                  const newItems = _map(oldItems, (i) => {
-                    if (_includes(i.filter, item)) {
-                      return {
-                        column: i.column,
-                        filter: _filter(i.filter, (j) => j !== item),
+                    const newItems = _map(oldItems, (i) => {
+                      if (_includes(i.filter, item)) {
+                        return {
+                          column: i.column,
+                          filter: _filter(i.filter, (j) => j !== item),
+                        }
                       }
-                    }
-                    return i
-                  })
+                      return i
+                    })
 
-                  return newItems
-                })}
-              />
+                    return newItems
+                  })}
+                />
+                <Checkbox
+                  checked={Boolean(overrideCurrentlyFilters)}
+                  onChange={(e) => setOverrideCurrentlyFilters(e.target.checked)}
+                  name='overrideCurrentlyFilters'
+                  id='overrideCurrentlyFilters'
+                  className='mt-4'
+                  label={t('project.overrideCurrentlyFilters')}
+                />
+              </>
             ) : (
               <p className='text-gray-500 dark:text-gray-300 italic mt-4 mb-4 text-sm'>
                 {t('project.settings.reseted.noFilters')}
