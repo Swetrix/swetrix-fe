@@ -51,7 +51,8 @@
     "blacklistHasBeSmaller": "The list of allowed blacklisted IP addresses must be less than 300 characters.",
     "hostIsNotCorrect": "Host {{host}} is not correct",
     "ipAddressIsNotCorrect": "IP address {{ip}} is not correct",
-    "errorWhileProcessingProject": "Error while processing project"
+    "errorWhileProcessingProject": "Error while processing project",
+    "notAllowedToViewProject": "You are not allowed to view '{{name}}' project",
   },
   "common": {
     "features": "Features",
