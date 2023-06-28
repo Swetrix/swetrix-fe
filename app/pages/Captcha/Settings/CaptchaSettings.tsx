@@ -29,6 +29,7 @@ import Button from 'ui/Button'
 import Checkbox from 'ui/Checkbox'
 import Modal from 'ui/Modal'
 import Select from 'ui/Select'
+import localizationNotification from 'utils/localizationNotification'
 import { trackCustom } from 'utils/analytics'
 import routes from 'routesPath'
 import { ICaptchaProject, IProject, IProjectNames } from 'redux/models/IProject'
@@ -177,11 +178,11 @@ const CaptchaSettings = ({
 
         loadProjects()
         navigate(routes.dashboard)
-      } catch (e) {
+      } catch (e: any) {
         if (isSettings) {
-          updateProjectFailed(e as string)
+          updateProjectFailed(t(localizationNotification(e), e.params))
         } else {
-          createNewProjectFailed(e as string)
+          createNewProjectFailed(t(localizationNotification(e), e.params))
         }
       } finally {
         setProjectSaving(false)
@@ -198,8 +199,8 @@ const CaptchaSettings = ({
         removeProject(id)
         projectDeleted(t('project.settings.deleted'))
         navigate(routes.dashboard)
-      } catch (e) {
-        deleteProjectFailed(e as string)
+      } catch (e: any) {
+        deleteProjectFailed(t(localizationNotification(e), e.params))
       } finally {
         setProjectDeleting(false)
       }
@@ -215,8 +216,8 @@ const CaptchaSettings = ({
         deleteProjectCache(id)
         projectDeleted(t('project.settings.resetted'))
         navigate(routes.dashboard)
-      } catch (e) {
-        deleteProjectFailed(e as string)
+      } catch (e: any) {
+        deleteProjectFailed(t(localizationNotification(e), e.params))
       } finally {
         setProjectResetting(false)
       }
@@ -303,8 +304,8 @@ const CaptchaSettings = ({
     try {
       const res = await reGenerateCaptchaSecretKey(id)
       setCaptchaSecretKey(res)
-    } catch (e) {
-      showError(e as string)
+    } catch (e: any) {
+      showError(t(localizationNotification(e), e.params))
     }
   }
 

@@ -34,6 +34,7 @@ import routes from 'routesPath'
 import Select from 'ui/Select'
 import { IAlerts } from 'redux/models/IAlerts'
 import { IUser } from 'redux/models/IUser'
+import localizationNotification from 'utils/localizationNotification'
 
 const INTEGRATIONS_LINK = `${routes.user_settings}#integrations`
 
@@ -165,8 +166,8 @@ const ProjectAlertsSettings = ({
           setProjectAlerts([..._filter(alerts, (a) => a.id !== id), res])
           generateAlerts(t('alertsSettings.alertUpdated'))
         })
-        .catch((err) => {
-          showError(err?.i18nMessagge ? t(err.i18nMessagge) : 'Something went wrong')
+        .catch((err: any) => {
+          showError(t(localizationNotification(err), err.params))
         })
     } else {
       createAlert(data as ICreateAlert)
@@ -176,8 +177,8 @@ const ProjectAlertsSettings = ({
           setProjectAlertsTotal(total + 1)
           generateAlerts(t('alertsSettings.alertCreated'))
         })
-        .catch((err) => {
-          showError(err?.i18nMessagge ? t(err.i18nMessagge) : 'Something went wrong')
+        .catch((err: any) => {
+          showError(t(localizationNotification(err), err.params))
         })
     }
   }
@@ -191,7 +192,7 @@ const ProjectAlertsSettings = ({
         generateAlerts(t('alertsSettings.alertDeleted'))
       })
       .catch((err) => {
-        showError(err?.i18nMessagge ? t(err.i18nMessagge) : 'Something went wrong')
+        showError(t(localizationNotification(err), err.params))
       })
   }
 

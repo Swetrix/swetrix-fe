@@ -28,6 +28,7 @@ import {
   ActivePin, InactivePin, WarningPin, CustomPin,
 } from 'ui/Pin'
 import routes from 'routesPath'
+import localizationNotification from 'utils/localizationNotification'
 import { nFormatter } from 'utils/generic'
 import {
   isSelfhosted, ENTRIES_PER_PAGE_DASHBOARD, tabForOwnedProject, tabForSharedProject,
@@ -152,7 +153,7 @@ const ProjectCard = ({
     } catch (e) {
       sharedProjectError(t('apiNotifications.acceptInvitationError'))
       // @ts-ignore
-      deleteProjectFailed(e)
+      deleteProjectFailed(t(localizationNotification(e), e.params))
     }
   }
 

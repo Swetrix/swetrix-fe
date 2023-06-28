@@ -49,6 +49,7 @@ import {
   isValidPassword,
   MIN_PASSWORD_CHARS,
 } from 'utils/validator'
+import localizationNotification from 'utils/localizationNotification'
 import routes from 'routesPath'
 import { trackCustom } from 'utils/analytics'
 import { getCookie, setCookie } from 'utils/cookie'
@@ -368,8 +369,8 @@ const UserSettings = ({
       trackCustom('GDPR_EXPORT')
       accountUpdated(t('profileSettings.reportSent'))
       setCookie(GDPR_REQUEST, true, 1209600) // setting cookie for 14 days
-    } catch (e) {
-      updateProfileFailed(e as string)
+    } catch (e: any) {
+      updateProfileFailed(t(localizationNotification(e), e.params))
     }
   }
 
@@ -388,8 +389,8 @@ const UserSettings = ({
       } else {
         errorCallback(t('profileSettings.noConfLeft'))
       }
-    } catch (e) {
-      updateProfileFailed(e as string)
+    } catch (e: any) {
+      updateProfileFailed(t(localizationNotification(e), e.params))
     }
   }
 
@@ -397,8 +398,8 @@ const UserSettings = ({
     try {
       const res = await generateApiKey()
       setAPIKey(res.apiKey)
-    } catch (e) {
-      updateProfileFailed(e as string)
+    } catch (e: any) {
+      updateProfileFailed(t(localizationNotification(e), e.params))
     }
   }
 
@@ -406,8 +407,8 @@ const UserSettings = ({
     try {
       await deleteApiKey()
       setAPIKey(null)
-    } catch (e) {
-      updateProfileFailed(e as string)
+    } catch (e: any) {
+      updateProfileFailed(t(localizationNotification(e), e.params))
     }
   }
 

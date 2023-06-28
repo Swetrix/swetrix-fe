@@ -97,11 +97,7 @@ const Integrations = ({
           telegramChatId: null,
         })
       } catch (e) {
-        if (_isString(e)) {
-          genericError(e)
-        } else {
-          genericError(t('apiNotifications.integrationRemovalError'))
-        }
+        genericError(t('apiNotifications.integrationRemovalError'))
         console.error(`[ERROR] Failed to remove TG integration: ${e}`)
       }
       setIsRemovalLoading(false)

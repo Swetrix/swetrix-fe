@@ -19,6 +19,7 @@ import {
 import { isSelfhosted } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import { submit2FA } from 'api'
+import localizationNotification from 'utils/localizationNotification'
 import { setAccessToken, removeAccessToken } from 'utils/accessToken'
 import { setRefreshToken, removeRefreshToken } from 'utils/refreshToken'
 
@@ -123,10 +124,8 @@ const Signin = ({
         setAccessToken(accessToken)
         setRefreshToken(refreshToken)
         loginSuccess(user)
-      } catch (err) {
-        if (_isString(err)) {
-          loginFailed(err)
-        }
+      } catch (err: any) {
+        loginFailed(t(localizationNotification(err), err.params))
         console.error(`[ERROR] Failed to authenticate with 2FA: ${err}`)
         setTwoFACodeError(t('profileSettings.invalid2fa'))
       }

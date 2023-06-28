@@ -37,6 +37,7 @@ import Modal from 'ui/Modal'
 import FlatPicker from 'ui/Flatpicker'
 import { trackCustom } from 'utils/analytics'
 import countries from 'utils/isoCountries'
+import localizationNotification from 'utils/localizationNotification'
 import routes from 'routesPath'
 import Dropdown from 'ui/Dropdown'
 import MultiSelect from 'ui/MultiSelect'
@@ -347,11 +348,11 @@ const ProjectSettings = ({
         }
 
         loadProjects(isSharedProject, paginationSkip)
-      } catch (e) {
+      } catch (e: any) {
         if (isSettings) {
-          updateProjectFailed(e as string)
+          updateProjectFailed(t(localizationNotification(e), e.params))
         } else {
-          createNewProjectFailed(e as string)
+          createNewProjectFailed(t(localizationNotification(e), e.params))
         }
       } finally {
         setProjectSaving(false)
@@ -368,8 +369,8 @@ const ProjectSettings = ({
         removeProject(id, isSharedProject)
         projectDeleted(t('project.settings.deleted'))
         navigate(routes.dashboard)
-      } catch (e) {
-        deleteProjectFailed(e as string)
+      } catch (e: any) {
+        deleteProjectFailed(t(localizationNotification(e), e.params))
       } finally {
         setProjectDeleting(false)
       }
@@ -405,8 +406,8 @@ const ProjectSettings = ({
         deleteProjectCache(id)
         projectDeleted(t('project.settings.resetted'))
         navigate(routes.dashboard)
-      } catch (e) {
-        deleteProjectFailed(e as string)
+      } catch (e: any) {
+        deleteProjectFailed(t(localizationNotification(e), e.params))
       } finally {
         setProjectResetting(false)
       }
@@ -477,8 +478,8 @@ const ProjectSettings = ({
         generateAlerts(t('apiNotifications.transferRequestSent'))
         navigate(routes.dashboard)
       })
-      .catch((e) => {
-        showError(e as string)
+      .catch((e: any) => {
+        showError(t(localizationNotification(e), e.params))
       })
       .finally(() => {
         setShowTransfer(false)
