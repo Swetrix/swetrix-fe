@@ -32,7 +32,13 @@
     "socialAccountLinked": "The Swetrix account has been linked with your selected provider",
     "socialAccountUninked": "The Swetrix account has been unlinked from the selected provider",
     "enterPassword": "Please enter the password",
-    "incorrectPassword": "Incorrect password, please try again."
+    "incorrectPassword": "Incorrect password, please try again.",
+    "verifyEmail": "Please verify your email address first",
+    "notAllowedToManageProject": "You are not allowed to perform this action to this project",
+    "upgradePlanToCreateAlerts": "You cannot create new alerts due to no active subscription. Please upgrade your account plan to continue.",
+    "alertsMaximumExceeded": "You cannot create more than {{maxAlerts}} alerts on your account plan. Please upgrade to be able to create more alerts.",
+    "alertCreationError": "Error occured while creating alert",
+    "alertNotFound": "Alert not found",
   },
   "common": {
     "features": "Features",
