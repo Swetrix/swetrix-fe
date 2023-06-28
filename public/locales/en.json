@@ -38,7 +38,20 @@
     "upgradePlanToCreateAlerts": "You cannot create new alerts due to no active subscription. Please upgrade your account plan to continue.",
     "alertsMaximumExceeded": "You cannot create more than {{maxAlerts}} alerts on your account plan. Please upgrade to be able to create more alerts.",
     "alertCreationError": "Error occured while creating alert",
-    "alertNotFound": "Alert not found"
+    "alertNotFound": "Alert not found",
+    "betweenFromToIsGreater": "The difference between 'from' and 'to' is greater than allowed",
+    "specifiedTimeBucketNotAllowed": "The specified 'timeBucket' parameter cannot be applied to the date range",
+    "originNullNotAllowed": "'null' origin is not added to your project's whitelist. To send requests from this origin either add it to your origins policy or leave it empty.",
+    "originNotAllowed": "This origin is prohibited by the project's origins policy",
+    "pidAlreadyUsed": "Selected project ID is already in use",
+    "providedTypeIncorrect": "The provided type {{type}} is incorrect",
+    "projectNameTooLong": "The project name is too long",
+    "providedPIDIncorrect": "The provided Project ID (pid) is incorrect",
+    "allowedOriginsHasBeSmaller": "The list of allowed origins has to be smaller than 300 symbols",
+    "blacklistHasBeSmaller": "The list of allowed blacklisted IP addresses must be less than 300 characters.",
+    "hostIsNotCorrect": "Host {{host}} is not correct",
+    "ipAddressIsNotCorrect": "IP address {{ip}} is not correct",
+    "errorWhileProcessingProject": "Error while processing project"
   },
   "common": {
     "features": "Features",
