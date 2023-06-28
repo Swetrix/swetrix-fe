@@ -38,7 +38,7 @@
     "upgradePlanToCreateAlerts": "You cannot create new alerts due to no active subscription. Please upgrade your account plan to continue.",
     "alertsMaximumExceeded": "You cannot create more than {{maxAlerts}} alerts on your account plan. Please upgrade to be able to create more alerts.",
     "alertCreationError": "Error occured while creating alert",
-    "alertNotFound": "Alert not found",
+    "alertNotFound": "Alert not found"
   },
   "common": {
     "features": "Features",

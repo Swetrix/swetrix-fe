@@ -166,7 +166,7 @@ const ProjectAlertsSettings = ({
           generateAlerts(t('alertsSettings.alertUpdated'))
         })
         .catch((err) => {
-          showError(err.message || err || 'Something went wrong')
+          showError(err?.i18nMessagge ? t(err.i18nMessagge) : 'Something went wrong')
         })
     } else {
       createAlert(data as ICreateAlert)
@@ -177,7 +177,7 @@ const ProjectAlertsSettings = ({
           generateAlerts(t('alertsSettings.alertCreated'))
         })
         .catch((err) => {
-          showError(err.message || err || 'Something went wrong')
+          showError(err?.i18nMessagge ? t(err.i18nMessagge) : 'Something went wrong')
         })
     }
   }
@@ -191,7 +191,7 @@ const ProjectAlertsSettings = ({
         generateAlerts(t('alertsSettings.alertDeleted'))
       })
       .catch((err) => {
-        showError(err.message || err || 'Something went wrong')
+        showError(err?.i18nMessagge ? t(err.i18nMessagge) : 'Something went wrong')
       })
   }
 
