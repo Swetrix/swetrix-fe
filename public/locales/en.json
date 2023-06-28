@@ -53,6 +53,7 @@
     "ipAddressIsNotCorrect": "IP address {{ip}} is not correct",
     "errorWhileProcessingProject": "Error while processing project",
     "notAllowedToViewProject": "You are not allowed to view '{{name}}' project",
+    "emailAlreadyAssociatedWithThisEmail": "There is already an account associated with this email address",
   },
   "common": {
     "features": "Features",
