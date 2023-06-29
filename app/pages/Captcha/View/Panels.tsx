@@ -439,12 +439,11 @@ CustomEvents.propTypes = {
 }
 
 const Panel = ({
-  name, data, rowMapper, valueMapper, capitalize, linkContent, t, icon, id, hideFilters, onFilter,
+  name, data, rowMapper, capitalize, linkContent, t, icon, id, hideFilters, onFilter,
 }: {
   name: string
   data: IEntry[]
   rowMapper: any
-  valueMapper: any
   capitalize: boolean
   linkContent: boolean
   t: (arg0: string) => string
@@ -526,8 +525,8 @@ const Panel = ({
   if ((id === 'os' || id === 'br' || id === 'dv') && activeFragment === 1 && !_isEmpty(data)) {
     const tQuantity = t('project.quantity')
     const tRatio = t('project.ratio')
-    const columns = _map(data, (el) => [el.name, valueMapper(el.count)])
-    const values = _map(data, (el) => valueMapper(el.count))
+    const columns = _map(data, (el) => [el.name, el.count])
+    const values = _map(data, (el) => el.count)
 
     const options = {
       data: {
@@ -594,8 +593,8 @@ const Panel = ({
           count, name: entryName,
         } = entry
         const perc = _round((count / total) * 100, 2)
-        const rowData = rowMapper(entryName)
-        const valueData = valueMapper(count)
+        const rowData = rowMapper(entry)
+        const valueData = count
 
         return (
           <Fragment key={entryName}>
@@ -700,7 +699,6 @@ Panel.propTypes = {
   data: PropTypes.objectOf(PropTypes.number).isRequired,
   id: PropTypes.string,
   rowMapper: PropTypes.func,
-  valueMapper: PropTypes.func,
   onFilter: PropTypes.func,
   capitalize: PropTypes.bool,
   linkContent: PropTypes.bool,
@@ -710,8 +708,7 @@ Panel.propTypes = {
 
 Panel.defaultProps = {
   id: null,
-  rowMapper: null,
-  valueMapper: null,
+  rowMapper: (row: IEntry): string => row.name,
   capitalize: false,
   linkContent: false,
   onFilter: () => { },
