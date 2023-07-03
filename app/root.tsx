@@ -36,7 +36,7 @@ import { useTranslation } from 'react-i18next'
 import AppWrapper from 'App'
 import { detectLanguage } from 'i18n'
 import {
-  detectTheme, getPageMeta, isAuthenticated, getAccessToken,
+  detectTheme, getPageMeta, isAuthenticated,
 } from 'utils/server'
 
 import mainCss from 'styles/index.css'
