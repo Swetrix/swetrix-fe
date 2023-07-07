@@ -2108,7 +2108,7 @@ const ViewProject = ({
                 </div>
                 <div>
                   <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-2 md:mt-5 mb-4 gap-y-1'>
-                  <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3'>
+                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3'>
                       <button
                         type='button'
                         title={t('project.refreshStats')}
