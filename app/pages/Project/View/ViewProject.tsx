@@ -1898,7 +1898,7 @@ const ViewProject = ({
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-gray-50 break-words break-all'>
                     {name}
                   </h2>
-                  <div className='flex mt-3 md:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap items-end sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 custom-space-x-style gap-y-1'>
+                  <div className='flex items-center mt-3 md:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap items-end sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 custom-space-x-style gap-y-1'>
                     <Dropdown
                       items={isActiveCompare ? _filter(periodPairs, (el) => {
                         return _includes(filtersPeriodPairs, el.period)
