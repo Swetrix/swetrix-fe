@@ -1899,73 +1899,6 @@ const ViewProject = ({
                     {name}
                   </h2>
                   <div className='flex mt-3 md:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap items-end sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 custom-space-x-style gap-y-1'>
-                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3'>
-                      <button
-                        type='button'
-                        title={t('project.refreshStats')}
-                        onClick={refreshStats}
-                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
-                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
-                        })}
-                      >
-                        <ArrowPathIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
-                      </button>
-                    </div>
-                    {(!isSelfhosted && !isActiveCompare) && (
-                      <div
-                        className={cx('md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3', {
-                          hidden: activeTab !== PROJECT_TABS.traffic || _isEmpty(chartData),
-                        })}
-                      >
-                        <button
-                          type='button'
-                          title={t('modals.forecast.title')}
-                          onClick={onForecastOpen}
-                          disabled={!_isEmpty(filters)}
-                          className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
-                            'cursor-not-allowed opacity-50': isLoading || dataLoading || !_isEmpty(filters),
-                            '!bg-gray-200 dark:!bg-gray-600 !border dark:!border-gray-500 !border-gray-300': !_isEmpty(forecasedChartData),
-                          })}
-                        >
-                          <Robot theme={_theme} containerClassName='w-5 h-5' className='text-gray-700 dark:text-gray-50' />
-                        </button>
-                      </div>
-                    )}
-                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3'>
-                      <button
-                        type='button'
-                        title={t('project.search')}
-                        onClick={() => setShowFiltersSearch(true)}
-                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
-                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
-                        })}
-                      >
-                        <MagnifyingGlassIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
-                      </button>
-                    </div>
-                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3'>
-                      <span className='relative z-0 inline-flex shadow-sm rounded-md'>
-                        {_map(activePeriod?.tbs, (tb, index, { length }) => (
-                          <button
-                            key={tb}
-                            type='button'
-                            onClick={() => updateTimebucket(tb)}
-                            className={cx(
-                              'relative capitalize inline-flex items-center px-3 md:px-4 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
-                              {
-                                '-ml-px': index > 0,
-                                'rounded-l-md': index === 0,
-                                'rounded-r-md': 1 + index === length,
-                                'z-10 border-indigo-500 text-indigo-600 dark:border-slate-200 dark:text-gray-50': timeBucket === tb,
-                                'text-gray-700 dark:text-gray-50 border-gray-300 dark:border-slate-800 ': timeBucket !== tb,
-                              },
-                            )}
-                          >
-                            {t(`project.${tb}`)}
-                          </button>
-                        ))}
-                      </span>
-                    </div>
                     <Dropdown
                       items={isActiveCompare ? _filter(periodPairs, (el) => {
                         return _includes(filtersPeriodPairs, el.period)
@@ -2032,30 +1965,9 @@ const ViewProject = ({
                         />
                       </>
                     )}
-                    <FlatPicker
-                      ref={refCalendar}
-                      onChange={setDateRange}
-                      value={dateRange || []}
-                      maxDateMonths={MAX_MONTHS_IN_PAST}
-                      maxRange={0}
-                    />
-                    <FlatPicker
-                      ref={refCalendarCompare}
-                      onChange={(date) => {
-                        setDateRangeCompare(date)
-                        setActivePeriodCompare(PERIOD_PAIRS_COMPARE.CUSTOM)
-                        setPeriodPairsCompare(tbPeriodPairsCompare(t, date))
-                      }}
-                      value={dateRangeCompare || []}
-                      maxDateMonths={MAX_MONTHS_IN_PAST}
-                      maxRange={maxRangeCompare}
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-2 md:mt-5 mb-4 gap-y-1'>
-                    {activeTab === PROJECT_TABS.traffic ? (
-                      !isPanelsDataEmpty && (
+                    <div className='sm:ml-3'>
+                      {activeTab === PROJECT_TABS.traffic ? (
+                        !isPanelsDataEmpty && (
                         <Dropdown
                           items={isActiveCompare ? _filter(chartMetrics, (el) => {
                             return !_includes(FILTER_CHART_METRICS_MAPPING_FOR_COMPARE, el.id)
@@ -2142,8 +2054,8 @@ const ViewProject = ({
                             switchActiveChartMetric(pairID)
                           }}
                         />
-                      )) : (
-                      !isPanelsDataEmptyPerf && (
+                        )) : (
+                        !isPanelsDataEmptyPerf && (
                         <Dropdown
                           items={chartMetricsPerf}
                           className='min-w-[170px] xs:min-w-0'
@@ -2158,8 +2070,9 @@ const ViewProject = ({
                             switchActiveChartMetric(pairID)
                           }}
                         />
-                      )
-                    )}
+                        )
+                      )}
+                    </div>
                     <Dropdown
                       items={[...exportTypes, ...customExportTypes]}
                       title={[
@@ -2173,6 +2086,95 @@ const ViewProject = ({
                       onSelect={item => item.onClick(panelsData, t)}
                       className={cx('ml-3', { hidden: isPanelsDataEmpty || analyticsLoading })}
                     />
+                    <FlatPicker
+                      ref={refCalendar}
+                      onChange={setDateRange}
+                      value={dateRange || []}
+                      maxDateMonths={MAX_MONTHS_IN_PAST}
+                      maxRange={0}
+                    />
+                    <FlatPicker
+                      ref={refCalendarCompare}
+                      onChange={(date) => {
+                        setDateRangeCompare(date)
+                        setActivePeriodCompare(PERIOD_PAIRS_COMPARE.CUSTOM)
+                        setPeriodPairsCompare(tbPeriodPairsCompare(t, date))
+                      }}
+                      value={dateRangeCompare || []}
+                      maxDateMonths={MAX_MONTHS_IN_PAST}
+                      maxRange={maxRangeCompare}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-2 md:mt-5 mb-4 gap-y-1'>
+                  <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3'>
+                      <button
+                        type='button'
+                        title={t('project.refreshStats')}
+                        onClick={refreshStats}
+                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
+                        })}
+                      >
+                        <ArrowPathIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
+                      </button>
+                    </div>
+                    {(!isSelfhosted && !isActiveCompare) && (
+                      <div
+                        className={cx('md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3', {
+                          hidden: activeTab !== PROJECT_TABS.traffic || _isEmpty(chartData),
+                        })}
+                      >
+                        <button
+                          type='button'
+                          title={t('modals.forecast.title')}
+                          onClick={onForecastOpen}
+                          disabled={!_isEmpty(filters)}
+                          className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                            'cursor-not-allowed opacity-50': isLoading || dataLoading || !_isEmpty(filters),
+                            '!bg-gray-200 dark:!bg-gray-600 !border dark:!border-gray-500 !border-gray-300': !_isEmpty(forecasedChartData),
+                          })}
+                        >
+                          <Robot theme={_theme} containerClassName='w-5 h-5' className='text-gray-700 dark:text-gray-50' />
+                        </button>
+                      </div>
+                    )}
+                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3'>
+                      <button
+                        type='button'
+                        title={t('project.search')}
+                        onClick={() => setShowFiltersSearch(true)}
+                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
+                        })}
+                      >
+                        <MagnifyingGlassIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
+                      </button>
+                    </div>
+                    <div className='border-gray-200 dark:border-gray-600'>
+                      <span className='relative z-0 inline-flex shadow-sm rounded-md'>
+                        {_map(activePeriod?.tbs, (tb, index, { length }) => (
+                          <button
+                            key={tb}
+                            type='button'
+                            onClick={() => updateTimebucket(tb)}
+                            className={cx(
+                              'relative capitalize inline-flex items-center px-3 md:px-4 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
+                              {
+                                '-ml-px': index > 0,
+                                'rounded-l-md': index === 0,
+                                'rounded-r-md': 1 + index === length,
+                                'z-10 border-indigo-500 text-indigo-600 dark:border-slate-200 dark:text-gray-50': timeBucket === tb,
+                                'text-gray-700 dark:text-gray-50 border-gray-300 dark:border-slate-800 ': timeBucket !== tb,
+                              },
+                            )}
+                          >
+                            {t(`project.${tb}`)}
+                          </button>
+                        ))}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div
