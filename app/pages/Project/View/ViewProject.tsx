@@ -10,7 +10,7 @@ import domToImage from 'dom-to-image'
 import { saveAs } from 'file-saver'
 import bb from 'billboard.js'
 import {
-  ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, ChartBarIcon, BoltIcon, BellIcon,
+  ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, ChartBarIcon, BoltIcon, BellIcon, FunnelIcon,
   PresentationChartBarIcon, PresentationChartLineIcon, NoSymbolIcon, MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import cx from 'clsx'
@@ -516,6 +516,11 @@ const ViewProject = ({
         id: PROJECT_TABS.performance,
         label: t('dashboard.performance'),
         icon: BoltIcon,
+      },
+      {
+        id: PROJECT_TABS.funnels,
+        label: t('dashboard.funnels'),
+        icon: FunnelIcon,
       },
     ]
 
