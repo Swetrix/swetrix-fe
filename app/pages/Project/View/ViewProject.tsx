@@ -2165,7 +2165,7 @@ const ViewProject = ({
                           type='button'
                           title={t('project.barChart')}
                           onClick={() => setChartTypeOnClick(chartTypes.bar)}
-                          className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:outline-none focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
+                          className={cx('px-2.5 mr-1 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:outline-none focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
                             'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.bar,
                             'text-slate-500 dark:text-gray-500': chartType !== chartTypes.bar,
                           })}
