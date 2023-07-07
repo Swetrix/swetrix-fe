@@ -2152,6 +2152,39 @@ const ViewProject = ({
                         <MagnifyingGlassIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
                       </button>
                     </div>
+                    <div
+                      className={cx({
+                        hidden: isPanelsDataEmpty || analyticsLoading,
+                      })}
+                    >
+                      <div className={cx('md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3', {
+                        hidden: checkIfAllMetricsAreDisabled,
+                      })}
+                      >
+                        <button
+                          type='button'
+                          title={t('project.barChart')}
+                          onClick={() => setChartTypeOnClick(chartTypes.bar)}
+                          className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:outline-none focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
+                            'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.bar,
+                            'text-slate-500 dark:text-gray-500': chartType !== chartTypes.bar,
+                          })}
+                        >
+                          <PresentationChartBarIcon className='w-6 h-6' />
+                        </button>
+                        <button
+                          type='button'
+                          title={t('project.lineChart')}
+                          onClick={() => setChartTypeOnClick(chartTypes.line)}
+                          className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:!outline-0 focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
+                            'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.line,
+                            'text-slate-500 dark:text-gray-500': chartType !== chartTypes.line,
+                          })}
+                        >
+                          <PresentationChartLineIcon className='w-6 h-6' />
+                        </button>
+                      </div>
+                    </div>
                     <div className='border-gray-200 dark:border-gray-600'>
                       <span className='relative z-0 inline-flex shadow-sm rounded-md'>
                         {_map(activePeriod?.tbs, (tb, index, { length }) => (
@@ -2174,49 +2207,6 @@ const ViewProject = ({
                           </button>
                         ))}
                       </span>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={cx({
-                    hidden: isPanelsDataEmpty || analyticsLoading,
-                  })}
-                >
-                  <div className={cx('xs:mt-0', {
-                    'mt-14': project.public || (isSharedProject && project?.role === roleAdmin.role) || project.isOwner,
-                  })}
-                  />
-                  <div className={cx('relative', {
-                    hidden: checkIfAllMetricsAreDisabled,
-                  })}
-                  >
-                    <div className={cx('absolute right-0 z-10 -top-2 max-sm:top-6 space-x-2', {
-                      'right-[90px]': activeChartMetrics[CHART_METRICS_MAPPING.sessionDuration],
-                      'right-[60px]': activeChartMetrics[CHART_METRICS_MAPPING.bounce],
-                    })}
-                    >
-                      <button
-                        type='button'
-                        title={t('project.barChart')}
-                        onClick={() => setChartTypeOnClick(chartTypes.bar)}
-                        className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:outline-none focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
-                          'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.bar,
-                          'text-slate-500 dark:text-gray-500': chartType !== chartTypes.bar,
-                        })}
-                      >
-                        <PresentationChartBarIcon className='w-6 h-6' />
-                      </button>
-                      <button
-                        type='button'
-                        title={t('project.lineChart')}
-                        onClick={() => setChartTypeOnClick(chartTypes.line)}
-                        className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:!outline-0 focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
-                          'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.line,
-                          'text-slate-500 dark:text-gray-500': chartType !== chartTypes.line,
-                        })}
-                      >
-                        <PresentationChartLineIcon className='w-6 h-6' />
-                      </button>
                     </div>
                   </div>
                 </div>
