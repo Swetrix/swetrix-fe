@@ -983,6 +983,7 @@ const ViewProject = ({
       return
     }
 
+    console.log('work')
     setDataLoading(true)
     try {
       let data
@@ -1012,11 +1013,19 @@ const ViewProject = ({
         // setProjectCache(id, data || {}, key)
       }
 
-      if (_isEmpty(data)) {
-        setAnalyticsLoading(false)
-        setDataLoading(false)
-        setIsPanelsDataEmptyFunnels(true)
-        return
+      // if (_isEmpty(data)) {
+      //   setAnalyticsLoading(false)
+      //   setDataLoading(false)
+      //   setIsPanelsDataEmptyFunnels(true)
+      //   return
+      // }
+
+      data = {
+        chart: {
+          x: ['page1', 'page2', 'page3', 'page4', 'page5'],
+          funnels: ['100', '60', '250', '90', '173'],
+        },
+        appliedFilters: [],
       }
 
       const {
@@ -1027,7 +1036,8 @@ const ViewProject = ({
         setFiltersFunnels(appliedFilters)
       }
 
-      const bbSettings = getFunnelsSettings(chart, timeBucket, chartType, timeFormat, rotateXAxias)
+      const bbSettings = getFunnelsSettings(chart, chartType, rotateXAxias)
+      console.log(bbSettings)
       setChartData(chart)
 
       setMainChart(() => {
