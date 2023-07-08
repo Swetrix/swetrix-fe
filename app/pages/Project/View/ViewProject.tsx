@@ -73,6 +73,7 @@ import {
   onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
   validTimeBacket, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING,
   CHART_METRICS_MAPPING_PERF, getSettingsPerf, transformAIChartData, FILTER_CHART_METRICS_MAPPING_FOR_COMPARE,
+  getFunnelsSettings,
 } from './ViewProject.helpers'
 import CCRow from './components/CCRow'
 import RefRow from './components/RefRow'
@@ -240,6 +241,10 @@ const ViewProject = ({
   const [filters, setFilters] = useState<any[]>([])
   // similar filters but using for performance tab
   const [filtersPerf, setFiltersPerf] = useState<any[]>([])
+  const [filtersFunnels, setFiltersFunnels] = useState<{
+    column: 'pg',
+    filter: string,
+  }[]>([])
   // That is needed when using 'Export as image' feature,
   // Because headless browser cannot do a request to the DDG API due to absense of The Same Origin Policy header
   const [showIcons, setShowIcons] = useState<boolean>(true)
@@ -1019,27 +1024,18 @@ const ViewProject = ({
       } = data
 
       if (!_isEmpty(appliedFilters)) {
-        setFilters(appliedFilters)
+        setFiltersFunnels(appliedFilters)
       }
 
-      const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-      const bbSettings = getSettings(chart, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChart, dataCompare?.chart)
+      const bbSettings = getFunnelsSettings(chart, timeBucket, chartType, timeFormat, rotateXAxias)
       setChartData(chart)
 
-      setPanelsData({
-        types: _keys(params),
-        data: params,
-        customs,
+      setMainChart(() => {
+        // @ts-ignore
+        const generete = bb.generate(bbSettings)
+        generete.data.names(dataNames)
+        return generete
       })
-
-      if (activeTab === PROJECT_TABS.traffic) {
-        setMainChart(() => {
-          // @ts-ignore
-          const generete = bb.generate(bbSettings)
-          generete.data.names(dataNames)
-          return generete
-        })
-      }
 
       setAnalyticsLoading(false)
       setDataLoading(false)
