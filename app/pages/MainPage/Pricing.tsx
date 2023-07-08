@@ -362,7 +362,7 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
     ypid: string,
   }) => {
     if (planCodeLoading === null && (user.planCode !== tier.planCode || (user.billingFrequency !== billingFrequency && user.planCode !== 'free' && user.planCode !== 'trial'))) {
-      if (user.planCode !== 'trial' && user.planCode !== 'none' && user.planCode !== 'free') {
+      if (user.subID) {
         const planId = Number(billingFrequency === BillingFrequency.monthly ? tier.pid : tier.ypid)
         setNewPlanId(planId)
         await loadSubUpdatePreview(planId)
