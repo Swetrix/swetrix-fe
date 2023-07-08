@@ -120,7 +120,7 @@ const Modal = ({
                   onClick={onSubmit}
                 >
                   {isLoading && (
-                    <Spin />
+                    <Spin alwaysLight />
                   )}
                   {submitText}
                 </button>
