@@ -202,6 +202,7 @@ const ViewProject = ({
   const [panelsData, setPanelsData] = useState<any>({})
   // isPanelsDataEmpty is a true we are display components <NoEvents /> and do not show dropdowns with activeChartMetrics
   const [isPanelsDataEmpty, setIsPanelsDataEmpty] = useState<boolean>(false)
+  const [isPanelsDataEmptyFunnels, setIsPanelsDataEmptyFunnels] = useState<boolean>(false)
   const [isForecastOpened, setIsForecastOpened] = useState<boolean>(false)
   // analyticsLoading is a boolean for show loader on chart
   const [analyticsLoading, setAnalyticsLoading] = useState<boolean>(true)
@@ -966,6 +967,86 @@ const ViewProject = ({
       setAnalyticsLoading(false)
       setDataLoading(false)
       setIsPanelsDataEmptyPerf(true)
+      console.error('[ERROR](loadAnalytics) Loading analytics data failed')
+      console.error(e)
+    }
+  }
+
+  // loadAnalyticsFunels is a function for load data for chart from api for tabFunnels
+  const loadAnalyticsFunnels = async (forced = false, newFilters: any[] | null = null) => {
+    if (!forced && (isLoading || _isEmpty(project) || dataLoading)) {
+      return
+    }
+
+    setDataLoading(true)
+    try {
+      let data
+      const key = ''
+      let from
+      let to
+
+      // if activePeriod is custom we check dateRange and set key for cache
+      if (dateRange) {
+        from = getFormatDate(dateRange[0])
+        to = getFormatDate(dateRange[1])
+        // key = getProjectCacheCustomKey(from, to, timeBucket, newFilters || filters)
+      } else {
+        // key = getProjectCacheKey(period, timeBucket, newFilters || filters)
+      }
+
+      // check if we need to load new date or we have data in redux/localstorage
+      if ((!forced && !_isEmpty(cache[id]) && !_isEmpty(cache[id][key]))) {
+        data = cache[id][key]
+      } else {
+        if (period === 'custom' && dateRange) {
+          // data = await getProjectData(id, timeBucket, '', newFilters || filters, from, to, timezone, projectPassword)
+        } else {
+          // data = await getProjectData(id, timeBucket, period, newFilters || filters, '', '', timezone, projectPassword)
+        }
+
+        // setProjectCache(id, data || {}, key)
+      }
+
+      if (_isEmpty(data)) {
+        setAnalyticsLoading(false)
+        setDataLoading(false)
+        setIsPanelsDataEmptyFunnels(true)
+        return
+      }
+
+      const {
+        chart, appliedFilters,
+      } = data
+
+      if (!_isEmpty(appliedFilters)) {
+        setFilters(appliedFilters)
+      }
+
+      const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
+      const bbSettings = getSettings(chart, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChart, dataCompare?.chart)
+      setChartData(chart)
+
+      setPanelsData({
+        types: _keys(params),
+        data: params,
+        customs,
+      })
+
+      if (activeTab === PROJECT_TABS.traffic) {
+        setMainChart(() => {
+          // @ts-ignore
+          const generete = bb.generate(bbSettings)
+          generete.data.names(dataNames)
+          return generete
+        })
+      }
+
+      setAnalyticsLoading(false)
+      setDataLoading(false)
+    } catch (e) {
+      setAnalyticsLoading(false)
+      setDataLoading(false)
+      setIsPanelsDataEmptyFunnels(true)
       console.error('[ERROR](loadAnalytics) Loading analytics data failed')
       console.error(e)
     }
@@ -2548,11 +2629,9 @@ const ViewProject = ({
               </div>
             )}
             {activeTab === PROJECT_TABS.funnels && (
-              <div className={cx('pt-8 md:pt-4', { hidden: isPanelsDataEmptyPerf || analyticsLoading })}>
+              <div className={cx('pt-8 md:pt-4', { hidden: isPanelsDataEmptyFunnels || analyticsLoading })}>
                 <div
-                  className={cx('h-80', {
-                    hidden: checkIfAllMetricsAreDisabled,
-                  })}
+                  className='h-80'
                 >
                   <div className='h-80' id='dataChart' />
                 </div>
