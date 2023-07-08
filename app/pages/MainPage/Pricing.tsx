@@ -271,7 +271,9 @@ const PricingItem = ({
 }
 
 interface IPricing {
-  t: (key: string) => string,
+  t: (key: string, options?: {
+    [key: string]: string | number,
+  }) => string,
   language: string,
   authenticated: boolean,
 }
@@ -609,6 +611,16 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
                     </tbody>
                   </table>
                 </div>
+                {subUpdatePreview.immediatePayment.amount < 0 && (
+                  <p className='mt-2 italic'>
+                    {t('billing.negativePayment', {
+                      currency: subUpdatePreview.immediatePayment.symbol,
+                      dueNowAmount: -subUpdatePreview.immediatePayment.amount,
+                      dueNowDate: language === 'en' ? dayjs(subUpdatePreview.immediatePayment.date).locale(language).format('MMMM D, YYYY') : dayjs(subUpdatePreview.immediatePayment.date).locale(language).format('D MMMM, YYYY'),
+                      nextPaymentAmount: subUpdatePreview.nextPayment.amount,
+                    })}
+                  </p>
+                )}
                 <h2 className='text-base font-bold mt-5'>
                   {t('billing.nextPayment')}
                 </h2>
