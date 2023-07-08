@@ -1516,7 +1516,7 @@ const ViewProject = ({
       } finally {
         setAreFiltersPerfParsed(true)
       }
-    } else {
+    } else if (activeTab === PROJECT_TABS.traffic) {
       try {
         // @ts-ignore
         const url = new URL(window.location)
@@ -1625,6 +1625,9 @@ const ViewProject = ({
       if (activeTab === PROJECT_TABS.performance) {
         loadAnalyticsPerf()
       }
+    }
+    if (activeTab === PROJECT_TABS.funnels) {
+      loadAnalyticsFunnels()
     }
   }, [project, period, chartType, filters, forecasedChartData, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t, activeTab, areFiltersPerfParsed]) // eslint-disable-line
 
