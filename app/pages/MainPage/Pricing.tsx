@@ -412,23 +412,20 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
     try {
       await changeSubscriptionPlan(newPlanId as number)
 
-      // giving some time to the API to process tier upgrate via Paddle webhook
-      setTimeout(async () => {
-        try {
-          const me = await authMe()
+      try {
+        const me = await authMe()
 
-          dispatch(authActions.loginSuccessful(me))
-          dispatch(authActions.finishLoading())
-        } catch (e) {
-          dispatch(authActions.logout())
-          dispatch(sagaActions.logout(false, false))
-        }
+        dispatch(authActions.loginSuccessful(me))
+        dispatch(authActions.finishLoading())
+      } catch (e) {
+        dispatch(authActions.logout())
+        dispatch(sagaActions.logout(false, false))
+      }
 
-        dispatch(alertsActions.accountUpdated({
-          message: t('apiNotifications.subscriptionUpdated'),
-        }))
-        closeUpdateModal(true)
-      }, 2000)
+      dispatch(alertsActions.accountUpdated({
+        message: t('apiNotifications.subscriptionUpdated'),
+      }))
+      closeUpdateModal(true)
     } catch (reason) {
       console.error('[ERROR] An error occured while updating subscription:', reason)
       dispatch(errorsActions.genericError({
