@@ -2661,6 +2661,7 @@ const ViewProject = ({
                   onRemoveFilter={filterHandler}
                   onChangeExclusive={onChangeExclusive}
                   tnMapping={tnMapping}
+                  isFunnels
                 />
                 {dataLoading && (
                   <div className='!bg-transparent static mt-4' id='loader'>
