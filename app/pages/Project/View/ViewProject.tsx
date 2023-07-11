@@ -2656,6 +2656,12 @@ const ViewProject = ({
                 >
                   <div className='h-80' id='dataChart' />
                 </div>
+                <Filters
+                  filters={filters}
+                  onRemoveFilter={filterHandler}
+                  onChangeExclusive={onChangeExclusive}
+                  tnMapping={tnMapping}
+                />
                 {dataLoading && (
                   <div className='!bg-transparent static mt-4' id='loader'>
                     <div className='loader-head dark:!bg-slate-800'>
