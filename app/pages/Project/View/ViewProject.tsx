@@ -976,7 +976,7 @@ const ViewProject = ({
   }
 
   // loadAnalyticsFunels is a function for load data for chart from api for tabFunnels
-  const loadAnalyticsFunnels = async (forced = false, newFilters: any[] | null = null) => {
+  const loadAnalyticsFunnels = async (forced = false, newFilters: string[] | null = null) => {
     if (!forced && (isLoading || _isEmpty(project) || dataLoading)) {
       return
     }
@@ -1210,6 +1210,16 @@ const ViewProject = ({
       setFilters(newFilters)
       loadAnalytics(true, newFilters)
     }
+  }
+
+  const onFilterFunnelsSearch = (items: {
+    column: string
+    filter: string[]
+  }[]) => {
+    const newFilters = _find(items, (item) => item.column === 'pg')?.filter || []
+
+    setFiltersFunnels(newFilters)
+    loadAnalyticsFunnels(true, newFilters)
   }
 
   // this function is used for requesting the data from the API when the exclusive filter is changed
