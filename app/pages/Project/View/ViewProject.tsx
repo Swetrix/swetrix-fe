@@ -80,6 +80,7 @@ import RefRow from './components/RefRow'
 import NoEvents from './components/NoEvents'
 import SearchFilters from './components/SearchFilters'
 import Filters from './components/Filters'
+import FiltersFunnels from './components/FiltersFunnels'
 import CountryDropdown from './components/CountryDropdown'
 import ProjectAlertsView from '../Alerts/View'
 const SwetrixSDK = require('@swetrix/sdk')
@@ -241,10 +242,7 @@ const ViewProject = ({
   const [filters, setFilters] = useState<any[]>([])
   // similar filters but using for performance tab
   const [filtersPerf, setFiltersPerf] = useState<any[]>([])
-  const [filtersFunnels, setFiltersFunnels] = useState<{
-    column: 'pg',
-    filter: string,
-  }[]>([])
+  const [filtersFunnels, setFiltersFunnels] = useState<string[]>([])
   // That is needed when using 'Export as image' feature,
   // Because headless browser cannot do a request to the DDG API due to absense of The Same Origin Policy header
   const [showIcons, setShowIcons] = useState<boolean>(true)
@@ -1037,7 +1035,6 @@ const ViewProject = ({
       }
 
       const bbSettings = getFunnelsSettings(chart, chartType, rotateXAxias)
-      console.log(bbSettings)
       setChartData(chart)
 
       setMainChart(() => {
@@ -2656,12 +2653,13 @@ const ViewProject = ({
                 >
                   <div className='h-80' id='dataChart' />
                 </div>
-                <Filters
-                  filters={filters}
-                  onRemoveFilter={filterHandler}
-                  onChangeExclusive={onChangeExclusive}
-                  tnMapping={tnMapping}
-                  isFunnels
+                <FiltersFunnels
+                  filters={filtersFunnels}
+                  onRemoveFilter={(filter: string) => {
+                    setFiltersFunnels((prev) => {
+                      return _filter(prev, (item) => item !== filter)
+                    })
+                  }}
                 />
                 {dataLoading && (
                   <div className='!bg-transparent static mt-4' id='loader'>
@@ -2713,7 +2711,7 @@ const ViewProject = ({
           t={t}
           showModal={showFiltersSearch}
           setShowModal={setShowFiltersSearch}
-          setProjectFilter={onFilterSearch}
+          setProjectFilter={PROJECT_TABS.funnels === activeTab ? onFilterFunnelsSearch : onFilterSearch}
           pid={id}
           isFunnels={PROJECT_TABS.funnels === activeTab}
           language={language}
