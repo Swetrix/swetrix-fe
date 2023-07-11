@@ -21,7 +21,7 @@ import { getFilters } from 'api'
 import CCRow from './CCRow'
 
 const SearchFilters = ({
-  t, setProjectFilter, pid, showModal, setShowModal, language,
+  t, setProjectFilter, pid, showModal, setShowModal, language, isFunnels,
 }: {
   t: (key: string) => string,
   setProjectFilter: (filter: {
@@ -32,8 +32,9 @@ const SearchFilters = ({
   showModal: boolean
   setShowModal: (show: boolean) => void
   language: string
+  isFunnels?: boolean
 }) => {
-  const [filterType, setFilterType] = useState<string>('')
+  const [filterType, setFilterType] = useState<string>(isFunnels ? 'pg' : '')
   const [filterList, setFilterList] = useState<string[]>([])
   const [searchList, setSearchList] = useState<string[]>([])
   const [activeFilter, setActiveFilter] = useState<{
@@ -73,6 +74,12 @@ const SearchFilters = ({
   }, [showModal])
 
   useEffect(() => {
+    if (isFunnels) {
+      setFilterType('pg')
+    }
+  }, [isFunnels])
+
+  useEffect(() => {
     getFiltersList()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterType])
@@ -93,25 +100,29 @@ const SearchFilters = ({
       message={
         (
           <div className='min-h-[410px]'>
-            <Dropdown
-              className='min-w-[160px]'
-              title={!_isEmpty(filterType) ? t(`project.mapping.${filterType}`) : t('project.settings.reseted.selectFilters')}
-              items={FILTERS_PANELS_ORDER}
-              labelExtractor={(item) => t(`project.mapping.${item}`)}
-              keyExtractor={(item) => item}
-              onSelect={(item) => setFilterType(item)}
-            />
+            {!isFunnels && (
+              <Dropdown
+                className='min-w-[160px]'
+                title={!_isEmpty(filterType) ? t(`project.mapping.${filterType}`) : t('project.settings.reseted.selectFilters')}
+                items={FILTERS_PANELS_ORDER}
+                labelExtractor={(item) => t(`project.mapping.${item}`)}
+                keyExtractor={(item) => item}
+                onSelect={(item) => setFilterType(item)}
+              />
+            )}
             <div className='h-2' />
             {(filterType && !_isEmpty(filterList)) ? (
               <>
-                <Checkbox
-                  checked={Boolean(overrideCurrentlyFilters)}
-                  onChange={(e) => setOverrideCurrentlyFilters(e.target.checked)}
-                  name='overrideCurrentlyFilters'
-                  id='overrideCurrentlyFilters'
-                  className='mt-4'
-                  label={t('project.overrideCurrentlyFilters')}
-                />
+                {!isFunnels && (
+                  <Checkbox
+                    checked={Boolean(overrideCurrentlyFilters)}
+                    onChange={(e) => setOverrideCurrentlyFilters(e.target.checked)}
+                    name='overrideCurrentlyFilters'
+                    id='overrideCurrentlyFilters'
+                    className='mt-4'
+                    label={t('project.overrideCurrentlyFilters')}
+                  />
+                )}
                 <MultiSelect
                   className='max-w-max'
                   items={searchList}
@@ -200,6 +211,10 @@ const SearchFilters = ({
       isOpened={showModal}
     />
   )
+}
+
+SearchFilters.defaultProps = {
+  isFunnels: false,
 }
 
 export default SearchFilters

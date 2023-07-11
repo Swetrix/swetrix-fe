@@ -2065,6 +2065,18 @@ const ViewProject = ({
                         </div>
                       </>
                     )}
+                    {PROJECT_TABS.funnels === activeTab && (
+                      <button
+                        type='button'
+                        title={t('project.addFilter')}
+                        onClick={() => setShowFiltersSearch(true)}
+                        className={cx('relative shadow-sm mr-3 rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
+                        })}
+                      >
+                        {t('project.addFilter')}
+                      </button>
+                    )}
                     <Dropdown
                       items={isActiveCompare ? _filter(periodPairs, (el) => {
                         return _includes(filtersPeriodPairs, el.period)
@@ -2696,6 +2708,7 @@ const ViewProject = ({
           setShowModal={setShowFiltersSearch}
           setProjectFilter={onFilterSearch}
           pid={id}
+          isFunnels={PROJECT_TABS.funnels === activeTab}
           language={language}
         />
       </>
