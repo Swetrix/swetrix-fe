@@ -11,7 +11,7 @@ import countries from 'utils/isoCountries'
  * @returns {JSX.Element}
  */
 const Filter = ({
-  column, filter, isExclusive, onRemoveFilter, onChangeExclusive, tnMapping, language, t, isFunnels,
+  column, filter, isExclusive, onRemoveFilter, onChangeExclusive, tnMapping, language, t,
 }: {
   column: string
   filter: string
@@ -23,8 +23,6 @@ const Filter = ({
   tnMapping: Record<string, string>
   language: string
   t: (key: string) => string
-  // eslint-disable-next-line react/require-default-props
-  isFunnels?: boolean
 }): JSX.Element => {
   const displayColumn = tnMapping[column]
   let displayFilter = filter
@@ -38,15 +36,10 @@ const Filter = ({
   return (
     <span className='inline-flex rounded-md items-center py-0.5 pl-2.5 pr-1 mr-2 mt-2 text-sm font-medium bg-gray-200 text-gray-800 dark:text-gray-50 dark:bg-slate-800'>
       {displayColumn}
-      {isFunnels && <>:</>}
-      {!isFunnels && (
-        <>
-          &nbsp;
-          <span className='text-blue-400 border-blue-400 border-b-2 border-dotted cursor-pointer' onClick={() => onChangeExclusive(column, filter, !isExclusive)}>
-            {t(`common.${isExclusive ? 'isNot' : 'is'}`)}
-          </span>
-        </>
-      )}
+      &nbsp;
+      <span className='text-blue-400 border-blue-400 border-b-2 border-dotted cursor-pointer' onClick={() => onChangeExclusive(column, filter, !isExclusive)}>
+        {t(`common.${isExclusive ? 'isNot' : 'is'}`)}
+      </span>
       &nbsp;
       &quot;
       {displayFilter}
@@ -75,7 +68,7 @@ const Filter = ({
  * @returns {JSX.Element}
  */
 const Filters = ({
-  filters, onRemoveFilter, onChangeExclusive, tnMapping, isFunnels,
+  filters, onRemoveFilter, onChangeExclusive, tnMapping,
 }: {
   filters: {
     column: string
@@ -87,7 +80,6 @@ const Filters = ({
   // eslint-disable-next-line no-shadow
   onChangeExclusive: (column: string, filter: string, isExclusive: boolean) => void
   tnMapping: Record<string, string>
-  isFunnels?: boolean
 }) => {
   const { t, i18n: { language } } = useTranslation('common')
 
@@ -98,7 +90,7 @@ const Filters = ({
         const key = `${column}${filter}`
 
         return (
-          <Filter key={key} isFunnels={isFunnels} onRemoveFilter={onRemoveFilter} onChangeExclusive={onChangeExclusive} language={language} t={t} tnMapping={tnMapping} {...props} />
+          <Filter key={key} onRemoveFilter={onRemoveFilter} onChangeExclusive={onChangeExclusive} language={language} t={t} tnMapping={tnMapping} {...props} />
         )
       })}
     </div>
@@ -118,7 +110,6 @@ Filters.propTypes = {
 
 Filters.defaultProps = {
   filters: [],
-  isFunnels: false,
 }
 
 export default memo(Filters)
