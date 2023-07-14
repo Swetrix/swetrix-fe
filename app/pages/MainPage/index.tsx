@@ -320,10 +320,32 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
         {/* section Core Analytics Features */}
         <div className='dark:bg-slate-900 bg-white px-4 pb-24'>
           <section className='flex pt-16 md:pt-48 flex-col-reverse md:flex-row items-center md:items-start md:justify-between max-w-7xl m-auto'>
-            <picture>
+            {/* <picture>
               <source srcSet='/assets/CoreFeaturesLight.webp' type='image/webp' />
               <img src='/assets/CoreFeaturesLight.png' className='md:max-w-md md:mr-3 mt-3 md:mt-0 lg:max-w-full md:relative md:-top-10' alt='Core Analytics Features' />
-            </picture>
+            </picture> */}
+            <div className='relative w-full h-96 mx-0 md:mx-10'>
+              <img
+                src={theme === 'dark' ? '/assets/demos/browser_dark.png' : '/assets/demos/browser_light.png'}
+                className='absolute top-0 left-10 rounded w-1/4 shadow-2xl ring-1 ring-gray-900/10 dark:ring-white/10'
+                alt=''
+              />
+              <img
+                src={theme === 'dark' ? '/assets/demos/chart_dark.png' : '/assets/demos/chart_light.png'}
+                className='absolute top-10 right-10 rounded w-3/5 shadow-2xl ring-1 ring-gray-900/10 dark:ring-white/10'
+                alt=''
+              />
+              <img
+                src={theme === 'dark' ? '/assets/demos/referrer_dark.png' : '/assets/demos/referrer_light.png'}
+                className='absolute bottom-0 left-20 rounded w-4/12 ring-1 ring-gray-900/10 dark:ring-white/10'
+                alt=''
+              />
+              <img
+                src={theme === 'dark' ? '/assets/demos/city_dark.png' : '/assets/demos/city_light.png'}
+                className='absolute bottom-14 right-6 rounded-full w-4/12 ring-1 ring-gray-900/10 dark:ring-white/10'
+                alt=''
+              />
+            </div>
             <div className='max-w-lg'>
               <h2 className='font-extrabold text-4xl dark:text-white text-slate-900'>
                 {t('main.coreFeatures.title')}
@@ -345,7 +367,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
           </section>
           {/* end section Core Analytics Features */}
           {/* section Marketplace & build-in Extensions */}
-          <section className='flex flex-col md:flex-row items-center md:justify-between max-w-7xl m-auto'>
+          <section className='flex pt-20 md:pt-28 flex-col md:flex-row items-center md:justify-between max-w-7xl m-auto'>
             <div className='max-w-[516px]'>
               <h2 className='font-extrabold text-4xl text-slate-900 dark:text-white'>
                 {t('main.marketplace.title')}
@@ -417,7 +439,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
                   }}
                 />
               </div>
-              <div className='relative z-50 lg:col-span-6 rounded-xl'>
+              <div className='relative z-50 lg:col-span-6 rounded-xl shrink-0'>
                 <div className='bg-white dark:bg-slate-800/20 ring-1 ring-slate-200 dark:ring-slate-800 sm:max-w-md sm:w-full sm:mx-auto sm:rounded-lg sm:overflow-hidden'>
                   <div className='px-4 py-8 sm:px-10'>
                     <p className='text-lg text-gray-900 dark:text-white text-center md:text-xl font-semibold'>
@@ -444,15 +466,22 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
                   </div>
                 </div>
               </div>
-              <div className='relative'>
-                <picture>
-                  <source srcSet={theme === 'dark' ? '/assets/section-signup-dark.webp' : '/assets/section-signup-light.webp'} type='image/webp' />
-                  <img
-                    src={theme === 'dark' ? '/assets/section-signup-dark.png' : '/assets/section-signup-light.png'}
-                    className='relative z-50 hidden md:block'
-                    alt='Swetrix Dashboard overview'
-                  />
-                </picture>
+              <div className='relative z-10 w-full h-96'>
+                <img
+                  src={theme === 'dark' ? '/assets/demos/overview_dark.png' : '/assets/demos/overview_light.png'}
+                  className='absolute z-20 top-0 left-60 rounded w-1/4 shadow-2xl'
+                  alt=''
+                />
+                <img
+                  src={theme === 'dark' ? '/assets/demos/chart_part_dark.png' : '/assets/demos/chart_part_light.png'}
+                  className='absolute z-10 top-20 bottom-20 right-10 rounded w-3/5'
+                  alt=''
+                />
+                <img
+                  src={theme === 'dark' ? '/assets/demos/country_map_dark.png' : '/assets/demos/country_map_light.png'}
+                  className='absolute z-10 bottom-0 left-40 rounded w-1/4'
+                  alt=''
+                />
               </div>
             </div>
           </div>
