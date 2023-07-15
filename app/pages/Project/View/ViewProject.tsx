@@ -343,7 +343,7 @@ const ViewProject = ({
     }
 
     return findActivePeriod?.countDays || 0
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActiveCompare, period])
   // similar for sessionDurationAVG but using in overview when compare enabled
   const [sessionDurationAVGCompare, setSessionDurationAVGCompare] = useState<any>(null)
@@ -1898,76 +1898,9 @@ const ViewProject = ({
                   <h2 className='text-3xl font-bold text-gray-900 dark:text-gray-50 break-words break-all'>
                     {name}
                   </h2>
-                  <div className='flex items-center mt-3 md:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 custom-space-x-style gap-y-1'>
-                    <Dropdown
-                      items={isActiveCompare ? _filter(periodPairs, (el) => {
-                        return _includes(filtersPeriodPairs, el.period)
-                      }) : _includes(filtersPeriodPairs, period) ? periodPairs : _filter(periodPairs, (el) => {
-                        return el.period !== PERIOD_PAIRS_COMPARE.COMPARE
-                      })}
-                      title={activePeriod?.label}
-                      labelExtractor={(pair) => pair.dropdownLabel || pair.label}
-                      keyExtractor={(pair) => pair.label}
-                      onSelect={(pair) => {
-                        if (pair.period === PERIOD_PAIRS_COMPARE.COMPARE) {
-                          if (activeTab !== PROJECT_TABS.traffic && activeTab !== PROJECT_TABS.performance) {
-                            return
-                          }
-
-                          if (isActiveCompare) {
-                            compareDisable()
-                          } else {
-                            setIsActiveCompare(true)
-                          }
-
-                          return
-                        }
-
-                        if (pair.isCustomDate) {
-                          setTimeout(() => {
-                            // @ts-ignore
-                            refCalendar.current.openCalendar()
-                          }, 100)
-                        } else {
-                          setPeriodPairs(tbPeriodPairs(t))
-                          setDateRange(null)
-                          updatePeriod(pair)
-                        }
-                      }}
-                    />
-                    {isActiveCompare && (
-                      <>
-                        <div className='mx-2 text-md font-medium text-gray-600 whitespace-pre-line dark:text-gray-200'>
-                          vs
-                        </div>
-                        <Dropdown
-                          items={periodPairsCompare}
-                          title={activeDropdownLabelCompare}
-                          labelExtractor={(pair) => pair.label}
-                          keyExtractor={(pair) => pair.label}
-                          onSelect={(pair) => {
-                            if (pair.period === PERIOD_PAIRS_COMPARE.DISABLE) {
-                              compareDisable()
-                              return
-                            }
-
-                            if (pair.period === PERIOD_PAIRS_COMPARE.CUSTOM) {
-                              setTimeout(() => {
-                                // @ts-ignore
-                                refCalendarCompare.current.openCalendar()
-                              }, 100)
-                            } else {
-                              setPeriodPairsCompare(tbPeriodPairsCompare(t))
-                              setDateRangeCompare(null)
-                              setActivePeriodCompare(pair.period)
-                            }
-                          }}
-                        />
-                      </>
-                    )}
-                    <div className='sm:ml-3'>
-                      {activeTab === PROJECT_TABS.traffic ? (
-                        !isPanelsDataEmpty && (
+                  <div className='flex items-center mt-3 md:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 space-x-2 gap-y-1'>
+                    {activeTab === PROJECT_TABS.traffic ? (
+                      !isPanelsDataEmpty && (
                         <Dropdown
                           items={isActiveCompare ? _filter(chartMetrics, (el) => {
                             return !_includes(FILTER_CHART_METRICS_MAPPING_FOR_COMPARE, el.id)
@@ -2054,8 +1987,8 @@ const ViewProject = ({
                             switchActiveChartMetric(pairID)
                           }}
                         />
-                        )) : (
-                        !isPanelsDataEmptyPerf && (
+                      )) : (
+                      !isPanelsDataEmptyPerf && (
                         <Dropdown
                           items={chartMetricsPerf}
                           className='min-w-[170px] xs:min-w-0'
@@ -2070,9 +2003,8 @@ const ViewProject = ({
                             switchActiveChartMetric(pairID)
                           }}
                         />
-                        )
-                      )}
-                    </div>
+                      )
+                    )}
                     <Dropdown
                       items={[...exportTypes, ...customExportTypes]}
                       title={[
@@ -2086,7 +2018,74 @@ const ViewProject = ({
                       onSelect={item => item.onClick(panelsData, t)}
                       className={cx('ml-3', { hidden: isPanelsDataEmpty || analyticsLoading })}
                     />
+                    <Dropdown
+                      items={isActiveCompare ? _filter(periodPairs, (el) => {
+                        return _includes(filtersPeriodPairs, el.period)
+                      }) : _includes(filtersPeriodPairs, period) ? periodPairs : _filter(periodPairs, (el) => {
+                        return el.period !== PERIOD_PAIRS_COMPARE.COMPARE
+                      })}
+                      title={activePeriod?.label}
+                      labelExtractor={(pair) => pair.dropdownLabel || pair.label}
+                      keyExtractor={(pair) => pair.label}
+                      onSelect={(pair) => {
+                        if (pair.period === PERIOD_PAIRS_COMPARE.COMPARE) {
+                          if (activeTab !== PROJECT_TABS.traffic && activeTab !== PROJECT_TABS.performance) {
+                            return
+                          }
+
+                          if (isActiveCompare) {
+                            compareDisable()
+                          } else {
+                            setIsActiveCompare(true)
+                          }
+
+                          return
+                        }
+
+                        if (pair.isCustomDate) {
+                          setTimeout(() => {
+                            // @ts-ignore
+                            refCalendar.current.openCalendar()
+                          }, 100)
+                        } else {
+                          setPeriodPairs(tbPeriodPairs(t))
+                          setDateRange(null)
+                          updatePeriod(pair)
+                        }
+                      }}
+                    />
+                    {isActiveCompare && (
+                      <>
+                        <div className='mx-2 text-md font-medium text-gray-600 whitespace-pre-line dark:text-gray-200'>
+                          vs
+                        </div>
+                        <Dropdown
+                          items={periodPairsCompare}
+                          title={activeDropdownLabelCompare}
+                          labelExtractor={(pair) => pair.label}
+                          keyExtractor={(pair) => pair.label}
+                          onSelect={(pair) => {
+                            if (pair.period === PERIOD_PAIRS_COMPARE.DISABLE) {
+                              compareDisable()
+                              return
+                            }
+
+                            if (pair.period === PERIOD_PAIRS_COMPARE.CUSTOM) {
+                              setTimeout(() => {
+                                // @ts-ignore
+                                refCalendarCompare.current.openCalendar()
+                              }, 100)
+                            } else {
+                              setPeriodPairsCompare(tbPeriodPairsCompare(t))
+                              setDateRangeCompare(null)
+                              setActivePeriodCompare(pair.period)
+                            }
+                          }}
+                        />
+                      </>
+                    )}
                     <FlatPicker
+                      className='!mx-0'
                       ref={refCalendar}
                       onChange={setDateRange}
                       value={dateRange || []}
@@ -2094,6 +2093,7 @@ const ViewProject = ({
                       maxRange={0}
                     />
                     <FlatPicker
+                      className='!mx-0'
                       ref={refCalendarCompare}
                       onChange={(date) => {
                         setDateRangeCompare(date)
@@ -2107,8 +2107,8 @@ const ViewProject = ({
                   </div>
                 </div>
                 <div>
-                  <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-2 md:mt-5 mb-4 gap-y-1'>
-                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3'>
+                  <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-2 md:mt-5 mb-4 space-x-3 space-y-1 md:space-y-0'>
+                    <div>
                       <button
                         type='button'
                         title={t('project.refreshStats')}
@@ -2122,7 +2122,7 @@ const ViewProject = ({
                     </div>
                     {(!isSelfhosted && !isActiveCompare) && (
                       <div
-                        className={cx('md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3', {
+                        className={cx({
                           hidden: activeTab !== PROJECT_TABS.traffic || _isEmpty(chartData),
                         })}
                       >
@@ -2140,7 +2140,7 @@ const ViewProject = ({
                         </button>
                       </div>
                     )}
-                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3'>
+                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3'>
                       <button
                         type='button'
                         title={t('project.search')}
@@ -2152,38 +2152,32 @@ const ViewProject = ({
                         <MagnifyingGlassIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
                       </button>
                     </div>
-                    <div
-                      className={cx({
-                        hidden: isPanelsDataEmpty || analyticsLoading,
-                      })}
+                    <div className={cx('md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3 space-x-2', {
+                      hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled,
+                    })}
                     >
-                      <div className={cx('md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3', {
-                        hidden: checkIfAllMetricsAreDisabled,
-                      })}
+                      <button
+                        type='button'
+                        title={t('project.barChart')}
+                        onClick={() => setChartTypeOnClick(chartTypes.bar)}
+                        className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:outline-none focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
+                          'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.bar,
+                          'text-slate-500 dark:text-gray-500': chartType !== chartTypes.bar,
+                        })}
                       >
-                        <button
-                          type='button'
-                          title={t('project.barChart')}
-                          onClick={() => setChartTypeOnClick(chartTypes.bar)}
-                          className={cx('px-2.5 mr-1 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:outline-none focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
-                            'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.bar,
-                            'text-slate-500 dark:text-gray-500': chartType !== chartTypes.bar,
-                          })}
-                        >
-                          <PresentationChartBarIcon className='w-6 h-6' />
-                        </button>
-                        <button
-                          type='button'
-                          title={t('project.lineChart')}
-                          onClick={() => setChartTypeOnClick(chartTypes.line)}
-                          className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:!outline-0 focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
-                            'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.line,
-                            'text-slate-500 dark:text-gray-500': chartType !== chartTypes.line,
-                          })}
-                        >
-                          <PresentationChartLineIcon className='w-6 h-6' />
-                        </button>
-                      </div>
+                        <PresentationChartBarIcon className='w-6 h-6' />
+                      </button>
+                      <button
+                        type='button'
+                        title={t('project.lineChart')}
+                        onClick={() => setChartTypeOnClick(chartTypes.line)}
+                        className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:!outline-0 focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
+                          'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.line,
+                          'text-slate-500 dark:text-gray-500': chartType !== chartTypes.line,
+                        })}
+                      >
+                        <PresentationChartLineIcon className='w-6 h-6' />
+                      </button>
                     </div>
                     <div className='border-gray-200 dark:border-gray-600'>
                       <span className='relative z-0 inline-flex shadow-sm rounded-md'>
@@ -2247,7 +2241,7 @@ const ViewProject = ({
                     hidden: checkIfAllMetricsAreDisabled,
                   })}
                 >
-                  <div className='h-80 mt-8' id='dataChart' />
+                  <div className='h-80 mt-5 md:mt-0' id='dataChart' />
                 </div>
                 <Filters
                   filters={filters}
