@@ -48,7 +48,7 @@ import {
   tbPeriodPairs, getProjectCacheKey, LIVE_VISITORS_UPDATE_INTERVAL, DEFAULT_TIMEZONE, CDN_URL, isDevelopment,
   timeBucketToDays, getProjectCacheCustomKey, MAX_MONTHS_IN_PAST, PROJECT_TABS, TimeFormat, getProjectForcastCacheKey, chartTypes, roleAdmin,
   TRAFFIC_PANELS_ORDER, PERFORMANCE_PANELS_ORDER, isSelfhosted, tbPeriodPairsCompare, PERIOD_PAIRS_COMPARE, filtersPeriodPairs, IS_ACTIVE_COMPARE,
-  PROJECTS_PROTECTED, getProjectCacheCustomKeyPerf, isBrowser, TITLE_SUFFIX, FILTERS_PANELS_ORDER,
+  PROJECTS_PROTECTED, getProjectCacheCustomKeyPerf, isBrowser, TITLE_SUFFIX, FILTERS_PANELS_ORDER, KEY_FOR_ALL_TIME, 
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import { IProject, ILiveStats } from 'redux/models/IProject'
@@ -774,10 +774,26 @@ const ViewProject = ({
       }
 
       const {
-        chart, params, customs, appliedFilters, avgSdur,
+        chart, params, customs, appliedFilters, avgSdur, timeBuckets
       } = data
       sdkInstance?._emitEvent('load', sdkData)
       const processedSdur = getTimeFromSeconds(avgSdur)
+
+      if (period === KEY_FOR_ALL_TIME) {
+        setPeriodPairs((prev) => {
+          // find in prev state period === KEY_FOR_ALL_TIME and change tbs
+          const newPeriodPairs = _map(prev, (item) => {
+            if (item.period === KEY_FOR_ALL_TIME) {
+              return {
+                ...item,
+                tbs: timeBuckets.length > 2 ? [timeBuckets[0], timeBuckets[1]] : timeBuckets,
+              }
+            }
+            return item
+          })
+          return newPeriodPairs
+        })
+      }
 
       setSessionDurationAVG(getStringFromTime(processedSdur))
 
