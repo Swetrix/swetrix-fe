@@ -774,7 +774,7 @@ const ViewProject = ({
       }
 
       const {
-        chart, params, customs, appliedFilters, avgSdur, timeBuckets
+        chart, params, customs, appliedFilters, avgSdur, timeBuckets,
       } = data
       sdkInstance?._emitEvent('load', sdkData)
       const processedSdur = getTimeFromSeconds(avgSdur)
