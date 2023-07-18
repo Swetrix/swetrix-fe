@@ -660,7 +660,7 @@ const ViewProject = ({
 
     setDataLoading(true)
     try {
-      let data
+      let data: { timeBucket?: any; chart?: any; params?: any; customs?: any; appliedFilters?: any; avgSdur?: any }
       let dataCompare
       let key = ''
       let keyCompare = ''
@@ -774,19 +774,19 @@ const ViewProject = ({
       }
 
       const {
-        chart, params, customs, appliedFilters, avgSdur, timeBuckets,
+        chart, params, customs, appliedFilters, avgSdur,
       } = data
       sdkInstance?._emitEvent('load', sdkData)
       const processedSdur = getTimeFromSeconds(avgSdur)
 
-      if (period === KEY_FOR_ALL_TIME) {
+      if (period === KEY_FOR_ALL_TIME && !_isEmpty(data.timeBucket)) {
         setPeriodPairs((prev) => {
           // find in prev state period === KEY_FOR_ALL_TIME and change tbs
           const newPeriodPairs = _map(prev, (item) => {
             if (item.period === KEY_FOR_ALL_TIME) {
               return {
                 ...item,
-                tbs: timeBuckets.length > 2 ? [timeBuckets[0], timeBuckets[1]] : timeBuckets,
+                tbs: data.timeBucket.length > 2 ? [data.timeBucket[0], data.timeBucket[1]] : data.timeBucket,
               }
             }
             return item
