@@ -776,10 +776,13 @@ const ViewProject = ({
       const {
         chart, params, customs, appliedFilters, avgSdur,
       } = data
+      let newTimebucket = timeBucket
       sdkInstance?._emitEvent('load', sdkData)
       const processedSdur = getTimeFromSeconds(avgSdur)
 
       if (period === KEY_FOR_ALL_TIME && !_isEmpty(data.timeBucket)) {
+        // eslint-disable-next-line prefer-destructuring
+        newTimebucket = data.timeBucket[0]
         setPeriodPairs((prev) => {
           // find in prev state period === KEY_FOR_ALL_TIME and change tbs
           const newPeriodPairs = _map(prev, (item) => {
@@ -793,6 +796,7 @@ const ViewProject = ({
           })
           return newPeriodPairs
         })
+        setTimebucket(newTimebucket)
       }
 
       setSessionDurationAVG(getStringFromTime(processedSdur))
@@ -809,7 +813,7 @@ const ViewProject = ({
         setIsPanelsDataEmpty(true)
       } else {
         const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-        const bbSettings = getSettings(chart, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChart, dataCompare?.chart)
+        const bbSettings = getSettings(chart, newTimebucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChart, dataCompare?.chart)
         setChartData(chart)
 
         setPanelsData({
