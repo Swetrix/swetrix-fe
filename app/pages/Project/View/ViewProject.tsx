@@ -1554,6 +1554,10 @@ const ViewProject = ({
 
   // useEffect using for call loadAnalytics or loadAnalyticsPerf when smth dependencies changed
   useEffect(() => {
+    if (period === KEY_FOR_ALL_TIME) {
+      return
+    }
+
     if (areFiltersParsed && areTimeBucketParsed && arePeriodParsed) {
       if (activeTab === PROJECT_TABS.traffic) {
         loadAnalytics()
@@ -1731,7 +1735,7 @@ const ViewProject = ({
       // @ts-ignore
       const url = new URL(window.location)
       const { searchParams } = url
-      const intialPeriod = projectViewPrefs ? searchParams.get('period') || projectViewPrefs[id]?.period : searchParams.get('period') || '7d'
+      let intialPeriod = projectViewPrefs ? searchParams.get('period') || projectViewPrefs[id]?.period : searchParams.get('period') || '7d'
       const tab = searchParams.get('tab')
 
       if (tab === PROJECT_TABS.performance) {
@@ -1756,6 +1760,11 @@ const ViewProject = ({
 
       setPeriodPairs(tbPeriodPairs(t))
       setDateRange(null)
+
+      if (period === KEY_FOR_ALL_TIME) {
+        intialPeriod = '7d'
+      }
+
       updatePeriod({
         period: intialPeriod,
       })
