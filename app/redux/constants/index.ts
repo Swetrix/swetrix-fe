@@ -70,7 +70,7 @@ export const tbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[]
 }, {
   label: t('project.lastXMonths', { amount: 24 }),
   period: '24M',
-  tbs: ['month'],
+  tbs: ['month', 'year'],
 }, {
   label: t('project.all'),
   period: KEY_FOR_ALL_TIME,
@@ -142,24 +142,28 @@ export const tbsFormatMapper: IStringObject = {
   hour: '%I %p',
   day: '%d %b',
   month: '%b %Y',
+  year: '%Y',
 }
 
 export const tbsFormatMapperTooltip: IStringObject = {
   hour: '%d %b %I %p',
   day: '%d %b',
   month: '%b %Y',
+  year: '%Y',
 }
 
 export const tbsFormatMapperTooltip24h: IStringObject = {
   hour: '%d %b %H:%M',
   day: '%d %b',
   month: '%b %Y',
+  year: '%Y',
 }
 
 export const tbsFormatMapper24h: IStringObject = {
   hour: '%H:%M',
   day: '%d %b',
   month: '%b %Y',
+  year: '%Y',
 }
 
 export const TimeFormat: IStringObject = {
