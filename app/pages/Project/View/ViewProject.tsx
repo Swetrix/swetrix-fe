@@ -782,7 +782,7 @@ const ViewProject = ({
 
       if (period === KEY_FOR_ALL_TIME && !_isEmpty(data.timeBucket)) {
         // eslint-disable-next-line prefer-destructuring
-        newTimebucket = data.timeBucket[0]
+        newTimebucket = _includes(data.timeBucket, timeBucket) ? timeBucket : data.timeBucket[0]
         setPeriodPairs((prev) => {
           // find in prev state period === KEY_FOR_ALL_TIME and change tbs
           const newPeriodPairs = _map(prev, (item) => {
