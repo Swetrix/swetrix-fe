@@ -1,16 +1,16 @@
 import * as Swetrix from 'swetrix'
 import { isSelfhosted } from 'redux/constants'
 
-const SWETRIX_PID = 'wzfYnFORS9mb'
+const SWETRIX_PID = 'STEzHcB1rALV'
 
-Swetrix.init(SWETRIX_PID, {
-  debug: true,
-  apiURL: 'http://localhost:5005/log',
-})
+Swetrix.init(SWETRIX_PID)
 
 const trackViews = () => {
   if (!isSelfhosted) {
-    Swetrix.trackViews()
+    Swetrix.trackViews({
+      ignore: [/^\/projects/i, /^\/verify/i, /^\/password-reset/i, /^\/change-email/i, /^\/share/i, /^\/captchas/i],
+      heartbeatOnBackground: true,
+    })
   }
 }
 
