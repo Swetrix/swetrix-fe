@@ -70,7 +70,7 @@ export const tbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[]
 }, {
   label: t('project.lastXMonths', { amount: 24 }),
   period: '24M',
-  tbs: ['month', 'year'],
+  tbs: ['month'],
 }, {
   label: t('project.all'),
   period: KEY_FOR_ALL_TIME,
