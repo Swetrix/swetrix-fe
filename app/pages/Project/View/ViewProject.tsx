@@ -853,7 +853,7 @@ const ViewProject = ({
 
     setDataLoading(true)
     try {
-      let dataPerf
+      let dataPerf: { timeBucket?: any; params?: any; appliedFilters?: any; chart?: any }
       let key
       let from
       let to
@@ -945,6 +945,27 @@ const ViewProject = ({
         setDataLoading(false)
         setAnalyticsLoading(false)
         return
+      }
+
+      let newTimebucket = timeBucket
+
+      if (period === KEY_FOR_ALL_TIME && !_isEmpty(dataPerf.timeBucket)) {
+        // eslint-disable-next-line prefer-destructuring
+        newTimebucket = _includes(dataPerf.timeBucket, timeBucket) ? timeBucket : dataPerf.timeBucket[0]
+        setPeriodPairs((prev) => {
+          // find in prev state period === KEY_FOR_ALL_TIME and change tbs
+          const newPeriodPairs = _map(prev, (item) => {
+            if (item.period === KEY_FOR_ALL_TIME) {
+              return {
+                ...item,
+                tbs: dataPerf.timeBucket.length > 2 ? [dataPerf.timeBucket[0], dataPerf.timeBucket[1]] : dataPerf.timeBucket,
+              }
+            }
+            return item
+          })
+          return newPeriodPairs
+        })
+        setTimebucket(newTimebucket)
       }
 
       if (!_isEmpty(dataCompare) && !_isEmpty(dataCompare?.chart)) {
