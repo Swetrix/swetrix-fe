@@ -1570,6 +1570,24 @@ const ViewProject = ({
     }
   }, [project, period, chartType, filters, forecasedChartData, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t, activeTab, areFiltersPerfParsed]) // eslint-disable-line
 
+  useEffect(() => {
+    if (period !== KEY_FOR_ALL_TIME) {
+      return
+    }
+
+    if (areFiltersParsed && areTimeBucketParsed && arePeriodParsed) {
+      if (activeTab === PROJECT_TABS.traffic) {
+        loadAnalytics()
+      }
+    }
+    if (areFiltersPerfParsed && areTimeBucketParsed && arePeriodParsed) {
+      if (activeTab === PROJECT_TABS.performance) {
+        loadAnalyticsPerf()
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project, period, chartType, filters, forecasedChartData, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, activeTab, areFiltersPerfParsed])
+
   // using this for fix some bugs with update custom events data for chart
   useEffect(() => {
     if (!_isEmpty(activeChartMetricsCustomEvents)) {
@@ -1735,7 +1753,7 @@ const ViewProject = ({
       // @ts-ignore
       const url = new URL(window.location)
       const { searchParams } = url
-      let intialPeriod = projectViewPrefs ? searchParams.get('period') || projectViewPrefs[id]?.period : searchParams.get('period') || '7d'
+      const intialPeriod = projectViewPrefs ? searchParams.get('period') || projectViewPrefs[id]?.period : searchParams.get('period') || '7d'
       const tab = searchParams.get('tab')
 
       if (tab === PROJECT_TABS.performance) {
@@ -1760,11 +1778,6 @@ const ViewProject = ({
 
       setPeriodPairs(tbPeriodPairs(t))
       setDateRange(null)
-
-      if (period === KEY_FOR_ALL_TIME) {
-        intialPeriod = '7d'
-      }
-
       updatePeriod({
         period: intialPeriod,
       })
