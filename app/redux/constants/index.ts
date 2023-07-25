@@ -381,6 +381,7 @@ export const QUERY_METRIC: IStringObject = {
   PAGE_VIEWS: 'page_views',
   UNIQUE_PAGE_VIEWS: 'unique_page_views',
   ONLINE_USERS: 'online_users',
+  CUSTOM_EVENT: 'custom_event',
 }
 
 export const QUERY_CONDITION: IStringObject = {
