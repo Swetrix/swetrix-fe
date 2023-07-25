@@ -21,7 +21,7 @@ import { ISubscribers } from 'redux/models/ISubscribers'
 
 const debug = Debug('swetrix:api')
 
-const baseURL: string = isSelfhosted ? window.env.API_URL : API_URL
+const baseURL: string = isSelfhosted ? window?.env?.API_URL : API_URL
 
 const api = axios.create({
   baseURL,
