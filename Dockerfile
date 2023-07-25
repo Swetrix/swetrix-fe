@@ -1,7 +1,7 @@
 # Stage 1
 FROM node:lts-alpine as build
 ENV TZ=Etc/UTC \
-    REACT_APP_SELFHOSTED=true \
+    SELFHOSTED=true \
     CHOKIDAR_USEPOLLING=true \
     GENERATE_SOURCEMAP=false
 RUN apk add --no-cache tzdata && cp /usr/share/zoneinfo/$TZ /etc/localtime
