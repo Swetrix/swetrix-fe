@@ -15,8 +15,8 @@ FROM nginx:stable-alpine
 ENV TZ=Etc/UTC
 RUN apk add --no-cache tzdata && cp /usr/share/zoneinfo/$TZ /etc/localtime
 RUN rm -rf /usr/share/nginx/html/*
-COPY --from=build /app/build /usr/share/nginx/html
 COPY --from=build /app/deployment/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/deployment/50-substitute-env-variables.sh /docker-entrypoint.d/
 EXPOSE 80
-HEALTHCHECK CMD curl -f http://localhost/ || exit 
+ENV NODE_ENV=production
+CMD ["npm", "run", "start"]
