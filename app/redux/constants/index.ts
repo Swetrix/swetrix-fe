@@ -253,7 +253,7 @@ export const NODE_ENV = isBrowser ? window.REMIX_ENV?.NODE_ENV : process.env.NOD
 
 export const isDevelopment = !NODE_ENV || NODE_ENV === 'development'
 export const isSelfhosted = Boolean(
-  isBrowser ? window.REMIX_ENV?.SELFHOSTED : process.env.SELFHOSTED,
+  isBrowser ? window.REMIX_ENV?.SELFHOSTED : process.env.REACT_APP_SELFHOSTED,
 )
 
 // Functions
