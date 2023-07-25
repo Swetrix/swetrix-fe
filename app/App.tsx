@@ -17,7 +17,6 @@ import Footer from 'components/Footer'
 import Loader from 'ui/Loader'
 
 import ScrollToTop from 'hoc/ScrollToTop'
-import Selfhosted from 'hoc/Selfhosted'
 import { getAccessToken } from 'utils/accessToken'
 import { authActions } from 'redux/reducers/auth'
 import sagaActions from 'redux/sagas/actions'
