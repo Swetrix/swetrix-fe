@@ -20,3 +20,4 @@ COPY --from=build /app/deployment/50-substitute-env-variables.sh /docker-entrypo
 EXPOSE 80
 ENV NODE_ENV=production
 CMD ["npm", "run", "start"]
+HEALTHCHECK CMD curl -f http://localhost/ || exit 1
