@@ -144,11 +144,9 @@ const App: React.FC<IApp> = ({ ssrTheme, ssrAuthenticated }) => {
       )}
       {/* @ts-ignore */}
       <ScrollToTop>
-        <Selfhosted>
-          <Suspense fallback={<Fallback isMinimalFooter={isMinimalFooter} />}>
-            <Outlet />
-          </Suspense>
-        </Selfhosted>
+        <Suspense fallback={<Fallback isMinimalFooter={isMinimalFooter} />}>
+          <Outlet />
+        </Suspense>
       </ScrollToTop>
       <Footer minimal={isMinimalFooter} authenticated={authenticated} />
     </Suspense>
