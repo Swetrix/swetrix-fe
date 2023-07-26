@@ -252,6 +252,7 @@ export default function App() {
             )}`,
           }}
         />
+        <script src='/env.js' />
       </head>
       <body
         className={clsx({

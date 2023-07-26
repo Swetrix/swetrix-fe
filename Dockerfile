@@ -9,6 +9,8 @@ WORKDIR /app
 COPY . .
 RUN chmod +x ./deployment/50-substitute-env-variables.sh
 RUN npm install -g pnpm && pnpm install && npm run build
+ENV NODE_ENV=production
+CMD ["npm", "run", "start"]
 
 # Stage 2
 FROM nginx:stable-alpine
@@ -18,6 +20,4 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=build /app/deployment/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/deployment/50-substitute-env-variables.sh /docker-entrypoint.d/
 EXPOSE 80
-ENV NODE_ENV=production
-CMD ["npm", "run", "start"]
 HEALTHCHECK CMD curl -f http://localhost/ || exit 1
