@@ -683,7 +683,7 @@ const ViewProject = ({
                   </span>
                 </div>
                 <Dropdown
-                  items={periodPairs}
+                  items={_filter(periodPairs, (item) => !_includes(['all', '1h'], item.period))}
                   title={activePeriod.label}
                   labelExtractor={(pair) => pair.dropdownLabel || pair.label}
                   keyExtractor={(pair) => pair.label}
