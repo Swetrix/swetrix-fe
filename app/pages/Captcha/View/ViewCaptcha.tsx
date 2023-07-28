@@ -830,8 +830,6 @@ const ViewProject = ({
                   const panelIcon = panelIconMapping[type]
 
                   if (type === 'cc') {
-                    const ccPanelName = tnMapping[type]
-
                     const rowMapper = (entry: any) => {
                       const { name: entryName, cc } = entry
 
