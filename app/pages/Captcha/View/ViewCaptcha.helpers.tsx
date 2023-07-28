@@ -170,7 +170,7 @@ const getSettings = (chart: any, timeBucket: string, activeChartMetrics: {
     },
     axis: {
       x: {
-        clipPath: false,
+        clipPath: true,
         tick: {
           fit: true,
           rotate: rotateXAxias ? 45 : 0,
