@@ -56,7 +56,6 @@ import CCRow from './components/CCRow'
 import RefRow from './components/RefRow'
 import NoEvents from './components/NoEvents'
 import Filters from './components/Filters'
-import CountryDropdown from 'pages/Project/View/components/CountryDropdown'
 
 const ViewProject = ({
   projects, isLoading: _isLoading, showError, cache, setProjectCache, projectViewPrefs, setProjectViewPrefs, authenticated, user, setProjects, liveStats,
@@ -801,7 +800,7 @@ const ViewProject = ({
             {(isPanelsDataEmpty) && (
               <NoEvents filters={filters} resetFilters={resetFilters} />
             )}
-            <div className={cx('pt-4 md:pt-0 max-w-[1584px]', { hidden: isPanelsDataEmpty || analyticsLoading })}>
+            <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
               <div
                 className={cx('h-80', {
                   hidden: checkIfAllMetricsAreDisabled,
