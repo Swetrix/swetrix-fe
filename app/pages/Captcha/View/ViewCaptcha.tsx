@@ -56,6 +56,7 @@ import CCRow from './components/CCRow'
 import RefRow from './components/RefRow'
 import NoEvents from './components/NoEvents'
 import Filters from './components/Filters'
+import CountryDropdown from 'pages/Project/View/components/CountryDropdown'
 
 const ViewProject = ({
   projects, isLoading: _isLoading, showError, cache, setProjectCache, projectViewPrefs, setProjectViewPrefs, authenticated, user, setProjects, liveStats,
@@ -789,7 +790,7 @@ const ViewProject = ({
             {(isPanelsDataEmpty) && (
               <NoEvents filters={filters} resetFilters={resetFilters} />
             )}
-            <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
+            <div className={cx('pt-4 md:pt-0 max-w-[1584px]', { hidden: isPanelsDataEmpty || analyticsLoading })}>
               <div
                 className={cx('h-80', {
                   hidden: checkIfAllMetricsAreDisabled,
@@ -804,12 +805,12 @@ const ViewProject = ({
                 tnMapping={tnMapping}
               />
               {dataLoading && (
-              <div className='loader bg-transparent static mt-4' id='loader'>
-                <div className='loader-head dark:bg-slate-800'>
-                  <div className='first dark:bg-slate-600' />
-                  <div className='second dark:bg-slate-600' />
+                <div className='!bg-transparent static mt-4' id='loader'>
+                  <div className='loader-head dark:!bg-slate-800'>
+                    <div className='first dark:!bg-slate-600' />
+                    <div className='second dark:!bg-slate-600' />
+                  </div>
                 </div>
-              </div>
               )}
               <div className='mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
                 {/* {!_isEmpty(project.overall) && (
@@ -829,18 +830,32 @@ const ViewProject = ({
                   const panelIcon = panelIconMapping[type]
 
                   if (type === 'cc') {
+                    const ccPanelName = tnMapping[type]
+
+                    const rowMapper = (entry: any) => {
+                      const { name: entryName, cc } = entry
+
+                      if (cc) {
+                        return (
+                          <CCRow cc={cc} name={entryName} language={language} />
+                        )
+                      }
+
+                      return (
+                        <CCRow cc={entryName} language={language} />
+                      )
+                    }
+
                     return (
                       <Panel
                         t={t}
+                        key={type}
                         icon={panelIcon}
                         id={type}
-                        key={type}
                         onFilter={filterHandler}
                         name={panelName}
                         data={panelsData.data[type]}
-                        rowMapper={({ name: entryName, cc }) => (
-                          <CCRow cc={cc} name={entryName} language={language} />
-                        )}
+                        rowMapper={rowMapper}
                       />
                     )
                   }
