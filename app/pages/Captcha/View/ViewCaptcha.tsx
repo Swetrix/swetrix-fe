@@ -50,13 +50,12 @@ import {
 } from './Panels'
 import {
   onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
-  validTimeBacket, noRegionPeriods, getSettings, CHART_METRICS_MAPPING,
+  validTimeBacket, noRegionPeriods, getSettings, CHART_METRICS_MAPPING, getColumns
 } from './ViewCaptcha.helpers'
 import CCRow from './components/CCRow'
 import RefRow from './components/RefRow'
 import NoEvents from './components/NoEvents'
 import Filters from './components/Filters'
-import CountryDropdown from 'pages/Project/View/components/CountryDropdown'
 
 const ViewProject = ({
   projects, isLoading: _isLoading, showError, cache, setProjectCache, projectViewPrefs, setProjectViewPrefs, authenticated, user, setProjects, liveStats,
@@ -127,6 +126,7 @@ const ViewProject = ({
   const [ref, size] = useSize() as any
   const rotateXAxias = useMemo(() => (size.width > 0 && size.width < 500), [size])
   const [chartType, setChartType] = useState<string>(getItem('chartType') as string || chartTypes.line)
+  const [mainChart, setMainChart] = useState<any>(null)
 
   const { name } = project as IProject
 
@@ -253,10 +253,12 @@ const ViewProject = ({
           customs,
         })
 
-        const generete = bb.generate(bbSettings)
-        generete.data.names(dataNames)
-
         setIsPanelsDataEmpty(false)
+        setMainChart(() => {
+          const generete = bb.generate(bbSettings)
+          generete.data.names(dataNames)
+          return generete
+        })
       }
 
       setAnalyticsLoading(false)
@@ -269,6 +271,14 @@ const ViewProject = ({
       console.error(e)
     }
   }
+
+  useEffect(() => {
+    if (mainChart) {
+      mainChart.load({
+        columns: getColumns({ ...chartData }, activeChartMetrics),
+      })
+    }
+  }, [chartData])
 
   // this funtion is used for requesting the data from the API when the filter is changed
   const filterHandler = (column: any, filter: any, isExclusive: boolean = false) => {
@@ -790,7 +800,7 @@ const ViewProject = ({
             {(isPanelsDataEmpty) && (
               <NoEvents filters={filters} resetFilters={resetFilters} />
             )}
-            <div className={cx('pt-4 md:pt-0 max-w-[1584px]', { hidden: isPanelsDataEmpty || analyticsLoading })}>
+            <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
               <div
                 className={cx('h-80', {
                   hidden: checkIfAllMetricsAreDisabled,
