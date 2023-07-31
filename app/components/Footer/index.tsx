@@ -1,7 +1,8 @@
 import React, { memo } from 'react'
-import { Link } from '@remix-run/react'
+import { Link, useLocation } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 import _map from 'lodash/map'
+import _startsWith from 'lodash/startsWith'
 import Flag from 'react-flagkit'
 import PropTypes from 'prop-types'
 
@@ -125,7 +126,7 @@ const SelfHostedFooter = () => {
   const { t } = useTranslation('common')
 
   return (
-    <footer className='bg-gray-800 dark:bg-slate-900 dark:border-t dark:border-slate-800/50'>
+    <footer className='bg-gray-50 dark:bg-slate-900 border-t border-gray-200 dark:border-slate-800/50'>
       <div className='max-w-7xl mx-auto py-8 px-4 overflow-hidden sm:px-6 lg:px-8'>
         <nav className='-mx-5 -my-2 flex flex-wrap justify-center' aria-label='Footer'>
           <div className='px-5 py-2'>
@@ -160,6 +161,7 @@ const Footer = ({ minimal, authenticated }: {
 }): JSX.Element => {
   const { t, i18n: { language } } = useTranslation('common')
   const year = new Date().getFullYear()
+  const location = useLocation()
 
   if (isSelfhosted) {
     return <SelfHostedFooter />
@@ -195,15 +197,17 @@ const Footer = ({ minimal, authenticated }: {
                 {t('footer.status')}
               </a>
             </div>
-            <a
-              className='absolute -bottom-5 leading-6 text-slate-900 dark:text-gray-300 hover:text-slate-700 dark:hover:text-white'
-              target='_blank'
-              rel='noopener noreferrer'
-              href='https://db-ip.com'
-              aria-label='IP Geolocation by DB-IP (opens in a new tab)'
-            >
-              IP Geolocation by DB-IP
-            </a>
+            {_startsWith(location.pathname, '/projects/') && (
+              <a
+                className='absolute -bottom-5 leading-6 text-slate-900 dark:text-gray-300 hover:text-slate-700 dark:hover:text-white'
+                target='_blank'
+                rel='noopener noreferrer'
+                href='https://db-ip.com'
+                aria-label='IP Geolocation by DB-IP (opens in a new tab)'
+              >
+                IP Geolocation by DB-IP
+              </a>
+            )}
           </nav>
         </div>
       </footer>

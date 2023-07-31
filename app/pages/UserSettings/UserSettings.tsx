@@ -649,15 +649,17 @@ const UserSettings = ({
                       handleIntegrationSave={handleIntegrationSave}
                       genericError={genericError}
                     />
-                    <Checkbox
-                      checked={user.receiveLoginNotifications}
-                      onChange={handleReceiveLoginNotifications}
-                      disabled={settingUpdating}
-                      name='active'
-                      id='active'
-                      className='mt-4'
-                      label={t('profileSettings.receiveLoginNotifications')}
-                    />
+                    {user.isTelegramChatIdConfirmed && (
+                      <Checkbox
+                        checked={user.receiveLoginNotifications}
+                        onChange={handleReceiveLoginNotifications}
+                        disabled={settingUpdating}
+                        name='receiveLoginNotifications'
+                        id='receiveLoginNotifications'
+                        className='mt-4'
+                        label={t('profileSettings.receiveLoginNotifications')}
+                      />
+                    )}
                     <hr className='mt-5 border-gray-200 dark:border-gray-600' />
 
                     {/* API access setup */}
@@ -821,17 +823,6 @@ const UserSettings = ({
                         <>
                           <ArrowDownTrayIcon className='w-5 h-5 mr-1' />
                           {t('profileSettings.requestExport')}
-                        </>
-                      </Button>
-                      <Button
-                        className='ml-3'
-                        onClick={() => setShowModal(true)}
-                        semiSmall
-                        danger
-                      >
-                        <>
-                          <ExclamationTriangleIcon className='w-5 h-5 mr-1' />
-                          {t('profileSettings.delete')}
                         </>
                       </Button>
                       <div className='flex justify-center flex-wrap gap-2'>

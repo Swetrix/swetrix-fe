@@ -1,6 +1,6 @@
 /* eslint-disable react/forbid-prop-types, react/no-unstable-nested-components, react/display-name */
 import React, {
-  useState, useEffect, useMemo, memo, useRef, Fragment,
+  useState, useEffect, useMemo, memo, Fragment, useRef,
 } from 'react'
 import useSize from 'hooks/useSize'
 import { useNavigate, useParams, Link } from '@remix-run/react'
@@ -32,7 +32,7 @@ import { getItem, setItem } from 'utils/localstorage'
 import EventsRunningOutBanner from 'components/EventsRunningOutBanner'
 import {
   tbPeriodPairs, getProjectCaptchaCacheKey, timeBucketToDays, getProjectCacheCustomKey, roleAdmin,
-  MAX_MONTHS_IN_PAST, TimeFormat, chartTypes, TITLE_SUFFIX,
+  MAX_MONTHS_IN_PAST, TimeFormat, chartTypes, TITLE_SUFFIX, KEY_FOR_ALL_TIME,
 } from 'redux/constants'
 import { ICaptchaProject, IProject, ILiveStats } from 'redux/models/IProject'
 import { IUser } from 'redux/models/IUser'
@@ -50,7 +50,7 @@ import {
 } from './Panels'
 import {
   onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
-  validTimeBacket, noRegionPeriods, getSettings, CHART_METRICS_MAPPING,
+  validTimeBacket, noRegionPeriods, getSettings, CHART_METRICS_MAPPING, getColumns
 } from './ViewCaptcha.helpers'
 import CCRow from './components/CCRow'
 import RefRow from './components/RefRow'
@@ -126,6 +126,7 @@ const ViewProject = ({
   const [ref, size] = useSize() as any
   const rotateXAxias = useMemo(() => (size.width > 0 && size.width < 500), [size])
   const [chartType, setChartType] = useState<string>(getItem('chartType') as string || chartTypes.line)
+  const [mainChart, setMainChart] = useState<any>(null)
 
   const { name } = project as IProject
 
@@ -211,18 +212,39 @@ const ViewProject = ({
       }
 
       const {
-        chart, params, customs, appliedFilters,
+        chart, params, customs, appliedFilters, timeBucket: timeBucketFromResponse,
       } = data
+
+      let newTimebucket = timeBucket
 
       if (!_isEmpty(appliedFilters)) {
         setFilters(appliedFilters)
+      }
+
+      if (period === KEY_FOR_ALL_TIME && !_isEmpty(timeBucketFromResponse)) {
+        // eslint-disable-next-line prefer-destructuring
+        newTimebucket = _includes(timeBucketFromResponse, timeBucket) ? timeBucket : timeBucketFromResponse[0]
+        setPeriodPairs((prev) => {
+          // find in prev state period === KEY_FOR_ALL_TIME and change tbs
+          const newPeriodPairs = _map(prev, (item) => {
+            if (item.period === KEY_FOR_ALL_TIME) {
+              return {
+                ...item,
+                tbs: timeBucketFromResponse.length > 2 ? [timeBucketFromResponse[0], timeBucketFromResponse[1]] : timeBucketFromResponse,
+              }
+            }
+            return item
+          })
+          return newPeriodPairs
+        })
+        setTimebucket(newTimebucket)
       }
 
       if (_isEmpty(params)) {
         setIsPanelsDataEmpty(true)
       } else {
         const applyRegions = !_includes(noRegionPeriods, activePeriod.period)
-        const bbSettings: any = getSettings(chart, timeBucket, activeChartMetrics, applyRegions, timeFormat, rotateXAxias, chartType)
+        const bbSettings: any = getSettings(chart, newTimebucket, activeChartMetrics, applyRegions, timeFormat, rotateXAxias, chartType)
         setChartData(chart)
 
         setPanelsData({
@@ -231,10 +253,12 @@ const ViewProject = ({
           customs,
         })
 
-        const generete = bb.generate(bbSettings)
-        generete.data.names(dataNames)
-
         setIsPanelsDataEmpty(false)
+        setMainChart(() => {
+          const generete = bb.generate(bbSettings)
+          generete.data.names(dataNames)
+          return generete
+        })
       }
 
       setAnalyticsLoading(false)
@@ -249,9 +273,12 @@ const ViewProject = ({
   }
 
   useEffect(() => {
-    loadAnalytics()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chartType])
+    if (mainChart) {
+      mainChart.load({
+        columns: getColumns({ ...chartData }, activeChartMetrics),
+      })
+    }
+  }, [chartData])
 
   // this funtion is used for requesting the data from the API when the filter is changed
   const filterHandler = (column: any, filter: any, isExclusive: boolean = false) => {
@@ -417,10 +444,25 @@ const ViewProject = ({
   }
 
   useEffect(() => {
+    if (period !== KEY_FOR_ALL_TIME) {
+      return
+    }
+
     if (areFiltersParsed && areTimeBucketParsed && arePeriodParsed) {
       loadAnalytics()
     }
-  }, [project, period, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t]) // eslint-disable-line
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project, period, chartType, filters, arePeriodParsed])
+
+  useEffect(() => {
+    if (period === KEY_FOR_ALL_TIME) {
+      return
+    }
+
+    if (areFiltersParsed && areTimeBucketParsed && arePeriodParsed) {
+      loadAnalytics()
+    }
+  }, [project, period, chartType, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t]) // eslint-disable-line
 
   useEffect(() => {
     if (dateRange && arePeriodParsed) {
@@ -641,7 +683,7 @@ const ViewProject = ({
                   </span>
                 </div>
                 <Dropdown
-                  items={periodPairs}
+                  items={_filter(periodPairs, (item) => !_includes(['all', '1h'], item.period))}
                   title={activePeriod.label}
                   labelExtractor={(pair) => pair.dropdownLabel || pair.label}
                   keyExtractor={(pair) => pair.label}
@@ -773,12 +815,12 @@ const ViewProject = ({
                 tnMapping={tnMapping}
               />
               {dataLoading && (
-              <div className='loader bg-transparent static mt-4' id='loader'>
-                <div className='loader-head dark:bg-slate-800'>
-                  <div className='first dark:bg-slate-600' />
-                  <div className='second dark:bg-slate-600' />
+                <div className='!bg-transparent static mt-4' id='loader'>
+                  <div className='loader-head dark:!bg-slate-800'>
+                    <div className='first dark:!bg-slate-600' />
+                    <div className='second dark:!bg-slate-600' />
+                  </div>
                 </div>
-              </div>
               )}
               <div className='mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
                 {/* {!_isEmpty(project.overall) && (
@@ -798,18 +840,30 @@ const ViewProject = ({
                   const panelIcon = panelIconMapping[type]
 
                   if (type === 'cc') {
+                    const rowMapper = (entry: any) => {
+                      const { name: entryName, cc } = entry
+
+                      if (cc) {
+                        return (
+                          <CCRow cc={cc} name={entryName} language={language} />
+                        )
+                      }
+
+                      return (
+                        <CCRow cc={entryName} language={language} />
+                      )
+                    }
+
                     return (
                       <Panel
                         t={t}
+                        key={type}
                         icon={panelIcon}
                         id={type}
-                        key={type}
                         onFilter={filterHandler}
                         name={panelName}
                         data={panelsData.data[type]}
-                        rowMapper={({ name: entryName, cc }) => (
-                          <CCRow cc={cc} name={entryName} language={language} />
-                        )}
+                        rowMapper={rowMapper}
                       />
                     )
                   }

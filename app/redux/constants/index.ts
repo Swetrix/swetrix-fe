@@ -21,6 +21,8 @@ export const FORECAST_MAX_MAPPING: {
   month: 12,
 }
 
+export const KEY_FOR_ALL_TIME = 'all'
+
 export const tbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[]): {
   label: string
   period: string
@@ -29,6 +31,10 @@ export const tbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[]
   dropdownLabel?: string
   isCustomDate?: boolean
 }[] => [{
+  label: t('project.thisHour'),
+  period: '1h',
+  tbs: ['minute'],
+}, {
   label: t('project.today'),
   period: 'today',
   tbs: ['hour'],
@@ -66,6 +72,10 @@ export const tbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[]
   period: '24M',
   tbs: ['month'],
 }, {
+  label: t('project.all'),
+  period: KEY_FOR_ALL_TIME,
+  tbs: ['month', 'year'],
+}, {
   label: dates ? getCustomLabel(dates, t) : t('project.custom'),
   dropdownLabel: t('project.custom'),
   isCustomDate: true,
@@ -77,7 +87,7 @@ export const tbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[]
   tbs: tbs || ['custom'],
 }]
 
-export const filtersPeriodPairs = ['1d', '7d', '4w', '3M', '12M', 'custom', 'compare']
+export const filtersPeriodPairs = ['1h', '1d', '7d', '4w', '3M', '12M', 'custom', 'compare']
 
 export const tbPeriodPairsCompare = (t: Function, dates?: Date[]): {
   label: string
@@ -121,6 +131,7 @@ export const timeBucketToDays: {
   lt: number
   tb: string[]
 }[] = [
+  // { lt: 0, tb: ['minute'] }, // 1 hour
   { lt: 1, tb: ['hour'] }, // 1 days
   { lt: 7, tb: ['hour', 'day'] }, // 7 days
   { lt: 28, tb: ['day'] }, // 4 weeks
@@ -129,27 +140,35 @@ export const timeBucketToDays: {
 ]
 
 export const tbsFormatMapper: IStringObject = {
+  minute: '%I:%M %p',
   hour: '%I %p',
   day: '%d %b',
   month: '%b %Y',
+  year: '%Y',
 }
 
 export const tbsFormatMapperTooltip: IStringObject = {
+  minute: '%I:%M %p',
   hour: '%d %b %I %p',
   day: '%d %b',
   month: '%b %Y',
+  year: '%Y',
 }
 
 export const tbsFormatMapperTooltip24h: IStringObject = {
+  minute: '%H:%M',
   hour: '%d %b %H:%M',
   day: '%d %b',
   month: '%b %Y',
+  year: '%Y',
 }
 
 export const tbsFormatMapper24h: IStringObject = {
+  minute: '%H:%M',
   hour: '%H:%M',
   day: '%d %b',
   month: '%b %Y',
+  year: '%Y',
 }
 
 export const TimeFormat: IStringObject = {
