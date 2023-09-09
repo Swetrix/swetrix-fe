@@ -159,7 +159,19 @@ const PanelContainer = ({
           </>
         )}
 
-        {(type === 'pg' && activeTab !== PROJECT_TABS.performance) && (
+        {/* if this tab using Circle showing stats panel */}
+        {(type === 'ce' || type === 'os' || type === 'br' || type === 'dv') && (
+          <ChartPieIcon
+            className={cx(iconClassName, 'ml-2 cursor-pointer', {
+              'text-slate-900 dark:text-gray-50': activeFragment === 1,
+              'text-slate-400 dark:text-slate-500': _isString(activeFragment) || activeFragment === 0,
+            })}
+            onClick={() => setActiveFragment(1)}
+          />
+        )}
+
+        {/* user (or custom events) flow icons */}
+        {((type === 'pg' || type === 'ce') && activeTab !== PROJECT_TABS.performance) && (
           <>
             <RectangleGroupIcon
               className={cx(iconClassName, 'ml-2 cursor-pointer', {
@@ -175,17 +187,6 @@ const PanelContainer = ({
               onClick={openModal}
             />
           </>
-        )}
-
-        {/* if this tab using Circle showing stats panel */}
-        {(type === 'ce' || type === 'os' || type === 'br' || type === 'dv') && (
-          <ChartPieIcon
-            className={cx(iconClassName, 'ml-2 cursor-pointer', {
-              'text-slate-900 dark:text-gray-50': activeFragment === 1,
-              'text-slate-400 dark:text-slate-500': _isString(activeFragment) || activeFragment === 0,
-            })}
-            onClick={() => setActiveFragment(1)}
-          />
         )}
         {checkCustomTabs(type, customTabs) && (
           <>
@@ -665,6 +666,20 @@ const CustomEvents = ({
             current='panels-ce'
           />
         )}
+      </PanelContainer>
+    )
+  }
+
+  // for showing custom events flow
+  if (activeFragment === 2) {
+    return (
+      <PanelContainer
+        name={t('project.customEv')}
+        type='ce'
+        setActiveFragment={setActiveFragment}
+        activeFragment={activeFragment}
+      >
+        TODO
       </PanelContainer>
     )
   }
