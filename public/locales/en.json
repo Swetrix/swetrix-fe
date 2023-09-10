@@ -544,7 +544,7 @@
       "page_views": "Page views",
       "unique_page_views": "Unique sessions",
       "online_users": "Online users",
-      "custom_event": "Custom event"
+      "custom_events": "Custom events"
     }
   },
   "notFoundPage": {
