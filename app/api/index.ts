@@ -11,7 +11,7 @@ import { authActions } from 'redux/reducers/auth'
 import sagaActions from 'redux/sagas/actions'
 import { getAccessToken, removeAccessToken, setAccessToken } from 'utils/accessToken'
 import { getRefreshToken, removeRefreshToken } from 'utils/refreshToken'
-import { DEFAULT_ALERTS_TAKE, isSelfhosted, API_URL } from 'redux/constants'
+import { DEFAULT_ALERTS_TAKE, isSelfhosted, isBrowser, API_URL } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import { IAuth } from 'redux/models/IAuth'
 import { IProject, IOverall, IProjectNames } from 'redux/models/IProject'
@@ -21,7 +21,7 @@ import { ISubscribers } from 'redux/models/ISubscribers'
 
 const debug = Debug('swetrix:api')
 
-const baseURL: string = isSelfhosted ? window.env.API_URL : API_URL
+const baseURL: string = isSelfhosted ? (isBrowser ? window.env.API_URL : null) : API_URL
 
 const api = axios.create({
   baseURL,
@@ -150,9 +150,13 @@ export const signup = (data: {
       throw new Error(errorsArray)
     })
 
-export const deleteUser = () =>
+export const deleteUser = (deletionFeedback?: string) =>
   api
-    .delete('/user')
+    .delete('/user', {
+      data: {
+        feedback: deletionFeedback,
+      },
+    })
     .then((response): {} => response.data)
     .catch((error) => {
       throw new Error(JSON.stringify(error.response.data))
