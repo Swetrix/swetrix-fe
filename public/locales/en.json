@@ -512,6 +512,7 @@
   },
   "alert": {
     "create": "Create an alert",
+    "customEvent": "Custom event name",
     "add": "Add Alert",
     "delete": "Delete alert",
 		"noNameError": "Please enter a name for the alert.",
@@ -542,7 +543,8 @@
     "metrics": {
       "page_views": "Page views",
       "unique_page_views": "Unique sessions",
-      "online_users": "Online users"
+      "online_users": "Online users",
+      "custom_event": "Custom event"
     }
   },
   "notFoundPage": {

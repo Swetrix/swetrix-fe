@@ -148,7 +148,7 @@ const ProjectAlertsSettings = ({
       allErrors.name = t('alert.noNameError')
     }
 
-    if (form.queryMetric === QUERY_METRIC.CUSTOM_EVENT && _isEmpty(form.queryCustomEvent)) {
+    if (form.queryMetric === QUERY_METRIC.CUSTOM_EVENTS && _isEmpty(form.queryCustomEvent)) {
       allErrors.queryCustomEvent = t('alert.noCustomEventError')
     }
 
@@ -297,7 +297,7 @@ const ProjectAlertsSettings = ({
             }}
           />
         </div>
-        {form.queryMetric === QUERY_METRIC.CUSTOM_EVENT && (
+        {form.queryMetric === QUERY_METRIC.CUSTOM_EVENTS && (
           <Input
             name='queryCustomEvent'
             id='queryCustomEvent'
