@@ -465,6 +465,11 @@
     "showVisitorsInTitle": "Show live visitors in the page title",
     "uiSettings": "UI Settings"
   },
+  "alertsSettings": {
+    "alertCreated": "The alert has been created",
+    "alertUpdated": "The alert has been updated",
+    "alertDeleted": "The alert has been deleted"
+  },
   "dashboard": {
     "newProject": "New project",
     "newCaptchaProject": "New CAPTCHA project",
