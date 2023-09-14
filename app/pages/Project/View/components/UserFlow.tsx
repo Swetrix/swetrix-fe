@@ -9,6 +9,7 @@ import _isEmpty from 'lodash/isEmpty'
 import { getUserFlowCacheKey, PROJECTS_PROTECTED } from 'redux/constants'
 import { getUserFlow } from 'api'
 import { getItem } from 'utils/localstorage'
+import localizationNotification from 'utils/localizationNotification'
 import Loader from 'ui/Loader'
 
 const mapStateToProps = (state: StateType) => ({
@@ -64,7 +65,9 @@ const UserFlow = ({
   setUserFlowAscending: (data: IUserFlow, id: string, pd: string, fltr: any) => void
   setUserFlowDescending: (data: IUserFlow, id: string, pd: string, fltr: any) => void
   generateError: (message: string) => void
-  t: (key: string) => string
+  t: (key: string, param?: {
+    [key: string]: string | number,
+  }) => string
   filters: string[]
   setReversed: () => void
   password: {
@@ -89,8 +92,8 @@ const UserFlow = ({
         setUserFlowAscending(ascending, pid, period, filters)
         setUserFlowDescending(descending, pid, period, filters)
       })
-      .catch((err: Error) => {
-        generateError(err.message)
+      .catch((err: any) => {
+        generateError(t(localizationNotification(err), err.params))
       })
       .finally(() => {
         setIsLoading(false)

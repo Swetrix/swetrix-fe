@@ -10,6 +10,7 @@ import { withAuthentication, auth } from 'hoc/protected'
 import routes from 'routesPath'
 import Input from 'ui/Input'
 import Button from 'ui/Button'
+import localizationNotification from 'utils/localizationNotification'
 import { isValidPassword, MIN_PASSWORD_CHARS, MAX_PASSWORD_CHARS } from 'utils/validator'
 
 interface FormSubmitData {
@@ -78,7 +79,7 @@ const CreateNewPassword = ({
         newPassword(t('auth.recovery.updated'))
         navigate(routes.signin)
       } catch (e: any) {
-        createNewPasswordFailed(e.toString())
+        createNewPasswordFailed(t(localizationNotification(e), e.params))
       } finally {
         setIsLoading(false)
       }

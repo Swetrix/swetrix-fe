@@ -9,6 +9,7 @@ import { withAuthentication, auth } from 'hoc/protected'
 import routes from 'routesPath'
 import Input from 'ui/Input'
 import Button from 'ui/Button'
+import localizationNotification from 'utils/localizationNotification'
 import { isValidEmail } from 'utils/validator'
 
 const ForgotPassword = ({
@@ -18,7 +19,9 @@ const ForgotPassword = ({
   newPassword: (message: string) => void,
 }): JSX.Element => {
   const { t }: {
-    t: (key: string) => string,
+    t: (key: string, param?: {
+      [key: string]: string | number,
+    }) => string,
   } = useTranslation('common')
   const navigate = useNavigate()
   const [form, setForm] = useState<{
@@ -64,7 +67,7 @@ const ForgotPassword = ({
         newPassword(t('auth.forgot.sent'))
         navigate(routes.main)
       } catch (e: any) {
-        createNewPasswordFailed(e.toString())
+        createNewPasswordFailed(t(localizationNotification(e), e.params))
       } finally {
         setIsLoading(false)
       }
