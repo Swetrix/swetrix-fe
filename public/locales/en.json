@@ -378,6 +378,8 @@
   },
   "profileSettings": {
     "logoutAll": "Log out from all devices",
+    "account": "Account",
+    "referral": "Referral program",
     "general": "General settings",
     "update": "Update profile",
     "email": "Email reports",
