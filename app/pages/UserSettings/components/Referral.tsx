@@ -3,15 +3,15 @@ import { useTranslation } from 'react-i18next'
 
 import { IUser } from 'redux/models/IUser'
 
-interface ISocialisations {
+interface IReferral {
   user: IUser,
   genericError: (message: string) => void,
   theme: string
 }
 
-const Socialisations = ({
+const Referral = ({
   user, genericError, theme,
-}: ISocialisations) => {
+}: IReferral) => {
   const { t }: {
     t: (key: string) => string,
   } = useTranslation('common')
@@ -29,4 +29,4 @@ const Socialisations = ({
   )
 }
 
-export default memo(Socialisations)
+export default memo(Referral)
