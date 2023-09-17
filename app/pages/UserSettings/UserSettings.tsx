@@ -77,6 +77,8 @@ const timeFormatArray = _map(TimeFormat, (key) => key)
 const TAB_MAPPING = {
   ACCOUNT: 'account',
   REFERRALS: 'referrals',
+  INTERFACE: 'interface',
+  COMMUNICATIONS: 'communications',
 }
 
 const getTabs = (t: (key: string) => string) => ([
@@ -85,6 +87,18 @@ const getTabs = (t: (key: string) => string) => ([
     label: t('profileSettings.account'),
     // TODO: replace icons later
     icon: EnvelopeIcon,
+  },
+  {
+    id: TAB_MAPPING.COMMUNICATIONS,
+    label: 'Communications',
+    // TODO: replace icons later
+    icon: ExclamationTriangleIcon,
+  },
+  {
+    id: TAB_MAPPING.INTERFACE,
+    label: 'Interface settings',
+    // TODO: replace icons later
+    icon: ExclamationTriangleIcon,
   },
   {
     id: TAB_MAPPING.REFERRALS,
@@ -644,114 +658,8 @@ const UserSettings = ({
                     />
                   </div>
                 </div> */}
-                  {/* Timezone selector */}
-                  <hr className='mt-5 border-gray-200 dark:border-gray-600' />
-                  <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50 flex items-center'>
-                    {t('profileSettings.timezone')}
-                    <div className='ml-5'>
-                      <Beta />
-                    </div>
-                  </h3>
-                  <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
-                    <div>
-                      <TimezonePicker value={timezone} onChange={_setTimezone} />
-                    </div>
-                  </div>
-                  <Button className='mt-4' onClick={handleTimezoneSave} primary large>
-                    {t('common.save')}
-                  </Button>
-                  {/* Timeformat selector (12 / 24 hour format) */}
-                  <hr className='mt-5 border-gray-200 dark:border-gray-600' />
-                  <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
-                    {t('profileSettings.timeFormat')}
-                  </h3>
-                  <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
-                    <div>
-                      <Select
-                        title={t(`profileSettings.${form.timeFormat}`)}
-                        label={t('profileSettings.selectTimeFormat')}
-                        className='w-full'
-                        items={translatedTimeFormat}
-                        onSelect={(f) => setForm((prev) => ({
-                          ...prev,
-                          timeFormat:
-                            timeFormatArray[
-                            _findIndex(translatedTimeFormat, (freq) => freq === f)
-                            ],
-                        }))}
-                      />
-                    </div>
-                  </div>
-                  <Button className='mt-4' onClick={setAsyncTimeFormat} primary large>
-                    {t('common.save')}
-                  </Button>
-
                   {!isSelfhosted && (
                     <>
-                      {/* Email reports frequency selector (e.g. monthly, weekly, etc.) */}
-                      <hr className='mt-5 border-gray-200 dark:border-gray-600' />
-                      <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
-                        {t('profileSettings.email')}
-                      </h3>
-                      <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
-                        <div>
-                          <Select
-                            title={t(`profileSettings.${reportFrequency}`)}
-                            label={t('profileSettings.frequency')}
-                            className='w-full'
-                            items={translatedFrequencies}
-                            iconExtractor={reportIconExtractor}
-                            onSelect={(f) => _setReportFrequency(
-                              reportFrequencies[_findIndex(translatedFrequencies, (freq) => freq === f)],
-                            )}
-                          />
-                        </div>
-                      </div>
-                      <Button className='mt-4' onClick={handleReportSave} primary large>
-                        {t('common.save')}
-                      </Button>
-                    </>
-                  )}
-
-                  {/* UI Settings */}
-                  <hr className='mt-5 border-gray-200 dark:border-gray-600' />
-                  <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
-                    {t('profileSettings.uiSettings')}
-                  </h3>
-                  <Checkbox
-                    checked={user.showLiveVisitorsInTitle}
-                    onChange={handleShowLiveVisitorsSave}
-                    disabled={settingUpdating}
-                    name='active'
-                    id='active'
-                    className='mt-4'
-                    label={t('profileSettings.showVisitorsInTitle')}
-                  />
-
-                  {!isSelfhosted && (
-                    <>
-                      <hr className='mt-5 border-gray-200 dark:border-gray-600' />
-                      {/* Integrations setup */}
-                      <h3 id='integrations' className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
-                        {t('profileSettings.integrations')}
-                      </h3>
-                      <Integrations
-                        user={user}
-                        updateUserData={updateUserData}
-                        handleIntegrationSave={handleIntegrationSave}
-                        genericError={genericError}
-                      />
-                      {user.isTelegramChatIdConfirmed && (
-                        <Checkbox
-                          checked={user.receiveLoginNotifications}
-                          onChange={handleReceiveLoginNotifications}
-                          disabled={settingUpdating}
-                          name='receiveLoginNotifications'
-                          id='receiveLoginNotifications'
-                          className='mt-4'
-                          label={t('profileSettings.receiveLoginNotifications')}
-                        />
-                      )}
                       <hr className='mt-5 border-gray-200 dark:border-gray-600' />
 
                       {/* API access setup */}
@@ -933,6 +841,124 @@ const UserSettings = ({
                           </Button>
                         </div>
                       </div>
+                    </>
+                  )}
+                </>
+              )
+            }
+
+            if (activeTab === TAB_MAPPING.INTERFACE) {
+              return (
+                <>
+                  {/* Timezone selector */}
+                  <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50 flex items-center'>
+                    {t('profileSettings.timezone')}
+                    <div className='ml-5'>
+                      <Beta />
+                    </div>
+                  </h3>
+                  <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
+                    <div>
+                      <TimezonePicker value={timezone} onChange={_setTimezone} />
+                    </div>
+                  </div>
+                  <Button className='mt-4' onClick={handleTimezoneSave} primary large>
+                    {t('common.save')}
+                  </Button>
+                  {/* Timeformat selector (12 / 24 hour format) */}
+                  <hr className='mt-5 border-gray-200 dark:border-gray-600' />
+                  <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+                    {t('profileSettings.timeFormat')}
+                  </h3>
+                  <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
+                    <div>
+                      <Select
+                        title={t(`profileSettings.${form.timeFormat}`)}
+                        label={t('profileSettings.selectTimeFormat')}
+                        className='w-full'
+                        items={translatedTimeFormat}
+                        onSelect={(f) => setForm((prev) => ({
+                          ...prev,
+                          timeFormat:
+                            timeFormatArray[
+                            _findIndex(translatedTimeFormat, (freq) => freq === f)
+                            ],
+                        }))}
+                      />
+                    </div>
+                  </div>
+                  <Button className='mt-4' onClick={setAsyncTimeFormat} primary large>
+                    {t('common.save')}
+                  </Button>
+
+                  {/* UI Settings */}
+                  <hr className='mt-5 border-gray-200 dark:border-gray-600' />
+                  <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+                    {t('profileSettings.uiSettings')}
+                  </h3>
+                  <Checkbox
+                    checked={user.showLiveVisitorsInTitle}
+                    onChange={handleShowLiveVisitorsSave}
+                    disabled={settingUpdating}
+                    name='active'
+                    id='active'
+                    className='mt-4'
+                    label={t('profileSettings.showVisitorsInTitle')}
+                  />
+                </>
+              )
+            }
+
+            if (activeTab === TAB_MAPPING.COMMUNICATIONS) {
+              return (
+                <>
+
+                  {!isSelfhosted && (
+                    <>
+                      {/* Email reports frequency selector (e.g. monthly, weekly, etc.) */}
+                      <h3 className='mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+                        {t('profileSettings.email')}
+                      </h3>
+                      <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2 mt-4'>
+                        <div>
+                          <Select
+                            title={t(`profileSettings.${reportFrequency}`)}
+                            label={t('profileSettings.frequency')}
+                            className='w-full'
+                            items={translatedFrequencies}
+                            iconExtractor={reportIconExtractor}
+                            onSelect={(f) => _setReportFrequency(
+                              reportFrequencies[_findIndex(translatedFrequencies, (freq) => freq === f)],
+                            )}
+                          />
+                        </div>
+                      </div>
+                      <Button className='mt-4' onClick={handleReportSave} primary large>
+                        {t('common.save')}
+                      </Button>
+
+                      <hr className='mt-5 border-gray-200 dark:border-gray-600' />
+                      {/* Integrations setup */}
+                      <h3 id='integrations' className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+                        {t('profileSettings.integrations')}
+                      </h3>
+                      <Integrations
+                        user={user}
+                        updateUserData={updateUserData}
+                        handleIntegrationSave={handleIntegrationSave}
+                        genericError={genericError}
+                      />
+                      {user.isTelegramChatIdConfirmed && (
+                        <Checkbox
+                          checked={user.receiveLoginNotifications}
+                          onChange={handleReceiveLoginNotifications}
+                          disabled={settingUpdating}
+                          name='receiveLoginNotifications'
+                          id='receiveLoginNotifications'
+                          className='mt-4'
+                          label={t('profileSettings.receiveLoginNotifications')}
+                        />
+                      )}
                     </>
                   )}
                 </>
