@@ -134,6 +134,9 @@ interface IProps {
   logoutLocal: () => void,
   logoutAll: () => void,
   loading: boolean,
+  setCache: (key: string, value: any) => void,
+  activeReferrals: any[],
+  referralStatistics: any,
 }
 
 interface IForm extends Partial<IUser> {
@@ -148,6 +151,7 @@ const UserSettings = ({
   genericError, onGDPRExportFailed, updateProfileFailed, updateUserProfileAsync,
   accountUpdated, setAPIKey, user, dontRemember, isPaidTierUsed, // setThemeType, themeType,
   linkSSO, unlinkSSO, theme, updateShowLiveVisitorsInTitle, logoutAll, loading, logoutLocal,
+  referralStatistics, activeReferrals, setCache,
 }: IProps): JSX.Element => {
   const navigate = useNavigate()
   const {
@@ -975,6 +979,9 @@ const UserSettings = ({
                     user={user}
                     genericError={genericError}
                     updateUserData={updateUserData}
+                    referralStatistics={referralStatistics}
+                    activeReferrals={activeReferrals}
+                    setCache={setCache}
                   />
                 </>
               )
@@ -1103,6 +1110,9 @@ UserSettings.propTypes = {
   theme: PropTypes.string.isRequired,
   logoutLocal: PropTypes.func.isRequired,
   logoutAll: PropTypes.func.isRequired,
+  referralStatistics: PropTypes.object.isRequired,
+  activeReferrals: PropTypes.array.isRequired,
+  setCache: PropTypes.func.isRequired,
 }
 
 export default memo(withAuthentication(UserSettings, auth.authenticated))

@@ -198,6 +198,19 @@ export const generateRefCode = () =>
       throw new Error(errorsArray)
     })
 
+
+export const getPayoutsInfo = () =>
+  api
+    .get('/user/payouts/info')
+    .then((response): Partial<IUser> => response.data)
+    .catch((error) => {
+      const errorsArray = error.response.data.message
+      if (_isArray(errorsArray)) {
+        throw errorsArray
+      }
+      throw new Error(errorsArray)
+    })
+
 export const forgotPassword = (email: {
   email: string
 }) =>

@@ -16,6 +16,7 @@
     "userRemoved": "The user has been removed from your project",
     "userRemoveError": "Error occurred while removing the user from your project",
     "quitProjectError": "Error occurred while quitting the project",
+    "payoutInfoError": "Something went wrong whilst requesting payouts information",
     "quitProject": "You have quit the project",
     "acceptInvitationError": "Error occurred while accepting the project invitation",
     "acceptInvitation": "The project invitation has been accepted",

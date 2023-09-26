@@ -3,8 +3,9 @@ import React, {
 } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
+import _isEmpty from 'lodash/isEmpty'
 
-import { generateRefCode } from 'api'
+import { generateRefCode, getPayoutsInfo } from 'api'
 import Input from 'ui/Input'
 import Button from 'ui/Button'
 import { IUser } from 'redux/models/IUser'
@@ -15,16 +16,21 @@ interface IReferral {
   user: IUser,
   genericError: (message: string) => void,
   updateUserData: (data: Partial<IUser>) => void,
+  setCache: (key: string, value: any) => void,
+  activeReferrals: any[],
+  referralStatistics: any,
 }
 
 const Referral = ({
-  user, genericError, updateUserData,
+  user, genericError, updateUserData, referralStatistics, activeReferrals, setCache,
 }: IReferral) => {
   const { t }: {
     t: (key: string) => string,
   } = useTranslation('common')
   const [copied, setCopied] = useState(false)
   const [apiKeyGenerating, setApiKeyGenerating] = useState(false)
+  const [referralStatsRequested, setReferralStatsRequested] = useState(false)
+  // const [activeReferralsRequested, setActiveReferralsRequested] = useState(false)
   const copyTimerRef = useRef(null)
 
   useEffect(() => {
@@ -33,6 +39,23 @@ const Referral = ({
       clearTimeout(copyTimerRef.current)
     }
   }, [])
+
+  useEffect(() => {
+    const getRefStats = async () => {
+      try {
+        const info = await getPayoutsInfo()
+        setCache('referralStatistics', info)
+      } catch (reason) {
+        console.error('[Referral][getRefStats] Something went wrong whilst requesting payouts information', reason)
+        genericError(t('apiNotifications.payoutInfoError'))
+      }
+    }
+
+    if (!referralStatsRequested && _isEmpty(referralStatistics)) {
+      setReferralStatsRequested(true)
+      getRefStats()
+    }
+  }, [referralStatistics, referralStatsRequested, setCache, genericError, t])
 
   const onRefCodeGenerate = async () => {
     if (apiKeyGenerating || user.refCode) {
@@ -68,6 +91,7 @@ const Referral = ({
     <>
       <p className='text-base text-gray-900 dark:text-gray-50'>
         <Trans
+          // @ts-ignore
           t={t}
           i18nKey='profileSettings.referral.desc'
           components={{
@@ -134,9 +158,20 @@ const Referral = ({
           {t('profileSettings.referral.generateRefLink')}
         </Button>
       )}
-      <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
-        {t('profileSettings.referral.referralStats')}
-      </h3>
+      {!_isEmpty(referralStatistics) && (
+        <>
+          <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+            {t('profileSettings.referral.referralStats')}
+          </h3>
+          <div>
+            <p>Trial users referred by you: {referralStatistics.trials}</p>
+            <p>Paid subsribers referred by you: {referralStatistics.subscribers}</p>
+            <p>Total amount paid to you: US${referralStatistics.paid}</p>
+            <p>Next payment amount: {referralStatistics.nextPayout}</p>
+            <p>Pending: ${referralStatistics.pending}</p>
+          </div>
+        </>
+      )}
       <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
         {t('profileSettings.referral.activeReferrals')}
       </h3>
