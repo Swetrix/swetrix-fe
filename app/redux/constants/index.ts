@@ -230,6 +230,11 @@ export const SWETRIX_VS_GOOGLE: string = 'https://blog.swetrix.com/post/vs-googl
 export const SWETRIX_VS_CLOUDFLARE: string = 'https://blog.swetrix.com/post/vs-cloudflare-analytics/'
 export const SWETRIX_VS_SIMPLE_ANALYTICS: string = 'https://blog.swetrix.com/post/vs-simple-analytics/'
 
+// Referral program
+export const REFERRAL_COOKIE = 'affiliate'
+export const REFERRAL_COOKIE_DAYS = 30
+export const REFERRAL_DISCOUNT = 20
+
 export const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
 
 export type ThemeType = 'dark' | 'light'
