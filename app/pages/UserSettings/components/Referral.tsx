@@ -6,6 +6,8 @@ import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import _isEmpty from 'lodash/isEmpty'
 
 import { generateRefCode, getPayoutsInfo } from 'api'
+import Tooltip from 'ui/Tooltip'
+import Highlighted from 'ui/Highlighted'
 import Input from 'ui/Input'
 import Button from 'ui/Button'
 import { IUser } from 'redux/models/IUser'
@@ -164,11 +166,41 @@ const Referral = ({
             {t('profileSettings.referral.referralStats')}
           </h3>
           <div>
-            <p>Trial users referred by you: {referralStatistics.trials}</p>
-            <p>Paid subsribers referred by you: {referralStatistics.subscribers}</p>
-            <p>Total amount paid to you: US${referralStatistics.paid}</p>
-            <p>Next payment amount: {referralStatistics.nextPayout}</p>
-            <p>Pending: ${referralStatistics.pending}</p>
+            <Tooltip
+              text='Trial users referred by you'
+              tooltipNode={(
+                <span className='text-gray-900 dark:text-gray-50'>Trial referrals: <Highlighted>{referralStatistics.trials}</Highlighted></span>
+              )}
+              className='max-w-max !w-auto !h-auto'
+            />
+            <Tooltip
+              text='Paid subsribers referred by you'
+              tooltipNode={(
+                <span className='text-gray-900 dark:text-gray-50'>Active referrals: <Highlighted>{referralStatistics.subscribers}</Highlighted></span>
+              )}
+              className='max-w-max !w-auto !h-auto'
+            />
+            <Tooltip
+              text='Total amount paid to you'
+              tooltipNode={(
+                <span className='text-gray-900 dark:text-gray-50'>Paid: <Highlighted>US${referralStatistics.paid}</Highlighted></span>
+              )}
+              className='max-w-max !w-auto !h-auto'
+            />
+            <Tooltip
+              text='How much you will be paid next time'
+              tooltipNode={(
+                <span className='text-gray-900 dark:text-gray-50'>Next payout: <Highlighted>US${referralStatistics.nextPayout}</Highlighted></span>
+              )}
+              className='max-w-max !w-auto !h-auto'
+            />
+            <Tooltip
+              text='Amount of money pending to be paid to you. It takes X days for the funds to become available.'
+              tooltipNode={(
+                <span className='text-gray-900 dark:text-gray-50'>Pending: <Highlighted>US${referralStatistics.pending}</Highlighted></span>
+              )}
+              className='max-w-max !w-auto !h-auto'
+            />
           </div>
         </>
       )}
