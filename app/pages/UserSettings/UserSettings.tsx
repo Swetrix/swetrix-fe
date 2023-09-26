@@ -19,6 +19,10 @@ import {
   CurrencyDollarIcon,
   ClipboardDocumentIcon,
   ChevronDownIcon,
+  UserIcon,
+  ChatBubbleLeftEllipsisIcon,
+  ComputerDesktopIcon,
+  CursorArrowRaysIcon,
 } from '@heroicons/react/24/outline'
 import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
@@ -85,26 +89,22 @@ const getTabs = (t: (key: string) => string) => ([
   {
     id: TAB_MAPPING.ACCOUNT,
     label: t('profileSettings.account'),
-    // TODO: replace icons later
-    icon: EnvelopeIcon,
+    icon: UserIcon,
   },
   {
     id: TAB_MAPPING.COMMUNICATIONS,
     label: 'Communications',
-    // TODO: replace icons later
-    icon: ExclamationTriangleIcon,
+    icon: ChatBubbleLeftEllipsisIcon,
   },
   {
     id: TAB_MAPPING.INTERFACE,
     label: 'Interface settings',
-    // TODO: replace icons later
-    icon: ExclamationTriangleIcon,
+    icon: ComputerDesktopIcon,
   },
   {
     id: TAB_MAPPING.REFERRALS,
     label: t('profileSettings.referral'),
-    // TODO: replace icons later
-    icon: ExclamationTriangleIcon,
+    icon: CursorArrowRaysIcon,
   },
 ])
 
@@ -517,7 +517,7 @@ const UserSettings = ({
           {t('titles.profileSettings')}
         </h2>
         {/* Tabs selector */}
-        <div>
+        <div className='mt-2'>
           <div className='sm:hidden'>
             <Select
               items={tabs}
