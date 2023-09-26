@@ -186,6 +186,18 @@ export const setShowLiveVisitorsInTitle = (show: boolean) =>
       throw new Error(errorsArray)
     })
 
+export const generateRefCode = () =>
+  api
+    .post('/user/generate-ref-code')
+    .then((response): Partial<IUser> => response.data)
+    .catch((error) => {
+      const errorsArray = error.response.data.message
+      if (_isArray(errorsArray)) {
+        throw errorsArray
+      }
+      throw new Error(errorsArray)
+    })
+
 export const forgotPassword = (email: {
   email: string
 }) =>

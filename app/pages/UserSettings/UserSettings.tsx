@@ -103,7 +103,7 @@ const getTabs = (t: (key: string) => string) => ([
   },
   {
     id: TAB_MAPPING.REFERRALS,
-    label: t('profileSettings.referral'),
+    label: t('profileSettings.referral.title'),
     icon: CursorArrowRaysIcon,
   },
 ])
@@ -969,12 +969,12 @@ const UserSettings = ({
               return (
                 <>
                   <h3 id='socialisations' className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
-                    {t('profileSettings.referral')}
+                    {t('profileSettings.referral.title')}
                   </h3>
                   <Referral
                     user={user}
                     genericError={genericError}
-                    theme={theme}
+                    updateUserData={updateUserData}
                   />
                 </>
               )

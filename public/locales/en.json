@@ -379,7 +379,6 @@
   "profileSettings": {
     "logoutAll": "Log out from all devices",
     "account": "Account",
-    "referral": "Referral program",
     "general": "General settings",
     "update": "Update profile",
     "email": "Email reports",
@@ -469,6 +468,16 @@
     "passwordChangeWarningModal": {
       "title": "You're about to change your password",
       "body": "You're about to change your password, this will log you out from all devices (including this one) and you will need to log in again with your new password."
+    },
+    "referral": {
+      "title": "Referral program",
+      "desc": "Referral program allows you to earn money by inviting new users to Swetrix.\nYou will receive a part of the subscription fee paid by the invited user and will be able to withdraw it to your PayPal account. Learn more about the referral program at <url>Swetrix Referral Program</url> documentation page.",
+      "referralLink": "Referral link",
+      "yourReferralLink": "Your referral link",
+      "referralLinkDesc": "This is your referral link, you can share it with your friends and earn money for each user that signs up and buys a paid plan using it.",
+      "generateRefLink": "Generate referral link",
+      "referralStats": "Referral statistics",
+      "activeReferrals": "Active referrals"
     }
   },
   "alertsSettings": {
