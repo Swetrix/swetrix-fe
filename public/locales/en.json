@@ -482,7 +482,17 @@
       "referralLinkDesc": "This is your referral link, you can share it with your friends and earn money for each user that signs up and buys a paid plan using it.",
       "generateRefLink": "Generate referral link",
       "referralStats": "Referral statistics",
-      "activeReferrals": "Active referrals"
+      "activeReferrals": "Active referrals",
+      "trial": "Trial referrals",
+      "trialDesc": "Trial users referred by you",
+      "active": "Active referrals",
+      "activeDesc": "Paid subsribers referred by you",
+      "paid": "Paid",
+      "paidDesc": "Total amount paid to you",
+      "nextPayout": "Next payout",
+      "nextPayoutDesc": "How much you will get paid next time",
+      "pending": "Pending",
+      "pendingDesc": "Amount of money pending to be paid to you. It takes {{days}} days for the funds to become available."
     }
   },
   "alertsSettings": {

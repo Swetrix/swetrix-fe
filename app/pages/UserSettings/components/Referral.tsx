@@ -11,8 +11,9 @@ import Highlighted from 'ui/Highlighted'
 import Input from 'ui/Input'
 import Button from 'ui/Button'
 import { IUser } from 'redux/models/IUser'
-
-const REFERRAL_PROGRAM_DOCS_URL = 'https://docs.swetrix.com'
+import {
+  REF_URL_PREFIX, DOCS_REFERRAL_PROGRAM_URL, REFERRAL_PENDING_PAYOUT_DAYS,
+} from 'redux/constants'
 
 interface IReferral {
   user: IUser,
@@ -26,14 +27,14 @@ interface IReferral {
 const Referral = ({
   user, genericError, updateUserData, referralStatistics, activeReferrals, setCache,
 }: IReferral) => {
-  const { t }: {
-    t: (key: string) => string,
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
   const [copied, setCopied] = useState(false)
   const [apiKeyGenerating, setApiKeyGenerating] = useState(false)
   const [referralStatsRequested, setReferralStatsRequested] = useState(false)
   // const [activeReferralsRequested, setActiveReferralsRequested] = useState(false)
   const copyTimerRef = useRef(null)
+
+  const refUrl = `${REF_URL_PREFIX}${user?.refCode}`
 
   useEffect(() => {
     return () => {
@@ -98,7 +99,7 @@ const Referral = ({
           i18nKey='profileSettings.referral.desc'
           components={{
             url: <a
-              href={REFERRAL_PROGRAM_DOCS_URL}
+              href={DOCS_REFERRAL_PROGRAM_URL}
               className='font-medium hover:underline text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-500'
               target='_blank'
               rel='noreferrer noopener'
@@ -125,14 +126,14 @@ const Referral = ({
               id='apiKey'
               type='text'
               className='pr-9'
-              value={`https://swetrix.com/?rc=${user.refCode}`}
+              value={refUrl}
               disabled
             />
             <div className='absolute right-2 top-3'>
               <div className='group relative'>
                 <Button
                   type='button'
-                  onClick={() => setToClipboard(`https://swetrix.com/?rc=${user.refCode}`)}
+                  onClick={() => setToClipboard(refUrl)}
                   className='opacity-70 hover:opacity-100'
                   noBorder
                 >
@@ -167,37 +168,39 @@ const Referral = ({
           </h3>
           <div>
             <Tooltip
-              text='Trial users referred by you'
+              text={t('profileSettings.referral.trialDesc')}
               tooltipNode={(
-                <span className='text-gray-900 dark:text-gray-50'>Trial referrals: <Highlighted>{referralStatistics.trials}</Highlighted></span>
+                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.trial')}: <Highlighted>{referralStatistics.trials}</Highlighted></span>
               )}
               className='max-w-max !w-auto !h-auto'
             />
             <Tooltip
-              text='Paid subsribers referred by you'
+              text={t('profileSettings.referral.activeDesc')}
               tooltipNode={(
-                <span className='text-gray-900 dark:text-gray-50'>Active referrals: <Highlighted>{referralStatistics.subscribers}</Highlighted></span>
+                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.active')}: <Highlighted>{referralStatistics.subscribers}</Highlighted></span>
               )}
               className='max-w-max !w-auto !h-auto'
             />
             <Tooltip
-              text='Total amount paid to you'
+              text={t('profileSettings.referral.paidDesc')}
               tooltipNode={(
-                <span className='text-gray-900 dark:text-gray-50'>Paid: <Highlighted>US${referralStatistics.paid}</Highlighted></span>
+                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.paid')}: <Highlighted>US${referralStatistics.paid}</Highlighted></span>
               )}
               className='max-w-max !w-auto !h-auto'
             />
             <Tooltip
-              text='How much you will be paid next time'
+              text={t('profileSettings.referral.nextPayoutDesc')}
               tooltipNode={(
-                <span className='text-gray-900 dark:text-gray-50'>Next payout: <Highlighted>US${referralStatistics.nextPayout}</Highlighted></span>
+                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.nextPayout')}: <Highlighted>US${referralStatistics.nextPayout}</Highlighted></span>
               )}
               className='max-w-max !w-auto !h-auto'
             />
             <Tooltip
-              text='Amount of money pending to be paid to you. It takes X days for the funds to become available.'
+              text={t('profileSettings.referral.pendingDesc', {
+                days: REFERRAL_PENDING_PAYOUT_DAYS,
+              })}
               tooltipNode={(
-                <span className='text-gray-900 dark:text-gray-50'>Pending: <Highlighted>US${referralStatistics.pending}</Highlighted></span>
+                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.pending')}: <Highlighted>US${referralStatistics.pending}</Highlighted></span>
               )}
               className='max-w-max !w-auto !h-auto'
             />

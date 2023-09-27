@@ -218,12 +218,14 @@ export const TWITTER_USERNAME: string = '@swetrix'
 export const DISCORD_URL: string = 'https://discord.gg/ZVK8Tw2E8j'
 export const STATUSPAGE_URL: string = 'https://stats.uptimerobot.com/33rvmiXXEz'
 export const MAIN_URL: string = 'https://swetrix.com'
+export const REF_URL_PREFIX: string = `${MAIN_URL}/ref/`
 export const UTM_GENERATOR_URL: string = 'https://url.swetrix.com'
 export const LIVE_DEMO_URL: string = '/projects/STEzHcB1rALV'
 export const MARKETPLACE_URL: string = 'https://marketplace.swetrix.com'
 export const DOCS_URL: string = 'https://docs.swetrix.com'
 export const CAPTCHA_URL: string = 'https://captcha.swetrix.com'
 export const DOCS_CAPTCHA_URL: string = `${DOCS_URL}/captcha/introduction`
+export const DOCS_REFERRAL_PROGRAM_URL: string = `${DOCS_URL}/referral-program/introduction`
 
 // Swetrix vs ...
 export const SWETRIX_VS_GOOGLE: string = 'https://blog.swetrix.com/post/vs-google-analytics/'
@@ -234,6 +236,7 @@ export const SWETRIX_VS_SIMPLE_ANALYTICS: string = 'https://blog.swetrix.com/pos
 export const REFERRAL_COOKIE = 'affiliate'
 export const REFERRAL_COOKIE_DAYS = 30
 export const REFERRAL_DISCOUNT = 20
+export const REFERRAL_PENDING_PAYOUT_DAYS = 30
 
 export const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
 
