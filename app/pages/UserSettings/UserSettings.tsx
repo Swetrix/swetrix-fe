@@ -982,6 +982,7 @@ const UserSettings = ({
                     referralStatistics={referralStatistics}
                     activeReferrals={activeReferrals}
                     setCache={setCache}
+                    accountUpdated={accountUpdated}
                   />
                 </>
               )

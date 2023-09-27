@@ -7,7 +7,9 @@ import dayjs from 'dayjs'
 import _isEmpty from 'lodash/isEmpty'
 import _map from 'lodash/map'
 
-import { generateRefCode, getPayoutsInfo, getReferrals } from 'api'
+import {
+  generateRefCode, getPayoutsInfo, getReferrals, setPaypalEmail,
+} from 'api'
 import Tooltip from 'ui/Tooltip'
 import Highlighted from 'ui/Highlighted'
 import Input from 'ui/Input'
@@ -17,6 +19,7 @@ import {
   REF_URL_PREFIX, DOCS_REFERRAL_PROGRAM_URL, REFERRAL_PENDING_PAYOUT_DAYS, calculateReferralCut,
   PLAN_LIMITS, CURRENCIES, BillingFrequency, MERCHANT_FEE, REFERRAL_CUT,
 } from 'redux/constants'
+import { isValidEmail } from 'utils/validator'
 
 interface IReferral {
   user: IUser,
@@ -25,16 +28,20 @@ interface IReferral {
   setCache: (key: string, value: any) => void,
   activeReferrals: any[],
   referralStatistics: any,
+  accountUpdated: (t: string) => void,
 }
 
 const Referral = ({
-  user, genericError, updateUserData, referralStatistics, activeReferrals, setCache,
+  user, genericError, updateUserData, referralStatistics, activeReferrals, setCache, accountUpdated,
 }: IReferral) => {
   const { t, i18n: { language } } = useTranslation('common')
   const [copied, setCopied] = useState(false)
   const [apiKeyGenerating, setApiKeyGenerating] = useState(false)
   const [referralStatsRequested, setReferralStatsRequested] = useState(false)
   const [activeReferralsRequested, setActiveReferralsRequested] = useState(false)
+  const [paypalInputError, setPaypalInputError] = useState<string | null>(null)
+  const [isPaypalEmailLoading, setIsPaypalEmailLoading] = useState<boolean>(false)
+  const [paypalEmailAddress, setPaypalEmailAddress] = useState<string | null>(user.paypalPaymentsEmail)
   const copyTimerRef = useRef(null)
 
   const refUrl = `${REF_URL_PREFIX}${user?.refCode}`
@@ -97,6 +104,37 @@ const Referral = ({
     }
   }
 
+  const handlePaypalInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPaypalInputError(null)
+    setPaypalEmailAddress(e.target.value)
+  }
+
+  const updatePaypalEmail = async () => {
+    if (paypalEmailAddress) {
+      const isValid = isValidEmail(paypalEmailAddress)
+
+      if (!isValid) {
+        setPaypalInputError(t('auth.common.badEmailError'))
+        return
+      }
+    }
+
+    setIsPaypalEmailLoading(true)
+
+    try {
+      await setPaypalEmail(paypalEmailAddress)
+      updateUserData({
+        paypalPaymentsEmail: paypalEmailAddress,
+      })
+      accountUpdated(t('profileSettings.referral.payoutEmailUpdated'))
+    } catch (reason) {
+      console.error('[Referral][updatePaypalEmail] Something went wrong whilst updating paypal email', reason)
+      genericError(t('apiNotifications.somethingWentWrong'))
+    }
+
+    setIsPaypalEmailLoading(false)
+  }
+
   const setToClipboard = (value: string) => {
     if (!copied) {
       navigator.clipboard.writeText(value)
@@ -107,8 +145,6 @@ const Referral = ({
       }, 2000)
     }
   }
-
-  console.log(activeReferrals)
 
   return (
     <>
@@ -127,6 +163,32 @@ const Referral = ({
           }}
         />
       </p>
+      <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+        {t('profileSettings.referral.payoutEmail')}
+      </h3>
+      <p className='max-w-prose text-base text-gray-900 dark:text-gray-50'>
+        {t('profileSettings.referral.payoutEmailDesc')}
+      </p>
+      <div className='flex space-x-2 mt-2'>
+        <Input
+          id='paypal-email'
+          type='email'
+          value={paypalEmailAddress || ''}
+          placeholder='you@paypal.com'
+          onChange={handlePaypalInput}
+          error={paypalInputError}
+        />
+        <Button
+          type='button'
+          className='h-9'
+          loading={isPaypalEmailLoading}
+          onClick={updatePaypalEmail}
+          primary
+          large
+        >
+          {t('common.save')}
+        </Button>
+      </div>
       <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
         {t('profileSettings.referral.referralLink')}
       </h3>
@@ -204,14 +266,14 @@ const Referral = ({
             <Tooltip
               text={t('profileSettings.referral.paidDesc')}
               tooltipNode={(
-                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.paid')}: <Highlighted>US${referralStatistics.paid}</Highlighted></span>
+                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.paid')}: <Highlighted>US$ {referralStatistics.paid}</Highlighted></span>
               )}
               className='max-w-max !w-auto !h-auto'
             />
             <Tooltip
               text={t('profileSettings.referral.nextPayoutDesc')}
               tooltipNode={(
-                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.nextPayout')}: <Highlighted>US${referralStatistics.nextPayout}</Highlighted></span>
+                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.nextPayout')}: <Highlighted>US$ {referralStatistics.nextPayout}</Highlighted></span>
               )}
               className='max-w-max !w-auto !h-auto'
             />
@@ -220,7 +282,7 @@ const Referral = ({
                 days: REFERRAL_PENDING_PAYOUT_DAYS,
               })}
               tooltipNode={(
-                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.pending')}: <Highlighted>US${referralStatistics.pending}</Highlighted></span>
+                <span className='text-gray-900 dark:text-gray-50'>{t('profileSettings.referral.pending')}: <Highlighted>US$ {referralStatistics.pending}</Highlighted></span>
               )}
               className='max-w-max !w-auto !h-auto'
             />

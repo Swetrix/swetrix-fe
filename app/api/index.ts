@@ -1118,6 +1118,15 @@ export const receiveLoginNotification = (receiveLoginNotifications: boolean) =>
       throw error
     })
 
+export const setPaypalEmail = (paypalPaymentsEmail: string | null) =>
+  api
+    .patch('user/set-paypal-email', { paypalPaymentsEmail })
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
+
 export const previewSubscriptionUpdate = (planId: number) =>
   api
     .post('user/preview-plan', { planId })
