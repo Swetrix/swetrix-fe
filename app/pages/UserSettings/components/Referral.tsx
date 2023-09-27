@@ -15,7 +15,7 @@ import Button from 'ui/Button'
 import { IUser } from 'redux/models/IUser'
 import {
   REF_URL_PREFIX, DOCS_REFERRAL_PROGRAM_URL, REFERRAL_PENDING_PAYOUT_DAYS, calculateReferralCut,
-  PLAN_LIMITS, CURRENCIES, BillingFrequency,
+  PLAN_LIMITS, CURRENCIES, BillingFrequency, MERCHANT_FEE, REFERRAL_CUT,
 } from 'redux/constants'
 
 interface IReferral {
@@ -232,50 +232,55 @@ const Referral = ({
           <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
             {t('profileSettings.referral.activeReferrals')}
           </h3>
-          <div className='overflow-hidden mt-2 shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
-            <table className='min-w-full divide-y divide-gray-300 200 dark:divide-gray-500'>
-              <thead className='bg-gray-50 dark:bg-slate-800'>
-                <tr>
-                  <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-50'>
-                    {t('profileSettings.referral.activeReferralsTable.plan')}
-                  </th>
-                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50'>
-                    {t('profileSettings.referral.activeReferralsTable.yourCut')}
-                  </th>
-                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50'>
-                    {t('profileSettings.referral.activeReferralsTable.registrationDate')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className='divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-slate-800'>
-                {_map(activeReferrals, ({
-                  billingFrequency, created, planCode, tierCurrency,
-                }, index) => {
-                  // @ts-ignore
-                  const planPrice = PLAN_LIMITS[planCode].price[tierCurrency][billingFrequency]
-                  const referrerCut = calculateReferralCut(planPrice)
-                  const currencySymbol = CURRENCIES[tierCurrency as 'EUR' | 'USD' | 'GBP'].symbol
-                  const tBillingFrequency = t(billingFrequency === BillingFrequency.monthly ? 'pricing.perMonth' : 'pricing.perYear')
+          <table className='mt-2 min-w-full shadow ring-1 ring-black ring-opacity-5 md:rounded-lg divide-y divide-gray-300 200 dark:divide-gray-500'>
+            <thead className='bg-gray-50 dark:bg-slate-800'>
+              <tr>
+                <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-50'>
+                  {t('profileSettings.referral.activeReferralsTable.plan')}
+                </th>
+                <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50'>
+                  <Tooltip
+                    text={t('profileSettings.referral.activeReferralsTable.yourCutDesc', {
+                      fee: MERCHANT_FEE,
+                      amount: REFERRAL_CUT * 100,
+                    })}
+                    tooltipNode={<>{t('profileSettings.referral.activeReferralsTable.yourCut')}</>}
+                    className='max-w-max !w-auto !h-auto'
+                  />
+                </th>
+                <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50'>
+                  {t('profileSettings.referral.activeReferralsTable.registrationDate')}
+                </th>
+              </tr>
+            </thead>
+            <tbody className='divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-slate-800'>
+              {_map(activeReferrals, ({
+                billingFrequency, created, planCode, tierCurrency,
+              }, index) => {
+                // @ts-ignore
+                const planPrice = PLAN_LIMITS[planCode].price[tierCurrency][billingFrequency]
+                const referrerCut = calculateReferralCut(planPrice)
+                const currencySymbol = CURRENCIES[tierCurrency as 'EUR' | 'USD' | 'GBP'].symbol
+                const tBillingFrequency = t(billingFrequency === BillingFrequency.monthly ? 'pricing.perMonth' : 'pricing.perYear')
 
-                  return (
-                    <tr key={index}>
-                      <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-50 sm:pl-6'>
-                        {currencySymbol}{planPrice}/{tBillingFrequency}
-                      </td>
-                      <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-50'>
-                        {currencySymbol}{referrerCut}/{tBillingFrequency}
-                      </td>
-                      <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-50'>
-                        {language === 'en'
-                          ? dayjs(created).locale(language).format('MMMM D, YYYY')
-                          : dayjs(created).locale(language).format('D MMMM, YYYY')}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+                return (
+                  <tr key={index}>
+                    <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-50 sm:pl-6'>
+                      {currencySymbol}{planPrice}/{tBillingFrequency}
+                    </td>
+                    <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-50'>
+                      {currencySymbol}{referrerCut}/{tBillingFrequency}
+                    </td>
+                    <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-50'>
+                      {language === 'en'
+                        ? dayjs(created).locale(language).format('MMMM D, YYYY')
+                        : dayjs(created).locale(language).format('D MMMM, YYYY')}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </>
       )}
     </>

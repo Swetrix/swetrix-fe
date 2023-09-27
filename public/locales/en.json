@@ -496,6 +496,7 @@
       "activeReferralsTable": {
         "plan": "Referral tier",
         "yourCut": "Your cut",
+        "yourCutDesc": "You will receive {{amount}}% of the subscription fee paid by the user after all fees. Currently our merchant provider charges us {{fee}} per transaction.",
         "registrationDate": "Registration date"
       }
     }

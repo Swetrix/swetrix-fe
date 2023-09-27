@@ -446,6 +446,8 @@ export const CURRENCIES: ICurrencies = {
   EUR, USD, GBP,
 }
 
+export const MERCHANT_FEE = '5% + 50¢'
+
 // Paddle fee is 5% + 50¢
 const calculatePriceAfterFees = (price: number): number => {
   const fee = 0.05 * price + 0.5
