@@ -492,7 +492,12 @@
       "nextPayout": "Next payout",
       "nextPayoutDesc": "How much you will get paid next time",
       "pending": "Pending",
-      "pendingDesc": "Amount of money pending to be paid to you. It takes {{days}} days for the funds to become available."
+      "pendingDesc": "Amount of money pending to be paid to you. It takes {{days}} days for the funds to become available.",
+      "activeReferralsTable": {
+        "plan": "Referral tier",
+        "yourCut": "Your cut",
+        "registrationDate": "Registration date"
+      }
     }
   },
   "alertsSettings": {

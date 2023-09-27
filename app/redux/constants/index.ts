@@ -237,6 +237,7 @@ export const REFERRAL_COOKIE = 'affiliate'
 export const REFERRAL_COOKIE_DAYS = 30
 export const REFERRAL_DISCOUNT = 20
 export const REFERRAL_PENDING_PAYOUT_DAYS = 30
+export const REFERRAL_CUT = 0.2
 
 export const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
 
@@ -443,6 +444,23 @@ type ICurrencies = {
 
 export const CURRENCIES: ICurrencies = {
   EUR, USD, GBP,
+}
+
+// Paddle fee is 5% + 50¢
+const calculatePriceAfterFees = (price: number): number => {
+  const fee = 0.05 * price + 0.5
+  return price - fee
+}
+
+export const calculateReferralCut = (originalTierPrice: number): number => {
+  const priceAfterFees = calculatePriceAfterFees(originalTierPrice)
+  const referralCut = REFERRAL_CUT * priceAfterFees
+  return referralCut
+}
+
+export const BillingFrequency = {
+  monthly: 'monthly',
+  yearly: 'yearly',
 }
 
 // TODO: Eventually this should be fetched from the API, e.g. GET /config route

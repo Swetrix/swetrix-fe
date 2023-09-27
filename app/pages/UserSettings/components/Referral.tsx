@@ -3,16 +3,19 @@ import React, {
 } from 'react'
 import { useTranslation, Trans } from 'react-i18next'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
+import dayjs from 'dayjs'
 import _isEmpty from 'lodash/isEmpty'
+import _map from 'lodash/map'
 
-import { generateRefCode, getPayoutsInfo } from 'api'
+import { generateRefCode, getPayoutsInfo, getReferrals } from 'api'
 import Tooltip from 'ui/Tooltip'
 import Highlighted from 'ui/Highlighted'
 import Input from 'ui/Input'
 import Button from 'ui/Button'
 import { IUser } from 'redux/models/IUser'
 import {
-  REF_URL_PREFIX, DOCS_REFERRAL_PROGRAM_URL, REFERRAL_PENDING_PAYOUT_DAYS,
+  REF_URL_PREFIX, DOCS_REFERRAL_PROGRAM_URL, REFERRAL_PENDING_PAYOUT_DAYS, calculateReferralCut,
+  PLAN_LIMITS, CURRENCIES, BillingFrequency,
 } from 'redux/constants'
 
 interface IReferral {
@@ -27,11 +30,11 @@ interface IReferral {
 const Referral = ({
   user, genericError, updateUserData, referralStatistics, activeReferrals, setCache,
 }: IReferral) => {
-  const { t } = useTranslation('common')
+  const { t, i18n: { language } } = useTranslation('common')
   const [copied, setCopied] = useState(false)
   const [apiKeyGenerating, setApiKeyGenerating] = useState(false)
   const [referralStatsRequested, setReferralStatsRequested] = useState(false)
-  // const [activeReferralsRequested, setActiveReferralsRequested] = useState(false)
+  const [activeReferralsRequested, setActiveReferralsRequested] = useState(false)
   const copyTimerRef = useRef(null)
 
   const refUrl = `${REF_URL_PREFIX}${user?.refCode}`
@@ -54,11 +57,26 @@ const Referral = ({
       }
     }
 
+    const getActiveReferrals = async () => {
+      try {
+        const info = await getReferrals()
+        setCache('activeReferrals', info)
+      } catch (reason) {
+        console.error('[Referral][getActiveReferrals] Something went wrong whilst requesting active referrals', reason)
+        genericError(t('apiNotifications.payoutInfoError'))
+      }
+    }
+
     if (!referralStatsRequested && _isEmpty(referralStatistics)) {
       setReferralStatsRequested(true)
       getRefStats()
     }
-  }, [referralStatistics, referralStatsRequested, setCache, genericError, t])
+
+    if (!activeReferralsRequested && _isEmpty(activeReferrals)) {
+      setActiveReferralsRequested(true)
+      getActiveReferrals()
+    }
+  }, [referralStatistics, referralStatsRequested, setCache, genericError, activeReferralsRequested, activeReferrals, t])
 
   const onRefCodeGenerate = async () => {
     if (apiKeyGenerating || user.refCode) {
@@ -89,6 +107,8 @@ const Referral = ({
       }, 2000)
     }
   }
+
+  console.log(activeReferrals)
 
   return (
     <>
@@ -207,9 +227,57 @@ const Referral = ({
           </div>
         </>
       )}
-      <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
-        {t('profileSettings.referral.activeReferrals')}
-      </h3>
+      {!_isEmpty(activeReferrals) && (
+        <>
+          <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+            {t('profileSettings.referral.activeReferrals')}
+          </h3>
+          <div className='overflow-hidden mt-2 shadow ring-1 ring-black ring-opacity-5 md:rounded-lg'>
+            <table className='min-w-full divide-y divide-gray-300 200 dark:divide-gray-500'>
+              <thead className='bg-gray-50 dark:bg-slate-800'>
+                <tr>
+                  <th scope='col' className='py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-50'>
+                    {t('profileSettings.referral.activeReferralsTable.plan')}
+                  </th>
+                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50'>
+                    {t('profileSettings.referral.activeReferralsTable.yourCut')}
+                  </th>
+                  <th scope='col' className='px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-50'>
+                    {t('profileSettings.referral.activeReferralsTable.registrationDate')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-gray-200 dark:divide-gray-600 bg-white dark:bg-slate-800'>
+                {_map(activeReferrals, ({
+                  billingFrequency, created, planCode, tierCurrency,
+                }, index) => {
+                  // @ts-ignore
+                  const planPrice = PLAN_LIMITS[planCode].price[tierCurrency][billingFrequency]
+                  const referrerCut = calculateReferralCut(planPrice)
+                  const currencySymbol = CURRENCIES[tierCurrency as 'EUR' | 'USD' | 'GBP'].symbol
+                  const tBillingFrequency = t(billingFrequency === BillingFrequency.monthly ? 'pricing.perMonth' : 'pricing.perYear')
+
+                  return (
+                    <tr key={index}>
+                      <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-50 sm:pl-6'>
+                        {currencySymbol}{planPrice}/{tBillingFrequency}
+                      </td>
+                      <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-50'>
+                        {currencySymbol}{referrerCut}/{tBillingFrequency}
+                      </td>
+                      <td className='whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-gray-50'>
+                        {language === 'en'
+                          ? dayjs(created).locale(language).format('MMMM D, YYYY')
+                          : dayjs(created).locale(language).format('D MMMM, YYYY')}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </>
   )
 }

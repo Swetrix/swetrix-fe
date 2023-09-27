@@ -15,7 +15,7 @@ import cx from 'clsx'
 import Modal from 'ui/Modal'
 import Spin from 'ui/icons/Spin'
 import {
-  CONTACT_EMAIL, paddleLanguageMapping, PLAN_LIMITS, CURRENCIES,
+  CONTACT_EMAIL, paddleLanguageMapping, PLAN_LIMITS, CURRENCIES, BillingFrequency,
 } from 'redux/constants'
 import { errorsActions } from 'redux/reducers/errors'
 import { alertsActions } from 'redux/reducers/alerts'
@@ -135,11 +135,6 @@ const getTiers = (t: (key: string, options?: {
     ypid: 776471,
   },
 ]
-
-const BillingFrequency = {
-  monthly: 'monthly',
-  yearly: 'yearly',
-}
 
 interface IPricingItem {
   tier: any
