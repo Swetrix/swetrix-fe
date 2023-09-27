@@ -9,10 +9,8 @@ import Header from 'components/Header'
 import routes from 'routesPath'
 import { Lines } from 'pages/MainPage'
 
-import { setCookie } from 'utils/cookie'
-
 import {
-  isBrowser, REFERRAL_COOKIE_DAYS, REFERRAL_DISCOUNT, REFERRAL_COOKIE,
+  isBrowser, REFERRAL_COOKIE_DAYS, REFERRAL_DISCOUNT,
 } from 'redux/constants'
 
 interface IReferralPage {
@@ -30,11 +28,6 @@ const ReferralPage = ({ ssrTheme }: IReferralPage): JSX.Element => {
 
   // Referral code
   const { id } = useParams()
-
-  // TODO: Set this cookie server-side via Remix's `setHeaders` function in loader function
-  const setAffiliateCookie = () => {
-    setCookie(REFERRAL_COOKIE, id as string, REFERRAL_COOKIE_DAYS * 24 * 60 * 60)
-  }
 
   return (
     <div className='overflow-hidden'>
@@ -97,8 +90,7 @@ const ReferralPage = ({ ssrTheme }: IReferralPage): JSX.Element => {
                 </p>
                 <div className='mt-10 flex flex-col items-center sm:flex-row'>
                   <Link
-                    onClick={setAffiliateCookie}
-                    to={routes.signup}
+                    to={`/ref/${id}${routes.signup}`}
                     className='rounded-md !duration-300 transition-all w-full sm:max-w-[210px] h-12 flex items-center justify-center sm:mr-6 shadow-sm ring-1 text-white bg-slate-900 ring-slate-900 hover:bg-slate-700 dark:bg-indigo-700 dark:ring-indigo-700 dark:hover:bg-indigo-600'
                     aria-label={t('titles.signup')}
                   >
@@ -108,8 +100,7 @@ const ReferralPage = ({ ssrTheme }: IReferralPage): JSX.Element => {
                     <ArrowSmallRightIcon className='h-4 w-5 mt-[1px]' />
                   </Link>
                   <Link
-                    onClick={setAffiliateCookie}
-                    to={`${routes.main}#core-analytics`}
+                    to={`/ref/${id}/index#core-analytics`}
                     className='rounded-md !duration-300 transition-all sm:mt-0 mt-2 ring-1 ring-slate-900 dark:ring-white/20 w-full sm:max-w-[210px] h-12 flex items-center justify-center shadow-sm text-slate-900 dark:text-white bg-transparent hover:bg-slate-200 dark:hover:bg-gray-800'
                     aria-label={t('titles.signup')}
                   >
