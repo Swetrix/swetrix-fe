@@ -136,8 +136,8 @@ export const login = (credentials: {
 
 export const signup = (data: {
   email: string,
-  password: string
-  repeat: string
+  password: string,
+  refCode?: string,
 }) =>
   api
     .post('v1/auth/register', data)
@@ -936,9 +936,9 @@ export const generateSSOAuthURL = (provider: string) =>
         : error.response.data.message
     })
 
-export const getJWTBySSOHash = (hash: string, provider: string) =>
+export const getJWTBySSOHash = (hash: string, provider: string, refCode?: string) =>
   api
-    .post('v1/auth/sso/hash', { hash, provider })
+    .post('v1/auth/sso/hash', { hash, provider, refCode })
     .then((response): unknown => response.data)
     .catch((error) => {
       debug('%s', error)
