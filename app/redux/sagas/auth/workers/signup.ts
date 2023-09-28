@@ -16,6 +16,7 @@ export default function* signupWorder({ payload: { data: rawData, callback } }: 
       password: string
       repeat: string
       dontRemember: boolean
+      checkIfLeaked: boolean
     },
     callback: (isSuccess: boolean) => void
   }
@@ -29,6 +30,7 @@ export default function* signupWorder({ payload: { data: rawData, callback } }: 
     } = yield call(signup, {
       email: rawData.email,
       password: rawData.password,
+      checkIfLeaked: rawData.checkIfLeaked,
       refCode,
     })
 

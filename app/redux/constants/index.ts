@@ -238,6 +238,7 @@ export const REFERRAL_COOKIE_DAYS = 30
 export const REFERRAL_DISCOUNT = 20
 export const REFERRAL_PENDING_PAYOUT_DAYS = 30
 export const REFERRAL_CUT = 0.2
+export const REFERRAL_DISCOUNT_CODE = 'REFERRAL_DISCOUNT'
 
 export const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
 
