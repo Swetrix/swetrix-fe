@@ -75,7 +75,7 @@ const ReferralPage = ({ ssrTheme }: IReferralPage): JSX.Element => {
           >
             <div className='relative z-20 flex flex-row content-between 2xl:mr-[14vw] 2xl:justify-center justify-center lg:justify-start'>
               <div className='lg:mt-0 text-left relative lg:mr-14 px-4'>
-                <h1 className='max-w-2xl text-2xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-5xl font-extrabold text-slate-900 dark:text-white sm:leading-none xl:leading-[110%]'>
+                <h1 className='max-w-2xl text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white sm:leading-none xl:leading-[110%]'>
                   <Trans
                     // @ts-ignore
                     t={t}
@@ -88,7 +88,12 @@ const ReferralPage = ({ ssrTheme }: IReferralPage): JSX.Element => {
                 <p className='text-base text-slate-700 dark:text-slate-300 sm:text-xl lg:text-lg xl:text-lg mt-5'>
                   {t('referral.desc')}
                 </p>
-                <div className='mt-10 flex flex-col items-center sm:flex-row'>
+                <h2 className='text-xl sm:text-xl md:text-xl font-medium text-slate-900 dark:text-white sm:leading-none xl:leading-[110%] mt-10'>
+                  {t('referral.buttons', {
+                    discount: REFERRAL_DISCOUNT,
+                  })}
+                </h2>
+                <div className='mt-4 flex flex-col items-center sm:flex-row'>
                   <Link
                     to={`/ref/${id}${routes.signup}`}
                     className='rounded-md !duration-300 transition-all w-full sm:max-w-[210px] h-12 flex items-center justify-center sm:mr-6 shadow-sm ring-1 text-white bg-slate-900 ring-slate-900 hover:bg-slate-700 dark:bg-indigo-700 dark:ring-indigo-700 dark:hover:bg-indigo-600'
