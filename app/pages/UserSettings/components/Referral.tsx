@@ -36,7 +36,7 @@ const Referral = ({
 }: IReferral) => {
   const { t, i18n: { language } } = useTranslation('common')
   const [copied, setCopied] = useState(false)
-  const [apiKeyGenerating, setApiKeyGenerating] = useState(false)
+  const [refCodeGenerating, setRefCodeGenerating] = useState(false)
   const [referralStatsRequested, setReferralStatsRequested] = useState(false)
   const [activeReferralsRequested, setActiveReferralsRequested] = useState(false)
   const [paypalInputError, setPaypalInputError] = useState<string | null>(null)
@@ -86,11 +86,11 @@ const Referral = ({
   }, [referralStatistics, referralStatsRequested, setCache, genericError, activeReferralsRequested, activeReferrals, t])
 
   const onRefCodeGenerate = async () => {
-    if (apiKeyGenerating || user.refCode) {
+    if (refCodeGenerating || user.refCode) {
       return
     }
 
-    setApiKeyGenerating(true)
+    setRefCodeGenerating(true)
 
     try {
       const { refCode } = await generateRefCode()
@@ -100,7 +100,7 @@ const Referral = ({
     } catch (e) {
       genericError(t('apiNotifications.somethingWentWrong'))
     } finally {
-      setApiKeyGenerating(false)
+      setRefCodeGenerating(false)
     }
   }
 
@@ -163,7 +163,7 @@ const Referral = ({
           }}
         />
       </p>
-      <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+      <h3 className='flex items-center mt-5 text-lg font-bold text-gray-900 dark:text-gray-50'>
         {t('profileSettings.referral.payoutEmail')}
       </h3>
       <p className='max-w-prose text-base text-gray-900 dark:text-gray-50'>
@@ -189,14 +189,14 @@ const Referral = ({
           {t('common.save')}
         </Button>
       </div>
-      <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+      <h3 className='flex items-center mt-5 text-lg font-bold text-gray-900 dark:text-gray-50'>
         {t('profileSettings.referral.referralLink')}
       </h3>
       <p className='max-w-prose text-base text-gray-900 dark:text-gray-50'>
         {t('profileSettings.referral.referralLinkDesc')}
       </p>
       {user.refCode && (
-        <p className='mt-4 max-w-prose text-base text-gray-900 dark:text-gray-50'>
+        <p className='mt-2 max-w-prose text-base text-gray-900 dark:text-gray-50'>
           {t('profileSettings.referral.yourReferralLink')}
         </p>
       )}
@@ -204,8 +204,8 @@ const Referral = ({
         <div className='grid grid-cols-1 gap-y-6 gap-x-4 lg:grid-cols-2'>
           <div className='relative group'>
             <Input
-              name='apiKey'
-              id='apiKey'
+              name='refCode'
+              id='refCode'
               type='text'
               className='pr-9'
               value={refUrl}
@@ -236,7 +236,7 @@ const Referral = ({
         <Button
           className='mt-2'
           onClick={onRefCodeGenerate}
-          loading={apiKeyGenerating}
+          loading={refCodeGenerating}
           primary
           large
         >
@@ -245,7 +245,7 @@ const Referral = ({
       )}
       {!_isEmpty(referralStatistics) && (
         <>
-          <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+          <h3 className='flex items-center mt-5 text-lg font-bold text-gray-900 dark:text-gray-50'>
             {t('profileSettings.referral.referralStats')}
           </h3>
           <div>
@@ -291,7 +291,7 @@ const Referral = ({
       )}
       {!_isEmpty(activeReferrals) && (
         <>
-          <h3 className='flex items-center mt-2 text-lg font-bold text-gray-900 dark:text-gray-50'>
+          <h3 className='flex items-center mt-5 text-lg font-bold text-gray-900 dark:text-gray-50'>
             {t('profileSettings.referral.activeReferrals')}
           </h3>
           <table className='mt-2 min-w-full shadow ring-1 ring-black ring-opacity-5 md:rounded-lg divide-y divide-gray-300 200 dark:divide-gray-500'>
