@@ -225,7 +225,7 @@ export const MARKETPLACE_URL: string = 'https://marketplace.swetrix.com'
 export const DOCS_URL: string = 'https://docs.swetrix.com'
 export const CAPTCHA_URL: string = 'https://captcha.swetrix.com'
 export const DOCS_CAPTCHA_URL: string = `${DOCS_URL}/captcha/introduction`
-export const DOCS_REFERRAL_PROGRAM_URL: string = `${DOCS_URL}/referral-program/introduction`
+export const DOCS_REFERRAL_PROGRAM_URL: string = `${DOCS_URL}/affiliate/about`
 
 // Swetrix vs ...
 export const SWETRIX_VS_GOOGLE: string = 'https://blog.swetrix.com/post/vs-google-analytics/'
