@@ -320,20 +320,17 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
                     className='w-[25rem]'
                     progress={[
                       {
-                        // value: usageinfo.trafficRelativePerc || 0,
-                        value: 40,
+                        value: usageinfo.traffic === 0 ? 0 : maxEventsCount / usageinfo.traffic,
                         lightColour: '#2563eb',
                         darkColour: '#1d4ed8',
                       },
                       {
-                        // value: usageinfo.customEventsRelativePerc || 0,
-                        value: 15,
+                        value: usageinfo.customEvents === 0 ? 0 : maxEventsCount / usageinfo.customEvents,
                         lightColour: '#c026d3',
                         darkColour: '#a21caf',
                       },
                       {
-                        // value: usageinfo.captchaRelativePerc || 0,
-                        value: 6.2,
+                        value: usageinfo.captcha === 0 ? 0 : maxEventsCount / usageinfo.captcha,
                         lightColour: '#65a30d',
                         darkColour: '#4d7c0f',
                       }
