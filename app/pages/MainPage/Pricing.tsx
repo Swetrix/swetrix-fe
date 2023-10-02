@@ -262,7 +262,7 @@ const Pricing = ({ t, language, authenticated, isBillingPage }: IPricing) => {
     <>
       <div id='pricing' className={cx({ 'bg-white dark:bg-slate-900/75': !authenticated })}>
         <div
-          className={cx('max-w-7xl w-max whitespace-pre-line', {
+          className={cx('max-w-max whitespace-pre-line', {
             'px-4 sm:px-6 lg:px-8 py-24': !authenticated,
             'mx-auto': !isBillingPage,
           })}

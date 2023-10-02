@@ -243,11 +243,11 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
           <Loader />
         ) : (
           <>
-            <div className='flex space-x-5 mt-5'>
+            <div className='flex xl:space-x-5 mt-5 flex-col xl:flex-row'>
               <Pricing authenticated={authenticated} t={t} language={language} isBillingPage />
-              <div className='space-x-2'>
+              <div className='space-y-2'>
                 {subUpdateURL && (
-                  <Button onClick={onUpdatePaymentDetails} type='button' primary large>
+                  <Button className='mr-2' onClick={onUpdatePaymentDetails} type='button' primary large>
                     {t('billing.update')}
                   </Button>
                 )}
@@ -307,7 +307,7 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
                 tooltipNode={(
                   <MultiProgress
                     theme={theme}
-                    className='w-[25rem]'
+                    className='max-w-[25rem] w-[85vw]'
                     progress={[
                       {
                         value: usageinfo.traffic === 0 ? 0 : maxEventsCount / usageinfo.traffic,
@@ -327,7 +327,7 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
                     ]}
                   />
                 )}
-                className='max-w-max !w-auto !h-auto'
+                className='max-w-max !w-max !h-auto'
               />
               <p className='mt-1 text-base text-gray-900 dark:text-gray-50 tracking-tight'>
                 {t('billing.resetDate')}
