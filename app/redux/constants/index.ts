@@ -472,8 +472,6 @@ export const PLAN_LIMITS = {
     index: 0, // 'downgrade' or 'upgrade' logic depends on this
     planCode: 'free',
     monthlyUsageLimit: 5000,
-    maxProjects: 10,
-    maxAlerts: 1,
     legacy: true,
     price: {
       USD: {
@@ -494,8 +492,6 @@ export const PLAN_LIMITS = {
     index: 0, // 'downgrade' or 'upgrade' logic depends on this
     planCode: 'trial',
     monthlyUsageLimit: 100000,
-    maxProjects: 20,
-    maxAlerts: 20,
     legacy: false,
     price: {
       USD: {
@@ -516,8 +512,6 @@ export const PLAN_LIMITS = {
     index: 1, // 'downgrade' or 'upgrade' logic depends on this
     planCode: 'hobby',
     monthlyUsageLimit: 10000,
-    maxProjects: 20,
-    maxAlerts: 10,
     legacy: false,
     price: {
       USD: {
@@ -540,8 +534,6 @@ export const PLAN_LIMITS = {
     index: 2, // 'downgrade' or 'upgrade' logic depends on this
     planCode: 'freelancer',
     monthlyUsageLimit: 100000,
-    maxProjects: 20,
-    maxAlerts: 20,
     legacy: false,
     price: {
       USD: {
@@ -560,12 +552,54 @@ export const PLAN_LIMITS = {
     pid: 752316, // Plan ID
     ypid: 776469, // Plan ID - Yearly billing
   },
-  startup: {
+  '200k': {
     index: 3, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: '200k',
+    monthlyUsageLimit: 200000,
+    legacy: false,
+    price: {
+      USD: {
+        monthly: 25,
+        yearly: 250,
+      },
+      EUR: {
+        monthly: 25,
+        yearly: 250,
+      },
+      GBP: {
+        monthly: 23,
+        yearly: 230,
+      },
+    },
+    pid: 854654, // Plan ID
+    ypid: 854655, // Plan ID - Yearly billing
+  },
+  '500k': {
+    index: 4, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: '500k',
+    monthlyUsageLimit: 500000,
+    legacy: false,
+    price: {
+      USD: {
+        monthly: 45,
+        yearly: 450,
+      },
+      EUR: {
+        monthly: 45,
+        yearly: 450,
+      },
+      GBP: {
+        monthly: 40,
+        yearly: 400,
+      },
+    },
+    pid: 854656, // Plan ID
+    ypid: 854657, // Plan ID - Yearly billing
+  },
+  startup: {
+    index: 5, // 'downgrade' or 'upgrade' logic depends on this
     planCode: 'startup',
     monthlyUsageLimit: 1000000,
-    maxProjects: 30,
-    maxAlerts: 50,
     legacy: false,
     price: {
       USD: {
@@ -584,12 +618,32 @@ export const PLAN_LIMITS = {
     pid: 752317,
     ypid: 776470,
   },
+  '2m': {
+    index: 6, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: '2m',
+    monthlyUsageLimit: 2000000,
+    legacy: false,
+    price: {
+      USD: {
+        monthly: 84,
+        yearly: 840,
+      },
+      EUR: {
+        monthly: 84,
+        yearly: 840,
+      },
+      GBP: {
+        monthly: 74,
+        yearly: 740,
+      },
+    },
+    pid: 854663,
+    ypid: 854664,
+  },
   enterprise: {
-    index: 4, // 'downgrade' or 'upgrade' logic depends on this
+    index: 7, // 'downgrade' or 'upgrade' logic depends on this
     planCode: 'enterprise',
     monthlyUsageLimit: 5000000,
-    maxProjects: 50,
-    maxAlerts: 100,
     legacy: false,
     price: {
       USD: {
@@ -608,9 +662,31 @@ export const PLAN_LIMITS = {
     pid: 752318,
     ypid: 776471,
   },
+  '10m': {
+    index: 8, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: '10m',
+    monthlyUsageLimit: 10000000,
+    legacy: false,
+    price: {
+      USD: {
+        monthly: 150,
+        yearly: 1500,
+      },
+      EUR: {
+        monthly: 150,
+        yearly: 1500,
+      },
+      GBP: {
+        monthly: 130,
+        yearly: 1300,
+      },
+    },
+    pid: 854665,
+    ypid: 854666,
+  },
 }
 
-export const STANDARD_PLANS = ['hobby', 'freelancer', 'startup', 'enterprise']
+export const STANDARD_PLANS = ['hobby', 'freelancer', '200k', '500k', 'startup', '2m', 'enterprise']
 
 export const TRIAL_DAYS: number = 14
 

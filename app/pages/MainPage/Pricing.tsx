@@ -419,7 +419,7 @@ const Pricing = ({ t, language, authenticated, isBillingPage }: IPricing) => {
               t={t}
               i18nKey='billing.contact'
               values={{
-                amount: 5,
+                amount: 10,
               }}
               // @ts-ignore
               components={{
