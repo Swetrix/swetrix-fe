@@ -322,92 +322,104 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
               </div>
             </div>
           </div>
-          <div>
-            <input
-              type='range'
-              min='0'
-              max={PLAN_CODES_ARRAY.length - 1}
-              className='arrows-handle mt-5 w-full appearance-none bg-gray-200 dark:bg-slate-600 h-2 rounded-full'
-              onChange={onSelectPlanChange}
-            />
-            <div className='mt-3 relative border rounded-2xl shadow-sm divide-y ring-1 ring-gray-200 dark:ring-slate-700'>
-              {user.planCode === selectedTier.planCode && (
-                <div className='absolute left-5 top-0 transform translate-y-px'>
-                  <div className='flex justify-center transform -translate-y-1/2'>
-                    <span className='inline-flex rounded-full bg-indigo-600 px-4 py-1 text-sm font-semibold tracking-wider uppercase text-white'>
-                      {t('pricing.currentPlan')}
-                    </span>
-                  </div>
+          <input
+            type='range'
+            min='0'
+            max={PLAN_CODES_ARRAY.length - 1}
+            className='arrows-handle mt-5 w-full appearance-none bg-gray-200 dark:bg-slate-600 h-2 rounded-full'
+            onChange={onSelectPlanChange}
+          />
+          <div className='mt-5 relative border rounded-2xl shadow-sm divide-y ring-1 ring-gray-200 dark:ring-slate-700'>
+            {user.planCode === selectedTier.planCode && (
+              <div className='absolute left-5 top-0 transform translate-y-px'>
+                <div className='flex justify-center transform -translate-y-1/2'>
+                  <span className='inline-flex rounded-full bg-indigo-600 px-4 py-1 text-sm font-semibold tracking-wider uppercase text-white'>
+                    {t('pricing.currentPlan')}
+                  </span>
                 </div>
-              )}
-              {selectedTier.legacy && (
-                <div className='absolute right-5 top-0 transform translate-y-px'>
-                  <div className='flex justify-center transform -translate-y-1/2'>
-                    <span className='inline-flex rounded-full bg-amber-400 px-2 py-1 text-sm font-semibold tracking-wider uppercase text-white'>
-                      {t('pricing.legacy')}
-                    </span>
-                  </div>
+              </div>
+            )}
+            {selectedTier.legacy && (
+              <div className='absolute right-5 top-0 transform translate-y-px'>
+                <div className='flex justify-center transform -translate-y-1/2'>
+                  <span className='inline-flex rounded-full bg-amber-400 px-2 py-1 text-sm font-semibold tracking-wider uppercase text-white'>
+                    {t('pricing.legacy')}
+                  </span>
                 </div>
-              )}
-              <div className='p-6 border-none'>
-                <ClientOnly fallback={<Loader />}>
-                  {() => (
-                    <div className='flex justify-between'>
-                      <p>
-                        <span className='text-4xl font-bold text-[#4D4D4D] dark:text-gray-50'>
-                          {currency.symbol}
-                          {billingFrequency === BillingFrequency.monthly ? selectedTier.price[currencyCode]?.monthly : selectedTier.price[currencyCode]?.yearly}
-                        </span>
-                        &nbsp;
-                        <span className='text-base font-medium text-gray-500 dark:text-gray-400'>
-                          /
-                          {t(billingFrequency === BillingFrequency.monthly ? 'pricing.perMonth' : 'pricing.perYear')}
-                        </span>
-                      </p>
+              </div>
+            )}
+            <div className='p-6 border-none'>
+              <ClientOnly fallback={<Loader />}>
+                {() => (
+                  <div className='flex justify-between'>
+                    <p>
+                      <span className='text-4xl font-bold text-[#4D4D4D] dark:text-gray-50'>
+                        {currency.symbol}
+                        {billingFrequency === BillingFrequency.monthly ? selectedTier.price[currencyCode]?.monthly : selectedTier.price[currencyCode]?.yearly}
+                      </span>
+                      &nbsp;
+                      <span className='text-base font-medium text-gray-500 dark:text-gray-400'>
+                        /
+                        {t(billingFrequency === BillingFrequency.monthly ? 'pricing.perMonth' : 'pricing.perYear')}
+                      </span>
+                    </p>
 
-                      {authenticated ? (
-                        <Button
-                          onClick={() => downgrade ? downgradeHandler(selectedTier) : onPlanChange(selectedTier)}
-                          type='button'
-                          loading={planCodeLoading === selectedTier.planCode}
-                          disabled={planCodeLoading !== null || (selectedTier.planCode === user.planCode && (user.billingFrequency === billingFrequency || user.planCode === 'free' || user.planCode === 'trial'))}
-                          primary
-                          large
-                        >
-                          {action}
-                        </Button>
-                      ) : (
-                        <Link
-                          className='mt-8 block w-full bg-indigo-600 dark:bg-indigo-700 hover:dark:bg-indigo-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-indigo-700'
-                          to={routes.signup}
-                          aria-label={t('titles.signup')}
-                        >
-                          {t('common.getStarted')}
-                        </Link>
-                      )}
-                    </div>
-                  )}
-                </ClientOnly>
-              </div>
-              <div className='px-6 border-none'>
-                <hr className='w-full mx-auto border border-gray-300 dark:border-slate-800' />
-              </div>
-              <div className='pt-6 pb-8 px-6 border-none'>
-                <h3 className='text-xs font-medium text-gray-900 dark:text-gray-50 tracking-wide uppercase'>
-                  {t('pricing.whatIncl')}
-                </h3>
-                {/* space-y-4 */}
-                <ul className='mt-6 grid grid-cols-2 gap-4'>
-                  {_map(planFeatures, (feature) => (
-                    <li key={feature} className='flex space-x-3'>
-                      <CheckIcon className='flex-shrink-0 h-5 w-5 text-green-500' aria-hidden='true' />
-                      <span className='text-sm text-gray-700 dark:text-gray-200'>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                    {authenticated ? (
+                      <Button
+                        onClick={() => downgrade ? downgradeHandler(selectedTier) : onPlanChange(selectedTier)}
+                        type='button'
+                        loading={planCodeLoading === selectedTier.planCode}
+                        disabled={planCodeLoading !== null || (selectedTier.planCode === user.planCode && (user.billingFrequency === billingFrequency || user.planCode === 'free' || user.planCode === 'trial'))}
+                        primary
+                        large
+                      >
+                        {action}
+                      </Button>
+                    ) : (
+                      <Link
+                        className='mt-8 block w-full bg-indigo-600 dark:bg-indigo-700 hover:dark:bg-indigo-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-indigo-700'
+                        to={routes.signup}
+                        aria-label={t('titles.signup')}
+                      >
+                        {t('common.getStarted')}
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </ClientOnly>
+            </div>
+            <div className='px-6 border-none'>
+              <hr className='w-full mx-auto border border-gray-300 dark:border-slate-800' />
+            </div>
+            <div className='pt-6 pb-8 px-6 border-none'>
+              <h3 className='text-xs font-medium text-gray-900 dark:text-gray-50 tracking-wide uppercase'>
+                {t('pricing.whatIncl')}
+              </h3>
+              {/* space-y-4 */}
+              <ul className='mt-6 grid grid-cols-2 gap-4'>
+                {_map(planFeatures, (feature) => (
+                  <li key={feature} className='flex space-x-3'>
+                    <CheckIcon className='flex-shrink-0 h-5 w-5 text-green-500' aria-hidden='true' />
+                    <span className='text-sm text-gray-700 dark:text-gray-200'>{feature}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
+          <p className='text-base text-gray-900 dark:text-gray-50 tracking-tight mt-5'>
+            <Trans
+              // @ts-ignore
+              t={t}
+              i18nKey='billing.contact'
+              values={{
+                amount: 5,
+              }}
+              // @ts-ignore
+              components={{
+                url: <Link to={routes.contact} className='font-semibold leading-6 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-500' aria-label={t('footer.tos')} />,
+              }}
+            />
+          </p>
         </div>
         <div className='checkout-container' id='checkout-container' />
       </div>

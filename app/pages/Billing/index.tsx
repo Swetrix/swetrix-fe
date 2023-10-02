@@ -243,19 +243,6 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
         ) : (
           <>
             <Pricing authenticated={authenticated} t={t} language={language} />
-            <p className='text-lg text-gray-900 dark:text-gray-50 tracking-tight mt-10'>
-              <Trans
-                // @ts-ignore
-                t={t}
-                i18nKey='billing.contact'
-                values={{ email: CONTACT_EMAIL }}
-                // @ts-ignore
-                components={{
-                  mail: <a title={`Email us at ${CONTACT_EMAIL}`} href={`mailto:${CONTACT_EMAIL}`} className='font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400' />,
-                  amount: 5,
-                }}
-              />
-            </p>
             <div>
               {subUpdateURL && (
                 <span onClick={onUpdatePaymentDetails} className='inline-flex select-none cursor-pointer mr-2 items-center border border-transparent leading-4 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-sm'>
