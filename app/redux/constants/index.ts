@@ -686,7 +686,7 @@ export const PLAN_LIMITS = {
   },
 }
 
-export const STANDARD_PLANS = ['hobby', 'freelancer', '200k', '500k', 'startup', '2m', 'enterprise']
+export const STANDARD_PLANS = ['hobby', 'freelancer', '200k', '500k', 'startup', '2m', 'enterprise', '10m']
 
 export const TRIAL_DAYS: number = 14
 
