@@ -213,9 +213,9 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
           </p>
         )}
         {cancellationEffectiveDate && (
-          <div className='flex items-center text-lg text-gray-900 dark:text-gray-50 tracking-tight'>
+          <div className='flex items-center text-lg text-gray-900 dark:text-gray-50 tracking-tight mt-3'>
             <InformationCircleIcon className='h-10 w-10 mr-2 text-blue-600' aria-hidden='true' />
-            <span className='font-bold max-w-prose'>
+            <span className='font-medium max-w-prose'>
               {t('billing.cancelledSubMessage', {
                 date: language === 'en'
                   ? dayjs(cancellationEffectiveDate).locale(language).format('MMMM D, YYYY')
@@ -225,16 +225,16 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
           </div>
         )}
         {isTrial && trialMessage && (
-          <div className='text-lg text-gray-900 dark:text-gray-50 tracking-tight'>
-            <span className='font-bold'>
+          <div className='text-lg text-gray-900 dark:text-gray-50 tracking-tight mt-3'>
+            <span className='font-medium'>
               {trialMessage}
             </span>
           </div>
         )}
         {isNoSub && (
-          <div className='flex items-center text-lg text-gray-900 dark:text-gray-50 tracking-tight'>
+          <div className='flex items-center text-lg text-gray-900 dark:text-gray-50 tracking-tight mt-3'>
             <ExclamationTriangleIcon className='h-10 w-10 mr-2 text-red-600' aria-hidden='true' />
-            <span className='font-bold max-w-prose'>
+            <span className='font-medium max-w-prose'>
               {t('billing.noSubWarning')}
             </span>
           </div>
