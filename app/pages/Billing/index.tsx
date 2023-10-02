@@ -19,6 +19,7 @@ import { useAppDispatch, StateType } from 'redux/store'
 import sagaActions from 'redux/sagas/actions'
 import { withAuthentication, auth } from 'hoc/protected'
 import Modal from 'ui/Modal'
+import Button from 'ui/Button'
 import MultiProgress from 'ui/MultiProgress'
 import Tooltip from 'ui/Tooltip'
 import { IUser } from 'redux/models/IUser'
@@ -242,18 +243,20 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
           <Loader />
         ) : (
           <>
-            <Pricing authenticated={authenticated} t={t} language={language} />
-            <div>
-              {subUpdateURL && (
-                <span onClick={onUpdatePaymentDetails} className='inline-flex select-none cursor-pointer mr-2 items-center border border-transparent leading-4 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-sm'>
-                  {t('billing.update')}
-                </span>
-              )}
-              {subCancelURL && (
-                <span onClick={() => setIsCancelSubModalOpened(true)} className='inline-flex select-none cursor-pointer items-center border border-transparent leading-4 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 shadow-sm text-white bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 px-4 py-2 text-sm'>
-                  {t('billing.cancelSub')}
-                </span>
-              )}
+            <div className='flex space-x-5 mt-5'>
+              <Pricing authenticated={authenticated} t={t} language={language} isBillingPage />
+              <div className='space-x-2'>
+                {subUpdateURL && (
+                  <Button onClick={onUpdatePaymentDetails} type='button' primary large>
+                    {t('billing.update')}
+                  </Button>
+                )}
+                {subCancelURL && (
+                  <Button onClick={() => setIsCancelSubModalOpened(true)} type='button' semiDanger large>
+                    {t('billing.cancelSub')}
+                  </Button>
+                )}
+              </div>
             </div>
             <h2 id='usage' className='mt-5 text-2xl font-medium text-gray-900 dark:text-gray-50 tracking-tight'>
               {t('billing.planUsage')}

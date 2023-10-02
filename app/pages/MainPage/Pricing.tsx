@@ -48,9 +48,10 @@ interface IPricing {
   }) => string,
   language: string,
   authenticated: boolean,
+  isBillingPage?: boolean,
 }
 
-const Pricing = ({ t, language, authenticated }: IPricing) => {
+const Pricing = ({ t, language, authenticated, isBillingPage }: IPricing) => {
   const dispatch: AppDispatch = useDispatch()
   const { user } = useSelector((state: StateType) => state.auth)
   const { theme } = useSelector((state: StateType) => state.ui.theme)
@@ -73,10 +74,10 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
   const [billingFrequency, setBillingFrequency] = useState(user?.billingFrequency || BillingFrequency.monthly)
 
   const PLAN_CODES_ARRAY = authenticated
-    ? STANDARD_PLANS
-    : _includes(STANDARD_PLANS, user.planCode)
+    ? _includes(STANDARD_PLANS, user.planCode)
       ? STANDARD_PLANS
       : [user.planCode, ...STANDARD_PLANS]
+    : STANDARD_PLANS
 
   // @ts-ignore
   const [selectedTier, setSelectedTier] = useState<any>(authenticated ? PLAN_LIMITS[user.planCode] : PLAN_LIMITS.hobby)
@@ -260,14 +261,19 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
   return (
     <>
       <div id='pricing' className={cx({ 'bg-white dark:bg-slate-900/75': !authenticated })}>
-        <div className={cx('max-w-7xl w-max mx-auto whitespace-pre-line', { 'px-4 sm:px-6 lg:px-8 py-24': !authenticated })}>
+        <div
+          className={cx('max-w-7xl w-max whitespace-pre-line', {
+            'px-4 sm:px-6 lg:px-8 py-24': !authenticated,
+            'mx-auto': !isBillingPage,
+          })}
+          >
           <div className='sm:flex sm:flex-col sm:align-center'>
             {!authenticated && (
               <>
                 <h1 className='text-3xl font-extrabold text-gray-900 dark:text-gray-50 sm:text-center'>
                   {t('pricing.title')}
                 </h1>
-                <p className='mt-5 text-xl text-gray-500 dark:text-gray-200 sm:text-center'>
+                <p className='mt-5 text-xl text-gray-500 dark:text-gray-200 sm:text-center mb-5'>
                   {t('pricing.adv')}
                 </p>
               </>
@@ -295,7 +301,7 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
                     value={BillingFrequency.monthly}
                     className={({ checked }) =>
                       cx(
-                        checked ? 'bg-indigo-600 text-white' : 'text-gray-500 dark:text-gray-200',
+                        checked ? 'bg-slate-900 dark:bg-indigo-700 text-gray-50' : 'text-gray-500 dark:text-gray-200',
                         'cursor-pointer rounded-md px-2.5 flex justify-center items-center'
                       )
                     }
@@ -309,7 +315,7 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
                     value={BillingFrequency.yearly}
                     className={({ checked }) =>
                       cx(
-                        checked ? 'bg-indigo-600 text-white' : 'text-gray-500 dark:text-gray-200',
+                        checked ? 'bg-slate-900 dark:bg-indigo-700 text-gray-50' : 'text-gray-500 dark:text-gray-200',
                         'cursor-pointer rounded-md px-2.5 flex justify-center items-center'
                       )
                     }
@@ -326,6 +332,7 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
             type='range'
             min='0'
             max={PLAN_CODES_ARRAY.length - 1}
+            value={PLAN_CODES_ARRAY.indexOf(selectedTier.planCode)}
             className='arrows-handle mt-5 w-full appearance-none bg-gray-200 dark:bg-slate-600 h-2 rounded-full'
             onChange={onSelectPlanChange}
           />
@@ -377,7 +384,7 @@ const Pricing = ({ t, language, authenticated }: IPricing) => {
                       </Button>
                     ) : (
                       <Link
-                        className='mt-8 block w-full bg-indigo-600 dark:bg-indigo-700 hover:dark:bg-indigo-800 rounded-md py-2 text-sm font-semibold text-white text-center hover:bg-indigo-700'
+                        className='relative inline-flex select-none items-center border leading-4 font-medium rounded-md px-4 py-2 text-sm shadow-sm text-gray-50 bg-slate-900 hover:bg-slate-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 border-transparent'
                         to={routes.signup}
                         aria-label={t('titles.signup')}
                       >
