@@ -468,6 +468,26 @@ export const BillingFrequency = {
 
 // TODO: Eventually this should be fetched from the API, e.g. GET /config route
 export const PLAN_LIMITS = {
+  none: {
+    index: 0, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: 'none',
+    monthlyUsageLimit: 0,
+    legacy: false,
+    price: {
+      USD: {
+        monthly: 0,
+        yearly: 0,
+      },
+      EUR: {
+        monthly: 0,
+        yearly: 0,
+      },
+      GBP: {
+        monthly: 0,
+        yearly: 0,
+      },
+    },
+  },
   free: {
     index: 0, // 'downgrade' or 'upgrade' logic depends on this
     planCode: 'free',

@@ -250,7 +250,7 @@ const Pricing = ({ t, language, authenticated, isBillingPage }: IPricing) => {
     action = t('pricing.upgrade')
   } else if (downgrade) {
     action = t('pricing.downgrade')
-  } else if (user.billingFrequency === billingFrequency || user.planCode === 'free' || user.planCode === 'trial') {
+  } else if (user.billingFrequency === billingFrequency || user.planCode === 'free' || user.planCode === 'trial' || user.planCode === 'none') {
     action = t('pricing.yourPlan')
   } else if (billingFrequency === BillingFrequency.monthly) {
     action = t('pricing.switchToMonthly')
@@ -376,7 +376,7 @@ const Pricing = ({ t, language, authenticated, isBillingPage }: IPricing) => {
                         onClick={() => downgrade ? downgradeHandler(selectedTier) : onPlanChange(selectedTier)}
                         type='button'
                         loading={planCodeLoading === selectedTier.planCode}
-                        disabled={planCodeLoading !== null || (selectedTier.planCode === user.planCode && (user.billingFrequency === billingFrequency || user.planCode === 'free' || user.planCode === 'trial'))}
+                        disabled={planCodeLoading !== null || (selectedTier.planCode === user.planCode && (user.billingFrequency === billingFrequency || user.planCode === 'free' || user.planCode === 'trial' || user.planCode === 'none'))}
                         primary
                         large
                       >
