@@ -469,6 +469,8 @@ export const BillingFrequency = {
 // TODO: Eventually this should be fetched from the API, e.g. GET /config route
 export const PLAN_LIMITS = {
   free: {
+    index: 0, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: 'free',
     monthlyUsageLimit: 5000,
     maxProjects: 10,
     maxAlerts: 1,
@@ -489,6 +491,8 @@ export const PLAN_LIMITS = {
     },
   },
   trial: {
+    index: 0, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: 'trial',
     monthlyUsageLimit: 100000,
     maxProjects: 20,
     maxAlerts: 20,
@@ -509,6 +513,8 @@ export const PLAN_LIMITS = {
     },
   },
   hobby: {
+    index: 1, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: 'hobby',
     monthlyUsageLimit: 10000,
     maxProjects: 20,
     maxAlerts: 10,
@@ -527,8 +533,12 @@ export const PLAN_LIMITS = {
         yearly: 40,
       },
     },
+    pid: 813694, // Plan ID
+    ypid: 813695, // Plan ID - Yearly billing
   },
   freelancer: {
+    index: 2, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: 'freelancer',
     monthlyUsageLimit: 100000,
     maxProjects: 20,
     maxAlerts: 20,
@@ -547,8 +557,12 @@ export const PLAN_LIMITS = {
         yearly: 140,
       },
     },
+    pid: 752316, // Plan ID
+    ypid: 776469, // Plan ID - Yearly billing
   },
   startup: {
+    index: 3, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: 'startup',
     monthlyUsageLimit: 1000000,
     maxProjects: 30,
     maxAlerts: 50,
@@ -567,8 +581,12 @@ export const PLAN_LIMITS = {
         yearly: 490,
       },
     },
+    pid: 752317,
+    ypid: 776470,
   },
   enterprise: {
+    index: 4, // 'downgrade' or 'upgrade' logic depends on this
+    planCode: 'enterprise',
     monthlyUsageLimit: 5000000,
     maxProjects: 50,
     maxAlerts: 100,
@@ -587,8 +605,12 @@ export const PLAN_LIMITS = {
         yearly: 950,
       },
     },
+    pid: 752318,
+    ypid: 776471,
   },
 }
+
+export const STANDARD_PLANS = ['hobby', 'freelancer', 'startup', 'enterprise']
 
 export const TRIAL_DAYS: number = 14
 

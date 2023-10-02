@@ -371,3 +371,36 @@ code {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #6b7280;
 }
+
+.arrows-handle {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  cursor: grab;
+}
+
+.arrows-handle::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background-color: #6366f1;
+  /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' stroke='black' stroke-width='1.5' transform='rotate(90)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E"); */
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: grab;
+}
+
+.arrows-handle::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background-color: #6366f1;
+  /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' stroke='black' stroke-width='1.5' transform='rotate(90)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9' /%3E%3C/svg%3E"); */
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: grab;
+}
