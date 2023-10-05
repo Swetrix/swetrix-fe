@@ -453,7 +453,7 @@ const Dashboard = ({
                 <div>
                   <div className='sm:hidden mb-2'>
                     <Select
-                      items={dashboardLocTabs}
+                      items={_filter(dashboardLocTabs, (tab) => tab.name !== tabForSharedProject || sharedTotal > 0)}
                       keyExtractor={(item) => item.id}
                       labelExtractor={(item) => item.label}
                       onSelect={(label) => {
