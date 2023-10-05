@@ -389,6 +389,22 @@ const Dashboard = ({
   }, [dashboardPaginationPage, dashboardPaginationPageShared])
 
   const dashboardLocTabs = useMemo(() => {
+    if (sharedTotal <= 0) {
+      return [
+        {
+          id: DASHBOARD_TABS.owned,
+          name: tabForOwnedProject,
+          label: t('profileSettings.owned'),
+        },
+        {
+          id: DASHBOARD_TABS.captcha,
+          name: tabForCaptchaProject,
+          label: t('profileSettings.captcha'),
+        },
+      ]
+    }
+
+
     return [
       {
         id: DASHBOARD_TABS.owned,
@@ -453,7 +469,7 @@ const Dashboard = ({
                 <div>
                   <div className='sm:hidden mb-2'>
                     <Select
-                      items={_filter(dashboardLocTabs, (tab) => tab.name !== tabForSharedProject || sharedTotal > 0)}
+                      items={dashboardLocTabs}
                       keyExtractor={(item) => item.id}
                       labelExtractor={(item) => item.label}
                       onSelect={(label) => {
