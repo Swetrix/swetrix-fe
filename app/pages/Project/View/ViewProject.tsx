@@ -1890,14 +1890,19 @@ const ViewProject = ({
           <Header ssrTheme={ssrTheme} authenticated={authenticated} />
         )}
         <EventsRunningOutBanner />
-        <div ref={ref} className='bg-gray-50 dark:bg-slate-900'>
+        <div
+          ref={ref}
+          className={cx('bg-gray-50 dark:bg-slate-900', {
+            'min-h-[100vh]': analyticsLoading && embedded,
+          })}
+        >
           <div
             className={cx(
               'max-w-[1584px] w-full mx-auto py-6 px-2 sm:px-4 lg:px-8',
               {
                 'min-h-min-footer': (authenticated || activeTab === PROJECT_TABS.alerts) && !embedded,
                 'min-h-min-footer-ad': (!authenticated && activeTab !== PROJECT_TABS.alerts) && !embedded,
-                'min-h-screen': embedded,
+                'min-h-[100vh]': embedded,
               },
             )}
             ref={dashboardRef}
@@ -2683,7 +2688,7 @@ const ViewProject = ({
       <div
         className={cx('min-h-min-footer bg-gray-50 dark:bg-slate-900', {
           'min-h-min-footer': !embedded,
-          'min-h-screen': embedded,
+          'min-h-[100vh]': embedded,
         })}
       >
         <Loader />
