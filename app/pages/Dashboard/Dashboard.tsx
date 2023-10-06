@@ -314,8 +314,8 @@ interface DashboardProps {
   setUserShareData: (data: Partial<ISharedProject>) => void
   userSharedUpdate: (message: string) => void
   sharedProjectError: (error: string) => void
-  loadProjects: (take: number, skip: number) => void
-  loadSharedProjects: (take: number, skip: number) => void
+  loadProjects: (take: number, skip: number, search: string) => void
+  loadSharedProjects: (take: number, skip: number, search: string) => void
   total: number
   setDashboardPaginationPage: (page: number) => void
   dashboardPaginationPage: number
@@ -329,7 +329,7 @@ interface DashboardProps {
   captchaTotal: number
   dashboardPaginationPageCaptcha: number
   setDashboardPaginationPageCaptcha: (page: number) => void
-  loadProjectsCaptcha: (take: number, skip: number) => void
+  loadProjectsCaptcha: (take: number, skip: number, search: string) => void
   projectTab: string
   liveStats: ILiveStats
 }
@@ -353,6 +353,7 @@ const Dashboard = ({
   const pageAmount: number = Math.ceil(total / ENTRIES_PER_PAGE_DASHBOARD)
   const pageAmountCaptcha: number = Math.ceil(captchaTotal / ENTRIES_PER_PAGE_DASHBOARD)
   const getRole = (pid: string): string | null => (_find([..._map(sharedProjects, (item) => ({ ...item.project, role: item.role }))], p => p.id === pid)?.role || null)
+  const [search, setSearch] = useState<string>('')
 
   const onNewProject = () => {
     if (user.isActive || isSelfhosted) {
@@ -372,21 +373,23 @@ const Dashboard = ({
       setTabProjects(tabForOwnedProject)
     }
 
+    setSearch('')
+
     setDashboardTabs(tabProjects)
   }, [tabProjects, setDashboardTabs, sharedTotal])
 
   useEffect(() => {
     if (tabProjects === tabForOwnedProject) {
-      loadProjects(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPage - 1) * ENTRIES_PER_PAGE_DASHBOARD)
+      loadProjects(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPage - 1) * ENTRIES_PER_PAGE_DASHBOARD, search)
     }
     if (tabProjects === tabForSharedProject) {
-      loadSharedProjects(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPageShared - 1) * ENTRIES_PER_PAGE_DASHBOARD)
+      loadSharedProjects(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPageShared - 1) * ENTRIES_PER_PAGE_DASHBOARD, search)
     }
     if (tabProjects === tabForCaptchaProject) {
-      loadProjectsCaptcha(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPageCaptcha - 1) * ENTRIES_PER_PAGE_DASHBOARD)
+      loadProjectsCaptcha(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPageCaptcha - 1) * ENTRIES_PER_PAGE_DASHBOARD, search)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dashboardPaginationPage, dashboardPaginationPageShared])
+  }, [dashboardPaginationPage, dashboardPaginationPageShared, search])
 
   const dashboardLocTabs = useMemo(() => {
     if (sharedTotal <= 0) {
@@ -445,6 +448,10 @@ const Dashboard = ({
     )
   }
 
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value)
+  }
+
   return (
     <>
       <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900'>
@@ -452,9 +459,24 @@ const Dashboard = ({
         <div className='flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
           <div className='max-w-7xl w-full mx-auto'>
             <div className='flex justify-between mb-6'>
-              <h2 className='mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>
-                {t('titles.dashboard')}
-              </h2>
+              <div className='flex items-end justify-between'>
+                <h2 className='mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>
+                  {t('titles.dashboard')}
+                </h2>
+
+                <div className='flex items-center pb-1 w-full max-w-md px-2 sm:px-10'>
+                  <label htmlFor='simple-search' className='sr-only'>Search</label>
+                  <div className='relative w-full'>
+                    <div className='absolute sm:flex hidden inset-y-0 left-0 items-center pl-2 pointer-events-none'>
+                      <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 dark:text-white text-gray-900'>
+                        <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z' />
+                      </svg>
+                    </div>
+                    <input type='text' onChange={onSearch} value={search} id='simple-search' className='bg-gray-50 border h-7 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500' placeholder={t('project.search')} required />
+                  </div>
+                </div>
+              </div>
+
               <span
                 onClick={onNewProject}
                 className='!pl-2 inline-flex justify-center items-center cursor-pointer text-center border border-transparent leading-4 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 shadow-sm text-white bg-slate-900 hover:bg-slate-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-2 text-sm'
