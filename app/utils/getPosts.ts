@@ -3,6 +3,8 @@ import fs from 'fs/promises'
 import parseFrontMatter from 'front-matter'
 import { marked } from 'marked'
 import _map from 'lodash/map'
+import _find from 'lodash/find'
+import _includes from 'lodash/includes'
 import _replace from 'lodash/replace'
 import { LoaderFunction } from '@remix-run/node'
 
@@ -22,11 +24,36 @@ interface IParseFontMatter {
 
 export const postsPath = path.join(__dirname, '..', 'blog-posts', 'posts')
 
+// Removes first 10 characters from the string (i.e. 2023-10-07-)
+const getSlugFromFilename = (filename: string) => filename.substring(11)
+
+const findFilenameBySlug = (list: string[], handle: string) => {
+  return _find(list, (item) => _includes(item, handle))
+}
+
 export async function getPost(slug: string) {
-  const filepath = path.join(postsPath, slug + '.md')
+  const files = await fs.readdir(postsPath) as string[]
+  const filename = findFilenameBySlug(files, slug)
+
+  if (!filename) {
+    return null
+  }
+
+  const filepath = path.join(postsPath, filename)
+
   const file = await fs.readFile(filepath)
   const { attributes, body }: IParseFontMatter = parseFrontMatter(file.toString())
-  return { slug, title: attributes.title, html: marked(body), hidden: attributes.hidden, intro: attributes.intro, date: attributes.date, author: attributes.author, nickname: attributes.nickname }
+
+  return {
+    slug,
+    title: attributes.title,
+    html: marked(body),
+    hidden: attributes.hidden,
+    intro: attributes.intro,
+    date: attributes.date,
+    author: attributes.author,
+    nickname: attributes.nickname,
+  }
 }
 
 export const blogLoader: LoaderFunction = async () => {
@@ -41,7 +68,7 @@ export const blogLoader: LoaderFunction = async () => {
         file.toString()
       )
       return {
-        slug: _replace(filename, /\.md$/, ''),
+        slug: _replace(getSlugFromFilename(filename), /\.md$/, ''),
         title: attributes.title,
         hidden: attributes.hidden,
         intro: attributes.intro,

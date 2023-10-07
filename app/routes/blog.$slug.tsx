@@ -1,9 +1,10 @@
 import { Link, useLoaderData } from '@remix-run/react'
 import type { LoaderFunction, LinksFunction } from '@remix-run/node'
-import { redirect } from '@remix-run/node'
+import { redirect, json } from '@remix-run/node'
 import singlePostCss from 'css/mdfile.css'
 import { getPost } from 'utils/getPosts'
 import { isSelfhosted } from 'redux/constants'
+import NotFound from 'pages/NotFound'
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: singlePostCss }]
@@ -14,12 +15,31 @@ export const loader: LoaderFunction = async ({ params }) => {
     return redirect('/dashboard', 302)
   }
 
-  if (!params.slug) return { status: 404 }
-  return getPost(params.slug)
+  if (!params.slug) {
+    return json(null, {
+      status: 404,
+    })
+  }
+
+  const post = await getPost(params.slug)
+
+  if (!post) {
+    return json(null, {
+      status: 404,
+    })
+  }
+
+  return post
 }
 
 export default function PostSlug() {
   const post = useLoaderData()
+
+  if (!post) {
+    return (
+      <NotFound />
+    )
+  }
 
   return (
     <div className='bg-gray-50 dark:bg-[#14171c] text-gray-700 dark:text-gray-300'>
@@ -35,7 +55,7 @@ export default function PostSlug() {
               viewBox='0 -9 3 24'
               className='overflow-visible mr-3 text-slate-400 w-auto h-6 group-hover:text-slate-600 dark:group-hover:text-slate-300'
             >
-              <path d='M3 0L0 3L3 6' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' stroke-linejoin='round' />
+              <path d='M3 0L0 3L3 6' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' />
             </svg>
             Go back
           </Link>
