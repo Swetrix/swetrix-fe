@@ -13,9 +13,10 @@ import _map from 'lodash/map'
 import _isUndefined from 'lodash/isUndefined'
 import _filter from 'lodash/filter'
 import _find from 'lodash/find'
+import _debounce from 'lodash/debounce'
 import { useTranslation } from 'react-i18next'
 import {
-  FolderPlusIcon, AdjustmentsVerticalIcon, ArrowTopRightOnSquareIcon,
+  FolderPlusIcon, AdjustmentsVerticalIcon, ArrowTopRightOnSquareIcon, MagnifyingGlassIcon, XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { XCircleIcon } from '@heroicons/react/24/solid'
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
@@ -34,6 +35,7 @@ import {
   tabForCaptchaProject, DASHBOARD_TABS, tabsForDashboard, roleViewer,
 } from 'redux/constants'
 import EventsRunningOutBanner from 'components/EventsRunningOutBanner'
+import useDebounce from 'hooks/useDebounce'
 
 import { acceptShareProject } from 'api'
 
@@ -330,7 +332,6 @@ interface DashboardProps {
   dashboardPaginationPageCaptcha: number
   setDashboardPaginationPageCaptcha: (page: number) => void
   loadProjectsCaptcha: (take: number, skip: number, search: string) => void
-  projectTab: string
   liveStats: ILiveStats
 }
 
@@ -339,13 +340,14 @@ const Dashboard = ({
   setUserShareData, userSharedUpdate, sharedProjectError, loadProjects, loadSharedProjects,
   total, setDashboardPaginationPage, dashboardPaginationPage, sharedProjects, dashboardTabs,
   setDashboardTabs, sharedTotal, setDashboardPaginationPageShared, dashboardPaginationPageShared, captchaProjects, captchaTotal, dashboardPaginationPageCaptcha, setDashboardPaginationPageCaptcha,
-  loadProjectsCaptcha, projectTab, liveStats,
+  loadProjectsCaptcha, liveStats,
 }: DashboardProps): JSX.Element => {
   const { t }: {
     t: (key: string, options?: {
       [key: string]: string | number | null | undefined
     }) => string
   } = useTranslation('common')
+  const [isSearchActive, setIsSearchActive] = useState<boolean>(false)
   const [showActivateEmailModal, setShowActivateEmailModal] = useState<boolean>(false)
   const navigate = useNavigate()
   const [tabProjects, setTabProjects] = useState<string>(dashboardTabs)
@@ -353,7 +355,9 @@ const Dashboard = ({
   const pageAmount: number = Math.ceil(total / ENTRIES_PER_PAGE_DASHBOARD)
   const pageAmountCaptcha: number = Math.ceil(captchaTotal / ENTRIES_PER_PAGE_DASHBOARD)
   const getRole = (pid: string): string | null => (_find([..._map(sharedProjects, (item) => ({ ...item.project, role: item.role }))], p => p.id === pid)?.role || null)
+  // This search represents what's inside the search input
   const [search, setSearch] = useState<string>('')
+  const debouncedSearch = useDebounce<string>(search, 500)
 
   const onNewProject = () => {
     if (user.isActive || isSelfhosted) {
@@ -380,16 +384,16 @@ const Dashboard = ({
 
   useEffect(() => {
     if (tabProjects === tabForOwnedProject) {
-      loadProjects(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPage - 1) * ENTRIES_PER_PAGE_DASHBOARD, search)
+      loadProjects(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPage - 1) * ENTRIES_PER_PAGE_DASHBOARD, debouncedSearch)
     }
     if (tabProjects === tabForSharedProject) {
-      loadSharedProjects(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPageShared - 1) * ENTRIES_PER_PAGE_DASHBOARD, search)
+      loadSharedProjects(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPageShared - 1) * ENTRIES_PER_PAGE_DASHBOARD, debouncedSearch)
     }
     if (tabProjects === tabForCaptchaProject) {
-      loadProjectsCaptcha(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPageCaptcha - 1) * ENTRIES_PER_PAGE_DASHBOARD, search)
+      loadProjectsCaptcha(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPageCaptcha - 1) * ENTRIES_PER_PAGE_DASHBOARD, debouncedSearch)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dashboardPaginationPage, dashboardPaginationPageShared, search])
+  }, [dashboardPaginationPage, dashboardPaginationPageShared, debouncedSearch])
 
   const dashboardLocTabs = useMemo(() => {
     if (sharedTotal <= 0) {
@@ -425,7 +429,7 @@ const Dashboard = ({
         label: t('profileSettings.captcha'),
       },
     ]
-  }, [t])
+  }, [t, sharedTotal])
 
   const activeTabLabel = useMemo(() => {
     return _find(dashboardLocTabs, (tab) => tab.name === tabProjects)?.label
@@ -460,23 +464,45 @@ const Dashboard = ({
           <div className='max-w-7xl w-full mx-auto'>
             <div className='flex justify-between mb-6'>
               <div className='flex items-end justify-between'>
-                <h2 className='mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>
+                <h2 className='flex items-baseline mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>
                   {t('titles.dashboard')}
+                  {isSearchActive ? (
+                    <XMarkIcon
+                      className='ml-2 w-5 h-5 text-gray-900 dark:text-gray-50 cursor-pointer hover:opacity-80'
+                      onClick={() => {
+                        setSearch('')
+                        setIsSearchActive(false)
+                      }}
+                    />
+                  ) : (
+                    <MagnifyingGlassIcon
+                      className='ml-2 w-5 h-5 text-gray-900 dark:text-gray-50 cursor-pointer hover:opacity-80'
+                      onClick={() => {
+                        setIsSearchActive(true)
+                      }}
+                    />
+                  )}
                 </h2>
-
-                <div className='flex items-center pb-1 w-full max-w-md px-2 sm:px-10'>
-                  <label htmlFor='simple-search' className='sr-only'>Search</label>
-                  <div className='relative w-full'>
-                    <div className='absolute sm:flex hidden inset-y-0 left-0 items-center pl-2 pointer-events-none'>
-                      <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='w-5 h-5 dark:text-white text-gray-900'>
-                        <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z' />
-                      </svg>
+                {isSearchActive && (
+                  <div className='hidden sm:flex items-center pb-1 w-full max-w-md px-2 sm:ml-5'>
+                    <label htmlFor='simple-search' className='sr-only'>Search</label>
+                    <div className='relative w-full'>
+                      <div className='absolute sm:flex hidden inset-y-0 left-0 items-center pointer-events-none'>
+                        <MagnifyingGlassIcon
+                          className='ml-2 w-5 h-5 text-gray-900 dark:text-gray-50 cursor-pointer hover:opacity-80'
+                        />
+                      </div>
+                      <input
+                        type='text'
+                        onChange={onSearch}
+                        value={search}
+                        className='bg-gray-50 border h-7 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500'
+                        placeholder={t('project.search')}
+                      />
                     </div>
-                    <input type='text' onChange={onSearch} value={search} id='simple-search' className='bg-gray-50 border h-7 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500' placeholder={t('project.search')} required />
                   </div>
-                </div>
+                )}
               </div>
-
               <span
                 onClick={onNewProject}
                 className='!pl-2 inline-flex justify-center items-center cursor-pointer text-center border border-transparent leading-4 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 shadow-sm text-white bg-slate-900 hover:bg-slate-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-2 text-sm'
@@ -485,6 +511,25 @@ const Dashboard = ({
                 {tabProjects === tabForCaptchaProject ? t('dashboard.newCaptchaProject') : t('dashboard.newProject')}
               </span>
             </div>
+            {isSearchActive && (
+              <div className='flex sm:hidden items-center mb-2 w-full'>
+                <label htmlFor='simple-search' className='sr-only'>Search</label>
+                <div className='relative w-full'>
+                  <div className='absolute flex inset-y-0 left-0 items-center pointer-events-none'>
+                    <MagnifyingGlassIcon
+                      className='ml-2 w-5 h-5 text-gray-900 dark:text-gray-50 cursor-pointer hover:opacity-80'
+                    />
+                  </div>
+                  <input
+                    type='text'
+                    onChange={onSearch}
+                    value={search}
+                    className='bg-gray-50 border h-7 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 p-2.5 py-5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500'
+                    placeholder={t('project.search')}
+                  />
+                </div>
+              </div>
+            )}
             {!isSelfhosted && (
               <div className='mb-2'>
                 {/* Dashboard tabs selector */}
