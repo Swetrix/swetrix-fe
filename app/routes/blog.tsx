@@ -1,15 +1,14 @@
 import { Link, useLoaderData } from '@remix-run/react'
-import { getPosts } from 'utils/getPosts'
+import { blogLoader } from 'utils/getPosts'
 import _map from 'lodash/map'
 import _filter from 'lodash/filter'
 
-export const loader = getPosts
+export const loader = blogLoader
 
 export default function Posts() {
   const posts: any[] = useLoaderData()
 
-  console.log(posts)
-  if (_filter(posts, post => post.isVisable).length === 0) {
+  if (_filter(posts, post => !post.hidden).length === 0) {
     return (
       <div className='flex justify-center items-center min-h-min-footer-ad'>
         <h1 className='text-3xl font-bold text-slate-900 dark:text-slate-200'>No posts found</h1>
@@ -28,7 +27,7 @@ export default function Posts() {
 
           <div className='space-y-16'>
             {_map(posts, post => {
-              if (!post.isVisable) {
+              if (post.hidden) {
                 return null
               }
 

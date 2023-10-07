@@ -1,13 +1,19 @@
-import { Link, useLoaderData } from "@remix-run/react"
-import type { LoaderFunction, LinksFunction } from "@remix-run/node"
-import singlePostCss from "css/mdfile.css"
-import { getPost } from "utils/getPosts"
+import { Link, useLoaderData } from '@remix-run/react'
+import type { LoaderFunction, LinksFunction } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
+import singlePostCss from 'css/mdfile.css'
+import { getPost } from 'utils/getPosts'
+import { isSelfhosted } from 'redux/constants'
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: singlePostCss }]
 }
 
 export const loader: LoaderFunction = async ({ params }) => {
+  if (isSelfhosted) {
+    return redirect('/dashboard', 302)
+  }
+
   if (!params.slug) return { status: 404 }
   return getPost(params.slug)
 }
@@ -21,12 +27,15 @@ export default function PostSlug() {
       <div className='overflow-hidden'>
         <div className='max-w-8xl mx-auto'>
           <div className='flex px-4 pt-8 pb-10 lg:px-8'>
-            <Link to='/blog'
-            className='group flex font-semibold text-sm leading-6 text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white'>
-            <svg viewBox='0 -9 3 24'
-              className='overflow-visible mr-3 text-slate-400 w-auto h-6 group-hover:text-slate-600 dark:group-hover:text-slate-300'>
-              <path d='M3 0L0 3L3 6' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round'
-                stroke-linejoin='round'></path>
+            <Link
+              to='/blog'
+              className='group flex font-semibold text-sm leading-6 text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white'
+            >
+            <svg
+              viewBox='0 -9 3 24'
+              className='overflow-visible mr-3 text-slate-400 w-auto h-6 group-hover:text-slate-600 dark:group-hover:text-slate-300'
+            >
+              <path d='M3 0L0 3L3 6' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' stroke-linejoin='round' />
             </svg>
             Go back
           </Link>
@@ -44,7 +53,9 @@ export default function PostSlug() {
                   <dl>
                     <dt className='sr-only'>Date</dt>
                     <dd className='absolute top-0 inset-x-0 text-slate-700 dark:text-slate-400'>
-                      <time dateTime='{ post.date }'>{post.date}</time>
+                      <time dateTime={post.date}>
+                        {post.date}
+                      </time>
                     </dd>
                   </dl>
                 </div>
@@ -52,12 +63,21 @@ export default function PostSlug() {
                   <ul className='flex flex-wrap text-sm leading-6 -mt-6 -mx-5'>
                     <li className='flex items-center font-medium whitespace-nowrap px-5 mt-6'>
                       <div className='text-sm leading-4'>
-                        <div className='text-slate-900 dark:text-slate-200'>{post?.author}</div>
-                        <div className='mt-1'>
-                          <a href='https://github.com/{ author.nickname }'
-                            className='text-indigo-600 dark:text-indigo-400'>@{post?.nickname}
-                          </a>
-                        </div>
+                        {post?.author && (
+                          <div className='text-slate-900 dark:text-slate-200'>
+                            {post.author}
+                          </div>
+                        )}
+                        {post?.nickname && (
+                          <div className='mt-1'>
+                            <a
+                              href={`https://github.com/${post.nickname}`}
+                              className='text-indigo-600 dark:text-indigo-400'
+                            >
+                              @{post.nickname}
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </li>
                   </ul>
