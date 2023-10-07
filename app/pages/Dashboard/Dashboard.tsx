@@ -13,7 +13,6 @@ import _map from 'lodash/map'
 import _isUndefined from 'lodash/isUndefined'
 import _filter from 'lodash/filter'
 import _find from 'lodash/find'
-import _debounce from 'lodash/debounce'
 import { useTranslation } from 'react-i18next'
 import {
   FolderPlusIcon, AdjustmentsVerticalIcon, ArrowTopRightOnSquareIcon, MagnifyingGlassIcon, XMarkIcon,
