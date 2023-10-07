@@ -1,13 +1,33 @@
 import { Link, useLoaderData } from '@remix-run/react'
+import type { SitemapFunction } from 'remix-sitemap'
 import type { LoaderFunction, LinksFunction } from '@remix-run/node'
 import { redirect, json } from '@remix-run/node'
+import _map from 'lodash/map'
+import _replace from 'lodash/replace'
 import singlePostCss from 'css/mdfile.css'
-import { getPost } from 'utils/getPosts'
+import {
+  getPost, getFileNames, getSlugFromFilename, getDateFromFilename,
+} from 'utils/getPosts'
 import { isSelfhosted } from 'redux/constants'
 import NotFound from 'pages/NotFound'
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: singlePostCss }]
+}
+
+export const sitemap: SitemapFunction = async () => {
+  const files = await getFileNames()
+
+  // todo: add caching
+  return _map(files, file => {
+    const handle = _replace(getSlugFromFilename(file), /\.md$/, '')
+    const date = getDateFromFilename(file)
+
+    return {
+      loc: `/blog/${handle}`, 
+      lastmod: date,
+    }
+  })
 }
 
 export const loader: LoaderFunction = async ({ params }) => {

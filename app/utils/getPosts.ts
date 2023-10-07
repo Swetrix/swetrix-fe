@@ -25,14 +25,19 @@ interface IParseFontMatter {
 export const postsPath = path.join(__dirname, '..', 'blog-posts', 'posts')
 
 // Removes first 10 characters from the string (i.e. 2023-10-07-)
-const getSlugFromFilename = (filename: string) => filename.substring(11)
+export const getSlugFromFilename = (filename: string) => filename.substring(11)
+export const getDateFromFilename = (filename: string) => filename.substring(0, 10)
 
 const findFilenameBySlug = (list: string[], handle: string) => {
   return _find(list, (item) => _includes(item, handle))
 }
 
+export const getFileNames = async (): Promise<string[]> => {
+  return fs.readdir(postsPath) as Promise<string[]>
+}
+
 export async function getPost(slug: string) {
-  const files = await fs.readdir(postsPath) as string[]
+  const files = await getFileNames()
   const filename = findFilenameBySlug(files, slug)
 
   if (!filename) {
