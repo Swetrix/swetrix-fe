@@ -20,7 +20,6 @@ export const links: LinksFunction = () => {
 export const sitemap: SitemapFunction = async () => {
   const files = await getSitemapFileNames(undefined, true)
 
-  // todo: add caching or use build-time sitemap
   return _map(files, file => {
     let handle: string
     let date: string
