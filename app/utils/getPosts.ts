@@ -1,4 +1,3 @@
-// import parseFrontMatter from 'front-matter'
 import { marked } from 'marked'
 import _filter from 'lodash/filter'
 import _isEmpty from 'lodash/isEmpty'
