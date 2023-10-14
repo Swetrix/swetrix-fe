@@ -813,10 +813,90 @@ const CustomEvents = ({
         )}
         <Modal
           onClose={onModalClose}
-          closeText={t('common.close')}
           isOpened={modal}
+          title={t('project.customEv')}
           message={(
-            <p>qwerty</p>
+            <table className='table-fixed w-full'>
+              <thead>
+                <tr className='text-gray-900 dark:text-gray-50 text-base'>
+                  <th className='w-2/5 sm:w-4/6 text-left flex items-center cursor-pointer hover:opacity-90' onClick={() => onSortBy('event')}>
+                    {t('project.event')}
+                    <Sort
+                      className='ml-1'
+                      sortByAscend={sort.label === 'event' && sort.sortByAscend}
+                      sortByDescend={sort.label === 'event' && sort.sortByDescend}
+                    />
+                  </th>
+                  <th className='w-[30%] sm:w-1/6'>
+                    <p className='flex justify-end items-center cursor-pointer hover:opacity-90' onClick={() => onSortBy('quantity')}>
+                      {t('project.quantity')}
+                      <Sort
+                        className='ml-1'
+                        sortByAscend={sort.label === 'quantity' && sort.sortByAscend}
+                        sortByDescend={sort.label === 'quantity' && sort.sortByDescend}
+                      />
+                      &nbsp;&nbsp;
+                    </p>
+                  </th>
+                  <th className='w-[30%] sm:w-1/6'>
+                    <p className='flex justify-end items-center cursor-pointer hover:opacity-90' onClick={() => onSortBy('conversion')}>
+                      {t('project.conversion')}
+                      <Sort
+                        className='ml-1'
+                        sortByAscend={sort.label === 'conversion' && sort.sortByAscend}
+                        sortByDescend={sort.label === 'conversion' && sort.sortByDescend}
+                      />
+                    </p>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {_map(keysToDisplay, (ev) => (
+                  <Fragment key={ev}>
+                    <tr
+                      className='text-gray-900 dark:text-gray-50 group hover:bg-gray-100 hover:dark:bg-slate-700 cursor-pointer text-base py-1'
+                      onClick={() => onFilter('ev', ev)}
+                    >
+                      <td className='text-left flex items-center'>
+                        {activeEvents[ev] ? (
+                          <ChevronUpIcon
+                            className='w-auto h-5 text-gray-500 dark:text-gray-300 px-2 hover:opacity-80'
+                            onClick={toggleEventMetadata(ev)}
+                          />
+                        ) : (
+                          <ChevronDownIcon
+                            className='w-auto h-5 text-gray-500 dark:text-gray-300 px-2 hover:opacity-80'
+                            onClick={toggleEventMetadata(ev)}
+                          />
+                        )}
+                        {ev}
+                        <FunnelIcon className='ml-2 w-4 h-4 text-gray-500 hidden sm:group-hover:block dark:text-gray-300' />
+                      </td>
+                      <td className='text-right'>
+                        {customsEventsData[ev]}
+                        &nbsp;&nbsp;
+                      </td>
+                      <td className='text-right'>
+                        {uniques === 0 ? 100 : _round((customsEventsData[ev] / uniques) * 100, 2)}
+                        %
+                      </td>
+                    </tr>
+                    {activeEvents[ev] && (
+                      <tr>
+                        <td className='pl-9' colSpan={3}>
+                          <KVTable
+                            data={eventsMetadata[ev]}
+                            t={t}
+                            uniques={uniques}
+                            loading={loadingEvents[ev]}
+                          />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                ))}
+              </tbody>
+            </table>
           )}
           size='large'
         />
