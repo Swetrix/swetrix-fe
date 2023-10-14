@@ -1011,9 +1011,8 @@ const CustomEvents = ({
             </thead>
             <tbody>
               {_map(keysToDisplay, (ev) => (
-                <>
+                <Fragment key={ev}>
                   <tr
-                    key={ev}
                     className='text-gray-900 dark:text-gray-50 group hover:bg-gray-100 hover:dark:bg-slate-700 cursor-pointer text-base py-1'
                     onClick={() => onFilter('ev', ev)}
                   >
@@ -1053,7 +1052,7 @@ const CustomEvents = ({
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>
