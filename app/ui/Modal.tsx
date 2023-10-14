@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import cx from 'clsx'
 import { Dialog, Transition } from '@headlessui/react'
 import {
-  CheckIcon, ExclamationTriangleIcon, InformationCircleIcon, UserGroupIcon,
+  CheckIcon, ExclamationTriangleIcon, InformationCircleIcon, UserGroupIcon, XMarkIcon,
 } from '@heroicons/react/24/outline'
 import Beta from 'ui/Beta'
 import Spin from './icons/Spin'
@@ -23,10 +23,12 @@ interface IModal {
   customButtons?: JSX.Element,
   isBeta?: boolean,
   isLoading?: boolean,
+  miniCloseButton?: boolean,
 }
 
 const Modal = ({
-  className, type, title, message, isOpened, onClose, onSubmit, closeText, submitText, submitType, size, customButtons, isBeta, isLoading,
+  className, type, title, message, isOpened, onClose, onSubmit, closeText, submitText,
+  submitType, size, customButtons, isBeta, isLoading, miniCloseButton,
 }: IModal): JSX.Element => (
   <Transition.Root show={isOpened} as={Fragment}>
     <Dialog
@@ -96,10 +98,18 @@ const Modal = ({
               )}
               <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
                 {title && (
-                  <Dialog.Title as='h3' className='flex items-center justify-center sm:justify-start text-lg leading-6 font-medium text-gray-900 dark:text-gray-50'>
-                    {title}
-                    {isBeta && (
-                      <Beta className='ml-10' />
+                  <Dialog.Title as='h3' className='flex items-center justify-between text-lg leading-6 font-medium text-gray-900 dark:text-gray-50'>
+                    <div>
+                      {title}
+                      {isBeta && (
+                        <Beta className='ml-10' />
+                      )}
+                    </div>
+                    {miniCloseButton && (
+                      <XMarkIcon
+                        className='h-6 w-6 cursor-pointer text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-300'
+                        onClick={onClose}
+                      />
                     )}
                   </Dialog.Title>
                 )}
@@ -159,6 +169,7 @@ Modal.propTypes = {
   customButtons: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   isBeta: PropTypes.bool,
   isLoading: PropTypes.bool,
+  miniCloseButton: PropTypes.bool,
 }
 
 Modal.defaultProps = {
@@ -175,6 +186,7 @@ Modal.defaultProps = {
   customButtons: null,
   isBeta: false,
   isLoading: false,
+  miniCloseButton: false,
 }
 
 export default memo(Modal)
