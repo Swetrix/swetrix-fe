@@ -588,15 +588,15 @@ const KVTable = ({
       <table key={key} className='table-fixed w-full mb-2'>
         <thead>
           <tr className='text-gray-600 dark:text-gray-200'>
-            <th className='w-4/6 text-left flex items-center'>
+            <th className='w-2/5 sm:w-4/6 text-left flex items-center'>
               {key}
             </th>
-            <th className='w-1/6'>
+            <th className='w-[30%] sm:w-1/6'>
               <p className='flex justify-end items-center'>
                 {t('project.quantity')}
               </p>
             </th>
-            <th className='w-1/6'>
+            <th className='w-[30%] sm:w-1/6'>
               <p className='flex justify-end items-center'>
                 {t('project.conversion')}
               </p>
@@ -972,14 +972,13 @@ const CustomEvents = ({
       )}
       <Modal
         onClose={onModalClose}
-        closeText={t('common.close')}
         isOpened={modal}
         title={t('project.customEv')}
         message={(
           <table className='table-fixed w-full'>
             <thead>
               <tr className='text-gray-900 dark:text-gray-50 text-base'>
-                <th className='w-4/6 text-left flex items-center cursor-pointer hover:opacity-90' onClick={() => onSortBy('event')}>
+                <th className='w-2/5 sm:w-4/6 text-left flex items-center cursor-pointer hover:opacity-90' onClick={() => onSortBy('event')}>
                   {t('project.event')}
                   <Sort
                     className='ml-1'
@@ -987,7 +986,7 @@ const CustomEvents = ({
                     sortByDescend={sort.label === 'event' && sort.sortByDescend}
                   />
                 </th>
-                <th className='w-1/6'>
+                <th className='w-[30%] sm:w-1/6'>
                   <p className='flex justify-end items-center cursor-pointer hover:opacity-90' onClick={() => onSortBy('quantity')}>
                     {t('project.quantity')}
                     <Sort
@@ -998,7 +997,7 @@ const CustomEvents = ({
                     &nbsp;&nbsp;
                   </p>
                 </th>
-                <th className='w-1/6'>
+                <th className='w-[30%] sm:w-1/6'>
                   <p className='flex justify-end items-center cursor-pointer hover:opacity-90' onClick={() => onSortBy('conversion')}>
                     {t('project.conversion')}
                     <Sort
@@ -1031,7 +1030,7 @@ const CustomEvents = ({
                         />
                       )}
                       {ev}
-                      <FunnelIcon className='ml-2 w-4 h-4 text-gray-500 hidden group-hover:block dark:text-gray-300' />
+                      <FunnelIcon className='ml-2 w-4 h-4 text-gray-500 hidden sm:group-hover:block dark:text-gray-300' />
                     </td>
                     <td className='text-right'>
                       {customsEventsData[ev]}
@@ -1060,6 +1059,7 @@ const CustomEvents = ({
           </table>
         )}
         size='large'
+        miniCloseButton
       />
     </PanelContainer>
   )
