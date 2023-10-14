@@ -1059,7 +1059,6 @@ const CustomEvents = ({
           </table>
         )}
         size='large'
-        miniCloseButton
       />
     </PanelContainer>
   )

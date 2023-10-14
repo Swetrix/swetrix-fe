@@ -23,12 +23,11 @@ interface IModal {
   customButtons?: JSX.Element,
   isBeta?: boolean,
   isLoading?: boolean,
-  miniCloseButton?: boolean,
 }
 
 const Modal = ({
   className, type, title, message, isOpened, onClose, onSubmit, closeText, submitText,
-  submitType, size, customButtons, isBeta, isLoading, miniCloseButton,
+  submitType, size, customButtons, isBeta, isLoading,
 }: IModal): JSX.Element => (
   <Transition.Root show={isOpened} as={Fragment}>
     <Dialog
@@ -98,14 +97,20 @@ const Modal = ({
               )}
               <div className='mt-3 text-center sm:mt-0 sm:text-left w-full'>
                 {title && (
-                  <Dialog.Title as='h3' className='flex items-center justify-between text-lg leading-6 font-medium text-gray-900 dark:text-gray-50'>
+                  <Dialog.Title
+                    as='h3'
+                    className={cx('flex items-center text-lg leading-6 font-medium text-gray-900 dark:text-gray-50', {
+                      'justify-between': !closeText,
+                      'justify-center sm:justify-start': closeText,
+                    })}
+                  >
                     <div>
                       {title}
                       {isBeta && (
                         <Beta className='ml-10' />
                       )}
                     </div>
-                    {miniCloseButton && (
+                    {!closeText && (
                       <XMarkIcon
                         className='h-6 w-6 cursor-pointer text-gray-700 dark:text-gray-200 hover:text-gray-500 dark:hover:text-gray-300'
                         onClick={onClose}
@@ -169,7 +174,6 @@ Modal.propTypes = {
   customButtons: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   isBeta: PropTypes.bool,
   isLoading: PropTypes.bool,
-  miniCloseButton: PropTypes.bool,
 }
 
 Modal.defaultProps = {
@@ -186,7 +190,6 @@ Modal.defaultProps = {
   customButtons: null,
   isBeta: false,
   isLoading: false,
-  miniCloseButton: false,
 }
 
 export default memo(Modal)
