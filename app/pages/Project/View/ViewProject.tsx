@@ -228,6 +228,7 @@ const ViewProject = ({
   const [chartData, setChartData] = useState<any>({})
   // mainChart is a ref for chart
   const [mainChart, setMainChart] = useState<any>(null)
+  const [mode, setMode] = useState<'periodical' | 'cumulative'>('periodical')
   // dataLoading is a boolean for show loader on chart and do not load data when we have dataLoading === true
   const [dataLoading, setDataLoading] = useState<boolean>(false)
   // activeChartMetrics is a list of metrics for logic with api, chart and dropdown
@@ -745,7 +746,7 @@ const ViewProject = ({
         to = getFormatDate(dateRange[1])
         key = getProjectCacheCustomKey(from, to, timeBucket, newFilters || filters)
       } else {
-        key = getProjectCacheKey(period, timeBucket, newFilters || filters)
+        key = getProjectCacheKey(period, timeBucket, mode, newFilters || filters)
       }
 
       // check if we need to load new date or we have data in redux/localstorage
@@ -753,10 +754,10 @@ const ViewProject = ({
         data = cache[id][key]
       } else {
         if (period === 'custom' && dateRange) {
-          data = await getProjectData(id, timeBucket, '', newFilters || filters, from, to, timezone, projectPassword)
+          data = await getProjectData(id, timeBucket, '', newFilters || filters, from, to, timezone, projectPassword, mode)
           customEventsChart = await getProjectDataCustomEvents(id, timeBucket, '', filters, from, to, timezone, activeChartMetricsCustomEvents, projectPassword)
         } else {
-          data = await getProjectData(id, timeBucket, period, newFilters || filters, '', '', timezone, projectPassword)
+          data = await getProjectData(id, timeBucket, period, newFilters || filters, '', '', timezone, projectPassword, mode)
           customEventsChart = await getProjectDataCustomEvents(id, timeBucket, period, filters, '', '', timezone, activeChartMetricsCustomEvents, projectPassword)
         }
 
@@ -938,7 +939,7 @@ const ViewProject = ({
         to = getFormatDate(dateRange[1])
         key = getProjectCacheCustomKey(from, to, timeBucket, newFilters || filtersPerf)
       } else {
-        key = getProjectCacheKey(period, timeBucket, newFilters || filtersPerf)
+        key = getProjectCacheKey(period, timeBucket, mode, newFilters || filtersPerf)
       }
 
       if (!forced && !_isEmpty(cachePerf[id]) && !_isEmpty(cachePerf[id][key])) {
@@ -1287,7 +1288,7 @@ const ViewProject = ({
   useEffect(() => {
     loadAnalytics()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [forecasedChartData])
+  }, [forecasedChartData, mode])
 
   // this useEffect is used for parsing tab from url and set activeTab
   useEffect(() => {

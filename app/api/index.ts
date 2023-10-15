@@ -416,10 +416,11 @@ export const getProjectData = (
   to: string = '',
   timezone: string = '',
   password: string | undefined = '',
+  mode: string = 'periodical',
 ) =>
   api
     .get(
-      `log?pid=${pid}&timeBucket=${tb}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}`,
+      `log?pid=${pid}&timeBucket=${tb}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}&mode=${mode}`,
       {
         headers: {
           'x-password': password,

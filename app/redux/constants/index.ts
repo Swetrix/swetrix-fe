@@ -267,7 +267,7 @@ export const isSelfhosted = Boolean(
 )
 
 // Functions
-export const getProjectCacheKey = (period: string, timeBucket: string, filters?: any): string => `${period}${timeBucket}${filters ? JSON.stringify(filters) : ''}}`
+export const getProjectCacheKey = (period: string, timeBucket: string, mode: 'periodical' | 'cumulative', filters?: any): string => `${period}${timeBucket}${mode}${filters ? JSON.stringify(filters) : ''}}`
 export const getProjectCaptchaCacheKey = (period: string, timeBucket: string, filters?: any): string => `${period}${timeBucket}captcha${filters ? JSON.stringify(filters) : ''}}`
 export const getProjectForcastCacheKey = (period: string, timeBucket: string, periodToForecast: string, filters: any): string => `${period}${timeBucket}${periodToForecast}forecast${filters ? JSON.stringify(filters) : ''}`
 export const getProjectCacheCustomKey = (from: string, to: string, timeBucket: string, filters: any): string => `${from}-${to}-${timeBucket}${filters ? JSON.stringify(filters) : ''}}`
