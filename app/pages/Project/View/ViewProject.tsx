@@ -228,7 +228,6 @@ const ViewProject = ({
   const [chartData, setChartData] = useState<any>({})
   // mainChart is a ref for chart
   const [mainChart, setMainChart] = useState<any>(null)
-  const [mode, setMode] = useState<'periodical' | 'cumulative'>('periodical')
   // dataLoading is a boolean for show loader on chart and do not load data when we have dataLoading === true
   const [dataLoading, setDataLoading] = useState<boolean>(false)
   // activeChartMetrics is a list of metrics for logic with api, chart and dropdown
@@ -242,6 +241,7 @@ const ViewProject = ({
     [CHART_METRICS_MAPPING.bounce]: false,
     [CHART_METRICS_MAPPING.viewsPerUnique]: false,
     [CHART_METRICS_MAPPING.trendlines]: false,
+    [CHART_METRICS_MAPPING.cumulativeMode]: false,
   })
   // similar activeChartMetrics but using for performance tab
   const [activeChartMetricsPerf, setActiveChartMetricsPerf] = useState<string>(CHART_METRICS_MAPPING_PERF.timing)
@@ -276,6 +276,8 @@ const ViewProject = ({
     // if we do not have activeTab in url, we return activeTab from localStorage or default tab trafic
     return projectTab || PROJECT_TABS.traffic
   })
+
+  const mode = activeChartMetrics[CHART_METRICS_MAPPING.cumulativeMode] ? 'cumulative' : 'periodical'
 
   useEffect(() => {
     // @ts-ignore
@@ -423,6 +425,11 @@ const ViewProject = ({
         id: CHART_METRICS_MAPPING.trendlines,
         label: t('dashboard.trendlines'),
         active: activeChartMetrics[CHART_METRICS_MAPPING.trendlines],
+      },
+      {
+        id: CHART_METRICS_MAPPING.cumulativeMode,
+        label: t('dashboard.cumulativeMode'),
+        active: activeChartMetrics[CHART_METRICS_MAPPING.cumulativeMode],
       },
       {
         id: CHART_METRICS_MAPPING.customEvents,
@@ -705,7 +712,7 @@ const ViewProject = ({
           if (activePeriod?.period === 'custom' ? diffCompare <= diff : diffCompare <= activePeriod?.countDays) {
             fromCompare = getFormatDate(dateRangeCompare[0])
             toCompare = getFormatDate(dateRangeCompare[1])
-            keyCompare = getProjectCacheCustomKey(fromCompare, toCompare, timeBucket, newFilters || filters)
+            keyCompare = getProjectCacheCustomKey(fromCompare, toCompare, timeBucket, mode, newFilters || filters)
           } else {
             showError(t('project.compareDateRangeError'))
             compareDisable()
@@ -721,7 +728,7 @@ const ViewProject = ({
           if (date) {
             fromCompare = date.from
             toCompare = date.to
-            keyCompare = getProjectCacheCustomKey(fromCompare, toCompare, timeBucket, newFilters || filters)
+            keyCompare = getProjectCacheCustomKey(fromCompare, toCompare, timeBucket, mode, newFilters || filters)
           }
         }
 
@@ -729,7 +736,7 @@ const ViewProject = ({
           if (!_isEmpty(cache[id]) && !_isEmpty(cache[id][keyCompare])) {
             dataCompare = cache[id][keyCompare]
           } else {
-            dataCompare = await getProjectCompareData(id, timeBucket, '', newFilters || filters, fromCompare, toCompare, timezone, projectPassword)
+            dataCompare = await getProjectCompareData(id, timeBucket, '', newFilters || filters, fromCompare, toCompare, timezone, projectPassword, mode)
           }
         }
 
@@ -744,7 +751,7 @@ const ViewProject = ({
       if (dateRange) {
         from = getFormatDate(dateRange[0])
         to = getFormatDate(dateRange[1])
-        key = getProjectCacheCustomKey(from, to, timeBucket, newFilters || filters)
+        key = getProjectCacheCustomKey(from, to, timeBucket, mode, newFilters || filters)
       } else {
         key = getProjectCacheKey(period, timeBucket, mode, newFilters || filters)
       }
@@ -937,7 +944,7 @@ const ViewProject = ({
       if (dateRange) {
         from = getFormatDate(dateRange[0])
         to = getFormatDate(dateRange[1])
-        key = getProjectCacheCustomKey(from, to, timeBucket, newFilters || filtersPerf)
+        key = getProjectCacheCustomKey(from, to, timeBucket, mode, newFilters || filtersPerf)
       } else {
         key = getProjectCacheKey(period, timeBucket, mode, newFilters || filtersPerf)
       }

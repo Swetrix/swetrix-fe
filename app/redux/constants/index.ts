@@ -270,7 +270,7 @@ export const isSelfhosted = Boolean(
 export const getProjectCacheKey = (period: string, timeBucket: string, mode: 'periodical' | 'cumulative', filters?: any): string => `${period}${timeBucket}${mode}${filters ? JSON.stringify(filters) : ''}}`
 export const getProjectCaptchaCacheKey = (period: string, timeBucket: string, filters?: any): string => `${period}${timeBucket}captcha${filters ? JSON.stringify(filters) : ''}}`
 export const getProjectForcastCacheKey = (period: string, timeBucket: string, periodToForecast: string, filters: any): string => `${period}${timeBucket}${periodToForecast}forecast${filters ? JSON.stringify(filters) : ''}`
-export const getProjectCacheCustomKey = (from: string, to: string, timeBucket: string, filters: any): string => `${from}-${to}-${timeBucket}${filters ? JSON.stringify(filters) : ''}}`
+export const getProjectCacheCustomKey = (from: string, to: string, timeBucket: string, mode: 'periodical' | 'cumulative', filters: any): string => `cst${from}${to}${timeBucket}-${mode}${filters ? JSON.stringify(filters) : ''}}`
 export const getProjectCacheCustomKeyPerf = (from: string, to: string, timeBucket: string, filters: any): string => `${from}-${to}-${timeBucket}perf${filters ? JSON.stringify(filters) : ''}`
 export const getUserFlowCacheKey = (pid: string, period: string, filters: any): string => `${pid}${period}userflow${filters ? JSON.stringify(filters) : ''}`
 

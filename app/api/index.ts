@@ -416,7 +416,7 @@ export const getProjectData = (
   to: string = '',
   timezone: string = '',
   password: string | undefined = '',
-  mode: string = 'periodical',
+  mode: 'periodical' | 'cumulative' = 'periodical',
 ) =>
   api
     .get(
@@ -471,10 +471,11 @@ export const getProjectCompareData = (
   to: string = '',
   timezone: string = '',
   password: string | undefined = '',
+  mode: 'periodical' | 'cumulative' = 'periodical',
 ) =>
   api
     .get(
-      `log/chart?pid=${pid}&timeBucket=${tb}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}`,
+      `log/chart?pid=${pid}&timeBucket=${tb}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}&mode=${mode}`,
       {
         headers: {
           'x-password': password,
