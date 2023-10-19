@@ -12,7 +12,7 @@ import bb from 'billboard.js'
 import {
   ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, ChartBarIcon, BoltIcon, BellIcon,
   PresentationChartBarIcon, PresentationChartLineIcon, NoSymbolIcon, MagnifyingGlassIcon,
-  FunnelIcon,
+  FunnelIcon, ChevronLeftIcon,
 } from '@heroicons/react/24/outline'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -70,7 +70,7 @@ import Footer from 'components/Footer'
 import {
   getProjectData, getProject, getOverallStats, getLiveVisitors, getPerfData, getProjectDataCustomEvents,
   getProjectCompareData, checkPassword, getCustomEventsMetadata, addFunnel, updateFunnel, deleteFunnel,
-  getFunnelData,
+  getFunnelData, getFunnels,
 } from 'api'
 import { getChartPrediction } from 'api/ai'
 import {
@@ -137,13 +137,14 @@ interface IViewProject {
   authLoading: boolean,
   cacheFunnels: any,
   setFunnelsCache: (pid: string, data: any, key: string) => void,
+  updateProject: (pid: string, project: Partial<IProject | ISharedProject>) => void,
 }
 
 const ViewProject = ({
   projects, isLoading: _isLoading, showError, cache, cachePerf, setProjectCache, projectViewPrefs, setProjectViewPrefs, setPublicProject,
   setLiveStatsForProject, authenticated: csrAuthenticated, timezone, user, sharedProjects, extensions, generateAlert, setProjectCachePerf,
   projectTab, setProjectTab, setProjects, setProjectForcastCache, customEventsPrefs, setCustomEventsPrefs, liveStats, password, theme,
-  ssrTheme, embedded, ssrAuthenticated, queryPassword, authLoading, cacheFunnels, setFunnelsCache,
+  ssrTheme, embedded, ssrAuthenticated, queryPassword, authLoading, cacheFunnels, setFunnelsCache, updateProject,
 }: IViewProject) => {
   const authenticated = isBrowser
     ? authLoading
@@ -303,8 +304,18 @@ const ViewProject = ({
       const funnel = await addFunnel(id, name, steps)
       console.log(funnel)
     } catch (reason: any) {
-      console.error('[ERROR] (onFunnelCreate)', reason)
+      console.error('[ERROR] (onFunnelCreate)(addFunnel)', reason)
       showError(reason)
+    }
+
+    try {
+      const funnels = await getFunnels(id, projectPassword)
+
+      updateProject(id, {
+        funnels,
+      })
+    } catch (reason: any) {
+      console.error('[ERROR] (onFunnelCreate)(getFunnels)', reason)
     }
 
     generateAlert(t('apiNotifications.funnelCreated'), 'success')
@@ -322,8 +333,18 @@ const ViewProject = ({
       const funnel = await updateFunnel(funnelId, name, steps)
       console.log(funnel)
     } catch (reason: any) {
-      console.error('[ERROR] (onFunnelEdit)', reason)
+      console.error('[ERROR] (onFunnelEdit)(updateFunnel)', reason)
       showError(reason)
+    }
+
+    try {
+      const funnels = await getFunnels(id, projectPassword)
+
+      updateProject(id, {
+        funnels,
+      })
+    } catch (reason: any) {
+      console.error('[ERROR] (onFunnelCreate)(getFunnels)', reason)
     }
 
     generateAlert(t('apiNotifications.funnelUpdated'), 'success')
@@ -340,8 +361,18 @@ const ViewProject = ({
     try {
       await deleteFunnel(funnelId)
     } catch (reason: any) {
-      console.error('[ERROR] (onFunnelDelete)', reason)
+      console.error('[ERROR] (onFunnelDelete)(deleteFunnel)', reason)
       showError(reason)
+    }
+
+    try {
+      const funnels = await getFunnels(id, projectPassword)
+
+      updateProject(id, {
+        funnels,
+      })
+    } catch (reason: any) {
+      console.error('[ERROR] (onFunnelCreate)(getFunnels)', reason)
     }
 
     generateAlert(t('apiNotifications.funnelDeleted'), 'success')
@@ -2339,6 +2370,18 @@ const ViewProject = ({
                         />
                       </>
                     )}
+                    {activeTab === PROJECT_TABS.funnels && (
+                      <button
+                        type='button'
+                        title={t('project.refreshStats')}
+                        onClick={refreshStats}
+                        className={cx('relative shadow-sm rounded-md px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
+                        })}
+                      >
+                        <ArrowPathIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
+                      </button>
+                    )}
                     <FlatPicker
                       className='!mx-0'
                       ref={refCalendar}
@@ -2361,7 +2404,16 @@ const ViewProject = ({
                     />
                   </div>
                 </div>
-                <div>
+                {activeTab === PROJECT_TABS.funnels && (
+                  <button
+                    onClick={() => setActiveFunnel(null)}
+                    className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto md:mx-0 mt-2 md:mt-0'
+                  >
+                    <ChevronLeftIcon className='w-4 h-4' />
+                    {t('project.backToFunnels')}
+                  </button>
+                )}
+                {activeTab !== PROJECT_TABS.funnels && (
                   <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-2 md:mt-5 mb-4 space-x-3 space-y-1 md:space-y-0'>
                     <div>
                       <button
@@ -2395,11 +2447,7 @@ const ViewProject = ({
                         </button>
                       </div>
                     )}
-                    <div
-                      className={cx('md:border-r border-gray-200 dark:border-gray-600 md:pr-3', {
-                        hidden: activeTab === PROJECT_TABS.funnels,
-                      })}
-                    >
+                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3'>
                       <button
                         type='button'
                         title={t('project.search')}
@@ -2412,7 +2460,7 @@ const ViewProject = ({
                       </button>
                     </div>
                     <div className={cx('border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3 space-x-2 md:border-r', {
-                      hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled || activeTab === PROJECT_TABS.funnels,
+                      hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled,
                     })}
                     >
                       <button
@@ -2438,33 +2486,31 @@ const ViewProject = ({
                         <PresentationChartLineIcon className='w-6 h-6' />
                       </button>
                     </div>
-                    {activeTab !== PROJECT_TABS.funnels && (
-                      <div className='border-gray-200 dark:border-gray-600'>
-                        <span className='relative z-0 inline-flex shadow-sm rounded-md'>
-                          {_map(activePeriod?.tbs, (tb, index, { length }) => (
-                            <button
-                              key={tb}
-                              type='button'
-                              onClick={() => updateTimebucket(tb)}
-                              className={cx(
-                                'relative capitalize inline-flex items-center px-3 md:px-4 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
-                                {
-                                  '-ml-px': index > 0,
-                                  'rounded-l-md': index === 0,
-                                  'rounded-r-md': 1 + index === length,
-                                  'z-10 border-indigo-500 text-indigo-600 dark:border-slate-200 dark:text-gray-50': timeBucket === tb,
-                                  'text-gray-700 dark:text-gray-50 border-gray-300 dark:border-slate-800 ': timeBucket !== tb,
-                                },
-                              )}
-                            >
-                              {t(`project.${tb}`)}
-                            </button>
-                          ))}
-                        </span>
-                      </div>
-                    )}
+                    <div className='border-gray-200 dark:border-gray-600'>
+                      <span className='relative z-0 inline-flex shadow-sm rounded-md'>
+                        {_map(activePeriod?.tbs, (tb, index, { length }) => (
+                          <button
+                            key={tb}
+                            type='button'
+                            onClick={() => updateTimebucket(tb)}
+                            className={cx(
+                              'relative capitalize inline-flex items-center px-3 md:px-4 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
+                              {
+                                '-ml-px': index > 0,
+                                'rounded-l-md': index === 0,
+                                'rounded-r-md': 1 + index === length,
+                                'z-10 border-indigo-500 text-indigo-600 dark:border-slate-200 dark:text-gray-50': timeBucket === tb,
+                                'text-gray-700 dark:text-gray-50 border-gray-300 dark:border-slate-800 ': timeBucket !== tb,
+                              },
+                            )}
+                          >
+                            {t(`project.${tb}`)}
+                          </button>
+                        ))}
+                      </span>
+                    </div>
                   </div>
-                </div>
+                )}
               </>
             )}
             {(activeTab === PROJECT_TABS.alerts && (isSharedProject || !project?.isOwner || !authenticated)) && (
@@ -2984,6 +3030,7 @@ ViewProject.propTypes = {
   embedded: PropTypes.bool.isRequired,
   ssrAuthenticated: PropTypes.bool.isRequired,
   authLoading: PropTypes.bool.isRequired,
+  updateProject: PropTypes.func.isRequired,
   queryPassword: PropTypes.string,
 }
 

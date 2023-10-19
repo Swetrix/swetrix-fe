@@ -56,7 +56,10 @@ const FunnelCard = ({
               <AdjustmentsVerticalIcon className='w-6 h-6 text-gray-800 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-500' />
             </button>
             <TrashIcon
-              onClick={() => deleteFunnel(funnel.id)}
+              onClick={(e) => {
+                e.stopPropagation()
+                deleteFunnel(funnel.id)
+              }}
               role='button'
               aria-label={t('common.delete')}
               className={cx('w-6 h-6 text-gray-800 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-500', {

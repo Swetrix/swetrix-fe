@@ -543,6 +543,27 @@ export const getFunnelData = (
         : error.response.data.message
     })
 
+export const getFunnels = (
+  pid: string,
+  password: string | undefined = '',
+) =>
+  api
+    .get(
+      `project/funnels/${pid}`,
+      {
+        headers: {
+          'x-password': password,
+        },
+      },
+    )
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message)
+        ? error.response.data
+        : error.response.data.message
+    })
+
 export const getCaptchaData = (
   pid: string,
   tb: string = 'hour',

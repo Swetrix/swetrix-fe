@@ -99,6 +99,12 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
       shared,
     }))
   },
+  updateProject: (pid: string, project: Partial<IProject | ISharedProject>) => {
+    dispatch(UIActions.updateProject({
+      pid,
+      project,
+    }))
+  },
   setLiveStatsForProject: (id: string, count: number) => {
     dispatch(UIActions.setLiveStatsProject({
       id,
