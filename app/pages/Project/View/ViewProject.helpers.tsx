@@ -743,6 +743,9 @@ const getSettingsFunnels = (
       groups: [
         ['events', 'dropoff'],
       ],
+      order: (a: any, b: any) => {
+        return a.id < b.id
+      },
       // regions,
     },
     // grid: {
