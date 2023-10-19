@@ -12,6 +12,7 @@ import bb from 'billboard.js'
 import {
   ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, ChartBarIcon, BoltIcon, BellIcon,
   PresentationChartBarIcon, PresentationChartLineIcon, NoSymbolIcon, MagnifyingGlassIcon,
+  FunnelIcon,
 } from '@heroicons/react/24/outline'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -537,6 +538,11 @@ const ViewProject = ({
         id: PROJECT_TABS.performance,
         label: t('dashboard.performance'),
         icon: BoltIcon,
+      },
+      {
+        id: PROJECT_TABS.funnels,
+        label: t('dashboard.funnels'),
+        icon: FunnelIcon,
       },
     ]
 
@@ -2000,136 +2006,136 @@ const ViewProject = ({
                     {name}
                   </h2>
                   <div className='flex items-center mt-3 md:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 space-x-2 gap-y-1'>
-                    <Dropdown
-                      items={[...exportTypes, ...customExportTypes, { label: t('project.lookingForMore'), lookingForMore: true, onClick: () => {} }]}
-                      title={[
-                        <ArrowDownTrayIcon key='download-icon' className='w-5 h-5 mr-2' />,
-                        <Fragment key='export-data'>
-                          {t('project.exportData')}
-                        </Fragment>,
-                      ]}
-                      labelExtractor={item => {
-                        const { label, lookingForMore } = item
+                    {activeTab !== PROJECT_TABS.funnels && (
+                      <Dropdown
+                        items={[...exportTypes, ...customExportTypes, { label: t('project.lookingForMore'), lookingForMore: true, onClick: () => { } }]}
+                        title={[
+                          <ArrowDownTrayIcon key='download-icon' className='w-5 h-5 mr-2' />,
+                          <Fragment key='export-data'>
+                            {t('project.exportData')}
+                          </Fragment>,
+                        ]}
+                        labelExtractor={item => {
+                          const { label, lookingForMore } = item
 
-                        if (lookingForMore) {
-                          return (
-                            <a href={MARKETPLACE_URL} target='_blank' rel='noreferrer'>
-                              {label}
-                            </a>
-                          )
-                        }
+                          if (lookingForMore) {
+                            return (
+                              <a href={MARKETPLACE_URL} target='_blank' rel='noreferrer'>
+                                {label}
+                              </a>
+                            )
+                          }
 
-                        return label
-                      }}
-                      keyExtractor={item => item.label}
-                      onSelect={item => item.onClick(panelsData, t)}
-                      className={cx('ml-3', { hidden: isPanelsDataEmpty || analyticsLoading })}
-                    />
-                    {activeTab === PROJECT_TABS.traffic ? (
-                      !isPanelsDataEmpty && (
-                        <Dropdown
-                          items={isActiveCompare ? _filter(chartMetrics, (el) => {
-                            return !_includes(FILTER_CHART_METRICS_MAPPING_FOR_COMPARE, el.id)
-                          }) : chartMetrics}
-                          title={t('project.metricVis')}
-                          labelExtractor={(pair) => {
-                            const {
-                              label, id: pairID, active, conflicts,
-                            } = pair
+                          return label
+                        }}
+                        keyExtractor={item => item.label}
+                        onSelect={item => item.onClick(panelsData, t)}
+                        className={cx('ml-3', { hidden: isPanelsDataEmpty || analyticsLoading })}
+                      />
+                    )}
+                    {activeTab === PROJECT_TABS.traffic && !isPanelsDataEmpty && (
+                      <Dropdown
+                        items={isActiveCompare ? _filter(chartMetrics, (el) => {
+                          return !_includes(FILTER_CHART_METRICS_MAPPING_FOR_COMPARE, el.id)
+                        }) : chartMetrics}
+                        title={t('project.metricVis')}
+                        labelExtractor={(pair) => {
+                          const {
+                            label, id: pairID, active, conflicts,
+                          } = pair
 
-                            const conflicted = isConflicted(conflicts)
+                          const conflicted = isConflicted(conflicts)
 
-                            if (pairID === CHART_METRICS_MAPPING.customEvents) {
-                              if (_isEmpty(panelsData.customs)) {
-                                return (
-                                  <span className='px-4 py-2 flex items-center cursor-not-allowed'>
-                                    <NoSymbolIcon className='w-5 h-5 mr-1' />
-                                    {label}
-                                  </span>
-                                )
-                              }
-
+                          if (pairID === CHART_METRICS_MAPPING.customEvents) {
+                            if (_isEmpty(panelsData.customs)) {
                               return (
-                                <Dropdown
-                                  menuItemsClassName='max-w-[300px] max-h-[300px] overflow-auto'
-                                  items={chartMetricsCustomEvents}
-                                  title={label}
-                                  labelExtractor={(event) => (
-                                    <Checkbox
-                                      className={cx({ hidden: isPanelsDataEmpty || analyticsLoading })}
-                                      label={_size(event.label) > CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH ? (
-                                        <span title={event.label}>
-                                          {_truncate(event.label, { length: CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH })}
-                                        </span>
-                                      ) : event.label}
-                                      id={event.id}
-                                      onChange={() => { }}
-                                      checked={event.active}
-                                    />
-                                  )}
-                                  buttonClassName='group-hover:bg-gray-200 dark:group-hover:bg-slate-700 px-4 py-2 inline-flex w-full bg-white text-sm font-medium text-gray-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800'
-                                  keyExtractor={(event) => event.id}
-                                  onSelect={(event, e) => {
-                                    e?.stopPropagation()
-                                    e?.preventDefault()
-
-                                    setActiveChartMetricsCustomEvents((prev) => {
-                                      const newActiveChartMetricsCustomEvents = [...prev]
-                                      const index = _findIndex(prev, (item) => item === event.id)
-                                      if (index === -1) {
-                                        newActiveChartMetricsCustomEvents.push(event.id)
-                                      } else {
-                                        newActiveChartMetricsCustomEvents.splice(index, 1)
-                                      }
-                                      return newActiveChartMetricsCustomEvents
-                                    })
-                                  }}
-                                />
+                                <span className='px-4 py-2 flex items-center cursor-not-allowed'>
+                                  <NoSymbolIcon className='w-5 h-5 mr-1' />
+                                  {label}
+                                </span>
                               )
                             }
 
                             return (
-                              <Checkbox
-                                className={cx('px-4 py-2', { hidden: isPanelsDataEmpty || analyticsLoading })}
-                                label={label}
-                                disabled={conflicted}
-                                id={pairID}
-                                checked={active}
+                              <Dropdown
+                                menuItemsClassName='max-w-[300px] max-h-[300px] overflow-auto'
+                                items={chartMetricsCustomEvents}
+                                title={label}
+                                labelExtractor={(event) => (
+                                  <Checkbox
+                                    className={cx({ hidden: isPanelsDataEmpty || analyticsLoading })}
+                                    label={_size(event.label) > CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH ? (
+                                      <span title={event.label}>
+                                        {_truncate(event.label, { length: CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH })}
+                                      </span>
+                                    ) : event.label}
+                                    id={event.id}
+                                    onChange={() => { }}
+                                    checked={event.active}
+                                  />
+                                )}
+                                buttonClassName='group-hover:bg-gray-200 dark:group-hover:bg-slate-700 px-4 py-2 inline-flex w-full bg-white text-sm font-medium text-gray-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800'
+                                keyExtractor={(event) => event.id}
+                                onSelect={(event, e) => {
+                                  e?.stopPropagation()
+                                  e?.preventDefault()
+
+                                  setActiveChartMetricsCustomEvents((prev) => {
+                                    const newActiveChartMetricsCustomEvents = [...prev]
+                                    const index = _findIndex(prev, (item) => item === event.id)
+                                    if (index === -1) {
+                                      newActiveChartMetricsCustomEvents.push(event.id)
+                                    } else {
+                                      newActiveChartMetricsCustomEvents.splice(index, 1)
+                                    }
+                                    return newActiveChartMetricsCustomEvents
+                                  })
+                                }}
                               />
                             )
-                          }}
-                          selectItemClassName='group text-gray-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 block text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700'
-                          keyExtractor={(pair) => pair.id}
-                          onSelect={({ id: pairID, conflicts }) => {
-                            if (isConflicted(conflicts)) {
-                              generateAlert(t('project.conflictMetric'), 'error')
-                              return
-                            }
+                          }
 
-                            if (pairID === CHART_METRICS_MAPPING.customEvents) {
-                              return
-                            }
+                          return (
+                            <Checkbox
+                              className={cx('px-4 py-2', { hidden: isPanelsDataEmpty || analyticsLoading })}
+                              label={label}
+                              disabled={conflicted}
+                              id={pairID}
+                              checked={active}
+                            />
+                          )
+                        }}
+                        selectItemClassName='group text-gray-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 block text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700'
+                        keyExtractor={(pair) => pair.id}
+                        onSelect={({ id: pairID, conflicts }) => {
+                          if (isConflicted(conflicts)) {
+                            generateAlert(t('project.conflictMetric'), 'error')
+                            return
+                          }
 
-                            switchActiveChartMetric(pairID)
-                          }}
-                        />
-                      )) : (
-                      !isPanelsDataEmptyPerf && (
-                        <Dropdown
-                          items={chartMetricsPerf}
-                          className='min-w-[170px] xs:min-w-0'
-                          title={(
-                            <p>
-                              {_find(chartMetricsPerf, ({ id: chartId }) => chartId === activeChartMetricsPerf)?.label}
-                            </p>
-                          )}
-                          labelExtractor={(pair) => pair.label}
-                          keyExtractor={(pair) => pair.id}
-                          onSelect={({ id: pairID }) => {
-                            switchActiveChartMetric(pairID)
-                          }}
-                        />
-                      )
+                          if (pairID === CHART_METRICS_MAPPING.customEvents) {
+                            return
+                          }
+
+                          switchActiveChartMetric(pairID)
+                        }}
+                      />
+                    )}
+                    {activeTab === PROJECT_TABS.performance && !isPanelsDataEmptyPerf && (
+                      <Dropdown
+                        items={chartMetricsPerf}
+                        className='min-w-[170px] xs:min-w-0'
+                        title={(
+                          <p>
+                            {_find(chartMetricsPerf, ({ id: chartId }) => chartId === activeChartMetricsPerf)?.label}
+                          </p>
+                        )}
+                        labelExtractor={(pair) => pair.label}
+                        keyExtractor={(pair) => pair.id}
+                        onSelect={({ id: pairID }) => {
+                          switchActiveChartMetric(pairID)
+                        }}
+                      />
                     )}
                     <Dropdown
                       items={isActiveCompare ? _filter(periodPairs, (el) => {
@@ -2265,8 +2271,9 @@ const ViewProject = ({
                         <MagnifyingGlassIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
                       </button>
                     </div>
-                    <div className={cx('md:border-r border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3 space-x-2', {
+                    <div className={cx('border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3 space-x-2', {
                       hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled,
+                      'md:border-r': activeTab !== PROJECT_TABS.funnels,
                     })}
                     >
                       <button
@@ -2292,29 +2299,31 @@ const ViewProject = ({
                         <PresentationChartLineIcon className='w-6 h-6' />
                       </button>
                     </div>
-                    <div className='border-gray-200 dark:border-gray-600'>
-                      <span className='relative z-0 inline-flex shadow-sm rounded-md'>
-                        {_map(activePeriod?.tbs, (tb, index, { length }) => (
-                          <button
-                            key={tb}
-                            type='button'
-                            onClick={() => updateTimebucket(tb)}
-                            className={cx(
-                              'relative capitalize inline-flex items-center px-3 md:px-4 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
-                              {
-                                '-ml-px': index > 0,
-                                'rounded-l-md': index === 0,
-                                'rounded-r-md': 1 + index === length,
-                                'z-10 border-indigo-500 text-indigo-600 dark:border-slate-200 dark:text-gray-50': timeBucket === tb,
-                                'text-gray-700 dark:text-gray-50 border-gray-300 dark:border-slate-800 ': timeBucket !== tb,
-                              },
-                            )}
-                          >
-                            {t(`project.${tb}`)}
-                          </button>
-                        ))}
-                      </span>
-                    </div>
+                    {activeTab !== PROJECT_TABS.funnels && (
+                      <div className='border-gray-200 dark:border-gray-600'>
+                        <span className='relative z-0 inline-flex shadow-sm rounded-md'>
+                          {_map(activePeriod?.tbs, (tb, index, { length }) => (
+                            <button
+                              key={tb}
+                              type='button'
+                              onClick={() => updateTimebucket(tb)}
+                              className={cx(
+                                'relative capitalize inline-flex items-center px-3 md:px-4 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
+                                {
+                                  '-ml-px': index > 0,
+                                  'rounded-l-md': index === 0,
+                                  'rounded-r-md': 1 + index === length,
+                                  'z-10 border-indigo-500 text-indigo-600 dark:border-slate-200 dark:text-gray-50': timeBucket === tb,
+                                  'text-gray-700 dark:text-gray-50 border-gray-300 dark:border-slate-800 ': timeBucket !== tb,
+                                },
+                              )}
+                            >
+                              {t(`project.${tb}`)}
+                            </button>
+                          ))}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </>

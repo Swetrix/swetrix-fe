@@ -382,11 +382,13 @@ export const tabsForDashboard: IDashboardTabs[] = [
 const SELFHOSTED_PROJECT_TABS: IStringObject = {
   traffic: 'traffic',
   performance: 'performance',
+  funnels: 'funnels',
 }
 
 const PRODUCTION_PROJECT_TABS: IStringObject = {
   traffic: 'traffic',
   performance: 'performance',
+  funnels: 'funnels',
   alerts: 'alerts',
 }
 

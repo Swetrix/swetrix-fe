@@ -490,6 +490,7 @@
     "cumulativeMode": "Cumulative mode",
     "traffic": "Traffic",
     "performance": "Performance",
+    "funnels": "Funnels",
     "alerts": "Alerts",
     "alertsDesc": "Automated alerts are a powerful tool that allow you to run automated tasks when specific events occur.\nWe can automatically monitor your project for traffic spikes and notify you via Telegram.",
     "frontend": "Frontend",
