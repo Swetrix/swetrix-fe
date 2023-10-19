@@ -35,6 +35,7 @@ import {
   getTimeFromSeconds, getStringFromTime, sumArrays, nFormatter,
 } from 'utils/generic'
 import countries from 'utils/isoCountries'
+import { IAnalyticsFunnel } from 'redux/models/IProject'
 
 const getAvg = (arr: any) => {
   const total = _reduce(arr, (acc, c) => acc + c, 0)
@@ -714,6 +715,68 @@ const getSettings = (
   }
 }
 
+// function to get the settings and data for the funnels chart
+const getSettingsFunnels = (
+  funnel: IAnalyticsFunnel[],
+  totalPageviews: number,
+) => {
+  const values = _map(funnel, (step) => step.value)
+  const events = _map(funnel, (step) => step.events)
+  const dropoff = _map(funnel, (step) => step.dropoff)
+
+  return {
+    data: {
+      x: 'x',
+      columns: [
+        ['x', ...values],
+        ['dropoff', ...dropoff],
+        ['events', ...events],
+      ],
+      types: {
+        events: bar(),
+        dropoff: bar(),
+      },
+      colors: {
+        events: '#2563EB', // blue-600
+        dropoff: '#93C5FD', // blue-300
+      },
+      groups: [
+        ['events', 'dropoff'],
+      ],
+      // regions,
+    },
+    // grid: {
+    //   x: {
+    //     lines,
+    //   },
+    // },
+    transition: {
+      duration: 500,
+    },
+    resize: {
+      auto: true,
+      timer: false,
+    },
+    axis: {
+      x: {
+        type: 'category',
+      },
+      y: {
+        tick: {
+          format: (d: number) => nFormatter(d, 1),
+        },
+      },
+    },
+    area: {
+      linearGradient: true,
+    },
+    // padding: {
+    //   left: 40,
+    // },
+    bindto: '#dataChart',
+  }
+}
+
 const perfomanceChartCompare = ['dnsCompare', 'tlsCompare', 'connCompare', 'responseCompare', 'renderCompare', 'dom_loadCompare', 'ttfbCompare', 'frontendCompare', 'networkCompare', 'backendCompare']
 
 const getSettingsPerf = (
@@ -973,4 +1036,5 @@ export {
   validPeriods, validTimeBacket, noRegionPeriods, getSettings,
   getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING,
   CHART_METRICS_MAPPING_PERF, getColumnsPerf, getSettingsPerf, transformAIChartData, FILTER_CHART_METRICS_MAPPING_FOR_COMPARE,
+  getSettingsFunnels,
 }

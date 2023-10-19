@@ -517,6 +517,32 @@ export const getPerfData = (
         : error.response.data.message
     })
 
+export const getFunnelData = (
+  pid: string,
+  period: string = '3d',
+  from: string = '',
+  to: string = '',
+  timezone: string = '',
+  funnelId: string = '',
+  password: string | undefined = '',
+) =>
+  api
+    .get(
+      `log/funnel?pid=${pid}&period=${period}&from=${from}&to=${to}&timezone=${timezone}&funnelId=${funnelId}`,
+      {
+        headers: {
+          'x-password': password,
+        },
+      },
+    )
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message)
+        ? error.response.data
+        : error.response.data.message
+    })
+
 export const getCaptchaData = (
   pid: string,
   tb: string = 'hour',
@@ -843,6 +869,39 @@ export const addSubscriber = (id: string, data: {
   api
     .post(`project/${id}/subscribers`, data)
     .then((response): ISubscribers => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message)
+        ? error.response.data
+        : error.response.data.message
+    })
+
+export const addFunnel = (pid: string, name: string, steps: string[]) =>
+  api
+    .post('project/funnel', { pid, name, steps })
+    .then((response): any => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message)
+        ? error.response.data
+        : error.response.data.message
+    })
+
+export const updateFunnel = (id: string, name: string, steps: string[]) =>
+  api
+    .patch('project/funnel', { id, name, steps })
+    .then((response): any => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message)
+        ? error.response.data
+        : error.response.data.message
+    })
+
+export const deleteFunnel = (id: string) =>
+  api
+    .delete(`project/funnel/${id}`)
+    .then((response): any => response.data)
     .catch((error) => {
       debug('%s', error)
       throw _isEmpty(error.response.data?.message)

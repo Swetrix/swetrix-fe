@@ -17,6 +17,7 @@ const mapStateToProps = (state: StateType) => {
       isLoading: state.ui.projects.isLoadingShared,
       cache: state.ui.cache.analytics,
       cachePerf: state.ui.cache.analyticsPerf,
+      cacheFunnels: state.ui.cache.funnels,
       projectViewPrefs: state.ui.cache.projectViewPrefs,
       authenticated: state.auth.authenticated,
       authLoading: state.auth.loading,
@@ -38,6 +39,7 @@ const mapStateToProps = (state: StateType) => {
     authLoading: state.auth.loading,
     cache: state.ui.cache.analytics,
     cachePerf: state.ui.cache.analyticsPerf,
+    cacheFunnels: state.ui.cache.funnels,
     projectViewPrefs: state.ui.cache.projectViewPrefs,
     authenticated: state.auth.authenticated,
     timezone: state.auth.user.timezone,
@@ -74,6 +76,13 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
   },
   setProjectCachePerf: (pid: string, data: any, key: string) => {
     dispatch(UIActions.setProjectCachePerf({
+      pid,
+      data,
+      key,
+    }))
+  },
+  setFunnelsCache: (pid: string, data: any, key: string) => {
+    dispatch(UIActions.setFunnelsCache({
       pid,
       data,
       key,

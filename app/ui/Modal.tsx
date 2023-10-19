@@ -18,6 +18,7 @@ interface IModal {
   onSubmit?: () => void,
   closeText?: string,
   submitText?: string,
+  submitDisabled?: boolean,
   submitType?: 'regular' | 'danger',
   size?: 'regular' | 'large',
   customButtons?: JSX.Element,
@@ -27,7 +28,7 @@ interface IModal {
 
 const Modal = ({
   className, type, title, message, isOpened, onClose, onSubmit, closeText, submitText,
-  submitType, size, customButtons, isBeta, isLoading,
+  submitType, size, customButtons, isBeta, isLoading, submitDisabled,
 }: IModal): JSX.Element => (
   <Transition.Root show={isOpened} as={Fragment}>
     <Dialog
@@ -129,8 +130,11 @@ const Modal = ({
                 <button
                   type='button'
                   className={cx('w-full inline-flex justify-center rounded-md shadow-sm px-4 py-2 text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm', {
-                    'bg-indigo-600 hover:bg-indigo-700': submitType === 'regular',
-                    'bg-red-600 hover:bg-red-700': submitType === 'danger',
+                    'bg-indigo-600': submitType === 'regular',
+                    'bg-red-600': submitType === 'danger',
+                    'cursor-not-allowed opacity-70': submitDisabled,
+                    'hover:bg-indigo-700': submitType === 'regular' && !submitDisabled,
+                    'hover:bg-red-700': submitType === 'danger' && !submitDisabled,
                   })}
                   onClick={onSubmit}
                 >
@@ -169,6 +173,7 @@ Modal.propTypes = {
   onSubmit: PropTypes.func,
   closeText: PropTypes.string,
   submitText: PropTypes.string,
+  submitDisabled: PropTypes.bool,
   submitType: PropTypes.oneOf(['regular', 'danger']),
   size: PropTypes.oneOf(['regular', 'large']),
   customButtons: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
@@ -183,6 +188,7 @@ Modal.defaultProps = {
   onSubmit: () => { },
   closeText: null,
   submitText: null,
+  submitDisabled: false,
   submitType: 'regular',
   size: 'regular',
   type: null,
