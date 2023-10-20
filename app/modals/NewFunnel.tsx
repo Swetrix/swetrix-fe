@@ -149,6 +149,7 @@ const NewFunnel = ({
       title={funnel ? t('modals.funnels.editTitle') : t('modals.funnels.addTitle')}
       isOpened={isOpened}
       submitDisabled={!name || !allStepsFulfilled}
+      overflowVisible
     />
   )
 }

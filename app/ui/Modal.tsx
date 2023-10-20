@@ -24,11 +24,12 @@ interface IModal {
   customButtons?: JSX.Element,
   isBeta?: boolean,
   isLoading?: boolean,
+  overflowVisible?: boolean,
 }
 
 const Modal = ({
   className, type, title, message, isOpened, onClose, onSubmit, closeText, submitText,
-  submitType, size, customButtons, isBeta, isLoading, submitDisabled,
+  submitType, size, customButtons, isBeta, isLoading, submitDisabled, overflowVisible,
 }: IModal): JSX.Element => (
   <Transition.Root show={isOpened} as={Fragment}>
     <Dialog
@@ -65,9 +66,11 @@ const Modal = ({
           leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
         >
           <div
-            className={cx('inline-block align-bottom bg-white dark:bg-slate-900 rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:px-5 sm:py-4', {
+            className={cx('inline-block align-bottom bg-white dark:bg-slate-900 rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:px-5 sm:py-4', {
               'sm:max-w-lg sm:w-full': size === 'regular',
               'max-w-5xl w-full': size === 'large',
+              'overflow-visible': overflowVisible,
+              'overflow-hidden': !overflowVisible,
             })}
           >
             <div className='sm:flex sm:items-start'>
@@ -179,6 +182,7 @@ Modal.propTypes = {
   customButtons: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   isBeta: PropTypes.bool,
   isLoading: PropTypes.bool,
+  overflowVisible: PropTypes.bool,
 }
 
 Modal.defaultProps = {
@@ -196,6 +200,7 @@ Modal.defaultProps = {
   customButtons: null,
   isBeta: false,
   isLoading: false,
+  overflowVisible: false,
 }
 
 export default memo(Modal)
