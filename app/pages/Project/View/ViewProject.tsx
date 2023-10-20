@@ -591,35 +591,36 @@ const ViewProject = ({
   }, [panelsData])
 
   // dataNames is a list of metrics for chart
-  const dataNames = useMemo(() => {
-    return {
-      unique: t('project.unique'),
-      total: t('project.total'),
-      bounce: `${t('dashboard.bounceRate')} (%)`,
-      viewsPerUnique: t('dashboard.viewsPerUnique'),
-      trendlineTotal: t('project.trendlineTotal'),
-      trendlineUnique: t('project.trendlineUnique'),
-      sessionDuration: t('dashboard.sessionDuration'),
-      ...dataNamesCustomEvents,
-    }
-  }, [t, dataNamesCustomEvents])
+  const dataNames = useMemo(() => ({
+    unique: t('project.unique'),
+    total: t('project.total'),
+    bounce: `${t('dashboard.bounceRate')} (%)`,
+    viewsPerUnique: t('dashboard.viewsPerUnique'),
+    trendlineTotal: t('project.trendlineTotal'),
+    trendlineUnique: t('project.trendlineUnique'),
+    sessionDuration: t('dashboard.sessionDuration'),
+    ...dataNamesCustomEvents,
+  }), [t, dataNamesCustomEvents])
 
   // dataNamesPerf is a list of metrics for chart in performance tab
-  const dataNamesPerf = useMemo(() => {
-    return {
-      full: t('dashboard.timing'),
-      network: t('dashboard.network'),
-      frontend: t('dashboard.frontend'),
-      backend: t('dashboard.backend'),
-      dns: t('dashboard.dns'),
-      tls: t('dashboard.tls'),
-      conn: t('dashboard.conn'),
-      response: t('dashboard.response'),
-      render: t('dashboard.render'),
-      dom_load: t('dashboard.domLoad'),
-      ttfb: t('dashboard.ttfb'),
-    }
-  }, [t])
+  const dataNamesPerf = useMemo(() => ({
+    full: t('dashboard.timing'),
+    network: t('dashboard.network'),
+    frontend: t('dashboard.frontend'),
+    backend: t('dashboard.backend'),
+    dns: t('dashboard.dns'),
+    tls: t('dashboard.tls'),
+    conn: t('dashboard.conn'),
+    response: t('dashboard.response'),
+    render: t('dashboard.render'),
+    dom_load: t('dashboard.domLoad'),
+    ttfb: t('dashboard.ttfb'),
+  }), [t])
+
+  const dataNamesFunnel = useMemo(() => ({
+    dropoff: t('project.dropoff'),
+    events: t('project.visitors'),
+  }), [t])
 
   // tabs is a tabs for project
   const tabs: {
@@ -750,9 +751,9 @@ const ViewProject = ({
       // set chart data
       setMainChart(() => {
         // @ts-ignore
-        const generete = bb.generate(bbSettings)
-        generete.data.names(dataNames)
-        return generete
+        const generate = bb.generate(bbSettings)
+        generate.data.names(dataNames)
+        return generate
       })
     } catch (e) {
       console.error('[ERROR] FAILED TO LOAD CUSTOM EVENTS', e)
@@ -951,9 +952,9 @@ const ViewProject = ({
         if (activeTab === PROJECT_TABS.traffic) {
           setMainChart(() => {
             // @ts-ignore
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNames)
-            return generete
+            const generate = bb.generate(bbSettings)
+            generate.data.names(dataNames)
+            return generate
           })
         }
 
@@ -1121,9 +1122,9 @@ const ViewProject = ({
         if (activeTab === PROJECT_TABS.performance) {
           setMainChart(() => {
             // @ts-ignore
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNamesPerf)
-            return generete
+            const generate = bb.generate(bbSettings)
+            generate.data.names(dataNamesPerf)
+            return generate
           })
         }
 
@@ -1180,12 +1181,14 @@ const ViewProject = ({
 
       const { funnel, totalPageviews } = dataFunnel
 
-      const bbSettings = getSettingsFunnels(funnel, totalPageviews)
+      const bbSettings = getSettingsFunnels(funnel, totalPageviews, t)
 
       if (activeTab === PROJECT_TABS.funnels) {
         setMainChart(() => {
           // @ts-ignore
-          return bb.generate(bbSettings)
+          const generate = bb.generate(bbSettings)
+          generate.data.names(dataNamesFunnel)
+          return generate
         })
       }
 
@@ -1197,7 +1200,7 @@ const ViewProject = ({
       console.error('[ERROR](loadFunnelsData) Loading funnels data failed')
       console.error(e)
     }
-  }, [activeFunnel, activeTab, cacheFunnels, dataLoading, dateRange, id, isLoading, period, project, projectPassword, timezone, setFunnelsCache])
+  }, [activeFunnel, activeTab, cacheFunnels, dataLoading, dateRange, id, isLoading, period, project, projectPassword, timezone, setFunnelsCache, t, dataNamesFunnel])
 
   // this funtion is used for requesting the data from the API when the filter is changed
   const filterHandler = (column: string, filter: any, isExclusive = false) => {
@@ -1494,9 +1497,9 @@ const ViewProject = ({
 
           setMainChart(() => {
             // @ts-ignore
-            const generete = bb.generate(bbSettings)
-            generete.data.names(dataNames)
-            return generete
+            const generate = bb.generate(bbSettings)
+            generate.data.names(dataNames)
+            return generate
           })
         }
 
@@ -1523,9 +1526,9 @@ const ViewProject = ({
 
       setMainChart(() => {
         // @ts-ignore
-        const generete = bb.generate(bbSettings)
-        generete.data.names(dataNamesPerf)
-        return generete
+        const generate = bb.generate(bbSettings)
+        generate.data.names(dataNamesPerf)
+        return generate
       })
     }
   }, [isLoading, activeChartMetrics, chartData, chartDataPerf, activeChartMetricsPerf, dataChartCompare]) // eslint-disable-line
@@ -1805,7 +1808,7 @@ const ViewProject = ({
     }
 
     loadFunnelsData()
-  }, [project, activeFunnel, loadFunnelsData, period])
+  }, [project, activeFunnel, loadFunnelsData, period, t])
 
   // using this for fix some bugs with update custom events data for chart
   useEffect(() => {
@@ -2407,7 +2410,7 @@ const ViewProject = ({
                 {activeTab === PROJECT_TABS.funnels && (
                   <button
                     onClick={() => setActiveFunnel(null)}
-                    className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto md:mx-0 mt-2 md:mt-0'
+                    className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto md:mx-0 mt-2 md:mt-0 text-gray-900 dark:text-gray-100'
                   >
                     <ChevronLeftIcon className='w-4 h-4' />
                     {t('project.backToFunnels')}

@@ -48,7 +48,7 @@ export interface IAnalyticsFunnel {
   eventsPerc: number
   eventsPercStep: number
   dropoff: number
-  dropoffPerc: number
+  dropoffPercStep: number
 }
 
 export interface IProject {
