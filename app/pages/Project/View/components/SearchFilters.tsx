@@ -76,15 +76,21 @@ const SearchFilters = ({
     getFiltersList(filterType)
   }, [filterType, showModal, getFiltersList])
 
+  const closeModal = () => {
+    setShowModal(false)
+    setTimeout(() => {
+      setFilterType('')
+      setActiveFilters({})
+      setOverride(false)
+    }, 300)
+  }
+
   return (
     <Modal
-      onClose={() => {
-        setShowModal(false)
-      }}
+      onClose={closeModal}
       onSubmit={() => {
         setProjectFilter(formatFilters(activeFilters), override)
-        setActiveFilters({})
-        setShowModal(false)
+        closeModal()
       }}
       submitText={t('project.applyFilters')}
       title={t('project.advancedFilters')}
