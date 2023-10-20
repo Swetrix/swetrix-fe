@@ -40,7 +40,7 @@ const Combobox = ({
   return (
     <HeadlessCombobox value={title} onChange={onSelect}>
       <div className={cx('relative mt-1', className)}>
-        <div className='relative w-full cursor-default overflow-hidden rounded-lg'>
+        <div className='relative w-full cursor-default rounded-lg'>
           <HeadlessCombobox.Input
             className={cx('relative w-full bg-white border border-gray-300 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm', buttonClassName)}
             // @ts-ignore
