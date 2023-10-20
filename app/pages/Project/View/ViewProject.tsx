@@ -639,11 +639,6 @@ const ViewProject = ({
         label: t('dashboard.performance'),
         icon: BoltIcon,
       },
-      {
-        id: PROJECT_TABS.funnels,
-        label: t('dashboard.funnels'),
-        icon: FunnelIcon,
-      },
     ]
 
     const adminTabs = (project?.isOwner || sharedRoles === roleAdmin.role) ? [
@@ -663,6 +658,11 @@ const ViewProject = ({
 
     return [
       ...selfhostedOnly,
+      {
+        id: PROJECT_TABS.funnels,
+        label: t('dashboard.funnels'),
+        icon: FunnelIcon,
+      },
       {
         id: PROJECT_TABS.alerts,
         label: t('dashboard.alerts'),
@@ -2129,7 +2129,7 @@ const ViewProject = ({
               </div>
               <div className='hidden sm:block'>
                 <div>
-                  <nav className='-mb-px flex space-x-4' aria-label='Tabs'>
+                  <nav className='-mb-px flex space-x-4 overflow-x-auto' aria-label='Tabs'>
                     {_map(tabs, tab => {
                       const isCurrent = tab.id === activeTab
                       const isSettings = tab.id === 'settings'
