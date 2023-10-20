@@ -4,14 +4,14 @@ import _isEmpty from 'lodash/isEmpty'
 import _reduce from 'lodash/reduce'
 import _filter from 'lodash/filter'
 import _map from 'lodash/map'
-import _isString from 'lodash/isString'
 
 import Modal from 'ui/Modal'
 import Checkbox from 'ui/Checkbox'
 import Select from 'ui/Select'
+import Combobox from 'ui/Combobox'
 import { FILTERS_PANELS_ORDER } from 'redux/constants'
+import countries from 'utils/isoCountries'
 import { getFilters } from 'api'
-import CCRow from './CCRow'
 import { Filter } from './Filters'
 
 interface ISearchFilters {
@@ -55,8 +55,7 @@ const SearchFilters = ({
 }: ISearchFilters) => {
   const { t, i18n: { language } } = useTranslation('common')
   const [filterType, setFilterType] = useState<string>('')
-  const [filterList, setFilterList] = useState<string[]>([])
-  const [searchList, setSearchList] = useState<string[]>([])
+  const [searchList, setSearchList] = useState<any[]>([])
   const [activeFilters, setActiveFilters] = useState<any>({})
   const [override, setOverride] = useState<boolean>(false)
 
@@ -64,7 +63,6 @@ const SearchFilters = ({
 
   const getFiltersList = useCallback(async (type: string) => {
     const res = await getFilters(pid, type)
-    setFilterList(res)
     setSearchList(res)
   }, [pid])
 
@@ -127,31 +125,31 @@ const SearchFilters = ({
                 ))}
               </>
             )}
-            {(filterType && !_isEmpty(filterList)) && (
+            {(filterType && !_isEmpty(searchList)) && (
               <>
                 <p className='mt-5 text-sm font-medium text-gray-700 dark:text-gray-200'>
                   {t('project.newFilters')}
                 </p>
-                <Select
+                <Combobox
                   items={searchList}
-                  labelClassName='flex'
                   labelExtractor={(item) => {
                     if (filterType === 'cc') {
-                      return <CCRow cc={item} language={language} />
+                      return countries.getName(item, language)
                     }
 
                     return item
                   }}
-                  // @ts-ignore
                   onSelect={(item: any) => {
-                    const processedItem = _isString(item) ? item : item.props.cc
+                    const processedItem = filterType === 'cc'
+                      ? countries.getAlpha2Code(item, language) as string
+                      : item
 
                     setActiveFilters((prevFilters: any) => ({
                       ...prevFilters,
                       [filterType]: [...(prevFilters[filterType] || []), processedItem],
                     }))
                   }}
-                  title={t('project.settings.reseted.filtersPlaceholder')}
+                  placeholder={t('project.settings.reseted.filtersPlaceholder')}
                 />
                 {_map(activeFilters, (filter, column) => {
                   return _map(filter, (item) => (
