@@ -831,7 +831,7 @@ const getSettingsFunnels = (
           <div class='bg-gray-100 dark:text-gray-50 dark:bg-slate-800 rounded-md shadow-md px-3 py-1'>
             ${title}
             <hr class='border-gray-200 dark:border-gray-600' />
-            <table class='table-fixed mt-2'>
+            <table class='table-fixed'>
               <thead>
                 <tr>
                   <th className='w-3/5'></th>
