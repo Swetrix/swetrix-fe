@@ -908,9 +908,9 @@ export const addFunnel = (pid: string, name: string, steps: string[]) =>
         : error.response.data.message
     })
 
-export const updateFunnel = (id: string, name: string, steps: string[]) =>
+export const updateFunnel = (id: string, pid: string, name: string, steps: string[]) =>
   api
-    .patch('project/funnel', { id, name, steps })
+    .patch('project/funnel', { id, name, steps, pid })
     .then((response): any => response.data)
     .catch((error) => {
       debug('%s', error)
@@ -919,9 +919,9 @@ export const updateFunnel = (id: string, name: string, steps: string[]) =>
         : error.response.data.message
     })
 
-export const deleteFunnel = (id: string) =>
+export const deleteFunnel = (id: string, pid: string) =>
   api
-    .delete(`project/funnel/${id}`)
+    .delete(`project/funnel/${id}/${pid}`)
     .then((response): any => response.data)
     .catch((error) => {
       debug('%s', error)

@@ -330,7 +330,7 @@ const ViewProject = ({
     setFunnelActionLoading(true)
 
     try {
-      const funnel = await updateFunnel(funnelId, name, steps)
+      const funnel = await updateFunnel(funnelId, id, name, steps)
       console.log(funnel)
     } catch (reason: any) {
       console.error('[ERROR] (onFunnelEdit)(updateFunnel)', reason)
@@ -359,7 +359,7 @@ const ViewProject = ({
     setFunnelActionLoading(true)
 
     try {
-      await deleteFunnel(funnelId)
+      await deleteFunnel(funnelId, id)
     } catch (reason: any) {
       console.error('[ERROR] (onFunnelDelete)(deleteFunnel)', reason)
       showError(reason)
