@@ -12,7 +12,7 @@ export default function PostSlug() {
   }
 
   return (
-    <div className='bg-gray-50 scroll-smooth dark:bg-slate-900 text-gray-700 dark:text-gray-300'>
+    <div className='bg-gray-50 dark:bg-slate-900 text-gray-700 dark:text-gray-300'>
       <div className=' max-w-[52rem] mx-auto px-4 pb-28 sm:px-6 md:px-8 xl:px-12 lg:max-w-6xl'>
         <div className='overflow-hidden'>
           <div className='max-w-8xl mx-auto'>
