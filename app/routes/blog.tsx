@@ -61,15 +61,15 @@ export default function Posts() {
                     </dl>
                   </div>
                   <Link
-                    className='flex items-center text-sm text-indigo-600 dark:text-indigo-400 font-medium'
+                    className='flex items-center text-sm text-indigo-600 dark:text-gray-50 font-medium'
                     to={post.slug}
                   >
                     <span className='absolute -inset-y-2.5 -inset-x-4 md:-inset-y-4 md:-inset-x-6 sm:rounded-2xl'></span>
                     <span className='relative'>
-                      Read more<span className='sr-only'>{post.title}</span>
+                      Read more
                     </span>
                     <svg
-                      className='relative mt-px overflow-visible ml-2.5 text-indigo-600 dark:text-indigo-400'
+                      className='relative mt-px overflow-visible ml-2.5 text-indigo-600 dark:text-gray-50'
                       width='3'
                       height='6'
                       viewBox='0 0 3 6'
@@ -79,7 +79,7 @@ export default function Posts() {
                       strokeLinecap='round'
                       strokeLinejoin='round'
                     >
-                      <path d='M0 0L3 3L0 6'></path>
+                      <path d='M0 0L3 3L0 6' />
                     </svg>
                   </Link>
                 </article>
