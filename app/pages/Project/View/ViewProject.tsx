@@ -90,6 +90,7 @@ import NoEvents from './components/NoEvents'
 import SearchFilters from './components/SearchFilters'
 import Filters from './components/Filters'
 import CountryDropdown from './components/CountryDropdown'
+import MetricCards from './components/MetricCards'
 import ProjectAlertsView from '../Alerts/View'
 const SwetrixSDK = require('@swetrix/sdk')
 
@@ -2180,12 +2181,10 @@ const ViewProject = ({
                   <div className='flex items-center mt-3 md:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 space-x-2 gap-y-1'>
                     {activeTab !== PROJECT_TABS.funnels && (
                       <Dropdown
+                        header={t('project.exportData')}
                         items={[...exportTypes, ...customExportTypes, { label: t('project.lookingForMore'), lookingForMore: true, onClick: () => { } }]}
                         title={[
-                          <ArrowDownTrayIcon key='download-icon' className='w-5 h-5 mr-2' />,
-                          <Fragment key='export-data'>
-                            {t('project.exportData')}
-                          </Fragment>,
+                          <ArrowDownTrayIcon key='download-icon' className='w-5 h-5' />,
                         ]}
                         labelExtractor={item => {
                           const { label, lookingForMore } = item
@@ -2203,6 +2202,8 @@ const ViewProject = ({
                         keyExtractor={item => item.label}
                         onSelect={item => item.onClick(panelsData, t)}
                         className={cx('ml-3', { hidden: isPanelsDataEmpty || analyticsLoading })}
+                        chevron='mini'
+                        buttonClassName='inline-flex w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 bg-white text-sm font-medium text-gray-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500'
                       />
                     )}
                     {activeTab === PROJECT_TABS.traffic && !isPanelsDataEmpty && (
@@ -2380,7 +2381,7 @@ const ViewProject = ({
                         type='button'
                         title={t('project.refreshStats')}
                         onClick={refreshStats}
-                        className={cx('relative shadow-sm rounded-md px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                        className={cx('relative shadow-sm rounded-md px-3 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                           'cursor-not-allowed opacity-50': isLoading || dataLoading,
                         })}
                       >
@@ -2425,7 +2426,7 @@ const ViewProject = ({
                         type='button'
                         title={t('project.refreshStats')}
                         onClick={refreshStats}
-                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                           'cursor-not-allowed opacity-50': isLoading || dataLoading,
                         })}
                       >
@@ -2443,7 +2444,7 @@ const ViewProject = ({
                           title={t('modals.forecast.title')}
                           onClick={onForecastOpen}
                           disabled={!_isEmpty(filters)}
-                          className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                          className={cx('relative shadow-sm rounded-md mt-[1px] px-3 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                             'cursor-not-allowed opacity-50': isLoading || dataLoading || !_isEmpty(filters),
                             '!bg-gray-200 dark:!bg-gray-600 !border dark:!border-gray-500 !border-gray-300': !_isEmpty(forecasedChartData),
                           })}
@@ -2457,7 +2458,7 @@ const ViewProject = ({
                         type='button'
                         title={t('project.search')}
                         onClick={() => setShowFiltersSearch(true)}
-                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 md:px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                           'cursor-not-allowed opacity-50': isLoading || dataLoading,
                         })}
                       >
@@ -2499,7 +2500,7 @@ const ViewProject = ({
                             type='button'
                             onClick={() => updateTimebucket(tb)}
                             className={cx(
-                              'relative capitalize inline-flex items-center px-3 md:px-4 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
+                              'relative capitalize inline-flex items-center px-3 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
                               {
                                 '-ml-px': index > 0,
                                 'rounded-l-md': index === 0,
@@ -2529,7 +2530,7 @@ const ViewProject = ({
                 <p className='text-lg whitespace-pre-wrap mt-2 text-gray-100'>
                   {t('dashboard.alertsDesc')}
                 </p>
-                <Link to={routes.signup} className='inline-block select-none mt-6 bg-white py-2 px-3 md:px-4 border border-transparent rounded-md text-base font-medium text-gray-700 hover:bg-indigo-50' aria-label={t('titles.signup')}>
+                <Link to={routes.signup} className='inline-block select-none mt-6 bg-white py-2 px-3 border border-transparent rounded-md text-base font-medium text-gray-700 hover:bg-indigo-50' aria-label={t('titles.signup')}>
                   {t('common.getStarted')}
                 </Link>
               </div>
@@ -2567,12 +2568,12 @@ const ViewProject = ({
                   <button
                     type='button'
                     onClick={() => setIsNewFunnelOpened(true)}
-                    className='inline-block select-none mt-6 bg-white py-2 px-3 md:px-4 border border-transparent rounded-md text-base font-medium text-gray-700 hover:bg-indigo-50'
+                    className='inline-block select-none mt-6 bg-white py-2 px-3 border border-transparent rounded-md text-base font-medium text-gray-700 hover:bg-indigo-50'
                   >
                     {t('dashboard.newFunnel')}
                   </button>
                 ) : (
-                  <Link to={routes.signup} className='inline-block select-none mt-6 bg-white py-2 px-3 md:px-4 border border-transparent rounded-md text-base font-medium text-gray-700 hover:bg-indigo-50' aria-label={t('titles.signup')}>
+                  <Link to={routes.signup} className='inline-block select-none mt-6 bg-white py-2 px-3 border border-transparent rounded-md text-base font-medium text-gray-700 hover:bg-indigo-50' aria-label={t('titles.signup')}>
                     {t('common.getStarted')}
                   </Link>
                 )}
@@ -2592,6 +2593,21 @@ const ViewProject = ({
             )}
             {activeTab === PROJECT_TABS.traffic && (
               <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
+                {!_isEmpty(project.overall) && (
+                  <MetricCards
+                    overall={project.overall}
+                    chartData={chartData}
+                    activePeriod={activePeriod}
+                    sessionDurationAVG={sessionDurationAVG}
+                    sessionDurationAVGCompare={sessionDurationAVGCompare}
+                    isActiveCompare={isActiveCompare}
+                    activeDropdownLabelCompare={activeDropdownLabelCompare}
+                    dataChartCompare={dataChartCompare}
+                    live={liveStats[id]}
+                    projectId={id}
+                    projectPassword={projectPassword}
+                  />
+                )}
                 <div
                   className={cx('h-80', {
                     hidden: checkIfAllMetricsAreDisabled,
