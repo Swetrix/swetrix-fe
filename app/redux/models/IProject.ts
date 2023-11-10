@@ -1,15 +1,18 @@
-export interface IOvervallObject {
-  thisWeek?: number
-  lastWeek?: number
-  thisWeekUnique?: number
-  lastWeekUnique?: number
-  percChange?: number
-  total?: number
+interface _IOverallPeriodStats {
+  all: number
+  unique?: number
+  bounceRate?: number
+}
+
+export interface IOverallObject {
+  current: _IOverallPeriodStats
+  previous: _IOverallPeriodStats
+  percChange: number
   percChangeUnique?: number
 }
 
 export interface IOverall {
-  [key: string]: IOvervallObject
+  [key: string]: IOverallObject
 }
 
 export interface IUserShareProject {
@@ -65,7 +68,7 @@ export interface IProject {
   created: string
   share?: IShareOwnerProject[]
   isOwner: boolean
-  overall: IOvervallObject
+  overall: IOverallObject
   uiHidden: boolean
   funnels: IFunnel[]
   isPublic?: boolean
@@ -87,6 +90,6 @@ export interface ICaptchaProject {
   captchaSecretKey: string | null
   created: string
   isOwner: boolean
-  overall: IOvervallObject
+  overall: IOverallObject
   uiHidden: boolean
 }

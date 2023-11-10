@@ -1,6 +1,6 @@
 /* eslint-disable react/forbid-prop-types, react/no-unstable-nested-components, react/display-name */
 import React, {
-  useState, useEffect, useMemo, memo, useRef, Fragment, useCallback,
+  useState, useEffect, useMemo, memo, useRef, useCallback,
 } from 'react'
 import useSize from 'hooks/useSize'
 import { useNavigate, useParams, Link } from '@remix-run/react'
@@ -11,8 +11,7 @@ import { saveAs } from 'file-saver'
 import bb from 'billboard.js'
 import {
   ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, ChartBarIcon, BoltIcon, BellIcon,
-  PresentationChartBarIcon, PresentationChartLineIcon, NoSymbolIcon, MagnifyingGlassIcon,
-  FunnelIcon, ChevronLeftIcon,
+  NoSymbolIcon, MagnifyingGlassIcon, FunnelIcon, ChevronLeftIcon,
 } from '@heroicons/react/24/outline'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -54,7 +53,7 @@ import {
   getFunnelsCacheKey, getFunnelsCacheCustomKey,
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
-import { IProject, ILiveStats, IFunnel, IAnalyticsFunnel } from 'redux/models/IProject'
+import { IProject, ILiveStats, IFunnel, IAnalyticsFunnel, IOverallObject } from 'redux/models/IProject'
 import { IProjectForShared, ISharedProject } from 'redux/models/ISharedProject'
 import { ICountryEntry } from 'redux/models/IEntry'
 import Loader from 'ui/Loader'
@@ -63,6 +62,8 @@ import Checkbox from 'ui/Checkbox'
 import Select from 'ui/Select'
 import FlatPicker from 'ui/Flatpicker'
 import Robot from 'ui/icons/Robot'
+import LineChart from 'ui/icons/LineChart'
+import BarChart from 'ui/icons/BarChart'
 import Forecast from 'modals/Forecast'
 import NewFunnel from 'modals/NewFunnel'
 import routes from 'routesPath'
@@ -89,6 +90,7 @@ import RefRow from './components/RefRow'
 import NoEvents from './components/NoEvents'
 import SearchFilters from './components/SearchFilters'
 import Filters from './components/Filters'
+import LiveVisitorsDropdown from './components/LiveVisitorsDropdown'
 import CountryDropdown from './components/CountryDropdown'
 import MetricCards from './components/MetricCards'
 import ProjectAlertsView from '../Alerts/View'
@@ -224,6 +226,7 @@ const ViewProject = ({
   // panelsData is a data used for components <Panels /> and <CustomEvents />,
   // also using for logic with custom events on chart and export data like csv
   const [panelsData, setPanelsData] = useState<any>({})
+  const [overall, setOverall] = useState<Partial<IOverallObject>>({})
   // isPanelsDataEmpty is a true we are display components <NoEvents /> and do not show dropdowns with activeChartMetrics
   const [isPanelsDataEmpty, setIsPanelsDataEmpty] = useState<boolean>(false)
   const [isForecastOpened, setIsForecastOpened] = useState<boolean>(false)
@@ -789,7 +792,7 @@ const ViewProject = ({
 
     setDataLoading(true)
     try {
-      let data: { timeBucket?: any; chart?: any; params?: any; customs?: any; appliedFilters?: any; avgSdur?: any }
+      let data: { timeBucket?: any; chart?: any; params?: any; customs?: any; appliedFilters?: any; avgSdur?: any; overall?: IOverallObject }
       let dataCompare
       let key = ''
       let keyCompare = ''
@@ -798,6 +801,7 @@ const ViewProject = ({
       let to
       let toCompare: string | undefined
       let customEventsChart = customEventsChartData
+      let rawOverall: any
 
       // first we check isActiveCompare if comapre active we load compare date or check if we have data in redux/localstorage
       // and set state dependent compare
@@ -864,23 +868,27 @@ const ViewProject = ({
         key = getProjectCacheKey(period, timeBucket, mode, newFilters || filters)
       }
 
-      // check if we need to load new date or we have data in redux/localstorage
+      // check if we need to load new data or we have data in redux/localstorage
       if ((!forced && !_isEmpty(cache[id]) && !_isEmpty(cache[id][key]))) {
         data = cache[id][key]
       } else {
         if (period === 'custom' && dateRange) {
           data = await getProjectData(id, timeBucket, '', newFilters || filters, from, to, timezone, projectPassword, mode)
           customEventsChart = await getProjectDataCustomEvents(id, timeBucket, '', filters, from, to, timezone, activeChartMetricsCustomEvents, projectPassword)
+          // todo: add support for custom date range
+          rawOverall = {}
         } else {
           data = await getProjectData(id, timeBucket, period, newFilters || filters, '', '', timezone, projectPassword, mode)
           customEventsChart = await getProjectDataCustomEvents(id, timeBucket, period, filters, '', '', timezone, activeChartMetricsCustomEvents, projectPassword)
+          rawOverall = await getOverallStats([id], period, projectPassword)
         }
 
         customEventsChart = customEventsChart?.chart ? customEventsChart.chart.events : customEventsChartData
 
         setCustomEventsPrefs(id, customEventsChart)
 
-        setProjectCache(id, data || {}, key)
+        setProjectCache(id, data, key)
+        setOverall(rawOverall[id])
       }
 
       // using for extensions
@@ -1862,33 +1870,44 @@ const ViewProject = ({
         }
 
         if ((projectRes.isPublic || projectRes?.isPasswordProtected) && !projectRes.isOwner) {
-          getOverallStats([id], projectPassword)
-            .then(res => {
-              setPublicProject({
-                ...projectRes,
-                overall: res[id],
-              })
-            })
-            .catch(e => {
-              console.error('[ERROR] (getProject -> getOverallStats public)', e)
-              onErrorLoading()
-            })
+          setPublicProject(projectRes)
+          // getOverallStats([id], projectPassword)
+          //   .then(res => {
+          //     setPublicProject({
+          //       ...projectRes,
+          //       overall: res[id],
+          //     })
+          //   })
+          //   .catch(e => {
+          //     console.error('[ERROR] (getProject -> getOverallStats public)', e)
+          //     onErrorLoading()
+          //   })
         } else {
-          getOverallStats([id])
-            .then(res => {
-              setProjects([...(projects as any[]), {
-                ...projectRes,
-                overall: res[id],
-              }])
-            })
-            .then(() => {
-              return getLiveVisitors([id], projectPassword)
-            })
+          // getOverallStats([id])
+          //   .then(res => {
+          //     setProjects([...(projects as any[]), {
+          //       ...projectRes,
+          //       overall: res[id],
+          //     }])
+          //   })
+          //   .then(() => {
+          //     return getLiveVisitors([id], projectPassword)
+          //   })
+          //   .then(res => {
+          //     setLiveStatsForProject(id, res[id])
+          //   })
+          //   .catch(e => {
+          //     console.error('[ERROR] (getProject -> getOverallStats)', e)
+          //     onErrorLoading()
+          //   })
+
+          setProjects([...(projects as any[]), projectRes])
+          getLiveVisitors([id], projectPassword)
             .then(res => {
               setLiveStatsForProject(id, res[id])
             })
             .catch(e => {
-              console.error('[ERROR] (getProject -> getOverallStats)', e)
+              console.error('[ERROR] (getProject -> getLiveVisitors)', e)
               onErrorLoading()
             })
         }
@@ -2174,11 +2193,124 @@ const ViewProject = ({
             {activeTab !== PROJECT_TABS.alerts && (activeFunnel || activeTab !== PROJECT_TABS.funnels) && (
               <>
                 <div className='flex flex-col md:flex-row items-center md:items-start justify-between mt-2'>
-                  <h2 className='text-3xl font-bold text-gray-900 dark:text-gray-50 break-words break-all'>
-                    {/* If tab is funnels - then display a funnel name, otherwise a project name */}
-                    {activeTab === PROJECT_TABS.funnels ? activeFunnel?.name : name}
-                  </h2>
+                  <div className='flex items-center space-x-5 flex-wrap'>
+                    <h2 className='text-xl font-bold text-gray-900 dark:text-gray-50 break-words break-all'>
+                      {/* If tab is funnels - then display a funnel name, otherwise a project name */}
+                      {activeTab === PROJECT_TABS.funnels ? activeFunnel?.name : name}
+                    </h2>
+                    {/* {!_isEmpty(project.overall) && ( */}
+                    <LiveVisitorsDropdown projectId={project.id} live={liveStats[id]} projectPassword={projectPassword} />
+                    {/* )} */}
+                  </div>
                   <div className='flex items-center mt-3 md:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 space-x-2 gap-y-1'>
+                    {activeTab === PROJECT_TABS.funnels && (
+                      <button
+                        onClick={() => setActiveFunnel(null)}
+                        className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto md:mx-0 mt-2 md:mt-0 text-gray-900 dark:text-gray-100'
+                      >
+                        <ChevronLeftIcon className='w-4 h-4' />
+                        {t('project.backToFunnels')}
+                      </button>
+                    )}
+                    {activeTab !== PROJECT_TABS.funnels && (
+                      <>
+                        <div>
+                          <button
+                            type='button'
+                            title={t('project.refreshStats')}
+                            onClick={refreshStats}
+                            className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                              'cursor-not-allowed opacity-50': isLoading || dataLoading,
+                            })}
+                          >
+                            <ArrowPathIcon className='w-5 h-5 stroke-2 text-gray-700 dark:text-gray-50' />
+                          </button>
+                        </div>
+                        {(!isSelfhosted && !isActiveCompare) && (
+                          <div
+                            className={cx({
+                              hidden: activeTab !== PROJECT_TABS.traffic || _isEmpty(chartData),
+                            })}
+                          >
+                            <button
+                              type='button'
+                              title={t('modals.forecast.title')}
+                              onClick={onForecastOpen}
+                              disabled={!_isEmpty(filters)}
+                              className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                                'cursor-not-allowed opacity-50': isLoading || dataLoading || !_isEmpty(filters),
+                                '!bg-gray-200 dark:!bg-gray-600 !border dark:!border-gray-500 !border-gray-300': !_isEmpty(forecasedChartData),
+                              })}
+                            >
+                              <Robot theme={_theme} containerClassName='w-5 h-5' className='text-gray-700 dark:text-gray-50 stroke-2' />
+                            </button>
+                          </div>
+                        )}
+                        <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3'>
+                          <button
+                            type='button'
+                            title={t('project.search')}
+                            onClick={() => setShowFiltersSearch(true)}
+                            className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                              'cursor-not-allowed opacity-50': isLoading || dataLoading,
+                            })}
+                          >
+                            <MagnifyingGlassIcon className='w-5 h-5 stroke-2 text-gray-700 dark:text-gray-50' />
+                          </button>
+                        </div>
+                        <div
+                          className={cx('border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3 space-x-2 md:border-r', {
+                            hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled,
+                          })}
+                        >
+                          <button
+                            type='button'
+                            title={t('project.barChart')}
+                            onClick={() => setChartTypeOnClick(chartTypes.bar)}
+                            className={cx('relative fill-gray-700 dark:fill-gray-50 rounded-md p-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                              'bg-white dark:bg-slate-800 stroke-white dark:stroke-slate-800 shadow-sm': chartType === chartTypes.bar,
+                              'bg-gray-50 stroke-gray-50 dark:bg-slate-900 dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.bar,
+                            })}
+                          >
+                            <BarChart className='w-5 h-5 [&_path]:stroke-[3.5%]' />
+                          </button>
+                          <button
+                            type='button'
+                            title={t('project.lineChart')}
+                            onClick={() => setChartTypeOnClick(chartTypes.line)}
+                            className={cx('relative fill-gray-700 dark:fill-gray-50 rounded-md p-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                              'bg-white dark:bg-slate-800 stroke-white dark:stroke-slate-800 shadow-sm': chartType === chartTypes.line,
+                              'bg-gray-50 stroke-gray-50 dark:bg-slate-900 dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.line,
+                            })}
+                          >
+                            <LineChart className='w-5 h-5 [&_path]:stroke-[3.5%]' />
+                          </button>
+                        </div>
+                        <div className='border-gray-200 dark:border-gray-600'>
+                          <span className='relative z-0 inline-flex shadow-sm rounded-md'>
+                            {_map(activePeriod?.tbs, (tb, index, { length }) => (
+                              <button
+                                key={tb}
+                                type='button'
+                                onClick={() => updateTimebucket(tb)}
+                                className={cx(
+                                  'relative capitalize inline-flex items-center px-3 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
+                                  {
+                                    '-ml-px': index > 0,
+                                    'rounded-l-md': index === 0,
+                                    'rounded-r-md': 1 + index === length,
+                                    'z-10 border-indigo-500 text-indigo-600 dark:border-slate-200 dark:text-gray-50': timeBucket === tb,
+                                    'text-gray-700 dark:text-gray-50 border-gray-300 dark:border-slate-800 ': timeBucket !== tb,
+                                  },
+                                )}
+                              >
+                                {t(`project.${tb}`)}
+                              </button>
+                            ))}
+                          </span>
+                        </div>
+                      </>
+                    )}
                     {activeTab !== PROJECT_TABS.funnels && (
                       <Dropdown
                         header={t('project.exportData')}
@@ -2410,113 +2542,6 @@ const ViewProject = ({
                     />
                   </div>
                 </div>
-                {activeTab === PROJECT_TABS.funnels && (
-                  <button
-                    onClick={() => setActiveFunnel(null)}
-                    className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto md:mx-0 mt-2 md:mt-0 text-gray-900 dark:text-gray-100'
-                  >
-                    <ChevronLeftIcon className='w-4 h-4' />
-                    {t('project.backToFunnels')}
-                  </button>
-                )}
-                {activeTab !== PROJECT_TABS.funnels && (
-                  <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-2 md:mt-5 mb-4 space-x-3 space-y-1 md:space-y-0'>
-                    <div>
-                      <button
-                        type='button'
-                        title={t('project.refreshStats')}
-                        onClick={refreshStats}
-                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
-                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
-                        })}
-                      >
-                        <ArrowPathIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
-                      </button>
-                    </div>
-                    {(!isSelfhosted && !isActiveCompare) && (
-                      <div
-                        className={cx({
-                          hidden: activeTab !== PROJECT_TABS.traffic || _isEmpty(chartData),
-                        })}
-                      >
-                        <button
-                          type='button'
-                          title={t('modals.forecast.title')}
-                          onClick={onForecastOpen}
-                          disabled={!_isEmpty(filters)}
-                          className={cx('relative shadow-sm rounded-md mt-[1px] px-3 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
-                            'cursor-not-allowed opacity-50': isLoading || dataLoading || !_isEmpty(filters),
-                            '!bg-gray-200 dark:!bg-gray-600 !border dark:!border-gray-500 !border-gray-300': !_isEmpty(forecasedChartData),
-                          })}
-                        >
-                          <Robot theme={_theme} containerClassName='w-5 h-5' className='text-gray-700 dark:text-gray-50' />
-                        </button>
-                      </div>
-                    )}
-                    <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3'>
-                      <button
-                        type='button'
-                        title={t('project.search')}
-                        onClick={() => setShowFiltersSearch(true)}
-                        className={cx('relative shadow-sm rounded-md mt-[1px] px-3 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
-                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
-                        })}
-                      >
-                        <MagnifyingGlassIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
-                      </button>
-                    </div>
-                    <div className={cx('border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3 space-x-2 md:border-r', {
-                      hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled,
-                    })}
-                    >
-                      <button
-                        type='button'
-                        title={t('project.barChart')}
-                        onClick={() => setChartTypeOnClick(chartTypes.bar)}
-                        className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:outline-none focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
-                          'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.bar,
-                          'text-slate-500 dark:text-gray-500': chartType !== chartTypes.bar,
-                        })}
-                      >
-                        <PresentationChartBarIcon className='w-6 h-6' />
-                      </button>
-                      <button
-                        type='button'
-                        title={t('project.lineChart')}
-                        onClick={() => setChartTypeOnClick(chartTypes.line)}
-                        className={cx('px-2.5 py-1.5 text-xs rounded-md text-gray-700 bg-white hover:bg-gray-50 border-transparent !border-0 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:!outline-0 focus:!ring-0 focus:!ring-offset-0 focus:!ring-transparent', {
-                          'text-slate-900 dark:text-gray-50 shadow-md': chartType === chartTypes.line,
-                          'text-slate-500 dark:text-gray-500': chartType !== chartTypes.line,
-                        })}
-                      >
-                        <PresentationChartLineIcon className='w-6 h-6' />
-                      </button>
-                    </div>
-                    <div className='border-gray-200 dark:border-gray-600'>
-                      <span className='relative z-0 inline-flex shadow-sm rounded-md'>
-                        {_map(activePeriod?.tbs, (tb, index, { length }) => (
-                          <button
-                            key={tb}
-                            type='button'
-                            onClick={() => updateTimebucket(tb)}
-                            className={cx(
-                              'relative capitalize inline-flex items-center px-3 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
-                              {
-                                '-ml-px': index > 0,
-                                'rounded-l-md': index === 0,
-                                'rounded-r-md': 1 + index === length,
-                                'z-10 border-indigo-500 text-indigo-600 dark:border-slate-200 dark:text-gray-50': timeBucket === tb,
-                                'text-gray-700 dark:text-gray-50 border-gray-300 dark:border-slate-800 ': timeBucket !== tb,
-                              },
-                            )}
-                          >
-                            {t(`project.${tb}`)}
-                          </button>
-                        ))}
-                      </span>
-                    </div>
-                  </div>
-                )}
               </>
             )}
             {(activeTab === PROJECT_TABS.alerts && (isSharedProject || !project?.isOwner || !authenticated)) && (
@@ -2592,10 +2617,10 @@ const ViewProject = ({
               <NoEvents filters={filtersPerf} resetFilters={resetFilters} />
             )}
             {activeTab === PROJECT_TABS.traffic && (
-              <div className={cx('pt-4 md:pt-0', { hidden: isPanelsDataEmpty || analyticsLoading })}>
-                {!_isEmpty(project.overall) && (
+              <div className={cx('pt-2', { hidden: isPanelsDataEmpty || analyticsLoading })}>
+                {!_isEmpty(overall) && (
                   <MetricCards
-                    overall={project.overall}
+                    overall={overall}
                     chartData={chartData}
                     activePeriod={activePeriod}
                     sessionDurationAVG={sessionDurationAVG}
@@ -2630,10 +2655,10 @@ const ViewProject = ({
                   </div>
                 )}
                 <div className='mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
-                  {!_isEmpty(project.overall) && (
+                  {/* {!_isEmpty(overall) && (
                     <Overview
                       t={t}
-                      overall={project.overall}
+                      overall={overall}
                       chartData={chartData}
                       activePeriod={activePeriod}
                       sessionDurationAVG={sessionDurationAVG}
@@ -2645,7 +2670,7 @@ const ViewProject = ({
                       projectId={id}
                       projectPassword={projectPassword}
                     />
-                  )}
+                  )} */}
                   {!_isEmpty(panelsData.types) && _map(TRAFFIC_PANELS_ORDER, (type: keyof typeof tnMapping) => {
                     const panelName = tnMapping[type]
                     // @ts-ignore

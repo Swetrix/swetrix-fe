@@ -584,10 +584,10 @@ export const getCaptchaData = (
         : error.response.data.message
     })
 
-export const getOverallStats = (pids: string[], password?: string) =>
+export const getOverallStats = (pids: string[], period: string, password?: string) =>
   api
     .get(
-      `log/birdseye?pids=[${_map(pids, (pid) => `"${pid}"`).join(',')}]`,
+      `log/birdseye?pids=[${_map(pids, (pid) => `"${pid}"`).join(',')}]&period=${period}`,
       {
         headers: {
           'x-password': password,
@@ -602,9 +602,9 @@ export const getOverallStats = (pids: string[], password?: string) =>
         : error.response.data.message
     })
 
-export const getOverallStatsCaptcha = (pids: string[]) =>
+export const getOverallStatsCaptcha = (pids: string[], period: string) =>
   api
-    .get(`log/captcha/birdseye?pids=[${_map(pids, (pid) => `"${pid}"`).join(',')}]`)
+    .get(`log/captcha/birdseye?pids=[${_map(pids, (pid) => `"${pid}"`).join(',')}]&period=${period}`)
     .then((response): IOverall => response.data)
     .catch((error) => {
       debug('%s', error)

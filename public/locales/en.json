@@ -488,6 +488,7 @@
     "inc": "Increased by",
     "dec": "Descreased by",
     "liveVisitors": "Live visitors",
+    "xLiveVisitors": "{{amount}} live visitors",
     "live": "Live",
     "bounceRate": "Bounce rate",
     "viewsPerUnique": "Views per session",

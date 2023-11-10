@@ -451,7 +451,7 @@ const ViewProject = ({
     if (areFiltersParsed && areTimeBucketParsed && arePeriodParsed) {
       loadAnalytics()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, period, chartType, filters, arePeriodParsed])
 
   useEffect(() => {
@@ -475,21 +475,32 @@ const ViewProject = ({
       getProject(id, true)
         .then(projectRes => {
           if (!_isEmpty(projectRes)) {
-            getOverallStats([id])
-              .then(res => {
-                setProjects([...(projects as any[]), {
-                  ...projectRes,
-                  overall: res[id],
-                  live: 'N/A',
-                }])
-              })
-              .then(() => {
-                return getLiveVisitors([id])
-              })
+            setProjects([...(projects as any[]), {
+              ...projectRes,
+              live: 'N/A',
+            }])
+
+            getLiveVisitors([id])
               .catch(e => {
                 console.error(e)
                 onErrorLoading()
               })
+
+            // getOverallStats([id])
+            //   .then(res => {
+            //     setProjects([...(projects as any[]), {
+            //       ...projectRes,
+            //       overall: res[id],
+            //       live: 'N/A',
+            //     }])
+            //   })
+            //   .then(() => {
+            //     return getLiveVisitors([id])
+            //   })
+            //   .catch(e => {
+            //     console.error(e)
+            //     onErrorLoading()
+            //   })
           } else {
             onErrorLoading()
           }
@@ -705,28 +716,28 @@ const ViewProject = ({
             <div>
               <div className='flex flex-row flex-wrap items-center justify-center md:justify-end h-10 mt-2 md:mt-5 mb-4'>
                 {!isPanelsDataEmpty && (
-                <Dropdown
-                  items={chartMetrics}
-                  title={t('project.metricVis')}
-                  labelExtractor={(pair) => {
-                    const {
-                      label, id: pairID, active,
-                    } = pair
+                  <Dropdown
+                    items={chartMetrics}
+                    title={t('project.metricVis')}
+                    labelExtractor={(pair) => {
+                      const {
+                        label, id: pairID, active,
+                      } = pair
 
-                    return (
-                      <Checkbox
-                        className={cx({ hidden: isPanelsDataEmpty || analyticsLoading })}
-                        label={label}
-                        id={pairID}
-                        checked={active}
-                      />
-                    )
-                  }}
-                  keyExtractor={(pair) => pair.id}
-                  onSelect={({ id: pairID }) => {
-                    switchActiveChartMetric(pairID)
-                  }}
-                />
+                      return (
+                        <Checkbox
+                          className={cx({ hidden: isPanelsDataEmpty || analyticsLoading })}
+                          label={label}
+                          id={pairID}
+                          checked={active}
+                        />
+                      )
+                    }}
+                    keyExtractor={(pair) => pair.id}
+                    onSelect={({ id: pairID }) => {
+                      switchActiveChartMetric(pairID)
+                    }}
+                  />
                 )}
                 <Dropdown
                   items={exportTypes}
@@ -908,12 +919,12 @@ const ViewProject = ({
                   )
                 })}
                 {!_isEmpty(panelsData.customs) && (
-                <CustomEvents
-                  t={t}
-                  customs={panelsData.customs}
-                  onFilter={filterHandler}
-                  chartData={chartData}
-                />
+                  <CustomEvents
+                    t={t}
+                    customs={panelsData.customs}
+                    onFilter={filterHandler}
+                    chartData={chartData}
+                  />
                 )}
               </div>
             </div>
