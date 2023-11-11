@@ -75,9 +75,7 @@ import {
   getFunnelData, getFunnels,
 } from 'api'
 import { getChartPrediction } from 'api/ai'
-import {
-  Panel, Overview, CustomEvents,
-} from './Panels'
+import { Panel, CustomEvents } from './Panels'
 import {
   onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
   validTimeBacket, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING,
