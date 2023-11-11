@@ -2636,22 +2636,6 @@ const ViewProject = ({
                   </div>
                 )}
                 <div className='mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
-                  {/* {!_isEmpty(overall) && (
-                    <Overview
-                      t={t}
-                      overall={overall}
-                      chartData={chartData}
-                      activePeriod={activePeriod}
-                      sessionDurationAVG={sessionDurationAVG}
-                      sessionDurationAVGCompare={sessionDurationAVGCompare}
-                      isActiveCompare={isActiveCompare}
-                      activeDropdownLabelCompare={activeDropdownLabelCompare}
-                      dataChartCompare={dataChartCompare}
-                      live={liveStats[id]}
-                      projectId={id}
-                      projectPassword={projectPassword}
-                    />
-                  )} */}
                   {!_isEmpty(panelsData.types) && _map(TRAFFIC_PANELS_ORDER, (type: keyof typeof tnMapping) => {
                     const panelName = tnMapping[type]
                     // @ts-ignore

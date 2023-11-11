@@ -46,7 +46,7 @@ import {
   getProject, getOverallStats, getLiveVisitors, getCaptchaData,
 } from 'api'
 import {
-  Panel, CustomEvents, // Overview,
+  Panel, CustomEvents,
 } from './Panels'
 import {
   onCSVExportClick, getFormatDate, panelIconMapping, typeNameMapping, validFilters, validPeriods,
@@ -828,17 +828,6 @@ const ViewProject = ({
                 </div>
               )}
               <div className='mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
-                {/* {!_isEmpty(project.overall) && (
-                  <Overview
-                    t={t}
-                    overall={project.overall}
-                    chartData={chartData}
-                    activePeriod={activePeriod}
-                    sessionDurationAVG={sessionDurationAVG}
-                    live={liveStats[id] || 'N/A'}
-                    projectId={id}
-                  />
-                )} */}
                 {_map(panelsData.types, (type: keyof typeof tnMapping) => {
                   const panelName = tnMapping[type]
                   // @ts-ignore
