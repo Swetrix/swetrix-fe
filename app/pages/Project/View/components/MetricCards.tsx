@@ -1,24 +1,88 @@
 import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'clsx'
-import _sum from 'lodash/sum'
 import _round from 'lodash/round'
 import _isNumber from 'lodash/isNumber'
-import { nFormatter } from 'utils/generic'
+import { nFormatter, getStringFromTime, getTimeFromSeconds } from 'utils/generic'
 import { IOverallObject } from 'redux/models/IProject'
 import { Badge } from 'ui/Badge'
 
 interface IMetricCard {
   label: string
-  value: string | number
+  value: string | number | undefined
+  goodChangeDirection: 'up' | 'down'
   change?: number
   type?: 'percent' | 'string'
+  valueMapper?: (value: any) => any
 }
 
-const MetricCard: React.FC<IMetricCard> = ({ label, value, change, type }) => (
+const ChangeBadge = ({
+  change, type, goodChangeDirection, valueMapper,
+}: Partial<IMetricCard>) => {
+  if (!_isNumber(change)) {
+    return null
+  }
+
+  if (change === 0) {
+    const label = valueMapper ? valueMapper(change) : `0${type === 'percent' ? '%' : ''}`
+
+    return (
+      <Badge
+        colour='slate'
+        label={label}
+      />
+    )
+  }
+
+  if (change < 0 && goodChangeDirection === 'up') {
+    const label = valueMapper ? valueMapper(change) : `${change}${type === 'percent' ? '%' : ''}`
+
+    return (
+      <Badge
+        colour='green'
+        label={label}
+      />
+    )
+  }
+
+  if (change < 0 && goodChangeDirection === 'down') {
+    const label = valueMapper ? valueMapper(change) : `${change}${type === 'percent' ? '%' : ''}`
+
+    return (
+      <Badge
+        colour='red'
+        label={label}
+      />
+    )
+  }
+
+  if (change > 0 && goodChangeDirection === 'up') {
+    const label = valueMapper ? valueMapper(change) : `${change}${type === 'percent' ? '%' : ''}`
+
+    return (
+      <Badge
+        colour='red'
+        label={label}
+      />
+    )
+  }
+
+  if (change > 0 && goodChangeDirection === 'down') {
+    const label = valueMapper ? valueMapper(change) : `${change}${type === 'percent' ? '%' : ''}`
+
+    return (
+      <Badge
+        colour='green'
+        label={label}
+      />
+    )
+  }
+}
+
+const MetricCard: React.FC<IMetricCard> = ({ label, value, change, type, goodChangeDirection, valueMapper }) => (
   <div className='flex flex-col'>
     <div className='font-bold text-4xl whitespace-nowrap text-slate-900 dark:text-gray-50'>
-      {value}
+      {valueMapper ? valueMapper(value) : value}
     </div>
     <div
       className={cx('flex items-center font-bold whitespace-nowrap text-sm', {
@@ -28,70 +92,52 @@ const MetricCard: React.FC<IMetricCard> = ({ label, value, change, type }) => (
       <span className='text-slate-900 dark:text-gray-50'>
         {label}
       </span>
-      {_isNumber(change) && change < 0 && (
-        <Badge
-          colour='red'
-          label={`${change}${type === 'percent' ? '%' : ''}`}
-        />
-      )}
-      {_isNumber(change) && change > 0 && (
-        <Badge
-          colour='green'
-          label={`${change}${type === 'percent' ? '%' : ''}`}
-        />
-      )}
-      {change === 0 && (
-        <Badge
-          colour='slate'
-          label={`0${type === 'percent' ? '%' : ''}`}
-        />
-      )}
+      <ChangeBadge
+        change={change}
+        type={type}
+        goodChangeDirection={goodChangeDirection}
+        valueMapper={valueMapper}
+      />
     </div>
   </div>
 )
 
 interface IMetricCards {
-  overall: IOverallObject
+  overall: Partial<IOverallObject>
 }
 
-const MetricCards = ({
-  overall, chartData, activePeriod, live, sessionDurationAVG, projectId,
-  sessionDurationAVGCompare, isActiveCompare, dataChartCompare, activeDropdownLabelCompare, projectPassword,
-}: IMetricCards) => {
+const MetricCards = ({ overall }: IMetricCards) => {
   const { t } = useTranslation('common')
-
-  const pageViewsCompare = _sum(dataChartCompare?.visits) || 0
-  const uniquesCompare = _sum(dataChartCompare?.uniques) || 0
-  let bounceRateCompare = 0
-
-  if (pageViewsCompare > 0) {
-    bounceRateCompare = _round((uniquesCompare * 100) / pageViewsCompare, 1)
-  }
 
   return (
     <div className='flex space-x-5 mb-5'>
       <MetricCard
         label={t('dashboard.unique')}
-        value={nFormatter(overall.current.unique, 1)}
-        change={overall.percChangeUnique}
+        value={nFormatter(overall.current?.unique, 1)}
+        change={_round(overall.percChangeUnique as number, 1)}
         type='percent'
+        goodChangeDirection='down'
       />
       <MetricCard
         label={t('dashboard.pageviews')}
-        value={nFormatter(overall.current.all, 1)}
-        change={overall.percChange}
+        value={nFormatter(overall.current?.all, 1)}
+        change={_round(overall.percChange as number, 1)}
         type='percent'
+        goodChangeDirection='down'
       />
       <MetricCard
         label={t('dashboard.bounceRate')}
-        value={`${overall.current.bounceRate || 0}%`}
-        change={isActiveCompare && _round(bounceRateCompare - (overall.current.bounceRate || 0), 1)}
+        value={`${overall.current?.bounceRate || 0}%`}
+        change={_round(overall.bounceRateChange as number, 1)}
         type='percent'
+        goodChangeDirection='up'
       />
       <MetricCard
         label={t('dashboard.sessionDuration')}
-        value={sessionDurationAVG}
-        change={isActiveCompare && sessionDurationAVGCompare}
+        value={overall.current?.sdur}
+        change={overall.previous?.sdur}
+        goodChangeDirection='down'
+        valueMapper={(value) => getStringFromTime(getTimeFromSeconds(value))}
       />
     </div>
   )

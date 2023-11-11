@@ -2,6 +2,7 @@ interface _IOverallPeriodStats {
   all: number
   unique?: number
   bounceRate?: number
+  sdur?: number
 }
 
 export interface IOverallObject {
@@ -9,6 +10,7 @@ export interface IOverallObject {
   previous: _IOverallPeriodStats
   percChange: number
   percChangeUnique?: number
+  bounceRateChange?: number
 }
 
 export interface IOverall {

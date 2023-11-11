@@ -260,8 +260,6 @@ const ViewProject = ({
   })
   // similar activeChartMetrics but using for performance tab
   const [activeChartMetricsPerf, setActiveChartMetricsPerf] = useState<string>(CHART_METRICS_MAPPING_PERF.timing)
-  // sessionDurationAVG using for tab overview. It is a data for session duration
-  const [sessionDurationAVG, setSessionDurationAVG] = useState<any>(null)
   // checkIfAllMetricsAreDisabled when all metrics are disabled, we are hidden chart
   const checkIfAllMetricsAreDisabled = useMemo(() => !_some({ ...activeChartMetrics, ...activeChartMetricsCustomEvents }, (value) => value), [activeChartMetrics, activeChartMetricsCustomEvents])
   // filters - when we change filters we loading new data from api, update query url and update chart
@@ -466,8 +464,6 @@ const ViewProject = ({
     return findActivePeriod?.countDays || 0
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActiveCompare, period])
-  // similar for sessionDurationAVG but using in overview when compare enabled
-  const [sessionDurationAVGCompare, setSessionDurationAVGCompare] = useState<any>(null)
 
   // pgPanelNameMapping is a mapping for panel names. Using for change name of panels pg if userFlow active
   const pgPanelNameMapping = [
@@ -792,7 +788,7 @@ const ViewProject = ({
 
     setDataLoading(true)
     try {
-      let data: { timeBucket?: any; chart?: any; params?: any; customs?: any; appliedFilters?: any; avgSdur?: any; overall?: IOverallObject }
+      let data: { timeBucket?: any; chart?: any; params?: any; customs?: any; appliedFilters?: any; overall?: IOverallObject }
       let dataCompare
       let key = ''
       let keyCompare = ''
@@ -852,10 +848,6 @@ const ViewProject = ({
           }
         }
 
-        const processedSdur = getTimeFromSeconds(dataCompare?.avgSdur || 0)
-
-        setSessionDurationAVGCompare(getStringFromTime(processedSdur))
-
         setProjectCache(id, dataCompare || {}, keyCompare)
       }
 
@@ -911,11 +903,10 @@ const ViewProject = ({
       }
 
       const {
-        chart, params, customs, appliedFilters, avgSdur,
+        chart, params, customs, appliedFilters,
       } = data
       let newTimebucket = timeBucket
       sdkInstance?._emitEvent('load', sdkData)
-      const processedSdur = getTimeFromSeconds(avgSdur)
 
       if (period === KEY_FOR_ALL_TIME && !_isEmpty(data.timeBucket)) {
         // eslint-disable-next-line prefer-destructuring
@@ -935,8 +926,6 @@ const ViewProject = ({
         })
         setTimebucket(newTimebucket)
       }
-
-      setSessionDurationAVG(getStringFromTime(processedSdur))
 
       if (!_isEmpty(appliedFilters)) {
         setFilters(appliedFilters)
@@ -2619,19 +2608,7 @@ const ViewProject = ({
             {activeTab === PROJECT_TABS.traffic && (
               <div className={cx('pt-2', { hidden: isPanelsDataEmpty || analyticsLoading })}>
                 {!_isEmpty(overall) && (
-                  <MetricCards
-                    overall={overall}
-                    chartData={chartData}
-                    activePeriod={activePeriod}
-                    sessionDurationAVG={sessionDurationAVG}
-                    sessionDurationAVGCompare={sessionDurationAVGCompare}
-                    isActiveCompare={isActiveCompare}
-                    activeDropdownLabelCompare={activeDropdownLabelCompare}
-                    dataChartCompare={dataChartCompare}
-                    live={liveStats[id]}
-                    projectId={id}
-                    projectPassword={projectPassword}
-                  />
+                  <MetricCards overall={overall} />
                 )}
                 <div
                   className={cx('h-80', {
