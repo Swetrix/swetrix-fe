@@ -571,6 +571,7 @@
     "overrideCurrentlyFilters": "Override currently applied filters",
     "noExist": "The selected project does not exist",
     "geo": "Geolocation",
+    "campaigns": "Campaigns",
     "exportData": "Export data",
     "asImage": "As image",
     "asCSV": "As CSV",
@@ -595,7 +596,10 @@
       "ref": "Referrer",
       "dv": "Device type",
       "br": "Browser",
-      "os": "OS name"
+      "os": "OS name",
+      "so": "UTM Source",
+      "me": "UTM Medium",
+      "ca": "UTM Campaign"
     },
     "redactedPage": "Redacted page",
     "noData": "No data to display",

@@ -94,6 +94,7 @@ import LiveVisitorsDropdown from './components/LiveVisitorsDropdown'
 import CountryDropdown from './components/CountryDropdown'
 import MetricCards from './components/MetricCards'
 import ProjectAlertsView from '../Alerts/View'
+import UTMDropdown from './components/UTMDropdown'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -400,8 +401,11 @@ const ViewProject = ({
   // forecastData is a data for forecast chart
   const [forecasedChartData, setForecasedChartData] = useState<any>({})
 
-  // Is used to switch between Country, Region and City tabs
+  // Used to switch between Country, Region and City tabs
   const [countryActiveTab, setCountryActiveTab] = useState<'cc' | 'rg' | 'ct'>('cc')
+
+  // Used to switch between different UTM tabs
+  const [utmActiveTab, setUtmActiveTab] = useState<'so' | 'me' | 'ca'>('so')
 
   // chartDataPerf is a data for performance chart
   const [chartDataPerf, setChartDataPerf] = useState<any>({})
@@ -2729,17 +2733,24 @@ const ViewProject = ({
                       )
                     }
 
-                    if (type === 'so' || type === 'me' || type === 'ca') {
+                    if (type === 'so') {
+                      const ccPanelName = tnMapping[utmActiveTab]
+
                       return (
                         <Panel
                           t={t}
-                          key={type}
+                          key={utmActiveTab}
                           icon={panelIcon}
-                          id={type}
+                          id={utmActiveTab}
                           activeTab={activeTab}
                           onFilter={filterHandler}
-                          name={panelName}
-                          data={panelsData.data[type]}
+                          name={(
+                            <UTMDropdown
+                              onSelect={setUtmActiveTab}
+                              title={ccPanelName}
+                            />
+                          )}
+                          data={panelsData.data[utmActiveTab]}
                           customTabs={customTabs}
                           // @ts-ignore
                           rowMapper={({ name: entryName }) => decodeURIComponent(entryName)}
