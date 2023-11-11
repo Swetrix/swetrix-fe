@@ -8,9 +8,10 @@ interface _IOverallPeriodStats {
 export interface IOverallObject {
   current: _IOverallPeriodStats
   previous: _IOverallPeriodStats
-  percChange: number
-  percChangeUnique?: number
+  change: number
+  uniqueChange?: number
   bounceRateChange?: number
+  sdurChange?: number
 }
 
 export interface IOverall {

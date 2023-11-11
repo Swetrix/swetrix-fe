@@ -113,29 +113,32 @@ const MetricCards = ({ overall }: IMetricCards) => {
     <div className='flex space-x-5 mb-5'>
       <MetricCard
         label={t('dashboard.unique')}
-        value={nFormatter(overall.current?.unique, 1)}
-        change={_round(overall.percChangeUnique as number, 1)}
+        value={overall.current?.unique}
+        change={overall.uniqueChange}
         type='percent'
         goodChangeDirection='down'
+        valueMapper={(value) => nFormatter(value, 1)}
       />
       <MetricCard
         label={t('dashboard.pageviews')}
-        value={nFormatter(overall.current?.all, 1)}
-        change={_round(overall.percChange as number, 1)}
+        value={overall.current?.all}
+        change={overall.change}
         type='percent'
         goodChangeDirection='down'
+        valueMapper={(value) => nFormatter(value, 1)}
       />
       <MetricCard
         label={t('dashboard.bounceRate')}
-        value={`${overall.current?.bounceRate || 0}%`}
+        value={_round(overall.current?.bounceRate as number, 1)}
         change={_round(overall.bounceRateChange as number, 1)}
         type='percent'
         goodChangeDirection='up'
+        // valueMapper={(value) => `${value}%`}
       />
       <MetricCard
         label={t('dashboard.sessionDuration')}
         value={overall.current?.sdur}
-        change={overall.previous?.sdur}
+        change={overall.sdurChange}
         goodChangeDirection='down'
         valueMapper={(value) => getStringFromTime(getTimeFromSeconds(value))}
       />
