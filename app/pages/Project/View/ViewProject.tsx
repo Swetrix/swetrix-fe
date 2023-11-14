@@ -93,6 +93,7 @@ import CountryDropdown from './components/CountryDropdown'
 import MetricCards from './components/MetricCards'
 import ProjectAlertsView from '../Alerts/View'
 import UTMDropdown from './components/UTMDropdown'
+import TBPeriodSelector from './components/TBPeriodSelector'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -2237,7 +2238,11 @@ const ViewProject = ({
                             </button>
                           </div>
                         )}
-                        <div className='md:border-r border-gray-200 dark:border-gray-600 md:pr-3'>
+                        <div
+                          className={cx('border-gray-200 dark:border-gray-600', {
+                            'md:border-r': activeTab === PROJECT_TABS.funnels,
+                          })}
+                        >
                           <button
                             type='button'
                             title={t('project.search')}
@@ -2249,8 +2254,35 @@ const ViewProject = ({
                             <MagnifyingGlassIcon className='w-5 h-5 stroke-2 text-gray-700 dark:text-gray-50' />
                           </button>
                         </div>
+                        {activeTab !== PROJECT_TABS.funnels && (
+                          <Dropdown
+                            header={t('project.exportData')}
+                            items={[...exportTypes, ...customExportTypes, { label: t('project.lookingForMore'), lookingForMore: true, onClick: () => { } }]}
+                            title={[
+                              <ArrowDownTrayIcon key='download-icon' className='w-5 h-5' />,
+                            ]}
+                            labelExtractor={item => {
+                              const { label, lookingForMore } = item
+
+                              if (lookingForMore) {
+                                return (
+                                  <a href={MARKETPLACE_URL} target='_blank' rel='noreferrer'>
+                                    {label}
+                                  </a>
+                                )
+                              }
+
+                              return label
+                            }}
+                            keyExtractor={item => item.label}
+                            onSelect={item => item.onClick(panelsData, t)}
+                            chevron='mini'
+                            buttonClassName='!p-2 rounded-md hover:bg-white hover:shadow-sm dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200'
+                            headless
+                          />
+                        )}
                         <div
-                          className={cx('border-gray-200 dark:border-gray-600 md:pr-3 sm:mr-3 space-x-2 md:border-r', {
+                          className={cx('border-gray-200 dark:border-gray-600 md:px-3 sm:mr-3 space-x-2 md:border-x', {
                             hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled,
                           })}
                         >
@@ -2277,57 +2309,7 @@ const ViewProject = ({
                             <LineChart className='w-5 h-5 [&_path]:stroke-[3.5%]' />
                           </button>
                         </div>
-                        <div className='border-gray-200 dark:border-gray-600'>
-                          <span className='relative z-0 inline-flex shadow-sm rounded-md'>
-                            {_map(activePeriod?.tbs, (tb, index, { length }) => (
-                              <button
-                                key={tb}
-                                type='button'
-                                onClick={() => updateTimebucket(tb)}
-                                className={cx(
-                                  'relative capitalize inline-flex items-center px-3 py-2 border bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
-                                  {
-                                    '-ml-px': index > 0,
-                                    'rounded-l-md': index === 0,
-                                    'rounded-r-md': 1 + index === length,
-                                    'z-10 border-indigo-500 text-indigo-600 dark:border-slate-200 dark:text-gray-50': timeBucket === tb,
-                                    'text-gray-700 dark:text-gray-50 border-gray-300 dark:border-slate-800 ': timeBucket !== tb,
-                                  },
-                                )}
-                              >
-                                {t(`project.${tb}`)}
-                              </button>
-                            ))}
-                          </span>
-                        </div>
                       </>
-                    )}
-                    {activeTab !== PROJECT_TABS.funnels && (
-                      <Dropdown
-                        header={t('project.exportData')}
-                        items={[...exportTypes, ...customExportTypes, { label: t('project.lookingForMore'), lookingForMore: true, onClick: () => { } }]}
-                        title={[
-                          <ArrowDownTrayIcon key='download-icon' className='w-5 h-5' />,
-                        ]}
-                        labelExtractor={item => {
-                          const { label, lookingForMore } = item
-
-                          if (lookingForMore) {
-                            return (
-                              <a href={MARKETPLACE_URL} target='_blank' rel='noreferrer'>
-                                {label}
-                              </a>
-                            )
-                          }
-
-                          return label
-                        }}
-                        keyExtractor={item => item.label}
-                        onSelect={item => item.onClick(panelsData, t)}
-                        className={cx('ml-3', { hidden: isPanelsDataEmpty || analyticsLoading })}
-                        chevron='mini'
-                        buttonClassName='inline-flex w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 bg-white text-sm font-medium text-gray-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500'
-                      />
                     )}
                     {activeTab === PROJECT_TABS.traffic && !isPanelsDataEmpty && (
                       <Dropdown
@@ -2415,6 +2397,47 @@ const ViewProject = ({
 
                           switchActiveChartMetric(pairID)
                         }}
+                        chevron='mini'
+                        headless
+                      />
+                    )}
+                    {activeTab === PROJECT_TABS.traffic && (
+                      <TBPeriodSelector
+                        activePeriod={activePeriod}
+                        updateTimebucket={updateTimebucket}
+                        timeBucket={timeBucket}
+                        items={isActiveCompare ? _filter(periodPairs, (el) => {
+                          return _includes(filtersPeriodPairs, el.period)
+                        }) : _includes(filtersPeriodPairs, period) ? periodPairs : _filter(periodPairs, (el) => {
+                          return el.period !== PERIOD_PAIRS_COMPARE.COMPARE
+                        })}
+                        title={activePeriod?.label}
+                        onSelect={(pair) => {
+                          if (pair.period === PERIOD_PAIRS_COMPARE.COMPARE) {
+                            if (activeTab === PROJECT_TABS.alerts) {
+                              return
+                            }
+
+                            if (isActiveCompare) {
+                              compareDisable()
+                            } else {
+                              setIsActiveCompare(true)
+                            }
+
+                            return
+                          }
+
+                          if (pair.isCustomDate) {
+                            setTimeout(() => {
+                              // @ts-ignore
+                              refCalendar.current.openCalendar()
+                            }, 100)
+                          } else {
+                            setPeriodPairs(tbPeriodPairs(t))
+                            setDateRange(null)
+                            updatePeriod(pair)
+                          }
+                        }}
                       />
                     )}
                     {activeTab === PROJECT_TABS.performance && !isPanelsDataEmptyPerf && (
@@ -2431,44 +2454,10 @@ const ViewProject = ({
                         onSelect={({ id: pairID }) => {
                           switchActiveChartMetric(pairID)
                         }}
+                        chevron='mini'
+                        headless
                       />
                     )}
-                    <Dropdown
-                      items={isActiveCompare ? _filter(periodPairs, (el) => {
-                        return _includes(filtersPeriodPairs, el.period)
-                      }) : _includes(filtersPeriodPairs, period) ? periodPairs : _filter(periodPairs, (el) => {
-                        return el.period !== PERIOD_PAIRS_COMPARE.COMPARE
-                      })}
-                      title={activePeriod?.label}
-                      labelExtractor={(pair) => pair.dropdownLabel || pair.label}
-                      keyExtractor={(pair) => pair.label}
-                      onSelect={(pair) => {
-                        if (pair.period === PERIOD_PAIRS_COMPARE.COMPARE) {
-                          if (activeTab === PROJECT_TABS.alerts) {
-                            return
-                          }
-
-                          if (isActiveCompare) {
-                            compareDisable()
-                          } else {
-                            setIsActiveCompare(true)
-                          }
-
-                          return
-                        }
-
-                        if (pair.isCustomDate) {
-                          setTimeout(() => {
-                            // @ts-ignore
-                            refCalendar.current.openCalendar()
-                          }, 100)
-                        } else {
-                          setPeriodPairs(tbPeriodPairs(t))
-                          setDateRange(null)
-                          updatePeriod(pair)
-                        }
-                      }}
-                    />
                     {isActiveCompare && (
                       <>
                         <div className='mx-2 text-md font-medium text-gray-600 whitespace-pre-line dark:text-gray-200'>
@@ -2496,6 +2485,8 @@ const ViewProject = ({
                               setActivePeriodCompare(pair.period)
                             }
                           }}
+                          chevron='mini'
+                          headless
                         />
                       </>
                     )}

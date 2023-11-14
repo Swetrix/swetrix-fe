@@ -23,6 +23,14 @@ export const FORECAST_MAX_MAPPING: {
 
 export const KEY_FOR_ALL_TIME = 'all'
 
+export const ALL_PERIODS = [
+  'minute',
+  'hour',
+  'day',
+  'month',
+  'year',
+]
+
 export const tbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[]): {
   label: string
   period: string
