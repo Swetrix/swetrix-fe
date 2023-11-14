@@ -10,6 +10,10 @@ html.dark .bb-axis .domain {
   stroke: #334155;
 }
 
+html.dark .bb-axis .tick line {
+  stroke: #334155;
+}
+
 @media (max-width: 640px) {
   .custom-space-x-style > :not([hidden]) ~ :not([hidden]) {
     --tw-space-x-reverse: 0 !important;

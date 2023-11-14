@@ -562,6 +562,8 @@ const getSettings = (
         tick: {
           format: (d: number) => nFormatter(d, 1),
         },
+        show: true,
+        inner: true,
       },
       y2: {
         show: activeChartMetrics.bounce || activeChartMetrics.sessionDuration,
@@ -710,7 +712,6 @@ const getSettings = (
     },
     padding: {
       right: (rotateXAxias && !(activeChartMetrics.bounce || activeChartMetrics.sessionDuration)) && 35,
-      left: 40,
     },
     bindto: '#dataChart',
   }
