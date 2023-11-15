@@ -110,7 +110,7 @@ const MetricCards = ({ overall }: IMetricCards) => {
   const { t } = useTranslation('common')
 
   return (
-    <div className='flex space-x-5 mb-5'>
+    <div className='flex justify-center lg:justify-start gap-5 mb-5 flex-wrap'>
       <MetricCard
         label={t('dashboard.unique')}
         value={overall.current?.unique}

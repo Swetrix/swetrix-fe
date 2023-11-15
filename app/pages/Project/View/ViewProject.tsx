@@ -2174,7 +2174,7 @@ const ViewProject = ({
             </div>
             {activeTab !== PROJECT_TABS.alerts && (activeFunnel || activeTab !== PROJECT_TABS.funnels) && (
               <>
-                <div className='flex flex-col md:flex-row items-center md:items-start justify-between mt-2'>
+                <div className='flex flex-col lg:flex-row items-center lg:items-start justify-between mt-2'>
                   <div className='flex items-center space-x-5 flex-wrap'>
                     <h2 className='text-xl font-bold text-gray-900 dark:text-gray-50 break-words break-all'>
                       {/* If tab is funnels - then display a funnel name, otherwise a project name */}
@@ -2184,11 +2184,11 @@ const ViewProject = ({
                     <LiveVisitorsDropdown projectId={project.id} live={liveStats[id]} projectPassword={projectPassword} />
                     {/* )} */}
                   </div>
-                  <div className='flex items-center mt-3 md:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 space-x-2 gap-y-1'>
+                  <div className='flex items-center mt-3 lg:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 space-x-2 gap-y-1'>
                     {activeTab === PROJECT_TABS.funnels && (
                       <button
                         onClick={() => setActiveFunnel(null)}
-                        className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto md:mx-0 mt-2 md:mt-0 text-gray-900 dark:text-gray-100'
+                        className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 lg:mt-0 text-gray-900 dark:text-gray-100'
                       >
                         <ChevronLeftIcon className='w-4 h-4' />
                         {t('project.backToFunnels')}
@@ -2230,7 +2230,7 @@ const ViewProject = ({
                         )}
                         <div
                           className={cx('border-gray-200 dark:border-gray-600', {
-                            'md:border-r': activeTab === PROJECT_TABS.funnels,
+                            'lg:border-r': activeTab === PROJECT_TABS.funnels,
                           })}
                         >
                           <button
@@ -2272,7 +2272,7 @@ const ViewProject = ({
                           />
                         )}
                         <div
-                          className={cx('border-gray-200 dark:border-gray-600 md:px-3 sm:mr-3 space-x-2 md:border-x', {
+                          className={cx('border-gray-200 dark:border-gray-600 lg:px-3 sm:mr-3 space-x-2 lg:border-x', {
                             hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled,
                           })}
                         >
