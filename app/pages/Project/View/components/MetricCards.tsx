@@ -13,7 +13,7 @@ interface IMetricCard {
   goodChangeDirection: 'up' | 'down'
   change?: number
   type?: 'percent' | 'string'
-  valueMapper?: (value: any) => any
+  valueMapper?: (value: any, type: 'main' | 'badge') => any
 }
 
 const ChangeBadge = ({
@@ -24,7 +24,7 @@ const ChangeBadge = ({
   }
 
   if (change === 0) {
-    const label = valueMapper ? valueMapper(change) : `0${type === 'percent' ? '%' : ''}`
+    const label = valueMapper ? valueMapper(change, 'badge') : `0${type === 'percent' ? '%' : ''}`
 
     return (
       <Badge
@@ -35,7 +35,7 @@ const ChangeBadge = ({
   }
 
   if (change < 0 && goodChangeDirection === 'up') {
-    const label = valueMapper ? valueMapper(change) : `${change}${type === 'percent' ? '%' : ''}`
+    const label = valueMapper ? valueMapper(change, 'badge') : `${change}${type === 'percent' ? '%' : ''}`
 
     return (
       <Badge
@@ -46,7 +46,7 @@ const ChangeBadge = ({
   }
 
   if (change < 0 && goodChangeDirection === 'down') {
-    const label = valueMapper ? valueMapper(change) : `${change}${type === 'percent' ? '%' : ''}`
+    const label = valueMapper ? valueMapper(change, 'badge') : `${change}${type === 'percent' ? '%' : ''}`
 
     return (
       <Badge
@@ -57,7 +57,7 @@ const ChangeBadge = ({
   }
 
   if (change > 0 && goodChangeDirection === 'up') {
-    const label = valueMapper ? valueMapper(change) : `${change}${type === 'percent' ? '%' : ''}`
+    const label = valueMapper ? valueMapper(change, 'badge') : `${change}${type === 'percent' ? '%' : ''}`
 
     return (
       <Badge
@@ -68,7 +68,7 @@ const ChangeBadge = ({
   }
 
   if (change > 0 && goodChangeDirection === 'down') {
-    const label = valueMapper ? valueMapper(change) : `${change}${type === 'percent' ? '%' : ''}`
+    const label = valueMapper ? valueMapper(change, 'badge') : `${change}${type === 'percent' ? '%' : ''}`
 
     return (
       <Badge
@@ -82,7 +82,7 @@ const ChangeBadge = ({
 const MetricCard: React.FC<IMetricCard> = ({ label, value, change, type, goodChangeDirection, valueMapper }) => (
   <div className='flex flex-col'>
     <div className='font-bold text-4xl whitespace-nowrap text-slate-900 dark:text-gray-50'>
-      {valueMapper ? valueMapper(value) : value}
+      {valueMapper ? valueMapper(value, 'main') : value}
     </div>
     <div
       className={cx('flex items-center font-bold whitespace-nowrap text-sm', {
@@ -117,7 +117,7 @@ const MetricCards = ({ overall }: IMetricCards) => {
         change={overall.uniqueChange}
         type='percent'
         goodChangeDirection='down'
-        valueMapper={(value) => nFormatter(value, 1)}
+        valueMapper={(value, type) => `${type === 'badge' && value > 0 ? '+' : ''}${nFormatter(value, 1)}`}
       />
       <MetricCard
         label={t('dashboard.pageviews')}
@@ -125,7 +125,7 @@ const MetricCards = ({ overall }: IMetricCards) => {
         change={overall.change}
         type='percent'
         goodChangeDirection='down'
-        valueMapper={(value) => nFormatter(value, 1)}
+        valueMapper={(value, type) => `${type === 'badge' && value > 0 ? '+' : ''}${nFormatter(value, 1)}`}
       />
       <MetricCard
         label={t('dashboard.bounceRate')}

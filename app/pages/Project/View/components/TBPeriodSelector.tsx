@@ -53,7 +53,7 @@ const TBPeriodSelector = ({ items, title, onSelect, activePeriod, updateTimebuck
             leaveTo='opacity-0 translate-y-1'
           >
             {/* w-56 */}
-            <Popover.Panel className='absolute left-1/2 md:left-auto right-0 z-10 mt-3 w-max max-w-sm -translate-x-1/2 transform md:transform-none px-4 sm:px-0 lg:max-w-3xl'>
+            <Popover.Panel className='absolute left-1/2 md:left-auto right-0 z-20 mt-3 w-max max-w-sm -translate-x-1/2 transform md:transform-none px-4 sm:px-0 lg:max-w-3xl'>
               <div className='p-1 overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5 bg-gray-50 dark:bg-slate-800'>
                 <div className='bg-slate-200 dark:bg-slate-700 rounded-md relative z-0 flex items-center space-x-5 px-2 py-3 mb-1'>
                   {_map(periods, ({ label, value, available }) => (

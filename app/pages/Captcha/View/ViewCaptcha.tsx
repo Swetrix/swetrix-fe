@@ -79,7 +79,7 @@ const ViewProject = ({
     }) => string,
     i18n: { language: string },
   } = useTranslation('common')
-  const [periodPairs, setPeriodPairs] = useState(tbPeriodPairs(t))
+  const [periodPairs, setPeriodPairs] = useState(tbPeriodPairs(t, undefined, undefined, language))
   const dashboardRef = useRef(null)
   // @ts-ignore
   const { id }: {
@@ -434,7 +434,7 @@ const ViewProject = ({
         const { pathname, search } = url
         navigate(`${pathname}${search}`)
 
-        setPeriodPairs(tbPeriodPairs(t, timeBucketToDays[index].tb, dates))
+        setPeriodPairs(tbPeriodPairs(t, timeBucketToDays[index].tb, dates, language))
         setPeriod('custom')
         setProjectViewPrefs(id, 'custom', timeBucketToDays[4].tb[0], dates)
 
@@ -590,7 +590,7 @@ const ViewProject = ({
         return
       }
 
-      setPeriodPairs(tbPeriodPairs(t))
+      setPeriodPairs(tbPeriodPairs(t, undefined, undefined, language))
       setDateRange(null)
       updatePeriod({ period: intialPeriod })
     } finally {
@@ -699,7 +699,7 @@ const ViewProject = ({
                         refCalendar.current.openCalendar()
                       }, 100)
                     } else {
-                      setPeriodPairs(tbPeriodPairs(t))
+                      setPeriodPairs(tbPeriodPairs(t, undefined, undefined, language))
                       setDateRange(null)
                       updatePeriod(pair)
                     }

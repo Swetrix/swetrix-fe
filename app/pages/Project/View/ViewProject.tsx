@@ -11,7 +11,7 @@ import { saveAs } from 'file-saver'
 import bb from 'billboard.js'
 import {
   ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, ChartBarIcon, BoltIcon, BellIcon,
-  NoSymbolIcon, MagnifyingGlassIcon, FunnelIcon, ChevronLeftIcon,
+  NoSymbolIcon, MagnifyingGlassIcon, FunnelIcon, ChevronLeftIcon, GlobeAltIcon,
 } from '@heroicons/react/24/outline'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -50,7 +50,7 @@ import {
   timeBucketToDays, getProjectCacheCustomKey, MAX_MONTHS_IN_PAST, PROJECT_TABS, TimeFormat, getProjectForcastCacheKey, chartTypes, roleAdmin,
   TRAFFIC_PANELS_ORDER, PERFORMANCE_PANELS_ORDER, isSelfhosted, tbPeriodPairsCompare, PERIOD_PAIRS_COMPARE, filtersPeriodPairs, IS_ACTIVE_COMPARE,
   PROJECTS_PROTECTED, getProjectCacheCustomKeyPerf, isBrowser, TITLE_SUFFIX, FILTERS_PANELS_ORDER, KEY_FOR_ALL_TIME, MARKETPLACE_URL,
-  getFunnelsCacheKey, getFunnelsCacheCustomKey,
+  getFunnelsCacheKey, getFunnelsCacheCustomKey, MAIN_URL, BROWSER_CDN_LOGO_MAP, BROWSER_HOSTED_LOGO_MAP, OS_LOGO_MAP, OS_LOGO_MAP_DARK, ITBPeriodPairs,
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import { IProject, ILiveStats, IFunnel, IAnalyticsFunnel, IOverallObject } from 'redux/models/IProject'
@@ -169,14 +169,7 @@ const ViewProject = ({
   const _theme = isBrowser ? theme : ssrTheme
 
   // periodPairs is used for dropdown and updated when t changes
-  const [periodPairs, setPeriodPairs] = useState<{
-    label: string
-    period: string
-    tbs: string[]
-    countDays?: number
-    dropdownLabel?: string
-    isCustomDate?: boolean
-  }[]>(tbPeriodPairs(t))
+  const [periodPairs, setPeriodPairs] = useState<ITBPeriodPairs[]>(tbPeriodPairs(t, undefined, undefined, language))
 
   // customExportTypes used for marketplace extensions if you have extensions with export
   const [customExportTypes, setCustomExportTypes] = useState<any[]>([])
@@ -304,8 +297,7 @@ const ViewProject = ({
     setFunnelActionLoading(true)
 
     try {
-      const funnel = await addFunnel(id, name, steps)
-      console.log(funnel)
+      await addFunnel(id, name, steps)
     } catch (reason: any) {
       console.error('[ERROR] (onFunnelCreate)(addFunnel)', reason)
       showError(reason)
@@ -333,8 +325,7 @@ const ViewProject = ({
     setFunnelActionLoading(true)
 
     try {
-      const funnel = await updateFunnel(funnelId, id, name, steps)
-      console.log(funnel)
+      updateFunnel(funnelId, id, name, steps)
     } catch (reason: any) {
       console.error('[ERROR] (onFunnelEdit)(updateFunnel)', reason)
       showError(reason)
@@ -427,7 +418,7 @@ const ViewProject = ({
   const [periodPairsCompare, setPeriodPairsCompare] = useState<{
     label: string
     period: string
-  }[]>(tbPeriodPairsCompare(t))
+  }[]>(tbPeriodPairsCompare(t, undefined, language))
   // similar to isActive but using for compare
   const [isActiveCompare, setIsActiveCompare] = useState<boolean>(() => {
     const activeCompare = getItem(IS_ACTIVE_COMPARE)
@@ -870,8 +861,7 @@ const ViewProject = ({
         if (period === 'custom' && dateRange) {
           data = await getProjectData(id, timeBucket, '', newFilters || filters, from, to, timezone, projectPassword, mode)
           customEventsChart = await getProjectDataCustomEvents(id, timeBucket, '', filters, from, to, timezone, activeChartMetricsCustomEvents, projectPassword)
-          // todo: add support for custom date range
-          rawOverall = {}
+          rawOverall = await getOverallStats([id], period, from, to, timezone, projectPassword)
         } else {
           data = await getProjectData(id, timeBucket, period, newFilters || filters, '', '', timezone, projectPassword, mode)
           customEventsChart = await getProjectDataCustomEvents(id, timeBucket, period, filters, '', '', timezone, activeChartMetricsCustomEvents, projectPassword)
@@ -1641,9 +1631,9 @@ const ViewProject = ({
 
   // when t update we update dropdowns translations
   useEffect(() => {
-    setPeriodPairs(tbPeriodPairs(t))
-    setPeriodPairsCompare(tbPeriodPairsCompare(t))
-  }, [t])
+    setPeriodPairs(tbPeriodPairs(t, undefined, undefined, language))
+    setPeriodPairsCompare(tbPeriodPairsCompare(t, undefined, language))
+  }, [t, language])
 
   // Parsing initial filters from url also using for perfomance tab
   useEffect(() => {
@@ -1761,7 +1751,7 @@ const ViewProject = ({
         const { pathname, search } = url
         navigate(`${pathname}${search}`)
 
-        setPeriodPairs(tbPeriodPairs(t, timeBucketToDays[index].tb, dates))
+        setPeriodPairs(tbPeriodPairs(t, timeBucketToDays[index].tb, dates, language))
         setPeriod('custom')
         setProjectViewPrefs(id, 'custom', timeBucketToDays[index].tb[0], dates)
 
@@ -2013,7 +2003,7 @@ const ViewProject = ({
         return
       }
 
-      setPeriodPairs(tbPeriodPairs(t))
+      setPeriodPairs(tbPeriodPairs(t, undefined, undefined, language))
       setDateRange(null)
       updatePeriod({
         period: intialPeriod,
@@ -2433,7 +2423,7 @@ const ViewProject = ({
                               refCalendar.current.openCalendar()
                             }, 100)
                           } else {
-                            setPeriodPairs(tbPeriodPairs(t))
+                            setPeriodPairs(tbPeriodPairs(t, undefined, undefined, language))
                             setDateRange(null)
                             updatePeriod(pair)
                           }
@@ -2480,7 +2470,7 @@ const ViewProject = ({
                                 refCalendarCompare.current.openCalendar()
                               }, 100)
                             } else {
-                              setPeriodPairsCompare(tbPeriodPairsCompare(t))
+                              setPeriodPairsCompare(tbPeriodPairsCompare(t, undefined, language))
                               setDateRangeCompare(null)
                               setActivePeriodCompare(pair.period)
                             }
@@ -2516,7 +2506,7 @@ const ViewProject = ({
                       onChange={(date) => {
                         setDateRangeCompare(date)
                         setActivePeriodCompare(PERIOD_PAIRS_COMPARE.CUSTOM)
-                        setPeriodPairsCompare(tbPeriodPairsCompare(t, date))
+                        setPeriodPairsCompare(tbPeriodPairsCompare(t, date, language))
                       }}
                       value={dateRangeCompare || []}
                       maxDateMonths={MAX_MONTHS_IN_PAST}
@@ -2608,7 +2598,7 @@ const ViewProject = ({
                     hidden: checkIfAllMetricsAreDisabled,
                   })}
                 >
-                  <div className='h-80 mt-5 md:mt-0' id='dataChart' />
+                  <div className='h-80 mt-5 md:mt-0 [&_svg]:!overflow-visible' id='dataChart' />
                 </div>
                 <Filters
                   filters={filters}
@@ -2663,6 +2653,111 @@ const ViewProject = ({
                             />
                           )}
                           data={panelsData.data[countryActiveTab]}
+                          customTabs={customTabs}
+                          rowMapper={rowMapper}
+                        />
+                      )
+                    }
+
+                    if (type === 'br') {
+                      const rowMapper = (entry: any) => {
+                        const { name: entryName } = entry
+                        // @ts-ignore
+                        const logoExists = !!BROWSER_CDN_LOGO_MAP[entryName]
+                        // @ts-ignore
+                        const logoHosted = BROWSER_HOSTED_LOGO_MAP[entryName]
+
+                        if (!logoExists && !logoHosted) {
+                          return (
+                            <>
+                              <GlobeAltIcon className='w-5 h-5' />
+                              &nbsp;
+                              {entryName}
+                            </>
+                          )
+                        }
+
+                        if (logoHosted) {
+                          const logoUrl = `/${logoHosted}`
+
+                          return (
+                            <>
+                              <img src={logoUrl} className='w-5 h-5' alt='' />
+                              &nbsp;
+                              {entryName}
+                            </>
+                          )
+                        }
+
+                        const logoUrl = `${MAIN_URL}/browser-logo/${entryName}`
+
+                        return (
+                          <>
+                            <img src={logoUrl} className='w-5 h-5' alt='' />
+                            &nbsp;
+                            {entryName}
+                          </>
+                        )
+                      }
+
+                      return (
+                        <Panel
+                          t={t}
+                          key={type}
+                          icon={panelIcon}
+                          id={type}
+                          activeTab={activeTab}
+                          onFilter={filterHandler}
+                          name={panelName}
+                          data={panelsData.data[type]}
+                          customTabs={customTabs}
+                          rowMapper={rowMapper}
+                        />
+                      )
+                    }
+
+                    if (type === 'os') {
+                      const rowMapper = (entry: any) => {
+                        const { name: entryName } = entry
+                        // @ts-ignore
+                        const logoPathLight = OS_LOGO_MAP[entryName]
+                        // @ts-ignore
+                        const logoPathDark = OS_LOGO_MAP_DARK[entryName]
+
+                        let logoPath = _theme === 'dark' ? logoPathDark : logoPathLight
+                        logoPath ||= logoPathLight
+
+                        if (!logoPath) {
+                          return (
+                            <>
+                              <GlobeAltIcon className='w-5 h-5' />
+                              &nbsp;
+                              {entryName}
+                            </>
+                          )
+                        }
+
+                        const logoUrl = `/${logoPath}`
+
+                        return (
+                          <>
+                            <img src={logoUrl} className='w-5 h-5 dark:fill-gray-50' alt='' />
+                            &nbsp;
+                            {entryName}
+                          </>
+                        )
+                      }
+
+                      return (
+                        <Panel
+                          t={t}
+                          key={type}
+                          icon={panelIcon}
+                          id={type}
+                          activeTab={activeTab}
+                          onFilter={filterHandler}
+                          name={panelName}
+                          data={panelsData.data[type]}
                           customTabs={customTabs}
                           rowMapper={rowMapper}
                         />
@@ -2805,7 +2900,7 @@ const ViewProject = ({
                     hidden: checkIfAllMetricsAreDisabled,
                   })}
                 >
-                  <div className='h-80' id='dataChart' />
+                  <div className='h-80 [&_svg]:!overflow-visible' id='dataChart' />
                 </div>
                 <Filters
                   filters={filtersPerf}
@@ -2906,6 +3001,66 @@ const ViewProject = ({
                             // todo: add uppercase
                             return entryName || t('project.redactedPage')
                           }}
+                        />
+                      )
+                    }
+
+
+                    if (type === 'br') {
+                      const rowMapper = (entry: any) => {
+                        const { name: entryName } = entry
+                        // @ts-ignore
+                        const logoExists = !!BROWSER_CDN_LOGO_MAP[entryName]
+                        // @ts-ignore
+                        const logoHosted = BROWSER_HOSTED_LOGO_MAP[entryName]
+
+                        if (!logoExists && !logoHosted) {
+                          return (
+                            <>
+                              <GlobeAltIcon className='w-5 h-5' />
+                              &nbsp;
+                              {entryName}
+                            </>
+                          )
+                        }
+
+                        if (logoHosted) {
+                          const logoUrl = `/${logoHosted}`
+
+                          return (
+                            <>
+                              <img src={logoUrl} className='w-5 h-5' alt='' />
+                              &nbsp;
+                              {entryName}
+                            </>
+                          )
+                        }
+
+                        const logoUrl = `${MAIN_URL}/browser-logo/${entryName}`
+
+                        return (
+                          <>
+                            <img src={logoUrl} className='w-5 h-5' alt='' />
+                            &nbsp;
+                            {entryName}
+                          </>
+                        )
+                      }
+
+                      return (
+                        <Panel
+                          t={t}
+                          key={type}
+                          icon={panelIcon}
+                          id={type}
+                          activeTab={activeTab}
+                          onFilter={filterHandler}
+                          name={panelName}
+                          data={panelsDataPerf.data[type]}
+                          customTabs={customTabs}
+                          // @ts-ignore
+                          valueMapper={(value) => getStringFromTime(getTimeFromSeconds(value), true)}
+                          rowMapper={rowMapper}
                         />
                       )
                     }

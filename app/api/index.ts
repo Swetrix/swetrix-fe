@@ -584,10 +584,10 @@ export const getCaptchaData = (
         : error.response.data.message
     })
 
-export const getOverallStats = (pids: string[], period: string, password?: string) =>
+export const getOverallStats = (pids: string[], period: string, from?: string, to?: string, timezone?: string, password?: string) =>
   api
     .get(
-      `log/birdseye?pids=[${_map(pids, (pid) => `"${pid}"`).join(',')}]&period=${period}`,
+      `log/birdseye?pids=[${_map(pids, (pid) => `"${pid}"`).join(',')}]&period=${period}&from=${from}&to=${to}&timezone=${timezone}`,
       {
         headers: {
           'x-password': password,
