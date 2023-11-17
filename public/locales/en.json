@@ -483,6 +483,7 @@
     "shared": "Shared",
     "disabled": "Disabled",
     "pageviews": "Pageviews",
+    "captchaEvents": "CAPTCHA events",
     "unique": "Unique views",
     "createdAt": "Created at",
     "inc": "Increased by",

@@ -27,7 +27,7 @@ import { withAuthentication, auth } from 'hoc/protected'
 import Loader from 'ui/Loader'
 import { Badge } from 'ui/Badge'
 import routes from 'routesPath'
-import { nFormatter } from 'utils/generic'
+import { nFormatter, calculateRelativePercentage } from 'utils/generic'
 import {
   isSelfhosted, ENTRIES_PER_PAGE_DASHBOARD, tabForOwnedProject, tabForSharedProject,
   tabForCaptchaProject, DASHBOARD_TABS, tabsForDashboard, roleViewer,
@@ -255,10 +255,10 @@ const ProjectCard = ({
           <div className='mt-4 flex-shrink-0 flex gap-5'>
             {birdseye[id] && (
               <MiniCard
-                labelTKey='dashboard.pageviews'
+                labelTKey={captcha ? 'dashboard.captchaEvents' : 'dashboard.pageviews'}
                 t={t}
                 total={birdseye[id].current.all}
-                percChange={birdseye[id].percChange}
+                percChange={calculateRelativePercentage(birdseye[id].previous.all, birdseye[id].current.all)}
               />
             )}
             {!captcha && (
@@ -318,7 +318,7 @@ const NoProjects = ({ t, onClick }: INoProjects): JSX.Element => (
 )
 
 const AddProject = ({ t, onClick }: INoProjects): JSX.Element => (
-  <li onClick={onClick} className='flex cursor-pointer justify-center items-center rounded-lg border-2 border-dashed h-auto min-h-[149.1px] group border-gray-300 hover:border-gray-400'>
+  <li onClick={onClick} className='flex cursor-pointer justify-center items-center rounded-lg border-2 border-dashed h-auto min-h-[149.1px] lg:min-h-[auto] group border-gray-300 hover:border-gray-400'>
     <div>
       <FolderPlusIcon className='mx-auto h-12 w-12 text-gray-400 dark:text-gray-200 group-hover:text-gray-500 group-hover:dark:text-gray-400' />
       <span className='mt-2 block text-sm font-semibold text-gray-900 dark:text-gray-50 group-hover:dark:text-gray-400'>

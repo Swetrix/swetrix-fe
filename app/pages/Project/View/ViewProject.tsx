@@ -53,7 +53,7 @@ import {
   getFunnelsCacheKey, getFunnelsCacheCustomKey, MAIN_URL, BROWSER_CDN_LOGO_MAP, BROWSER_HOSTED_LOGO_MAP, OS_LOGO_MAP, OS_LOGO_MAP_DARK, ITBPeriodPairs,
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
-import { IProject, ILiveStats, IFunnel, IAnalyticsFunnel, IOverallObject } from 'redux/models/IProject'
+import { IProject, ILiveStats, IFunnel, IAnalyticsFunnel, IOverallObject, IOverallPerformanceObject } from 'redux/models/IProject'
 import { IProjectForShared, ISharedProject } from 'redux/models/ISharedProject'
 import { ICountryEntry } from 'redux/models/IEntry'
 import Loader from 'ui/Loader'
@@ -72,7 +72,7 @@ import Footer from 'components/Footer'
 import {
   getProjectData, getProject, getOverallStats, getLiveVisitors, getPerfData, getProjectDataCustomEvents,
   getProjectCompareData, checkPassword, getCustomEventsMetadata, addFunnel, updateFunnel, deleteFunnel,
-  getFunnelData, getFunnels,
+  getFunnelData, getFunnels, getPerformanceOverallStats,
 } from 'api'
 import { getChartPrediction } from 'api/ai'
 import { Panel, CustomEvents } from './Panels'
@@ -91,6 +91,7 @@ import Filters from './components/Filters'
 import LiveVisitorsDropdown from './components/LiveVisitorsDropdown'
 import CountryDropdown from './components/CountryDropdown'
 import MetricCards from './components/MetricCards'
+import PerformanceMetricCards from './components/PerformanceMetricCards'
 import ProjectAlertsView from '../Alerts/View'
 import UTMDropdown from './components/UTMDropdown'
 import TBPeriodSelector from './components/TBPeriodSelector'
@@ -220,6 +221,7 @@ const ViewProject = ({
   // also using for logic with custom events on chart and export data like csv
   const [panelsData, setPanelsData] = useState<any>({})
   const [overall, setOverall] = useState<Partial<IOverallObject>>({})
+  const [overallPerformance, setOverallPerformance] = useState<Partial<IOverallPerformanceObject>>({})
   // isPanelsDataEmpty is a true we are display components <NoEvents /> and do not show dropdowns with activeChartMetrics
   const [isPanelsDataEmpty, setIsPanelsDataEmpty] = useState<boolean>(false)
   const [isForecastOpened, setIsForecastOpened] = useState<boolean>(false)
@@ -441,6 +443,8 @@ const ViewProject = ({
   const [dateRangeCompare, setDateRangeCompare] = useState<null | Date[]>(null)
   // dataChartCompare is a data for chart when compare is enabled
   const [dataChartCompare, setDataChartCompare] = useState<any>({})
+  const [overallCompare, setOverallCompare] = useState<Partial<IOverallObject>>({})
+  const [overallPerformanceCompare, setOverallPerformanceCompare] = useState<Partial<IOverallPerformanceObject>>({})
   // dataChartPerfCompare is a data for performance chart when compare is enabled
   const [dataChartPerfCompare, setDataChartPerfCompare] = useState<any>({})
   // maxRangeCompare is a max range for calendar when compare is enabled
@@ -770,6 +774,8 @@ const ViewProject = ({
     setIsActiveCompare(false)
     setDateRangeCompare(null)
     setDataChartCompare({})
+    setOverallCompare({})
+    setOverallPerformanceCompare({})
     setDataChartPerfCompare({})
     setActivePeriodCompare(periodPairsCompare[0].period)
   }
@@ -838,11 +844,13 @@ const ViewProject = ({
           if (!_isEmpty(cache[id]) && !_isEmpty(cache[id][keyCompare])) {
             dataCompare = cache[id][keyCompare]
           } else {
-            dataCompare = await getProjectCompareData(id, timeBucket, '', newFilters || filters, fromCompare, toCompare, timezone, projectPassword, mode)
+            dataCompare = (await getProjectCompareData(id, timeBucket, '', newFilters || filters, fromCompare, toCompare, timezone, projectPassword, mode)) || {}
+            const compareOverall = await getOverallStats([id], 'custom', fromCompare, toCompare, timezone, newFilters || filters, projectPassword)
+            dataCompare.overall = compareOverall[id]
           }
         }
 
-        setProjectCache(id, dataCompare || {}, keyCompare)
+        setProjectCache(id, dataCompare, keyCompare)
       }
 
       // if activePeriod is custom we check dateRange and set key for cache
@@ -861,11 +869,11 @@ const ViewProject = ({
         if (period === 'custom' && dateRange) {
           data = await getProjectData(id, timeBucket, '', newFilters || filters, from, to, timezone, projectPassword, mode)
           customEventsChart = await getProjectDataCustomEvents(id, timeBucket, '', filters, from, to, timezone, activeChartMetricsCustomEvents, projectPassword)
-          rawOverall = await getOverallStats([id], period, from, to, timezone, projectPassword)
+          rawOverall = await getOverallStats([id], period, from, to, timezone, newFilters || filters, projectPassword)
         } else {
           data = await getProjectData(id, timeBucket, period, newFilters || filters, '', '', timezone, projectPassword, mode)
           customEventsChart = await getProjectDataCustomEvents(id, timeBucket, period, filters, '', '', timezone, activeChartMetricsCustomEvents, projectPassword)
-          rawOverall = await getOverallStats([id], period, projectPassword)
+          rawOverall = await getOverallStats([id], period, '', '', timezone, newFilters || filters, projectPassword)
         }
 
         customEventsChart = customEventsChart?.chart ? customEventsChart.chart.events : customEventsChartData
@@ -924,8 +932,14 @@ const ViewProject = ({
         setFilters(appliedFilters)
       }
 
-      if (!_isEmpty(dataCompare) && !_isEmpty(dataCompare?.chart)) {
-        setDataChartCompare(dataCompare.chart)
+      if (!_isEmpty(dataCompare)) {
+        if (!_isEmpty(dataCompare?.chart)) {
+          setDataChartCompare(dataCompare.chart)
+        }
+
+        if (!_isEmpty(dataCompare?.overall)) {
+          setOverallCompare(dataCompare.overall)
+        }
       }
 
       if (_isEmpty(params)) {
@@ -988,6 +1002,7 @@ const ViewProject = ({
       let keyCompare = ''
       let fromCompare: string | undefined
       let toCompare: string | undefined
+      let rawOverall: any
 
       if (isActiveCompare) {
         if (dateRangeCompare && activePeriodCompare === PERIOD_PAIRS_COMPARE.CUSTOM) {
@@ -1033,6 +1048,8 @@ const ViewProject = ({
             dataCompare = cache[id][keyCompare]
           } else {
             dataCompare = await getPerfData(id, timeBucket, '', newFilters || filtersPerf, fromCompare, toCompare, timezone, projectPassword)
+            const compareOverall = await getPerformanceOverallStats([id], 'custom', fromCompare, toCompare, timezone, newFilters || filters, projectPassword)
+            dataCompare.overall = compareOverall[id]
           }
         }
 
@@ -1052,11 +1069,14 @@ const ViewProject = ({
       } else {
         if (period === 'custom' && dateRange) {
           dataPerf = await getPerfData(id, timeBucket, '', newFilters || filtersPerf, from, to, timezone, projectPassword)
+          rawOverall = await getOverallStats([id], period, from, to, timezone, newFilters || filters, projectPassword)
         } else {
           dataPerf = await getPerfData(id, timeBucket, period, newFilters || filtersPerf, '', '', timezone, projectPassword)
+          rawOverall = await getPerformanceOverallStats([id], period, '', '', timezone, newFilters || filters, projectPassword)
         }
 
         setProjectCachePerf(id, dataPerf || {}, key)
+        setOverallPerformance(rawOverall[id])
       }
 
       const {
@@ -1095,8 +1115,15 @@ const ViewProject = ({
         setTimebucket(newTimebucket)
       }
 
-      if (!_isEmpty(dataCompare) && !_isEmpty(dataCompare?.chart)) {
-        setDataChartPerfCompare(dataCompare.chart)
+      if (!_isEmpty(dataCompare)) {
+        if (!_isEmpty(dataCompare?.chart)) {
+          setDataChartPerfCompare(dataCompare.chart)
+        }
+
+
+        if (!_isEmpty(dataCompare?.overall)) {
+          setOverallPerformanceCompare(dataCompare.overall)
+        }
       }
 
       if (_isEmpty(dataPerf.params)) {
@@ -1853,36 +1880,7 @@ const ViewProject = ({
 
         if ((projectRes.isPublic || projectRes?.isPasswordProtected) && !projectRes.isOwner) {
           setPublicProject(projectRes)
-          // getOverallStats([id], projectPassword)
-          //   .then(res => {
-          //     setPublicProject({
-          //       ...projectRes,
-          //       overall: res[id],
-          //     })
-          //   })
-          //   .catch(e => {
-          //     console.error('[ERROR] (getProject -> getOverallStats public)', e)
-          //     onErrorLoading()
-          //   })
         } else {
-          // getOverallStats([id])
-          //   .then(res => {
-          //     setProjects([...(projects as any[]), {
-          //       ...projectRes,
-          //       overall: res[id],
-          //     }])
-          //   })
-          //   .then(() => {
-          //     return getLiveVisitors([id], projectPassword)
-          //   })
-          //   .then(res => {
-          //     setLiveStatsForProject(id, res[id])
-          //   })
-          //   .catch(e => {
-          //     console.error('[ERROR] (getProject -> getOverallStats)', e)
-          //     onErrorLoading()
-          //   })
-
           setProjects([...(projects as any[]), projectRes])
           getLiveVisitors([id], projectPassword)
             .then(res => {
@@ -2180,20 +2178,11 @@ const ViewProject = ({
                       {/* If tab is funnels - then display a funnel name, otherwise a project name */}
                       {activeTab === PROJECT_TABS.funnels ? activeFunnel?.name : name}
                     </h2>
-                    {/* {!_isEmpty(project.overall) && ( */}
-                    <LiveVisitorsDropdown projectId={project.id} live={liveStats[id]} projectPassword={projectPassword} />
-                    {/* )} */}
+                    {activeTab !== PROJECT_TABS.funnels && (
+                      <LiveVisitorsDropdown projectId={project.id} live={liveStats[id]} projectPassword={projectPassword} />
+                    )}
                   </div>
                   <div className='flex items-center mt-3 lg:mt-0 max-w-[420px] flex-wrap sm:flex-nowrap sm:max-w-none justify-center sm:justify-between w-full sm:w-auto mx-auto sm:mx-0 space-x-2 gap-y-1'>
-                    {activeTab === PROJECT_TABS.funnels && (
-                      <button
-                        onClick={() => setActiveFunnel(null)}
-                        className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 lg:mt-0 text-gray-900 dark:text-gray-100'
-                      >
-                        <ChevronLeftIcon className='w-4 h-4' />
-                        {t('project.backToFunnels')}
-                      </button>
-                    )}
                     {activeTab !== PROJECT_TABS.funnels && (
                       <>
                         <div>
@@ -2391,44 +2380,17 @@ const ViewProject = ({
                         headless
                       />
                     )}
-                    {activeTab === PROJECT_TABS.traffic && (
-                      <TBPeriodSelector
-                        activePeriod={activePeriod}
-                        updateTimebucket={updateTimebucket}
-                        timeBucket={timeBucket}
-                        items={isActiveCompare ? _filter(periodPairs, (el) => {
-                          return _includes(filtersPeriodPairs, el.period)
-                        }) : _includes(filtersPeriodPairs, period) ? periodPairs : _filter(periodPairs, (el) => {
-                          return el.period !== PERIOD_PAIRS_COMPARE.COMPARE
+                    {activeTab === PROJECT_TABS.funnels && (
+                      <button
+                        type='button'
+                        title={t('project.refreshStats')}
+                        onClick={refreshStats}
+                        className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
                         })}
-                        title={activePeriod?.label}
-                        onSelect={(pair) => {
-                          if (pair.period === PERIOD_PAIRS_COMPARE.COMPARE) {
-                            if (activeTab === PROJECT_TABS.alerts) {
-                              return
-                            }
-
-                            if (isActiveCompare) {
-                              compareDisable()
-                            } else {
-                              setIsActiveCompare(true)
-                            }
-
-                            return
-                          }
-
-                          if (pair.isCustomDate) {
-                            setTimeout(() => {
-                              // @ts-ignore
-                              refCalendar.current.openCalendar()
-                            }, 100)
-                          } else {
-                            setPeriodPairs(tbPeriodPairs(t, undefined, undefined, language))
-                            setDateRange(null)
-                            updatePeriod(pair)
-                          }
-                        }}
-                      />
+                      >
+                        <ArrowPathIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
+                      </button>
                     )}
                     {activeTab === PROJECT_TABS.performance && !isPanelsDataEmptyPerf && (
                       <Dropdown
@@ -2448,6 +2410,43 @@ const ViewProject = ({
                         headless
                       />
                     )}
+                    <TBPeriodSelector
+                      activePeriod={activePeriod}
+                      updateTimebucket={updateTimebucket}
+                      timeBucket={timeBucket}
+                      items={isActiveCompare ? _filter(periodPairs, (el) => {
+                        return _includes(filtersPeriodPairs, el.period)
+                      }) : _includes(filtersPeriodPairs, period) ? periodPairs : _filter(periodPairs, (el) => {
+                        return el.period !== PERIOD_PAIRS_COMPARE.COMPARE
+                      })}
+                      title={activePeriod?.label}
+                      onSelect={(pair) => {
+                        if (pair.period === PERIOD_PAIRS_COMPARE.COMPARE) {
+                          if (activeTab === PROJECT_TABS.alerts) {
+                            return
+                          }
+
+                          if (isActiveCompare) {
+                            compareDisable()
+                          } else {
+                            setIsActiveCompare(true)
+                          }
+
+                          return
+                        }
+
+                        if (pair.isCustomDate) {
+                          setTimeout(() => {
+                            // @ts-ignore
+                            refCalendar.current.openCalendar()
+                          }, 100)
+                        } else {
+                          setPeriodPairs(tbPeriodPairs(t, undefined, undefined, language))
+                          setDateRange(null)
+                          updatePeriod(pair)
+                        }
+                      }}
+                    />
                     {isActiveCompare && (
                       <>
                         <div className='mx-2 text-md font-medium text-gray-600 whitespace-pre-line dark:text-gray-200'>
@@ -2480,18 +2479,6 @@ const ViewProject = ({
                         />
                       </>
                     )}
-                    {activeTab === PROJECT_TABS.funnels && (
-                      <button
-                        type='button'
-                        title={t('project.refreshStats')}
-                        onClick={refreshStats}
-                        className={cx('relative shadow-sm rounded-md px-3 py-2 bg-white text-sm font-medium hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
-                          'cursor-not-allowed opacity-50': isLoading || dataLoading,
-                        })}
-                      >
-                        <ArrowPathIcon className='w-5 h-5 text-gray-700 dark:text-gray-50' />
-                      </button>
-                    )}
                     <FlatPicker
                       className='!mx-0'
                       ref={refCalendar}
@@ -2514,6 +2501,15 @@ const ViewProject = ({
                     />
                   </div>
                 </div>
+                {activeTab === PROJECT_TABS.funnels && (
+                  <button
+                    onClick={() => setActiveFunnel(null)}
+                    className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 lg:mt-0 text-gray-900 dark:text-gray-100'
+                  >
+                    <ChevronLeftIcon className='w-4 h-4' />
+                    {t('project.backToFunnels')}
+                  </button>
+                )}
               </>
             )}
             {(activeTab === PROJECT_TABS.alerts && (isSharedProject || !project?.isOwner || !authenticated)) && (
@@ -2591,7 +2587,7 @@ const ViewProject = ({
             {activeTab === PROJECT_TABS.traffic && (
               <div className={cx('pt-2', { hidden: isPanelsDataEmpty || analyticsLoading })}>
                 {!_isEmpty(overall) && (
-                  <MetricCards overall={overall} />
+                  <MetricCards overall={overall} overallCompare={overallCompare} activePeriodCompare={activePeriodCompare} />
                 )}
                 <div
                   className={cx('h-80', {
@@ -2895,6 +2891,9 @@ const ViewProject = ({
             )}
             {activeTab === PROJECT_TABS.performance && (
               <div className={cx('pt-8 md:pt-4', { hidden: isPanelsDataEmptyPerf || analyticsLoading })}>
+                {!_isEmpty(overallPerformance) && (
+                  <PerformanceMetricCards overall={overallPerformance} overallCompare={overallPerformanceCompare} activePeriodCompare={activePeriodCompare} />
+                )}
                 <div
                   className={cx('h-80', {
                     hidden: checkIfAllMetricsAreDisabled,

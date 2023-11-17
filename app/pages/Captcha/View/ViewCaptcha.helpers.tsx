@@ -183,6 +183,8 @@ const getSettings = (chart: any, timeBucket: string, activeChartMetrics: {
         tick: {
           format: (d: number) => nFormatter(d, 1),
         },
+        show: true,
+        inner: true,
       },
     },
     tooltip: {

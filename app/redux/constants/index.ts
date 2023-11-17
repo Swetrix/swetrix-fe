@@ -111,6 +111,59 @@ export const tbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[]
   tbs: tbs || ['custom'],
 }]
 
+export const captchaTbPeriodPairs = (t: Function, tbs?: string[] | null, dates?: Date[], language?: string):ITBPeriodPairs[] => [{
+  label: t('project.thisHour'),
+  period: '1h',
+  tbs: ['minute'],
+}, {
+  label: t('project.today'),
+  period: 'today',
+  tbs: ['hour'],
+}, {
+  label: t('project.yesterday'),
+  period: 'yesterday',
+  tbs: ['hour'],
+}, {
+  label: t('project.last24h'),
+  period: '1d',
+  countDays: 1,
+  tbs: ['hour'],
+}, {
+  label: t('project.lastXDays', { amount: 7 }),
+  period: '7d',
+  tbs: ['hour', 'day'],
+  countDays: 7,
+}, {
+  label: t('project.lastXWeeks', { amount: 4 }),
+  period: '4w',
+  tbs: ['day'],
+  countDays: 28,
+}, {
+  label: t('project.lastXMonths', { amount: 3 }),
+  period: '3M',
+  tbs: ['month'],
+  countDays: 90,
+}, {
+  label: t('project.lastXMonths', { amount: 12 }),
+  period: '12M',
+  tbs: ['month'],
+  countDays: 365,
+}, {
+  label: t('project.lastXMonths', { amount: 24 }),
+  period: '24M',
+  tbs: ['month'],
+}, {
+  label: t('project.all'),
+  period: KEY_FOR_ALL_TIME,
+  tbs: ['month', 'year'],
+}, {
+  label: dates ? getCustomLabel(dates, t, language) : t('project.custom'),
+  dropdownLabel: t('project.custom'),
+  isCustomDate: true,
+  period: 'custom',
+  tbs: tbs || ['custom'],
+}]
+
 export const filtersPeriodPairs = ['1h', '1d', '7d', '4w', '3M', '12M', 'custom', 'compare']
 
 export const tbPeriodPairsCompare = (t: Function, dates?: Date[], language?: string): {

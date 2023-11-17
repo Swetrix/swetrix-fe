@@ -18,6 +18,26 @@ export interface IOverall {
   [key: string]: IOverallObject
 }
 
+export interface IOverallPerformanceObject {
+  current: {
+    frontend: number
+    backend: number
+    network: number
+  }
+  previous: {
+    frontend: number
+    backend: number
+    network: number
+  }
+  frontendChange: number
+  backendChange: number
+  networkChange: number
+}
+
+export interface IOverallPerformance {
+  [key: string]: IOverallPerformanceObject
+}
+
 export interface IUserShareProject {
   email: string
 }

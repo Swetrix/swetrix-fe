@@ -93,3 +93,26 @@ export const loadScript = (url: string) => {
   script.async = true
   document.body.appendChild(script)
 }
+
+/**
+ * Returns the % change of one number relative to the other
+ * 
+ * @param oldVal The initial value
+ * @param newVal The value that changed
+ * @param round Numbers after floating point
+ */
+export const calculateRelativePercentage = (
+ oldVal: number,
+ newVal: number,
+ round = 2,
+) => {
+ if (oldVal === newVal) return 0
+ if (oldVal === 0) return 100
+ if (newVal === 0) return -100
+
+ if (newVal > oldVal) {
+   return _round((newVal / oldVal) * 100, round)
+ }
+
+ return _round((1 - newVal / oldVal) * -100, round)
+}

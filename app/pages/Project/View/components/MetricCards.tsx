@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'clsx'
 import _round from 'lodash/round'
+import _isEmpty from 'lodash/isEmpty'
 import _isNumber from 'lodash/isNumber'
 import { nFormatter, getStringFromTime, getTimeFromSeconds } from 'utils/generic'
 import { IOverallObject } from 'redux/models/IProject'
@@ -79,7 +80,7 @@ const ChangeBadge = ({
   }
 }
 
-const MetricCard: React.FC<IMetricCard> = ({ label, value, change, type, goodChangeDirection, valueMapper }) => (
+export const MetricCard: React.FC<IMetricCard> = ({ label, value, change, type, goodChangeDirection, valueMapper }) => (
   <div className='flex flex-col'>
     <div className='font-bold text-4xl whitespace-nowrap text-slate-900 dark:text-gray-50'>
       {valueMapper ? valueMapper(value, 'main') : value}
@@ -104,17 +105,31 @@ const MetricCard: React.FC<IMetricCard> = ({ label, value, change, type, goodCha
 
 interface IMetricCards {
   overall: Partial<IOverallObject>
+  overallCompare?: Partial<IOverallObject>
+  activePeriodCompare?: string
 }
 
-const MetricCards = ({ overall }: IMetricCards) => {
+const MetricCards = ({ overall, overallCompare, activePeriodCompare }: IMetricCards) => {
   const { t } = useTranslation('common')
+
+  let uniqueChange = overall.uniqueChange
+  let allChange = overall.change
+  let bounceRateChange = overall.bounceRateChange
+  let sdurChange = overall.sdurChange
+
+  if (!_isEmpty(overallCompare) && activePeriodCompare !== 'previous') {
+    uniqueChange = (overall.current?.unique as number) - (overallCompare?.current?.unique as number)
+    allChange = (overall.current?.all as number) - (overallCompare?.current?.all as number)
+    bounceRateChange = ((overall.current?.bounceRate as number) - (overallCompare.current?.bounceRate as number)) * -1
+    sdurChange = (overall.current?.sdur as number) - (overallCompare?.current?.sdur as number)
+  }
 
   return (
     <div className='flex justify-center lg:justify-start gap-5 mb-5 flex-wrap'>
       <MetricCard
         label={t('dashboard.unique')}
         value={overall.current?.unique}
-        change={overall.uniqueChange}
+        change={uniqueChange}
         type='percent'
         goodChangeDirection='down'
         valueMapper={(value, type) => `${type === 'badge' && value > 0 ? '+' : ''}${nFormatter(value, 1)}`}
@@ -122,7 +137,7 @@ const MetricCards = ({ overall }: IMetricCards) => {
       <MetricCard
         label={t('dashboard.pageviews')}
         value={overall.current?.all}
-        change={overall.change}
+        change={allChange}
         type='percent'
         goodChangeDirection='down'
         valueMapper={(value, type) => `${type === 'badge' && value > 0 ? '+' : ''}${nFormatter(value, 1)}`}
@@ -130,15 +145,15 @@ const MetricCards = ({ overall }: IMetricCards) => {
       <MetricCard
         label={t('dashboard.bounceRate')}
         value={_round(overall.current?.bounceRate as number, 1)}
-        change={_round(overall.bounceRateChange as number, 1)}
+        change={_round(bounceRateChange as number, 1)}
         type='percent'
         goodChangeDirection='up'
-        // valueMapper={(value) => `${value}%`}
+        valueMapper={(value) => `${value}%`}
       />
       <MetricCard
         label={t('dashboard.sessionDuration')}
         value={overall.current?.sdur}
-        change={overall.sdurChange}
+        change={sdurChange}
         goodChangeDirection='down'
         valueMapper={(value) => getStringFromTime(getTimeFromSeconds(value))}
       />
