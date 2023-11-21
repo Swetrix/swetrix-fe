@@ -31,7 +31,7 @@ const ReferralPage = ({ ssrTheme }: IReferralPage): JSX.Element => {
 
   return (
     <div className='overflow-hidden'>
-      <main className='bg-white dark:bg-slate-900 min-h-[100vh]'>
+      <main className='bg-white dark:bg-[#191e2d] min-h-[100vh]'>
         <div className='relative overflow-x-clip isolate'>
           <svg
             className='absolute inset-0 -z-10 h-full w-full stroke-gray-200 dark:stroke-white/10 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]'
@@ -96,7 +96,7 @@ const ReferralPage = ({ ssrTheme }: IReferralPage): JSX.Element => {
                 <div className='mt-4 flex flex-col items-center sm:flex-row'>
                   <Link
                     to={`/ref/${id}${routes.signup}`}
-                    className='rounded-md !duration-300 transition-all w-full sm:max-w-[210px] h-12 flex items-center justify-center sm:mr-6 shadow-sm ring-1 text-white bg-slate-900 ring-slate-900 hover:bg-slate-700 dark:bg-indigo-700 dark:ring-indigo-700 dark:hover:bg-indigo-600'
+                    className='rounded-md !duration-300 transition-all w-full sm:max-w-[210px] h-12 flex items-center justify-center sm:mr-6 shadow-sm ring-1 text-white bg-[#191e2d] ring-slate-900 hover:bg-slate-700 dark:bg-indigo-700 dark:ring-indigo-700 dark:hover:bg-indigo-600'
                     aria-label={t('titles.signup')}
                   >
                     <span className='text-base font-semibold mr-1'>

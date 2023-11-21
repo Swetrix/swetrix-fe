@@ -26,7 +26,7 @@ describe('Button component', () => {
   it('renders a primary button', () => {
     const { getByText } = render(<Button text='Click me' primary />)
     const button = getByText('Click me')
-    expect(button).toHaveClass('bg-slate-900')
+    expect(button).toHaveClass('bg-[#191e2d]')
   })
 
   it('renders a secondary button', () => {

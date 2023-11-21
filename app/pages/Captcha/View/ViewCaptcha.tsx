@@ -622,7 +622,7 @@ const ViewProject = ({
     return (
       <>
         <EventsRunningOutBanner />
-        <div ref={ref} className='bg-gray-50 dark:bg-slate-900'>
+        <div ref={ref} className='bg-gray-50 dark:bg-[#191e2d]'>
           <div
             className='max-w-[1584px] w-full mx-auto py-6 px-2 sm:px-4 lg:px-8 min-h-min-footer'
             ref={dashboardRef}
@@ -636,7 +636,7 @@ const ViewProject = ({
                   type='button'
                   title={t('project.refreshStats')}
                   onClick={refreshStats}
-                  className={cx('mr-3 relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                  className={cx('mr-3 relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-[#191e2d] dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                     'cursor-not-allowed opacity-50': isLoading || dataLoading,
                   })}
                 >
@@ -667,7 +667,7 @@ const ViewProject = ({
                     onClick={() => setChartTypeOnClick(chartTypes.bar)}
                     className={cx('relative fill-gray-700 dark:fill-gray-50 rounded-md p-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                       'bg-white dark:bg-slate-800 stroke-white dark:stroke-slate-800 shadow-sm': chartType === chartTypes.bar,
-                      'bg-gray-50 stroke-gray-50 dark:bg-slate-900 dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.bar,
+                      'bg-gray-50 stroke-gray-50 dark:bg-[#191e2d] dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.bar,
                     })}
                   >
                     <BarChart className='w-5 h-5 [&_path]:stroke-[3.5%]' />
@@ -678,7 +678,7 @@ const ViewProject = ({
                     onClick={() => setChartTypeOnClick(chartTypes.line)}
                     className={cx('relative fill-gray-700 dark:fill-gray-50 rounded-md p-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                       'bg-white dark:bg-slate-800 stroke-white dark:stroke-slate-800 shadow-sm': chartType === chartTypes.line,
-                      'bg-gray-50 stroke-gray-50 dark:bg-slate-900 dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.line,
+                      'bg-gray-50 stroke-gray-50 dark:bg-[#191e2d] dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.line,
                     })}
                   >
                     <LineChart className='w-5 h-5 [&_path]:stroke-[3.5%]' />
@@ -878,7 +878,7 @@ const ViewProject = ({
   }
 
   return (
-    <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900'>
+    <div className='min-h-min-footer bg-gray-50 dark:bg-[#191e2d]'>
       <Loader />
     </div>
   )

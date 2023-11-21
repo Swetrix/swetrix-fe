@@ -66,7 +66,7 @@ const Modal = ({
           leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
         >
           <div
-            className={cx('inline-block align-bottom bg-white dark:bg-slate-900 rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:px-5 sm:py-4', {
+            className={cx('inline-block align-bottom bg-white dark:bg-[#191e2d] rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:px-5 sm:py-4', {
               'sm:max-w-lg sm:w-full': size === 'regular',
               'max-w-5xl w-full': size === 'large',
               'overflow-visible': overflowVisible,

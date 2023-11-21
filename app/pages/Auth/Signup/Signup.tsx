@@ -144,7 +144,7 @@ const Signup = ({ signup, authSSO, ssrTheme }: ISignup): JSX.Element => {
 
   return (
     <div>
-      <div className='bg-gray-50 dark:bg-slate-900 flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
+      <div className='bg-gray-50 dark:bg-[#191e2d] flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
         <div className='flex min-h-full flex-1 flex-col justify-center py-6 sm:px-6 lg:px-8'>
           <div className='sm:mx-auto sm:w-full sm:max-w-md'>
             <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-gray-50'>

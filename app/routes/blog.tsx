@@ -31,7 +31,7 @@ export default function Posts() {
   }
 
   return (
-    <div className='bg-gray-50 dark:bg-slate-900 text-gray-700 dark:text-gray-300 py-10'>
+    <div className='bg-gray-50 dark:bg-[#191e2d] text-gray-700 dark:text-gray-300 py-10'>
       <div className='max-w-[52rem] mx-auto px-4 pb-28 sm:px-6 md:px-8 xl:px-12 lg:max-w-6xl'>
         <div className='relative sm:pb-12 sm:ml-[calc(2rem+1px)] md:ml-[calc(3.5rem+1px)] lg:ml-[max(calc(14.5rem+1px),calc(100%-48rem))] mt-10 '>
           <div className='hidden absolute top-3 bottom-0 right-full mr-7 md:mr-[3.25rem] w-px bg-slate-200 dark:bg-slate-700 sm:block'></div>

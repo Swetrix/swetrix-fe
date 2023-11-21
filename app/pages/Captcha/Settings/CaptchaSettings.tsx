@@ -344,7 +344,7 @@ const CaptchaSettings = ({
 
   if (loading) {
     return (
-      <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900 flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
+      <div className='min-h-min-footer bg-gray-50 dark:bg-[#191e2d] flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
         <Loader />
       </div>
     )
@@ -352,7 +352,7 @@ const CaptchaSettings = ({
 
   return (
     <div
-      className={cx('min-h-min-footer bg-gray-50 dark:bg-slate-900 flex flex-col py-6 px-4 sm:px-6 lg:px-8', {
+      className={cx('min-h-min-footer bg-gray-50 dark:bg-[#191e2d] flex flex-col py-6 px-4 sm:px-6 lg:px-8', {
         'pb-40': isSettings,
       })}
     >

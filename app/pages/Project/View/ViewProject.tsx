@@ -2104,7 +2104,7 @@ const ViewProject = ({
         <EventsRunningOutBanner />
         <div
           ref={ref}
-          className={cx('bg-gray-50 dark:bg-slate-900', {
+          className={cx('bg-gray-50 dark:bg-[#191e2d]', {
             'min-h-[100vh]': analyticsLoading && embedded,
           })}
         >
@@ -2202,7 +2202,7 @@ const ViewProject = ({
                             type='button'
                             title={t('project.refreshStats')}
                             onClick={refreshStats}
-                            className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                            className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-[#191e2d] dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                               'cursor-not-allowed opacity-50': isLoading || dataLoading,
                             })}
                           >
@@ -2220,7 +2220,7 @@ const ViewProject = ({
                               title={t('modals.forecast.title')}
                               onClick={onForecastOpen}
                               disabled={!_isEmpty(filters)}
-                              className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                              className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-[#191e2d] dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                                 'cursor-not-allowed opacity-50': isLoading || dataLoading || !_isEmpty(filters),
                                 '!bg-gray-200 dark:!bg-gray-600 !border dark:!border-gray-500 !border-gray-300': !_isEmpty(forecasedChartData),
                               })}
@@ -2238,7 +2238,7 @@ const ViewProject = ({
                             type='button'
                             title={t('project.search')}
                             onClick={() => setShowFiltersSearch(true)}
-                            className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                            className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-[#191e2d] dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                               'cursor-not-allowed opacity-50': isLoading || dataLoading,
                             })}
                           >
@@ -2283,7 +2283,7 @@ const ViewProject = ({
                             onClick={() => setChartTypeOnClick(chartTypes.bar)}
                             className={cx('relative fill-gray-700 dark:fill-gray-50 rounded-md p-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                               'bg-white dark:bg-slate-800 stroke-white dark:stroke-slate-800 shadow-sm': chartType === chartTypes.bar,
-                              'bg-gray-50 stroke-gray-50 dark:bg-slate-900 dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.bar,
+                              'bg-gray-50 stroke-gray-50 dark:bg-[#191e2d] dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.bar,
                             })}
                           >
                             <BarChart className='w-5 h-5 [&_path]:stroke-[3.5%]' />
@@ -2294,7 +2294,7 @@ const ViewProject = ({
                             onClick={() => setChartTypeOnClick(chartTypes.line)}
                             className={cx('relative fill-gray-700 dark:fill-gray-50 rounded-md p-2 text-sm font-medium focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                               'bg-white dark:bg-slate-800 stroke-white dark:stroke-slate-800 shadow-sm': chartType === chartTypes.line,
-                              'bg-gray-50 stroke-gray-50 dark:bg-slate-900 dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.line,
+                              'bg-gray-50 stroke-gray-50 dark:bg-[#191e2d] dark:stroke-slate-900 [&_svg]:hover:fill-gray-500 [&_svg]:hover:dark:fill-gray-200': chartType !== chartTypes.line,
                             })}
                           >
                             <LineChart className='w-5 h-5 [&_path]:stroke-[3.5%]' />
@@ -2398,7 +2398,7 @@ const ViewProject = ({
                         type='button'
                         title={t('project.refreshStats')}
                         onClick={refreshStats}
-                        className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                        className={cx('relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-[#191e2d] dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
                           'cursor-not-allowed opacity-50': isLoading || dataLoading,
                         })}
                       >
@@ -3137,7 +3137,7 @@ const ViewProject = ({
         <Header ssrTheme={ssrTheme} authenticated={authenticated} />
       )}
       <div
-        className={cx('min-h-min-footer bg-gray-50 dark:bg-slate-900', {
+        className={cx('min-h-min-footer bg-gray-50 dark:bg-[#191e2d]', {
           'min-h-min-footer': !embedded,
           'min-h-[100vh]': embedded,
         })}

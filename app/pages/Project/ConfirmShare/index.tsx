@@ -43,7 +43,7 @@ const ConfirmShare = () => {
 
   if (loading) {
     return (
-      <div className='min-h-page bg-gray-50 dark:bg-slate-900'>
+      <div className='min-h-page bg-gray-50 dark:bg-[#191e2d]'>
         <Loader />
       </div>
     )
@@ -51,7 +51,7 @@ const ConfirmShare = () => {
 
   if (error) {
     return (
-      <div className='bg-gray-50 dark:bg-slate-900 min-h-page px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8'>
+      <div className='bg-gray-50 dark:bg-[#191e2d] min-h-page px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8'>
         <div className='max-w-max mx-auto'>
           <main className='sm:flex'>
             <XCircleIcon className='h-12 w-12 text-red-400' aria-hidden='true' />
@@ -83,7 +83,7 @@ const ConfirmShare = () => {
   }
 
   return (
-    <div className='bg-gray-50 dark:bg-slate-900 min-h-page px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8'>
+    <div className='bg-gray-50 dark:bg-[#191e2d] min-h-page px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8'>
       <div className='max-w-max mx-auto'>
         <main className='sm:flex'>
           <CheckCircleIcon className='h-12 w-12 text-green-500 dark:text-green-400' aria-hidden='true' />

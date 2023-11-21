@@ -184,7 +184,7 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
   }
 
   return (
-    <div className='bg-gray-50 dark:bg-slate-900 min-h-page'>
+    <div className='bg-gray-50 dark:bg-[#191e2d] min-h-page'>
       {/* NEW */}
       <div className='w-11/12 md:w-4/5 mx-auto pb-16 pt-12 px-4 sm:px-6 lg:px-8 whitespace-pre-line'>
         <div className='flex justify-between flex-wrap gap-y-2 mb-4'>
