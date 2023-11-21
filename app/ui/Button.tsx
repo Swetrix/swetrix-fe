@@ -46,7 +46,7 @@ const Button = ({
     type={type}
     onClick={onClick}
     className={cx('relative inline-flex select-none items-center border leading-4 font-medium rounded-md', {
-      'shadow-sm text-gray-50 bg-slate-900 hover:bg-slate-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 border-transparent': primary,
+      'shadow-sm text-gray-50 bg-[#191e2d] hover:bg-slate-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 border-transparent': primary,
       'text-slate-900 bg-slate-300 hover:bg-slate-200 border-transparent': secondary,
       'text-gray-700 bg-white hover:bg-gray-50 border-transparent': white,
       'text-gray-50 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border-transparent': danger,

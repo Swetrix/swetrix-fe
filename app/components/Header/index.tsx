@@ -74,7 +74,7 @@ const ThemeMenu = ({
       leaveFrom='transform opacity-100 scale-100'
       leaveTo='transform opacity-0 scale-95'
     >
-      <Menu.Items className='absolute right-0 z-30 mt-2 w-36 min-w-max origin-top-right rounded-md bg-white dark:bg-slate-900 py-1 shadow-lg ring-1 ring-slate-200 dark:ring-slate-800 focus:outline-none'>
+      <Menu.Items className='absolute right-0 z-30 mt-2 w-36 min-w-max origin-top-right rounded-md bg-white dark:bg-[#191e2d] py-1 shadow-lg ring-1 ring-slate-200 dark:ring-slate-800 focus:outline-none'>
         <Menu.Item>
           {({ active }) => (
             <div
@@ -135,7 +135,7 @@ const ProfileMenu = ({
       leaveFrom='transform opacity-100 scale-100'
       leaveTo='transform opacity-0 scale-95'
     >
-      <Menu.Items className='absolute right-0 z-30 mt-2 w-60 min-w-max origin-top-right rounded-md bg-white dark:bg-slate-900 py-1 shadow-lg ring-1 ring-slate-200 dark:ring-slate-800 focus:outline-none'>
+      <Menu.Items className='absolute right-0 z-30 mt-2 w-60 min-w-max origin-top-right rounded-md bg-white dark:bg-[#191e2d] py-1 shadow-lg ring-1 ring-slate-200 dark:ring-slate-800 focus:outline-none'>
         <div className='border-gray-200 dark:border-slate-700/50 border-b-[1px]'>
           <Menu.Item>
             <p className='truncate py-2 px-4' role='none'>
@@ -296,7 +296,7 @@ const AuthedHeader = ({
 }): JSX.Element => (
   <header
     className={cx('relative overflow-x-clip', {
-      'bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-600/40': colourBackground,
+      'bg-gray-50 dark:bg-[#191e2d] border-b border-gray-200 dark:border-slate-600/40': colourBackground,
     })}
   >
     <nav className='mx-auto px-4 sm:px-6 lg:px-8' aria-label='Top'>
@@ -430,7 +430,7 @@ const NotAuthedHeader = ({
 }) => (
   <header
     className={cx('relative overflow-x-clip', {
-      'bg-gray-50 dark:bg-slate-900 border-b border-gray-200 dark:border-slate-600/40': colourBackground,
+      'bg-gray-50 dark:bg-[#191e2d] border-b border-gray-200 dark:border-slate-600/40': colourBackground,
     })}
   >
     <nav className='mx-auto px-4 sm:px-6 lg:px-8' aria-label='Top'>

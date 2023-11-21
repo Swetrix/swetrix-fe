@@ -28,7 +28,7 @@ const AlertTemplate = ({
   const isError = type === 'error'
 
   return (
-    <div className='pointer-events-auto w-72 min-[425px]:w-96 mb-5 mr-2 min-[425px]:mr-5 z-50 overflow-hidden rounded-lg bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black dark:ring-slate-800 ring-opacity-5'>
+    <div className='pointer-events-auto w-72 min-[425px]:w-96 mb-5 mr-2 min-[425px]:mr-5 z-50 overflow-hidden rounded-lg bg-white dark:bg-[#191e2d] shadow-lg ring-1 ring-black dark:ring-slate-800 ring-opacity-5'>
       <div className='p-4'>
         <div className='flex items-start'>
           <div className='flex-shrink-0'>
@@ -49,7 +49,7 @@ const AlertTemplate = ({
           <div className='ml-4 flex flex-shrink-0'>
             <button
               type='button'
-              className='inline-flex rounded-md bg-white dark:bg-slate-900 text-gray-400 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+              className='inline-flex rounded-md bg-white dark:bg-[#191e2d] text-gray-400 hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
               onClick={close}
             >
               <span className='sr-only'>

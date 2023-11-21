@@ -11,7 +11,7 @@ const typesOfCookies = [
 
 const CookiePolicy = () => {
   return (
-    <div className='bg-gray-50 dark:bg-slate-900'>
+    <div className='bg-gray-50 dark:bg-[#191e2d]'>
       <div className='w-11/12 md:w-4/5 mx-auto pb-16 pt-12 px-4 sm:px-6 lg:px-8'>
         <h1 className='text-4xl font-bold text-gray-900 dark:text-gray-50 tracking-tight'>
           Cookie Policy

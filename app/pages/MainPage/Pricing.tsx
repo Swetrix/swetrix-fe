@@ -260,7 +260,7 @@ const Pricing = ({ t, language, authenticated, isBillingPage }: IPricing) => {
 
   return (
     <>
-      <div id='pricing' className={cx({ 'bg-white dark:bg-slate-900/75': !authenticated })}>
+      <div id='pricing' className={cx({ 'bg-white dark:bg-[#191e2d]/75': !authenticated })}>
         <div
           className={cx('max-w-max whitespace-pre-line', {
             'px-4 sm:px-6 lg:px-8 py-24': !authenticated,
@@ -303,7 +303,7 @@ const Pricing = ({ t, language, authenticated, isBillingPage }: IPricing) => {
                     value={BillingFrequency.monthly}
                     className={({ checked }) =>
                       cx(
-                        checked ? 'bg-slate-900 dark:bg-indigo-700 text-gray-50' : 'text-gray-500 dark:text-gray-200',
+                        checked ? 'bg-[#191e2d] dark:bg-indigo-700 text-gray-50' : 'text-gray-500 dark:text-gray-200',
                         'cursor-pointer rounded-md px-2.5 flex justify-center items-center',
                       )
                     }
@@ -317,7 +317,7 @@ const Pricing = ({ t, language, authenticated, isBillingPage }: IPricing) => {
                     value={BillingFrequency.yearly}
                     className={({ checked }) =>
                       cx(
-                        checked ? 'bg-slate-900 dark:bg-indigo-700 text-gray-50' : 'text-gray-500 dark:text-gray-200',
+                        checked ? 'bg-[#191e2d] dark:bg-indigo-700 text-gray-50' : 'text-gray-500 dark:text-gray-200',
                         'cursor-pointer rounded-md px-2.5 flex justify-center items-center',
                       )
                     }
@@ -391,7 +391,7 @@ const Pricing = ({ t, language, authenticated, isBillingPage }: IPricing) => {
                       </Button>
                     ) : (
                       <Link
-                        className='relative inline-flex select-none items-center border leading-4 font-medium rounded-md px-4 py-2 text-sm shadow-sm text-gray-50 bg-slate-900 hover:bg-slate-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 border-transparent'
+                        className='relative inline-flex select-none items-center border leading-4 font-medium rounded-md px-4 py-2 text-sm shadow-sm text-gray-50 bg-[#191e2d] hover:bg-slate-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 border-transparent'
                         to={routes.signup}
                         aria-label={t('titles.signup')}
                       >

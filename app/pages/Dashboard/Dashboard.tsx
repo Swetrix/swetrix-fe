@@ -483,7 +483,7 @@ const Dashboard = ({
 
   return (
     <>
-      <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900'>
+      <div className='min-h-min-footer bg-gray-50 dark:bg-[#191e2d]'>
         <EventsRunningOutBanner />
         <div className='flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
           <div className='max-w-7xl w-full mx-auto'>
@@ -521,7 +521,7 @@ const Dashboard = ({
                         type='text'
                         onChange={onSearch}
                         value={search}
-                        className='bg-gray-50 border-none h-7 ring-1 ring-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 block w-full sm:pl-10 p-2.5 dark:bg-slate-900 dark:ring-slate-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-200'
+                        className='bg-gray-50 border-none h-7 ring-1 ring-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 block w-full sm:pl-10 p-2.5 dark:bg-[#191e2d] dark:ring-slate-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-200'
                         placeholder={t('project.search')}
                       />
                     </div>
@@ -530,7 +530,7 @@ const Dashboard = ({
               </div>
               <span
                 onClick={onNewProject}
-                className='!pl-2 inline-flex justify-center items-center cursor-pointer text-center border border-transparent leading-4 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 shadow-sm text-white bg-slate-900 hover:bg-slate-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-2 text-sm'
+                className='!pl-2 inline-flex justify-center items-center cursor-pointer text-center border border-transparent leading-4 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 shadow-sm text-white bg-[#191e2d] hover:bg-slate-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 dark:hover:bg-slate-700 px-3 py-2 text-sm'
               >
                 <FolderPlusIcon className='w-5 h-5 mr-1' />
                 {tabProjects === tabForCaptchaProject ? t('dashboard.newCaptchaProject') : t('dashboard.newProject')}
@@ -549,7 +549,7 @@ const Dashboard = ({
                     type='text'
                     onChange={onSearch}
                     value={search}
-                    className='bg-gray-50 border-none h-7 ring-1 ring-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 block w-full pl-10 p-2.5 py-5 dark:bg-slate-900 dark:ring-slate-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-200'
+                    className='bg-gray-50 border-none h-7 ring-1 ring-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-500 block w-full pl-10 p-2.5 py-5 dark:bg-[#191e2d] dark:ring-slate-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-200'
                     placeholder={t('project.search')}
                   />
                 </div>
@@ -602,13 +602,13 @@ const Dashboard = ({
               </div>
             )}
             {isLoading ? (
-              <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900'>
+              <div className='min-h-min-footer bg-gray-50 dark:bg-[#191e2d]'>
                 <Loader />
               </div>
             ) : (
               <ClientOnly
                 fallback={(
-                  <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900'>
+                  <div className='min-h-min-footer bg-gray-50 dark:bg-[#191e2d]'>
                     <Loader />
                   </div>
                 )}

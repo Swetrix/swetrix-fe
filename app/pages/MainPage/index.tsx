@@ -176,7 +176,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
 
   return (
     <div className='overflow-hidden'>
-      <main className='bg-white dark:bg-slate-900'>
+      <main className='bg-white dark:bg-[#191e2d]'>
         {/* first block with live demo */}
         <div className='relative overflow-x-clip isolate'>
           <svg
@@ -272,7 +272,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
                 <div className='mt-10 flex flex-col items-center sm:flex-row'>
                   <Link
                     to={routesPath.signup}
-                    className='rounded-md !duration-300 transition-all w-full sm:max-w-[210px] h-12 flex items-center justify-center sm:mr-6 shadow-sm ring-1 text-white bg-slate-900 ring-slate-900 hover:bg-slate-700 dark:bg-indigo-700 dark:ring-indigo-700 dark:hover:bg-indigo-600'
+                    className='rounded-md !duration-300 transition-all w-full sm:max-w-[210px] h-12 flex items-center justify-center sm:mr-6 shadow-sm ring-1 text-white bg-[#191e2d] ring-slate-900 hover:bg-slate-700 dark:bg-indigo-700 dark:ring-indigo-700 dark:hover:bg-indigo-600'
                     aria-label={t('titles.signup')}
                   >
                     <span className='text-base font-semibold mr-1'>
@@ -321,7 +321,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
         </div>
         {/* end first block with live demo */}
         {/* section Core Analytics Features */}
-        <div className='dark:bg-slate-900 bg-white px-4 pb-24'>
+        <div className='dark:bg-[#191e2d] bg-white px-4 pb-24'>
           <section id='core-analytics' className='flex pt-16 md:pt-48 flex-col-reverse md:flex-row items-center md:items-start md:justify-between max-w-7xl m-auto'>
             <picture>
               <source
@@ -487,7 +487,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
         )}
         {/* end block singup */}
         {/* Core features section */}
-        <section className='bg-white dark:bg-slate-900 pt-14 relative pb-14'>
+        <section className='bg-white dark:bg-[#191e2d] pt-14 relative pb-14'>
           <BackgroundSvg theme={theme} className='absolute -left-8' type='shapes' />
           <div className='mx-auto text-slate-900 font-extrabold text-3xl sm:text-5xl w-fit relative'>
             <h2 className='relative z-20 dark:text-white'>
@@ -513,7 +513,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
         </section>
         {/* end Core features section */}
         {/* section supports */}
-        <section className='bg-white dark:bg-slate-900 pt-24 sm:px-5 px-3 relative'>
+        <section className='bg-white dark:bg-[#191e2d] pt-24 sm:px-5 px-3 relative'>
           <h2 className='mx-auto text-slate-900 dark:text-white font-bold text-3xl sm:ext-5xl w-fit text-center'>
             {t('main.supports')}
           </h2>
@@ -699,7 +699,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
         </div>
 
         {/* section Testimonials */}
-        <section className='bg-white dark:bg-slate-900 pt-20 pb-20 relative'>
+        <section className='bg-white dark:bg-[#191e2d] pt-20 pb-20 relative'>
           <div className='absolute right-0 top-0'>
             <BackgroundSvg theme={theme} type='twolinecircle2' />
           </div>
@@ -721,7 +721,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
               }, index: number) => (
                 <div
                   key={item.name}
-                  className={cx('max-w-xs w-full dark:bg-slate-900', {
+                  className={cx('max-w-xs w-full dark:bg-[#191e2d]', {
                     'mt-5 md:mt-0': index > 0,
                   })}
                   style={{
@@ -747,7 +747,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
         </section>
         {/* end section Testimonials */}
 
-        <div className='bg-white dark:bg-slate-900 px-4 md:px-8 pb-12'>
+        <div className='bg-white dark:bg-[#191e2d] px-4 md:px-8 pb-12'>
           <section className='relative isolate max-w-7xl w-full mx-auto bg-slate-800 overflow-hidden lg:h-[450px]' style={{ borderRadius: '100px 30px 30px 30px' }}>
             <div className='absolute -z-10 inset-0 overflow-hidden' aria-hidden='true'>
               <div className='absolute left-[calc(20%-19rem)] top-[calc(50%-36rem)] transform-gpu blur-3xl'>
@@ -835,7 +835,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
         </section>
         {/* end Advantages of using open source */}
         {/* Become a developer */}
-        <section className='bg-white dark:bg-slate-900 pt-20 pb-44 relative'>
+        <section className='bg-white dark:bg-[#191e2d] pt-20 pb-44 relative'>
           <div className='absolute right-0 top-16 z-0'>
             <BackgroundSvg theme={theme} type='threecircle' />
           </div>
