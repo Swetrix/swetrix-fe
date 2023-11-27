@@ -1894,7 +1894,7 @@ const ViewProject = ({
         if (projectRes.isPasswordProtected && !projectRes.isOwner && _isEmpty(projectPassword)) {
           navigate({
             pathname: _replace(routes.project_protected_password, ':id', id),
-            search: `?theme=${_theme}&embedded=${embedded}`,
+            search: `?theme=${ssrTheme}&embedded=${embedded}`,
           })
           return
         }
