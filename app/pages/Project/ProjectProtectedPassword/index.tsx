@@ -83,7 +83,7 @@ const ProjectProtectedPassword = ({
             }))
             navigate({
               pathname: _replace(routes.project, ':id', id),
-              search: `?password=${data.password}&embedded=${embedded}&theme=${ssrTheme}`,
+              search: `?embedded=${embedded}&theme=${ssrTheme}`,
             })
           }
           setErrors({
