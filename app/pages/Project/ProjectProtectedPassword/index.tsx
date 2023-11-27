@@ -41,7 +41,7 @@ const ProjectProtectedPassword = ({
     password?: string,
   }>({})
   const { id }: {
-    id: string
+    id: string,
   } = useParams()
   const [beenSubmitted, setBeenSubmitted] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -83,6 +83,7 @@ const ProjectProtectedPassword = ({
             }))
             navigate({
               pathname: _replace(routes.project, ':id', id),
+              search: `?password=${data.password}&embedded=${embedded}&theme=${ssrTheme}`,
             })
           }
           setErrors({
