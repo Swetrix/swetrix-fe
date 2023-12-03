@@ -1325,3 +1325,12 @@ export const getLastPost = () =>
         ? error.response.data
         : error.response.data.message
     })
+
+export const pinProject = (id: string, isPinned: boolean) =>
+  api
+    .put(`project/pin/${id}`, { isPinned })
+    .then((response): IProject => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })

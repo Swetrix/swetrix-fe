@@ -35,7 +35,7 @@ import {
 import EventsRunningOutBanner from 'components/EventsRunningOutBanner'
 import useDebounce from 'hooks/useDebounce'
 
-import { acceptShareProject } from 'api'
+import { acceptShareProject, pinProject } from 'api'
 
 import Pagination from 'ui/Pagination'
 import { ISharedProject } from 'redux/models/ISharedProject'
@@ -67,6 +67,9 @@ interface IProjectCard {
   isTransferring?: boolean
   getRole?: (id: string) => string | null
   members?: number
+  pinned?: boolean
+  loadProjects?: () => void
+  tabProjects?: string
 }
 
 interface IMiniCard {
@@ -132,7 +135,7 @@ MiniCard.defaultProps = {
 const ProjectCard = ({
   name, active, birdseye, t, live, isPublic, confirmed, id, deleteProjectFailed,
   sharedProjects, setProjectsShareData, setUserShareData, shared, userSharedUpdate, sharedProjectError,
-  captcha, isTransferring, type, getRole, members,
+  captcha, isTransferring, type, getRole, members, pinned, loadProjects, tabProjects,
 }: IProjectCard): JSX.Element => {
   const [showInviteModal, setShowInviteModal] = useState(false)
   const role = useMemo(() => getRole && getRole(id), [getRole, id])
@@ -167,6 +170,15 @@ const ProjectCard = ({
     setShowInviteModal(true)
   }
 
+  const handleChangePin = (pin: boolean) => {
+    pinProject(id, pin)
+      .then(() => {
+        if (loadProjects) {
+          loadProjects()
+        }
+      })
+  }
+
   return (
     <div onClick={() => {
       navigate(_replace(type === 'analytics' ? routes.project : routes.captcha, ':id', id))
@@ -186,6 +198,36 @@ const ProjectCard = ({
               className='flex items-center gap-2'
               onClick={(e) => e.stopPropagation()}
             >
+              {tabProjects === tabForOwnedProject && pinned ? (
+                <button
+                  type='button'
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleChangePin(false)
+                  }}
+                  className='text-gray-800 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-500'
+                >
+                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='30' height='30' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+                    <rect x='9' y='18' width='6' height='2' rx='1' ry='1' />
+                    <path d='M12 2c-4.418 0-8 3.582-8 8v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6c0-4.418-3.582-8-8-8z' />
+                  </svg>
+                </button>
+              ) : (
+                  <button
+                    type='button'
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleChangePin(true)
+                    }}
+                    className='text-gray-800 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-500'
+                  >
+                    <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='30' height='30' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+                      <line x1='5' y1='9' x2='19' y2='9' />
+                      <line x1='12' y1='19' x2='12' y2='9' />
+                      <line x1='7' y1='14' x2='17' y2='14' />
+                    </svg>
+                  </button>
+              )}
               {role !== roleViewer.role && (
                 <Link
                   to={_replace(type === 'analytics' ? routes.project_settings : routes.captcha_settings, ':id', id)}
@@ -407,7 +449,7 @@ const Dashboard = ({
     setSearch('')
   }, [tabProjects])
 
-  useEffect(() => {
+  const handleLoadProjects = () => {
     if (tabProjects === tabForOwnedProject) {
       loadProjects(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPage - 1) * ENTRIES_PER_PAGE_DASHBOARD, debouncedSearch)
     }
@@ -417,6 +459,10 @@ const Dashboard = ({
     if (tabProjects === tabForCaptchaProject) {
       loadProjectsCaptcha(ENTRIES_PER_PAGE_DASHBOARD, (dashboardPaginationPageCaptcha - 1) * ENTRIES_PER_PAGE_DASHBOARD, debouncedSearch)
     }
+  }
+
+  useEffect(() => {
+    handleLoadProjects()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboardPaginationPage, dashboardPaginationPageShared, debouncedSearch])
 
@@ -622,7 +668,7 @@ const Dashboard = ({
                         ) : (
                           <ul className='grid grid-cols-1 gap-x-6 gap-y-3 lg:gap-y-6 lg:grid-cols-3'>
                             {_map(_filter(projects, ({ uiHidden }) => !uiHidden), ({
-                              name, id, active, public: isPublic, isTransferring, share,
+                              name, id, active, public: isPublic, isTransferring, share, isPinned,
                             }) => (
                               <ProjectCard
                                 key={id}
@@ -643,6 +689,9 @@ const Dashboard = ({
                                 sharedProjectError={() => { }}
                                 isTransferring={isTransferring}
                                 confirmed
+                                pinned={isPinned}
+                                loadProjects={handleLoadProjects}
+                                tabProjects={tabProjects}
                               />
                             ))}
                             <AddProject t={t} onClick={onNewProject} />
