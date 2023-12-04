@@ -15,7 +15,7 @@ import {
 } from '@remix-run/react'
 import { store } from 'redux/store'
 import {
-  whitelist, isBrowser, CONTACT_EMAIL, LS_THEME_SETTING, isSelfhosted, whitelistWithCC,
+  isBrowser, CONTACT_EMAIL, LS_THEME_SETTING, isSelfhosted,
 } from 'redux/constants'
 import {
   getCookie, generateCookieString,
@@ -23,7 +23,6 @@ import {
 import { ExclamationTriangleIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline'
 import { Provider } from 'react-redux'
 import clsx from 'clsx'
-import _map from 'lodash/map'
 import _replace from 'lodash/replace'
 import _startsWith from 'lodash/startsWith'
 // @ts-ignore
@@ -39,6 +38,7 @@ import { detectLanguage } from 'i18n'
 import {
   detectTheme, getPageMeta, isAuthenticated, isWWW,
 } from 'utils/server'
+import { LiveMeta } from 'components/LiveMeta'
 
 import mainCss from 'styles/index.css'
 import tailwindCss from 'styles/tailwind.css'
@@ -234,27 +234,6 @@ export default function App() {
   const urlObject = new URL(url)
   urlObject.searchParams.delete('lng')
 
-  const lnglessUrl = urlObject.toString()
-
-  const alternateLinks = _map(whitelist, (lc) => {
-    urlObject.searchParams.set('lng', lc)
-
-    return {
-      rel: 'alternate',
-      hrefLang: lc,
-      href: urlObject.toString(),
-    }
-  })
-  const alternateLinksWithCountryCodes = _map(whitelistWithCC, (value, key) => {
-    urlObject.searchParams.set('lng', key)
-
-    return {
-      rel: 'alternate',
-      hrefLang: value,
-      href: urlObject.toString(),
-    }
-  })
-
   useChangeLanguage(locale)
 
   const isBlogPage = _startsWith(pathname, '/blog')
@@ -290,10 +269,7 @@ export default function App() {
         <Links />
         {theme === 'dark' && <link rel='stylesheet' href={FlatpickrDarkCss} />}
         {theme === 'light' && <link rel='stylesheet' href={FlatpickrLightCss} />}
-        {_map([...alternateLinks, ...alternateLinksWithCountryCodes], (link) => (
-          <link key={link.hrefLang} {...link} />
-        ))}
-        <link rel='alternate' href={lnglessUrl} hrefLang='x-default' />
+        <LiveMeta />
         <link rel='preload' href={`/locales/${locale}.json`} as='fetch' type='application/json' crossOrigin='anonymous' />
         <script
           // eslint-disable-next-line react/no-danger
