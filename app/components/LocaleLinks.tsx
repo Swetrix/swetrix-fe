@@ -3,9 +3,15 @@ import { useLocation, Location } from '@remix-run/react'
 import { whitelist, whitelistWithCC, MAIN_URL } from 'redux/constants'
 import _map from 'lodash/map'
 
-const getAlternateLinks = (location: Location) => {
+const getUrlFromLocation = (location: Location) => {
   const { pathname, hash, search } = location
   const urlObject = new URL(`${MAIN_URL}${pathname}${search}${hash}`)
+
+  return urlObject
+}
+
+const getAlternateLinks = (location: Location) => {
+  const urlObject = getUrlFromLocation(location)
 
   const lnglessUrl = urlObject.toString()
 
@@ -35,7 +41,7 @@ const getAlternateLinks = (location: Location) => {
   }
 }
 
-export const LiveMeta = () => {
+export const LocaleLinks = () => {
   const location = useLocation()
 
   const altLinks = useMemo(() => getAlternateLinks(location), [location])
