@@ -1,12 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { useLocation } from '@remix-run/react'
 import _startsWith from 'lodash/startsWith'
+import _toUpper from 'lodash/toUpper'
 // import { MAIN_URL } from 'redux/constants'
 import { getPageMeta } from 'utils/server'
 import { getOgImageUrl } from 'redux/constants'
 
 export const SEO = () => {
-  const { t } = useTranslation('common')
+  const { t, i18n: { language } } = useTranslation('common')
   const { pathname } = useLocation()
   const { title, prefixLessTitle } = getPageMeta(t, undefined, pathname)
 
@@ -43,6 +44,8 @@ export const SEO = () => {
       <meta property='og:site_name' content='Swetrix' />
       <meta property='og:url' content='https://swetrix.com' />
       <meta property='og:type' content='website' />
+      <meta name='language' content={_toUpper(language)} />
+      <meta http-equiv='content-language' content={_toUpper(language)} />
     </>
   )
 }
