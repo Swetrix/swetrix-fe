@@ -6,3 +6,18 @@ export interface ISession {
   pageviews: number
   created: string
 }
+
+export interface ISessionDetails {
+  cc: string | null
+  os: string | null
+  br: string | null
+  lc: string | null
+  ref: string | null
+  so: string | null
+  me: string | null
+  ca: string | null
+  rg: string | null
+  ct: string | null
+  dv: string | null
+  sdur: number | null
+}

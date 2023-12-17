@@ -99,6 +99,7 @@ import TBPeriodSelector from './components/TBPeriodSelector'
 import { ISession } from './interfaces/session'
 import { Sessions } from './components/Sessions'
 import { Pageflow } from './components/Pageflow'
+import { SessionDetails } from './components/SessionDetails'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -2697,6 +2698,7 @@ const ViewProject = ({
             {activeTab === PROJECT_TABS.sessions && !activeSession && (
               <>
                 <Sessions sessions={sessions} onClick={loadSession} />
+                {/* TODO: Load more button */}
               </>
             )}
             {activeTab === PROJECT_TABS.sessions && activeSession && (
@@ -2708,6 +2710,8 @@ const ViewProject = ({
                   <ChevronLeftIcon className='w-4 h-4' />
                   {t('project.backToSessions')}
                 </button>
+                TODO: Add pageview chart here
+                <SessionDetails details={activeSession?.details} psid={activeSession?.psid} />
                 <Pageflow pages={activeSession?.pages} />
               </>
             )}
