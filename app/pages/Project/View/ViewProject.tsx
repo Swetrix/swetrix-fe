@@ -1044,7 +1044,7 @@ const ViewProject = ({
     }
 
     setSessionsLoading(true)
-  
+
     try {
       let dataSessions: { sessions: ISession[] }
       let from
@@ -2693,9 +2693,21 @@ const ViewProject = ({
                 )}
               </div>
             ))}
-            {activeTab === PROJECT_TABS.sessions && (
+            {activeTab === PROJECT_TABS.sessions && !activeSession && (
               <>
                 <Sessions sessions={sessions} onClick={loadSession} />
+              </>
+            )}
+            {activeTab === PROJECT_TABS.sessions && activeSession && (
+              <>
+                <button
+                  onClick={() => setActiveSession(null)}
+                  className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 lg:mt-0 text-gray-900 dark:text-gray-100'
+                >
+                  <ChevronLeftIcon className='w-4 h-4' />
+                  {t('project.backToSessions')}
+                </button>
+                TODO: Session details
               </>
             )}
             {(activeTab === PROJECT_TABS.alerts && !isSharedProject && project?.isOwner && authenticated) && (
