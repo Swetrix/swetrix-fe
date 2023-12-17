@@ -501,6 +501,7 @@
     "traffic": "Traffic",
     "performance": "Performance",
     "funnels": "Funnels",
+    "sessions": "Sessions",
     "alerts": "Alerts",
     "alertsDesc": "Automated alerts are a powerful tool that allow you to run automated tasks when specific events occur.\nWe can automatically monitor your project for traffic spikes and notify you via Telegram.",
     "funnelsDesc": "Funnels are a powerful tool that allow you to track the conversion rate of your users through a series of steps.\nThe analysis provided by the marketing funnel gives you the ability to discover potential problems, improve your website, and boost your conversion rate.",

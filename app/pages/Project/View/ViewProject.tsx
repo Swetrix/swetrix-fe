@@ -12,7 +12,7 @@ import { saveAs } from 'file-saver'
 import bb from 'billboard.js'
 import {
   ArrowDownTrayIcon, Cog8ToothIcon, ArrowPathIcon, ChartBarIcon, BoltIcon, BellIcon,
-  NoSymbolIcon, MagnifyingGlassIcon, FunnelIcon, ChevronLeftIcon, GlobeAltIcon,
+  NoSymbolIcon, MagnifyingGlassIcon, FunnelIcon, ChevronLeftIcon, GlobeAltIcon, UsersIcon,
 } from '@heroicons/react/24/outline'
 import cx from 'clsx'
 import dayjs from 'dayjs'
@@ -73,7 +73,7 @@ import Footer from 'components/Footer'
 import {
   getProjectData, getProject, getOverallStats, getLiveVisitors, getPerfData, getProjectDataCustomEvents,
   getProjectCompareData, checkPassword, getCustomEventsMetadata, addFunnel, updateFunnel, deleteFunnel,
-  getFunnelData, getFunnels, getPerformanceOverallStats,
+  getFunnelData, getFunnels, getPerformanceOverallStats, getSessions, getSession,
 } from 'api'
 import { getChartPrediction } from 'api/ai'
 import { Panel, CustomEvents } from './Panels'
@@ -96,6 +96,8 @@ import PerformanceMetricCards from './components/PerformanceMetricCards'
 import ProjectAlertsView from '../Alerts/View'
 import UTMDropdown from './components/UTMDropdown'
 import TBPeriodSelector from './components/TBPeriodSelector'
+import { ISession } from './interfaces/session'
+import { Sessions } from './components/Sessions'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -286,6 +288,13 @@ const ViewProject = ({
     // if we do not have activeTab in url, we return activeTab from localStorage or default tab trafic
     return projectTab || PROJECT_TABS.traffic
   })
+
+  // sessions
+  const [sessionsTake, setSessionsTake] = useState<number>(30)
+  const [sessions, setSessions] = useState<any[]>([])
+  const [sessionsLoading, setSessionsLoading] = useState<boolean | null>(null) // null - not loaded, true - loading, false - loaded
+  const [activeSession, setActiveSession] = useState<any>(null)
+  const [sessionLoading, setSessionLoading] = useState<boolean>(false)
 
   const [activeFunnel, setActiveFunnel] = useState<IFunnel | null>(null)
   const [funnelToEdit, setFunnelToEdit] = useState<IFunnel | undefined>(undefined)
@@ -660,6 +669,11 @@ const ViewProject = ({
     const newTabs = [
       ...selfhostedOnly,
       {
+        id: PROJECT_TABS.sessions,
+        label: t('dashboard.sessions'),
+        icon: UsersIcon,
+      },
+      {
         id: PROJECT_TABS.funnels,
         label: t('dashboard.funnels'),
         icon: FunnelIcon,
@@ -1003,6 +1017,57 @@ const ViewProject = ({
     }
 
     return getCustomEventsMetadata(id, event, timeBucket, period, '', '', timezone, projectPassword)
+  }
+
+  const loadSession = async (psid: string) => {
+    if (sessionLoading) {
+      return
+    }
+
+    setSessionLoading(true)
+
+    try {
+      const session = await getSession(id, psid, timezone, projectPassword)
+
+      setActiveSession(session)
+    } catch (reason: any) {
+      console.error('[ERROR] (loadSession)(getSession)', reason)
+      showError(reason) // todo: error message i18n
+    }
+
+    setSessionLoading(false)
+  }
+
+  const loadSessions = async (newFilters: any[] | null = null) => {
+    if (sessionsLoading) {
+      return
+    }
+
+    setSessionsLoading(true)
+  
+    try {
+      let dataSessions: { sessions: ISession[] }
+      let from
+      let to
+
+      if (dateRange) {
+        from = getFormatDate(dateRange[0])
+        to = getFormatDate(dateRange[1])
+      }
+
+      if (period === 'custom' && dateRange) {
+        dataSessions = await getSessions(id, timeBucket, '', newFilters || filtersPerf, from, to, timezone, projectPassword)
+      } else {
+        dataSessions = await getSessions(id, timeBucket, period, newFilters || filtersPerf, '', '', timezone, projectPassword)
+      }
+
+      setSessions((prev) => [...prev, ...(dataSessions?.sessions || [])])
+    } catch (e) {
+      console.error('[ERROR](loadAnalytics) Loading analytics data failed')
+      console.error(e)
+    } finally {
+      setSessionsLoading(false)
+    }
   }
 
   // similar to loadAnalytics but using for performance tab
@@ -1818,7 +1883,6 @@ const ViewProject = ({
     }
   }
 
-  // useEffect using for call loadAnalytics or loadAnalyticsPerf when smth dependencies changed
   useEffect(() => {
     if (period === KEY_FOR_ALL_TIME) {
       return
@@ -1829,6 +1893,9 @@ const ViewProject = ({
     }
     if (areFiltersPerfParsed && areTimeBucketParsed && arePeriodParsed && activeTab === PROJECT_TABS.performance) {
       loadAnalyticsPerf()
+    }
+    if (areFiltersPerfParsed && areTimeBucketParsed && arePeriodParsed && activeTab === PROJECT_TABS.sessions) {
+      loadSessions()
     }
   }, [project, period, chartType, filters, forecasedChartData, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t, activeTab, areFiltersPerfParsed]) // eslint-disable-line
 
@@ -1843,8 +1910,23 @@ const ViewProject = ({
     if (areFiltersPerfParsed && areTimeBucketParsed && arePeriodParsed && activeTab === PROJECT_TABS.performance) {
       loadAnalyticsPerf()
     }
+    // if (areFiltersPerfParsed && arePeriodParsed && activeTab === PROJECT_TABS.sessions) {
+    //   loadSessions()
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, period, chartType, filters, forecasedChartData, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, activeTab, areFiltersPerfParsed])
+
+  useEffect(() => {
+    setSessions([])
+    setSessionsLoading(null)
+  }, [period])
+
+  useEffect(() => {
+    if (activeTab === PROJECT_TABS.sessions) {
+      loadSessions()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab])
 
   useEffect(() => {
     if (!project || !activeFunnel) {
@@ -2068,8 +2150,10 @@ const ViewProject = ({
     setFiltersPerf([])
     if (activeTab === PROJECT_TABS.performance) {
       loadAnalyticsPerf(true, [])
-    } else {
+    } else if (activeTab === PROJECT_TABS.traffic) {
       loadAnalytics(true, [])
+    } else if (activeTab === PROJECT_TABS.sessions) {
+      loadSessions([])
     }
   }
 
@@ -2609,10 +2693,15 @@ const ViewProject = ({
                 )}
               </div>
             ))}
+            {activeTab === PROJECT_TABS.sessions && (
+              <>
+                <Sessions sessions={sessions} onClick={loadSession} />
+              </>
+            )}
             {(activeTab === PROJECT_TABS.alerts && !isSharedProject && project?.isOwner && authenticated) && (
               <ProjectAlertsView projectId={id} />
             )}
-            {(analyticsLoading && activeTab !== PROJECT_TABS.alerts && activeTab !== PROJECT_TABS.funnels) && (
+            {analyticsLoading && (activeTab === PROJECT_TABS.traffic || activeTab === PROJECT_TABS.performance) && (
               <Loader />
             )}
             {(isPanelsDataEmpty && activeTab === PROJECT_TABS.traffic) && (
