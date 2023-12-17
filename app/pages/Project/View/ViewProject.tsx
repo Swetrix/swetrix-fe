@@ -98,6 +98,7 @@ import UTMDropdown from './components/UTMDropdown'
 import TBPeriodSelector from './components/TBPeriodSelector'
 import { ISession } from './interfaces/session'
 import { Sessions } from './components/Sessions'
+import { Pageflow } from './components/Pageflow'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -2707,7 +2708,7 @@ const ViewProject = ({
                   <ChevronLeftIcon className='w-4 h-4' />
                   {t('project.backToSessions')}
                 </button>
-                TODO: Session details
+                <Pageflow pages={activeSession?.pages} />
               </>
             )}
             {(activeTab === PROJECT_TABS.alerts && !isSharedProject && project?.isOwner && authenticated) && (
