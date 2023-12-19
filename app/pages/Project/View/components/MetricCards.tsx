@@ -11,7 +11,7 @@ import { Badge } from 'ui/Badge'
 interface IMetricCard {
   label: string
   value: string | number | undefined
-  goodChangeDirection: 'up' | 'down'
+  goodChangeDirection?: 'up' | 'down'
   change?: number
   type?: 'percent' | 'string'
   valueMapper?: (value: any, type: 'main' | 'badge') => any
