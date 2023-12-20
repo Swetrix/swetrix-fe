@@ -564,6 +564,7 @@
   },
   "project": {
     "search": "Search",
+    "loadMore": "Load more",
     "unknownCountry": "Unknown country",
     "selectCategory": "Select category to filter",
     "currentFilters": "Currently applied filters",

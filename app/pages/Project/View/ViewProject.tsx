@@ -18,6 +18,7 @@ import cx from 'clsx'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import _keys from 'lodash/keys'
+import _isNumber from 'lodash/isNumber'
 import _map from 'lodash/map'
 import _includes from 'lodash/includes'
 import _last from 'lodash/last'
@@ -104,6 +105,7 @@ import { SessionChart } from './components/SessionChart'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
+const SESSIONS_TAKE = 30
 
 interface IViewProject {
   projects: IProject[],
@@ -293,7 +295,8 @@ const ViewProject = ({
   })
 
   // sessions
-  const [sessionsTake, setSessionsTake] = useState<number>(30)
+  const [sessionsSkip, setSessionsSkip] = useState<number>(0)
+  const [canLoadMoreSessions, setCanLoadMoreSessions] = useState<boolean>(false)
   const [sessions, setSessions] = useState<any[]>([])
   const [sessionsLoading, setSessionsLoading] = useState<boolean | null>(null) // null - not loaded, true - loading, false - loaded
   const [activeSession, setActiveSession] = useState<any>(null)
@@ -1041,10 +1044,12 @@ const ViewProject = ({
     setSessionLoading(false)
   }
 
-  const loadSessions = async (newFilters: any[] | null = null) => {
+  const loadSessions = async (newFilters: any[] | null = null, skip: number | null = null) => {
     if (sessionsLoading) {
       return
     }
+
+    const _skip = _isNumber(skip) ? skip : sessionsSkip
 
     setSessionsLoading(true)
 
@@ -1059,12 +1064,19 @@ const ViewProject = ({
       }
 
       if (period === 'custom' && dateRange) {
-        dataSessions = await getSessions(id, timeBucket, '', newFilters || filtersPerf, from, to, timezone, projectPassword)
+        dataSessions = await getSessions(id, timeBucket, '', newFilters || filters, from, to, SESSIONS_TAKE, _skip, timezone, projectPassword)
       } else {
-        dataSessions = await getSessions(id, timeBucket, period, newFilters || filtersPerf, '', '', timezone, projectPassword)
+        dataSessions = await getSessions(id, timeBucket, period, newFilters || filters, '', '', SESSIONS_TAKE, _skip, timezone, projectPassword)
       }
 
       setSessions((prev) => [...prev, ...(dataSessions?.sessions || [])])
+      setSessionsSkip(_skip + SESSIONS_TAKE)
+
+      if (dataSessions?.sessions?.length < SESSIONS_TAKE) {
+        setCanLoadMoreSessions(false)
+      } else {
+        setCanLoadMoreSessions(true)
+      }
     } catch (e) {
       console.error('[ERROR](loadAnalytics) Loading analytics data failed')
       console.error(e)
@@ -1925,8 +1937,10 @@ const ViewProject = ({
   }, [period])
 
   useEffect(() => {
-    if (activeTab === PROJECT_TABS.sessions) {
-      loadSessions()
+    if (activeTab === PROJECT_TABS.sessions && _isEmpty(sessions)) {
+      setCanLoadMoreSessions(false)
+      setSessionsSkip(0)
+      loadSessions(null, 0)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab])
@@ -2156,7 +2170,7 @@ const ViewProject = ({
     } else if (activeTab === PROJECT_TABS.traffic) {
       loadAnalytics(true, [])
     } else if (activeTab === PROJECT_TABS.sessions) {
-      loadSessions([])
+      loadSessions([], 0)
     }
   }
 
@@ -2699,7 +2713,19 @@ const ViewProject = ({
             {activeTab === PROJECT_TABS.sessions && !activeSession && (
               <>
                 <Sessions sessions={sessions} onClick={loadSession} />
-                {/* TODO: Load more button */}
+                {canLoadMoreSessions && (
+                  <button
+                    type='button'
+                    title={t('project.refreshStats')}
+                    onClick={() => loadSessions()}
+                    className={cx('flex items-center mx-auto mt-2 text-gray-700 dark:text-gray-50 relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200', {
+                      'cursor-not-allowed opacity-50': sessionsLoading,
+                    })}
+                  >
+                    <ArrowDownTrayIcon className='w-5 h-5 mr-2' />
+                    {t('project.loadMore')}
+                  </button>
+                )}
               </>
             )}
             {activeTab === PROJECT_TABS.sessions && activeSession && (

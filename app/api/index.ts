@@ -524,12 +524,14 @@ export const getSessions = (
   filters: string[] = [],
   from: string = '',
   to: string = '',
+  take: number = 30,
+  skip: number = 0,
   timezone: string = '',
   password: string | undefined = '',
 ) =>
   api
     .get(
-      `log/sessions?pid=${pid}&timeBucket=${tb}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}`,
+      `log/sessions?pid=${pid}&take=${take}&skip=${skip}&timeBucket=${tb}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}`,
       {
         headers: {
           'x-password': password,
