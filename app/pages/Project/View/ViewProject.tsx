@@ -1887,6 +1887,15 @@ const ViewProject = ({
         setPeriod('custom')
         setProjectViewPrefs(id, 'custom', timeBucketToDays[index].tb[0], dates)
 
+        setCanLoadMoreSessions(false)
+        setSessionsSkip(0)
+        setSessions([])
+        setSessionsLoading(null)
+        
+        if (activeTab === PROJECT_TABS.sessions) {
+          loadSessions(null, 0)
+        }
+
         sdkInstance?._emitEvent('timeupdate', {
           period: 'custom',
           timeBucket: eventEmitTimeBucket,
@@ -1930,11 +1939,6 @@ const ViewProject = ({
     // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, period, chartType, filters, forecasedChartData, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, activeTab, areFiltersPerfParsed])
-
-  useEffect(() => {
-    setSessions([])
-    setSessionsLoading(null)
-  }, [period])
 
   useEffect(() => {
     if (activeTab === PROJECT_TABS.sessions && _isEmpty(sessions)) {
@@ -2050,6 +2054,16 @@ const ViewProject = ({
       url.searchParams.append('period', newPeriod.period)
       setProjectViewPrefs(id, newPeriod.period, tb)
       setPeriod(newPeriod.period)
+
+      setCanLoadMoreSessions(false)
+      setSessionsSkip(0)
+      setSessions([])
+      setSessionsLoading(null)
+      
+      if (activeTab === PROJECT_TABS.sessions) {
+        loadSessions(null, 0)
+      }
+
       setDateRange(null)
     }
     const { pathname, search } = url
