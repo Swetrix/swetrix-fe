@@ -2285,7 +2285,7 @@ const ViewProject = ({
                 </div>
               </div>
             </div>
-            {activeTab !== PROJECT_TABS.alerts && (activeFunnel || activeTab !== PROJECT_TABS.funnels) && (
+            {activeTab !== PROJECT_TABS.alerts && !activeSession && (activeFunnel || activeTab !== PROJECT_TABS.funnels) && (
               <>
                 <div className='flex flex-col lg:flex-row items-center lg:items-start justify-between mt-2'>
                   <div className='flex items-center space-x-5 flex-wrap'>
@@ -2704,13 +2704,18 @@ const ViewProject = ({
             )}
             {activeTab === PROJECT_TABS.sessions && activeSession && (
               <>
-                <button
-                  onClick={() => setActiveSession(null)}
-                  className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 lg:mt-0 text-gray-900 dark:text-gray-100'
-                >
-                  <ChevronLeftIcon className='w-4 h-4' />
-                  {t('project.backToSessions')}
-                </button>
+                <div className='flex items-baseline space-x-2 mt-2'>
+                  <h2 className='text-xl font-bold text-gray-900 dark:text-gray-50 break-words break-all'>
+                    {activeSession?.psid}
+                  </h2>
+                  <button
+                    onClick={() => setActiveSession(null)}
+                    className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 lg:mt-0 text-gray-900 dark:text-gray-100'
+                  >
+                    <ChevronLeftIcon className='w-4 h-4' />
+                    {t('project.backToSessions')}
+                  </button>
+                </div>
                 <SessionDetails details={activeSession?.details} psid={activeSession?.psid} />
                 <SessionChart
                   chart={activeSession?.chart}

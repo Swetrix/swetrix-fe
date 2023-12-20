@@ -63,8 +63,6 @@ const Session = ({ session, onClick }: ISessionComponent) => {
 }
 
 export const Sessions: React.FC<ISessions> = ({ sessions, onClick }) => {
-  console.log('Sessions:', sessions)
-
   return (
     <ul className='divide-y divide-gray-100 dark:divide-slate-700'>
       {_map(sessions, (session) => (
