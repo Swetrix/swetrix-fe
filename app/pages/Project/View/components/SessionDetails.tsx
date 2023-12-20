@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import _capitalize from 'lodash/capitalize'
 import { getStringFromTime, getTimeFromSeconds } from 'utils/generic'
 import { ISessionDetails } from '../interfaces/session'
-import { MetricCard } from './MetricCards'
+import { MetricCard, MetricCardSelect } from './MetricCards'
 import CCRow from './CCRow'
 
 interface ISessionDetailsComponent {
@@ -14,14 +14,41 @@ interface ISessionDetailsComponent {
 export const SessionDetails = ({ details, psid }: ISessionDetailsComponent) => {
   const { t, i18n: { language } } = useTranslation('common')
 
-  // TODO: display psid
+  const geo = [{
+    label: t('project.mapping.cc'),
+    value: details.cc,
+  }, {
+    label: t('project.mapping.rg'),
+    value: details.rg,
+  }, {
+    label: t('project.mapping.ct'),
+    value: details.ct,
+  }]
+
+  const utm = [{
+    label: t('project.mapping.so'),
+    value: details.so || 'N/A',
+  }, {
+    label: t('project.mapping.me'),
+    value: details.me || 'N/A',
+  }, {
+    label: t('project.mapping.ca'),
+    value: details.ca || 'N/A',
+  }]
+
   return (
     <div className='flex justify-center lg:justify-start gap-5 mb-5 flex-wrap'>
-      <MetricCard
-        label={t('project.mapping.cc')}
-        value={details.cc}
-        valueMapper={(value) => {
-          if (!value) return t('project.unknownCountry')
+      <MetricCardSelect
+        values={geo}
+        selectLabel={t('project.geo')}
+        valueMapper={({ value }, index) => {
+          if (index !== 0) {
+            return value || 'N/A'
+          }
+
+          if (!value) {
+            return t('project.unknownCountry')
+          }
 
           return (
             <div className='flex items-center'>
@@ -29,14 +56,6 @@ export const SessionDetails = ({ details, psid }: ISessionDetailsComponent) => {
             </div>
           )
         }}
-      />
-      <MetricCard
-        label={t('project.mapping.rg')}
-        value={details.rg || 'N/A'}
-      />
-      <MetricCard
-        label={t('project.mapping.ct')}
-        value={details.ct || 'N/A'}
       />
       <MetricCard
         label={t('project.mapping.os')}
@@ -59,17 +78,9 @@ export const SessionDetails = ({ details, psid }: ISessionDetailsComponent) => {
         label={t('project.mapping.ref')}
         value={details.ref || 'N/A'}
       />
-      <MetricCard
-        label={t('project.mapping.so')}
-        value={details.so || 'N/A'}
-      />
-      <MetricCard
-        label={t('project.mapping.me')}
-        value={details.me || 'N/A'}
-      />
-      <MetricCard
-        label={t('project.mapping.ca')}
-        value={details.ca || 'N/A'}
+      <MetricCardSelect
+        values={utm}
+        selectLabel={t('project.campaigns')}
       />
       <MetricCard
         label={t('dashboard.sessionDuration')}
