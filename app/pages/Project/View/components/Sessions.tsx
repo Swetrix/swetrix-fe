@@ -18,6 +18,13 @@ interface ISessionComponent {
 
 const Session = ({ session, onClick }: ISessionComponent) => {
   const { t, i18n: { language } } = useTranslation('common')
+  const date = new Date(session.created).toLocaleDateString(language, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  })
 
   return (
     <li
@@ -31,7 +38,7 @@ const Session = ({ session, onClick }: ISessionComponent) => {
             <span className='text-gray-400 mx-1'>
               |
             </span>
-            {session.created}
+            {date}
           </p>
           <p className='mt-1 flex text-xs leading-5 text-gray-500 dark:text-gray-300'>
             {session.cc ? (

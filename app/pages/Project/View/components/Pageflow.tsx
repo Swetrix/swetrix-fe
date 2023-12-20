@@ -18,7 +18,12 @@ export const Pageflow = ({ pages }: IPageflow) => {
     <div className='flow-root'>
       <ul className='-mb-8'>
         {_map(pages, ({ value, created, type }, index) => {
-          const displayCreated = new Date(created).toLocaleString(language)
+          const displayCreated = new Date(created).toLocaleDateString(language, {
+            day: 'numeric',
+            month: 'short',
+            hour: 'numeric',
+            minute: 'numeric',
+          })
 
           return (
             <li key={`${value}${created}`}>
