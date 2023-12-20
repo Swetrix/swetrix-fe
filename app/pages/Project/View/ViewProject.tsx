@@ -2362,7 +2362,7 @@ const ViewProject = ({
                             <MagnifyingGlassIcon className='w-5 h-5 stroke-2 text-gray-700 dark:text-gray-50' />
                           </button>
                         </div>
-                        {activeTab !== PROJECT_TABS.funnels && (
+                        {activeTab !== PROJECT_TABS.funnels && activeTab !== PROJECT_TABS.sessions && (
                           <Dropdown
                             header={t('project.exportData')}
                             items={[...exportTypes, ...customExportTypes, { label: t('project.lookingForMore'), lookingForMore: true, onClick: () => { } }]}
@@ -2391,7 +2391,7 @@ const ViewProject = ({
                         )}
                         <div
                           className={cx('border-gray-200 dark:border-gray-600 lg:px-3 sm:mr-3 space-x-2 lg:border-x', {
-                            hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled,
+                            hidden: isPanelsDataEmpty || analyticsLoading || checkIfAllMetricsAreDisabled || activeTab === PROJECT_TABS.sessions,
                           })}
                         >
                           <button
