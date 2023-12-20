@@ -1064,9 +1064,9 @@ const ViewProject = ({
       }
 
       if (period === 'custom' && dateRange) {
-        dataSessions = await getSessions(id, timeBucket, '', newFilters || filters, from, to, SESSIONS_TAKE, _skip, timezone, projectPassword)
+        dataSessions = await getSessions(id, '', newFilters || filters, from, to, SESSIONS_TAKE, _skip, timezone, projectPassword)
       } else {
-        dataSessions = await getSessions(id, timeBucket, period, newFilters || filters, '', '', SESSIONS_TAKE, _skip, timezone, projectPassword)
+        dataSessions = await getSessions(id, period, newFilters || filters, '', '', SESSIONS_TAKE, _skip, timezone, projectPassword)
       }
 
       setSessions((prev) => [...prev, ...(dataSessions?.sessions || [])])

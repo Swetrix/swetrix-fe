@@ -519,7 +519,6 @@ export const getPerfData = (
 
 export const getSessions = (
   pid: string,
-  tb: string = 'hour', // not needed, remove it later from API and here
   period: string = '3d',
   filters: string[] = [],
   from: string = '',
@@ -531,7 +530,7 @@ export const getSessions = (
 ) =>
   api
     .get(
-      `log/sessions?pid=${pid}&take=${take}&skip=${skip}&timeBucket=${tb}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}`,
+      `log/sessions?pid=${pid}&take=${take}&skip=${skip}&period=${period}&filters=${JSON.stringify(filters)}&from=${from}&to=${to}&timezone=${timezone}`,
       {
         headers: {
           'x-password': password,
