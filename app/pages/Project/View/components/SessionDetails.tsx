@@ -4,6 +4,7 @@ import _capitalize from 'lodash/capitalize'
 import { getStringFromTime, getTimeFromSeconds } from 'utils/generic'
 import { ISessionDetails } from '../interfaces/session'
 import { MetricCard } from './MetricCards'
+import CCRow from './CCRow'
 
 interface ISessionDetailsComponent {
   details: ISessionDetails
@@ -11,14 +12,23 @@ interface ISessionDetailsComponent {
 }
 
 export const SessionDetails = ({ details, psid }: ISessionDetailsComponent) => {
-  const { t } = useTranslation('common')
+  const { t, i18n: { language } } = useTranslation('common')
 
   // TODO: display psid
   return (
     <div className='flex justify-center lg:justify-start gap-5 mb-5 flex-wrap'>
       <MetricCard
         label={t('project.mapping.cc')}
-        value={details.cc || 'N/A'}
+        value={details.cc}
+        valueMapper={(value) => {
+          if (!value) return t('project.unknownCountry')
+
+          return (
+            <div className='flex items-center'>
+              <CCRow spaces={1} size={26} cc={value} language={language} />
+            </div>
+          )
+        }}
       />
       <MetricCard
         label={t('project.mapping.rg')}

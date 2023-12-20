@@ -4,6 +4,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import { ISession } from '../interfaces/session'
 import { Badge } from 'ui/Badge'
 import { useTranslation } from 'react-i18next'
+import CCRow from './CCRow'
 
 interface ISessions {
   sessions: ISession[]
@@ -16,7 +17,7 @@ interface ISessionComponent {
 }
 
 const Session = ({ session, onClick }: ISessionComponent) => {
-  const { t } = useTranslation('common')
+  const { t, i18n: { language } } = useTranslation('common')
 
   return (
     <li
@@ -27,14 +28,22 @@ const Session = ({ session, onClick }: ISessionComponent) => {
         <div className='min-w-0 flex-auto'>
           <p className='text-sm font-semibold leading-6 text-gray-900 dark:text-gray-50'>
             {session.psid}
-            |
+            <span className='text-gray-400 mx-1'>
+              |
+            </span>
             {session.created}
           </p>
           <p className='mt-1 flex text-xs leading-5 text-gray-500 dark:text-gray-300'>
-            {session.cc}
-            |
+            {session.cc ? (
+              <CCRow size={18} cc={session.cc} language={language} />
+            ) : t('project.unknownCountry')}
+            <span className='text-gray-400 mx-1'>
+              |
+            </span>
             {session.os}
-            |
+            <span className='text-gray-400 mx-1'>
+              |
+            </span>
             {session.br}
           </p>
         </div>

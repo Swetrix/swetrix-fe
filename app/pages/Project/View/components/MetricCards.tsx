@@ -10,7 +10,7 @@ import { Badge } from 'ui/Badge'
 
 interface IMetricCard {
   label: string
-  value: string | number | undefined
+  value: string | number | undefined | null
   goodChangeDirection?: 'up' | 'down'
   change?: number
   type?: 'percent' | 'string'
