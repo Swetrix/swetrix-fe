@@ -100,6 +100,7 @@ import { ISession } from './interfaces/session'
 import { Sessions } from './components/Sessions'
 import { Pageflow } from './components/Pageflow'
 import { SessionDetails } from './components/SessionDetails'
+import { SessionChart } from './components/SessionChart'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -423,7 +424,7 @@ const ViewProject = ({
   // ref, size using for logic with responsive chart
   const [ref, size] = useSize() as any
   // rotateXAxias using for logic with responsive chart
-  const rotateXAxias = useMemo(() => (size.width > 0 && size.width < 500), [size])
+  const rotateXAxis = useMemo(() => (size.width > 0 && size.width < 500), [size])
   // customEventsChartData is a data for custom events on a chart
   const customEventsChartData = useMemo(() => _pickBy(customEventsPrefs[id], (value, keyCustomEvents) => _includes(activeChartMetricsCustomEvents, keyCustomEvents)), [customEventsPrefs, id, activeChartMetricsCustomEvents])
   // chartType is a type of chart, bar or line
@@ -776,7 +777,7 @@ const ViewProject = ({
 
       const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
       // render new settings for chart
-      const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, events)
+      const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxis, chartType, events)
       // set chart data
       setMainChart(() => {
         // @ts-ignore
@@ -981,7 +982,7 @@ const ViewProject = ({
         setIsPanelsDataEmpty(true)
       } else {
         const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-        const bbSettings = getSettings(chart, newTimebucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChart, dataCompare?.chart)
+        const bbSettings = getSettings(chart, newTimebucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxis, chartType, customEventsChart, dataCompare?.chart)
         setChartData(chart)
 
         setPanelsData({
@@ -1222,7 +1223,7 @@ const ViewProject = ({
         setIsPanelsDataEmptyPerf(true)
       } else {
         const { chart: chartPerf } = dataPerf
-        const bbSettings = getSettingsPerf(chartPerf, timeBucket, activeChartMetricsPerf, rotateXAxias, chartType, timeFormat, dataCompare?.chart)
+        const bbSettings = getSettingsPerf(chartPerf, timeBucket, activeChartMetricsPerf, rotateXAxis, chartType, timeFormat, dataCompare?.chart)
         setChartDataPerf(chartPerf)
 
         setPanelsDataPerf({
@@ -1604,7 +1605,7 @@ const ViewProject = ({
 
         if (activeChartMetrics.bounce || activeChartMetrics.sessionDuration || activeChartMetrics.views || activeChartMetrics.unique || !activeChartMetrics.bounce || !activeChartMetrics.sessionDuration) {
           const applyRegions = !_includes(noRegionPeriods, activePeriod?.period)
-          const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxias, chartType, customEventsChartData, dataChartCompare)
+          const bbSettings = getSettings(chartData, timeBucket, activeChartMetrics, applyRegions, timeFormat, forecasedChartData, rotateXAxis, chartType, customEventsChartData, dataChartCompare)
 
           setMainChart(() => {
             // @ts-ignore
@@ -1633,7 +1634,7 @@ const ViewProject = ({
         }
       }
     } else if (!isLoading && !_isEmpty(chartDataPerf) && !_isEmpty(mainChart)) {
-      const bbSettings = getSettingsPerf(chartDataPerf, timeBucket, activeChartMetricsPerf, rotateXAxias, chartType, timeFormat, dataChartPerfCompare)
+      const bbSettings = getSettingsPerf(chartDataPerf, timeBucket, activeChartMetricsPerf, rotateXAxis, chartType, timeFormat, dataChartPerfCompare)
 
       setMainChart(() => {
         // @ts-ignore
@@ -2710,8 +2711,15 @@ const ViewProject = ({
                   <ChevronLeftIcon className='w-4 h-4' />
                   {t('project.backToSessions')}
                 </button>
-                TODO: Add pageview chart here
                 <SessionDetails details={activeSession?.details} psid={activeSession?.psid} />
+                <SessionChart
+                  chart={activeSession?.chart}
+                  timeBucket={activeSession?.timeBucket}
+                  timeFormat={timeFormat}
+                  rotateXAxis={rotateXAxis}
+                  chartType={chartType}
+                  dataNames={dataNames}
+                />
                 <Pageflow pages={activeSession?.pages} />
               </>
             )}

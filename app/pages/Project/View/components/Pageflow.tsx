@@ -4,6 +4,7 @@ import _map from 'lodash/map'
 
 interface IPageflow {
   pages: {
+    type: 'pageview' | 'event'
     value: string
     created: string
   }[]
