@@ -574,6 +574,8 @@
     "noExist": "The selected project does not exist",
     "geo": "Geolocation",
     "campaigns": "Campaigns",
+    "pageviewX": "Pageview <value>{{x}}</value>",
+    "eventX": "Event <value>{{x}}</value>",
     "exportData": "Export data",
     "asImage": "As image",
     "asCSV": "As CSV",
