@@ -24,12 +24,12 @@ export const Pageflow = ({ pages }: IPageflow) => {
             <li key={`${value}${created}`}>
               <div className='relative pb-8'>
                 {index !== pages.length - 1 ? (
-                  <span className='absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200' aria-hidden='true' />
+                  <span className='absolute left-4 top-4 -ml-px h-full w-0.5 bg-slate-200 dark:bg-slate-700' aria-hidden='true' />
                 ) : null}
                 <div className='relative flex space-x-3'>
                   <div>
                     <span
-                      className='h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white bg-gray-400'
+                      className='h-8 w-8 rounded-full flex items-center justify-center bg-slate-400 dark:bg-slate-800'
                     >
                       {type === 'pageview' && (
                         <NewspaperIcon className='h-5 w-5 text-white' aria-hidden='true' />
@@ -41,12 +41,12 @@ export const Pageflow = ({ pages }: IPageflow) => {
                   </div>
                   <div className='flex min-w-0 flex-1 justify-between space-x-4 pt-1.5'>
                     <div>
-                      <p className='text-sm text-gray-500'>
+                      <p className='text-sm text-gray-700 dark:text-gray-300'>
                         <Trans
                           t={t}
                           i18nKey={type === 'pageview' ? 'project.pageviewX' : 'project.eventX'}
                           components={{
-                            value: <span className='font-medium text-gray-900' />,
+                            value: <span className='font-medium text-gray-900 dark:text-gray-50' />,
                           }}
                           values={{
                             x: value,
@@ -54,7 +54,7 @@ export const Pageflow = ({ pages }: IPageflow) => {
                         />
                       </p>
                     </div>
-                    <div className='whitespace-nowrap text-right text-sm text-gray-500'>
+                    <div className='whitespace-nowrap text-right text-sm text-gray-700 dark:text-gray-300'>
                       <time dateTime={created}>
                         {displayCreated}
                       </time>
