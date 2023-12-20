@@ -5,6 +5,7 @@ export interface ISession {
   br: string | null
   pageviews: number
   created: string
+  active: 1 | 0
 }
 
 export interface ISessionDetails {
