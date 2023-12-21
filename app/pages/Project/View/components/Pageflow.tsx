@@ -1,6 +1,7 @@
 import React from 'react'
 import { NewspaperIcon, CursorArrowRaysIcon } from '@heroicons/react/24/outline'
 import _map from 'lodash/map'
+import _toUpper from 'lodash/toUpper'
 import { Trans, useTranslation } from 'react-i18next'
 
 interface IPageflow {
@@ -54,7 +55,7 @@ export const Pageflow = ({ pages }: IPageflow) => {
                             value: <span className='font-medium text-gray-900 dark:text-gray-50' />,
                           }}
                           values={{
-                            x: value,
+                            x: value || _toUpper(t('project.redactedPage')),
                           }}
                         />
                       </p>
