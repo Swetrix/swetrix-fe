@@ -1386,6 +1386,8 @@ const ViewProject = ({
       }
     }
 
+    resetSessions()
+
     sdkInstance?._emitEvent('filtersupdate', newFilters)
     if (activeTab === PROJECT_TABS.performance) {
       loadAnalyticsPerf(true, newFiltersPerf)
@@ -1470,7 +1472,6 @@ const ViewProject = ({
       }
 
       setFilters(newFilters)
-      resetSessions()
     } else {
       if (override) {
         _forEach(FILTERS_PANELS_ORDER, (value) => {
@@ -1507,6 +1508,8 @@ const ViewProject = ({
       setFilters(newFilters)
       loadAnalytics(true, newFilters)
     }
+
+    resetSessions()
   }
 
   // this function is used for requesting the data from the API when the exclusive filter is changed
@@ -2741,6 +2744,12 @@ const ViewProject = ({
             ))}
             {activeTab === PROJECT_TABS.sessions && !activeSession && (
               <>
+                <Filters
+                  filters={filters}
+                  onRemoveFilter={filterHandler}
+                  onChangeExclusive={onChangeExclusive}
+                  tnMapping={tnMapping}
+                />
                 <Sessions sessions={sessions} onClick={loadSession} />
                 {canLoadMoreSessions && (
                   <button
