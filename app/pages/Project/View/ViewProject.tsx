@@ -18,7 +18,6 @@ import cx from 'clsx'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import _keys from 'lodash/keys'
-import _isNumber from 'lodash/isNumber'
 import _map from 'lodash/map'
 import _includes from 'lodash/includes'
 import _last from 'lodash/last'
@@ -1044,16 +1043,10 @@ const ViewProject = ({
     setSessionLoading(false)
   }
 
-  const loadSessions = async (
-    newFilters: any[] | null = null,
-    skip: number | null = null,
-    newPeriod: string | null = null,
-  ) => {
+  const loadSessions = async () => {
     if (sessionsLoading) {
       return
     }
-
-    const _skip = _isNumber(skip) ? skip : sessionsSkip
 
     setSessionsLoading(true)
 
@@ -1067,16 +1060,14 @@ const ViewProject = ({
         to = getFormatDate(dateRange[1])
       }
 
-      const _period = newPeriod || period
-
-      if (_period === 'custom' && dateRange) {
-        dataSessions = await getSessions(id, '', newFilters || filters, from, to, SESSIONS_TAKE, _skip, timezone, projectPassword)
+      if (period === 'custom' && dateRange) {
+        dataSessions = await getSessions(id, '', filters, from, to, SESSIONS_TAKE, sessionsSkip, timezone, projectPassword)
       } else {
-        dataSessions = await getSessions(id, _period, newFilters || filters, '', '', SESSIONS_TAKE, _skip, timezone, projectPassword)
+        dataSessions = await getSessions(id, period, filters, '', '', SESSIONS_TAKE, sessionsSkip, timezone, projectPassword)
       }
 
       setSessions((prev) => [...prev, ...(dataSessions?.sessions || [])])
-      setSessionsSkip(_skip + SESSIONS_TAKE)
+      setSessionsSkip((prev) => SESSIONS_TAKE + prev)
 
       if (dataSessions?.sessions?.length < SESSIONS_TAKE) {
         setCanLoadMoreSessions(false)
@@ -1471,10 +1462,6 @@ const ViewProject = ({
       navigate(`${pathname}${search}`)
 
       if (!override) {
-        loadSessions([
-          ...filters,
-          ...newFilters,
-        ], 0)
         setFilters([
           ...filters,
           ...newFilters,
@@ -1483,7 +1470,7 @@ const ViewProject = ({
       }
 
       setFilters(newFilters)
-      loadSessions(newFilters, 0)
+      resetSessions()
     } else {
       if (override) {
         _forEach(FILTERS_PANELS_ORDER, (value) => {
@@ -1581,6 +1568,11 @@ const ViewProject = ({
 
       if (activeTab === PROJECT_TABS.funnels) {
         loadFunnelsData(true)
+        return
+      }
+
+      if (activeTab === PROJECT_TABS.sessions) {
+        loadSessions()
         return
       }
 
@@ -1889,6 +1881,12 @@ const ViewProject = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [arePeriodParsed])
 
+  const resetSessions = () => {
+    setSessionsSkip(0)
+    setSessions([])
+    setSessionsLoading(null)
+  }
+
   // onRangeDateChange if is activeChartMetrics custom and we select custom date range
   // we update url and state
   const onRangeDateChange = (dates: Date[], onRender?: boolean) => {
@@ -1927,13 +1925,7 @@ const ViewProject = ({
         setProjectViewPrefs(id, 'custom', timeBucketToDays[index].tb[0], dates)
 
         setCanLoadMoreSessions(false)
-        setSessionsSkip(0)
-        setSessions([])
-        setSessionsLoading(null)
-
-        if (activeTab === PROJECT_TABS.sessions) {
-          loadSessions(null, 0)
-        }
+        resetSessions()
 
         sdkInstance?._emitEvent('timeupdate', {
           period: 'custom',
@@ -1957,10 +1949,14 @@ const ViewProject = ({
     if (areFiltersPerfParsed && areTimeBucketParsed && arePeriodParsed && activeTab === PROJECT_TABS.performance) {
       loadAnalyticsPerf()
     }
-    if (areFiltersPerfParsed && areTimeBucketParsed && arePeriodParsed && activeTab === PROJECT_TABS.sessions) {
+  }, [project, period, chartType, filters, forecasedChartData, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t, activeTab, areFiltersPerfParsed]) // eslint-disable-line
+
+  useEffect(() => {
+    if (activeTab === PROJECT_TABS.sessions) {
       loadSessions()
     }
-  }, [project, period, chartType, filters, forecasedChartData, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t, activeTab, areFiltersPerfParsed]) // eslint-disable-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, dateRange, filters, id, period, projectPassword, timezone])
 
   useEffect(() => {
     if (period !== KEY_FOR_ALL_TIME) {
@@ -1973,20 +1969,8 @@ const ViewProject = ({
     if (areFiltersPerfParsed && areTimeBucketParsed && arePeriodParsed && activeTab === PROJECT_TABS.performance) {
       loadAnalyticsPerf()
     }
-    // if (areFiltersPerfParsed && arePeriodParsed && activeTab === PROJECT_TABS.sessions) {
-    //   loadSessions()
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, period, chartType, filters, forecasedChartData, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, activeTab, areFiltersPerfParsed])
-
-  useEffect(() => {
-    if (activeTab === PROJECT_TABS.sessions && _isEmpty(sessions)) {
-      setCanLoadMoreSessions(false)
-      setSessionsSkip(0)
-      loadSessions(null, 0)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab])
 
   useEffect(() => {
     if (!project || !activeFunnel) {
@@ -2095,13 +2079,7 @@ const ViewProject = ({
       setPeriod(newPeriod.period)
 
       setCanLoadMoreSessions(false)
-      setSessionsSkip(0)
-      setSessions([])
-      setSessionsLoading(null)
-
-      if (activeTab === PROJECT_TABS.sessions) {
-        loadSessions(null, 0, newPeriod.period)
-      }
+      resetSessions()
 
       setDateRange(null)
     }
@@ -2222,8 +2200,6 @@ const ViewProject = ({
       loadAnalyticsPerf(true, [])
     } else if (activeTab === PROJECT_TABS.traffic) {
       loadAnalytics(true, [])
-    } else if (activeTab === PROJECT_TABS.sessions) {
-      loadSessions([], 0)
     }
   }
 
