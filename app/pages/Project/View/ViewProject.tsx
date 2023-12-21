@@ -2771,7 +2771,9 @@ const ViewProject = ({
                     {t('project.backToSessions')}
                   </button>
                 </div>
-                <SessionDetails details={activeSession?.details} psid={activeSession?.psid} />
+                {activeSession?.details && (
+                  <SessionDetails details={activeSession?.details} psid={activeSession?.psid} />
+                )}
                 <SessionChart
                   chart={activeSession?.chart}
                   timeBucket={activeSession?.timeBucket}
