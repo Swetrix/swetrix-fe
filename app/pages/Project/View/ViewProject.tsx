@@ -2750,6 +2750,9 @@ const ViewProject = ({
                   onChangeExclusive={onChangeExclusive}
                   tnMapping={tnMapping}
                 />
+                {!sessionsLoading && _isEmpty(sessions) && (
+                  <NoEvents filters={filters} resetFilters={resetFilters} />
+                )}
                 <Sessions sessions={sessions} onClick={loadSession} />
                 {canLoadMoreSessions && (
                   <button
