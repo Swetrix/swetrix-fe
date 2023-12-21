@@ -1,6 +1,8 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import _capitalize from 'lodash/capitalize'
+import _size from 'lodash/size'
+import _truncate from 'lodash/truncate'
 import { getStringFromTime, getTimeFromSeconds } from 'utils/generic'
 import { ISessionDetails } from '../interfaces/session'
 import { MetricCard, MetricCardSelect } from './MetricCards'
@@ -77,6 +79,19 @@ export const SessionDetails = ({ details, psid }: ISessionDetailsComponent) => {
       <MetricCard
         label={t('project.mapping.ref')}
         value={details.ref || 'N/A'}
+        valueMapper={(value) => {
+          if (_size(value) < 20) {
+            return value
+          }
+
+          return (
+            <span title={value}>
+              {_truncate(value, {
+                length: 20,
+              })}
+            </span>
+          )
+        }}
       />
       <MetricCardSelect
         values={utm}
