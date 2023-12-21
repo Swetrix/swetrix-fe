@@ -1044,7 +1044,11 @@ const ViewProject = ({
     setSessionLoading(false)
   }
 
-  const loadSessions = async (newFilters: any[] | null = null, skip: number | null = null) => {
+  const loadSessions = async (
+    newFilters: any[] | null = null,
+    skip: number | null = null,
+    newPeriod: string | null = null,
+  ) => {
     if (sessionsLoading) {
       return
     }
@@ -1063,10 +1067,12 @@ const ViewProject = ({
         to = getFormatDate(dateRange[1])
       }
 
-      if (period === 'custom' && dateRange) {
+      const _period = newPeriod || period
+
+      if (_period === 'custom' && dateRange) {
         dataSessions = await getSessions(id, '', newFilters || filters, from, to, SESSIONS_TAKE, _skip, timezone, projectPassword)
       } else {
-        dataSessions = await getSessions(id, period, newFilters || filters, '', '', SESSIONS_TAKE, _skip, timezone, projectPassword)
+        dataSessions = await getSessions(id, _period, newFilters || filters, '', '', SESSIONS_TAKE, _skip, timezone, projectPassword)
       }
 
       setSessions((prev) => [...prev, ...(dataSessions?.sessions || [])])
@@ -1891,7 +1897,7 @@ const ViewProject = ({
         setSessionsSkip(0)
         setSessions([])
         setSessionsLoading(null)
-        
+
         if (activeTab === PROJECT_TABS.sessions) {
           loadSessions(null, 0)
         }
@@ -2059,9 +2065,9 @@ const ViewProject = ({
       setSessionsSkip(0)
       setSessions([])
       setSessionsLoading(null)
-      
+
       if (activeTab === PROJECT_TABS.sessions) {
-        loadSessions(null, 0)
+        loadSessions(null, 0, newPeriod.period)
       }
 
       setDateRange(null)
