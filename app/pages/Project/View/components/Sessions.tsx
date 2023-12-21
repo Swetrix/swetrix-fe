@@ -1,5 +1,6 @@
 import React from 'react'
 import _map from 'lodash/map'
+import cx from 'clsx'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import { ISession } from '../interfaces/session'
 import { Badge } from 'ui/Badge'
@@ -14,9 +15,10 @@ interface ISessions {
 interface ISessionComponent {
   session: ISession
   onClick: (psid: string) => void
+  className?: string
 }
 
-const Session = ({ session, onClick }: ISessionComponent) => {
+const Session = ({ session, onClick, className }: ISessionComponent) => {
   const { t, i18n: { language } } = useTranslation('common')
   const date = new Date(session.created).toLocaleDateString(language, {
     day: 'numeric',
@@ -28,7 +30,7 @@ const Session = ({ session, onClick }: ISessionComponent) => {
 
   return (
     <li
-      className='relative flex justify-between gap-x-6 px-4 py-5 bg-gray-50 hover:bg-gray-200 dark:bg-slate-900 dark:hover:bg-slate-800 cursor-pointer sm:px-6 lg:px-8'
+      className={cx('relative flex justify-between gap-x-6 py-5 bg-gray-50 hover:bg-gray-200 dark:bg-slate-900 dark:hover:bg-slate-800 cursor-pointer px-4 sm:px-6 lg:px-8', className)}
       onClick={() => onClick(session.psid)}
     >
       <div className='flex min-w-0 gap-x-4'>
@@ -74,9 +76,14 @@ const Session = ({ session, onClick }: ISessionComponent) => {
 
 export const Sessions: React.FC<ISessions> = ({ sessions, onClick }) => {
   return (
-    <ul className='divide-y divide-gray-100 dark:divide-slate-700'>
-      {_map(sessions, (session) => (
-        <Session key={session.psid} session={session} onClick={onClick} />
+    <ul className='divide-y divide-gray-100 dark:divide-slate-700 mt-2'>
+      {_map(sessions, (session, index) => (
+        <Session
+          key={session.psid}
+          session={session}
+          onClick={onClick}
+          className={`${index === 0 && 'rounded-t-md'} ${index === sessions.length - 1 && 'rounded-b-md'}`}
+        />
       ))}
     </ul>
   )
