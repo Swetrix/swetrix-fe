@@ -1410,9 +1410,10 @@ const ViewProject = ({
     const newFilters = _filter(items, (item) => {
       return !_isEmpty(item.filter)
     })
+    // @ts-ignore
+    const url = new URL(window.location)
+
     if (activeTab === PROJECT_TABS.performance) {
-      // @ts-ignore
-      const url = new URL(window.location)
 
       if (override) {
         _forEach(FILTERS_PANELS_ORDER, (value) => {
@@ -1448,10 +1449,42 @@ const ViewProject = ({
 
       setFiltersPerf(newFilters)
       loadAnalyticsPerf(true, newFilters)
-    } else {
-      // @ts-ignore
-      const url = new URL(window.location)
+    } else if (activeTab === PROJECT_TABS.sessions) {
+      if (override) {
+        _forEach(FILTERS_PANELS_ORDER, (value) => {
+          if (url.searchParams.has(value)) {
+            url.searchParams.delete(value)
+          }
+        })
+      }
 
+      _forEach(items, (item) => {
+        if (url.searchParams.has(item.column)) {
+          url.searchParams.delete(item.column)
+        }
+        _forEach(item.filter, (filter) => {
+          url.searchParams.append(item.column, filter)
+        })
+      })
+
+      const { pathname, search } = url
+      navigate(`${pathname}${search}`)
+
+      if (!override) {
+        loadSessions([
+          ...filters,
+          ...newFilters,
+        ], 0)
+        setFilters([
+          ...filters,
+          ...newFilters,
+        ])
+        return
+      }
+
+      setFilters(newFilters)
+      loadSessions(newFilters, 0)
+    } else {
       if (override) {
         _forEach(FILTERS_PANELS_ORDER, (value) => {
           if (url.searchParams.has(value)) {
