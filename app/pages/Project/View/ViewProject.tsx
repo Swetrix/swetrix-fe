@@ -2418,7 +2418,7 @@ const ViewProject = ({
                 </div>
               </div>
             </div>
-            {activeTab !== PROJECT_TABS.alerts && !activeSession && (activeFunnel || activeTab !== PROJECT_TABS.funnels) && (
+            {activeTab !== PROJECT_TABS.alerts && (activeTab !== PROJECT_TABS.sessions || !activeSession) && (activeFunnel || activeTab !== PROJECT_TABS.funnels) && (
               <>
                 <div className='flex flex-col lg:flex-row items-center lg:items-start justify-between mt-2'>
                   <div className='flex items-center space-x-5 flex-wrap'>
