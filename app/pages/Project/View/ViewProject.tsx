@@ -1018,7 +1018,6 @@ const ViewProject = ({
   }
 
   const loadSession = async (psid: string) => {
-    console.log(psid)
     if (sessionLoading) {
       return
     }
@@ -1028,7 +1027,6 @@ const ViewProject = ({
     try {
       const session = await getSession(id, psid, timezone, projectPassword)
 
-      console.log('[INFO] (loadSession)(getSession)', session)
       setActiveSession(session)
     } catch (reason: any) {
       console.error('[ERROR] (loadSession)(getSession)', reason)
