@@ -82,6 +82,7 @@ import {
   validTimeBacket, noRegionPeriods, getSettings, getColumns, CHART_METRICS_MAPPING,
   CHART_METRICS_MAPPING_PERF, getSettingsPerf, transformAIChartData, FILTER_CHART_METRICS_MAPPING_FOR_COMPARE,
   getSettingsFunnels,
+  convertFilters,
 } from './ViewProject.helpers'
 import CCRow from './components/CCRow'
 import FunnelsList from './components/FunnelsList'
@@ -269,6 +270,9 @@ const ViewProject = ({
   const [filters, setFilters] = useState<any[]>([])
   // similar filters but using for performance tab
   const [filtersPerf, setFiltersPerf] = useState<any[]>([])
+  // similar filters but using for the sessions tab
+  const [filtersSessions, setFiltersSessions] = useState<any[]>([])
+  const [areFiltersSessionsParsed, setAreFiltersSessionsParsed] = useState<boolean>(false)
   // That is needed when using 'Export as image' feature,
   // Because headless browser cannot do a request to the DDG API due to absense of The Same Origin Policy header
   const [showIcons, setShowIcons] = useState<boolean>(true)
@@ -1051,7 +1055,7 @@ const ViewProject = ({
     setSessionsLoading(true)
 
     try {
-      let dataSessions: { sessions: ISession[] }
+      let dataSessions: { sessions: ISession[], appliedFilters: any[] }
       let from
       let to
 
@@ -1061,9 +1065,9 @@ const ViewProject = ({
       }
 
       if (period === 'custom' && dateRange) {
-        dataSessions = await getSessions(id, '', filters, from, to, SESSIONS_TAKE, sessionsSkip, timezone, projectPassword)
+        dataSessions = await getSessions(id, '', filtersSessions, from, to, SESSIONS_TAKE, sessionsSkip, timezone, projectPassword)
       } else {
-        dataSessions = await getSessions(id, period, filters, '', '', SESSIONS_TAKE, sessionsSkip, timezone, projectPassword)
+        dataSessions = await getSessions(id, period, filtersSessions, '', '', SESSIONS_TAKE, sessionsSkip, timezone, projectPassword)
       }
 
       setSessions((prev) => [...prev, ...(dataSessions?.sessions || [])])
@@ -1327,7 +1331,9 @@ const ViewProject = ({
   const filterHandler = (column: string, filter: any, isExclusive = false) => {
     let newFilters
     let newFiltersPerf
+    let newFiltersSessions
     const columnPerf = `${column}_perf`
+    const columnSessions = `${column}_sess`
 
     if (activeTab === PROJECT_TABS.performance) {
       if (_find(filtersPerf, (f) => f.filter === filter)) {
@@ -1352,7 +1358,34 @@ const ViewProject = ({
         navigate(`${pathname}${search}`)
         setFiltersPerf(newFiltersPerf)
       }
-    } else {
+    }
+
+    if (activeTab === PROJECT_TABS.sessions) {
+      if (_find(filtersSessions, (f) => f.filter === filter)) {
+        newFiltersSessions = _filter(filtersSessions, (f) => f.filter !== filter)
+
+        // @ts-ignore
+        const url = new URL(window.location)
+        url.searchParams.delete(columnSessions)
+        const { pathname, search } = url
+        navigate(`${pathname}${search}`)
+        setFiltersSessions(newFiltersSessions)
+      } else {
+        newFiltersSessions = [
+          ...filtersSessions,
+          { column, filter, isExclusive },
+        ]
+
+        // @ts-ignore
+        const url = new URL(window.location)
+        url.searchParams.append(columnSessions, filter)
+        const { pathname, search } = url
+        navigate(`${pathname}${search}`)
+        setFiltersSessions(newFiltersSessions)
+      }
+    }
+
+    if (activeTab === PROJECT_TABS.traffic) {
       // eslint-disable-next-line no-lonely-if
       if (_find(filters, (f) => f.filter === filter) /* && f.filter === filter) */) {
         // selected filter is already included into the filters array -> removing it
@@ -1361,7 +1394,6 @@ const ViewProject = ({
         setFilters(newFilters)
 
         // removing filter from the page URL
-
         // @ts-ignore
         const url = new URL(window.location)
         url.searchParams.delete(column)
@@ -1407,7 +1439,6 @@ const ViewProject = ({
     const url = new URL(window.location)
 
     if (activeTab === PROJECT_TABS.performance) {
-
       if (override) {
         _forEach(FILTERS_PANELS_ORDER, (value) => {
           if (url.searchParams.has(`${value}_perf`)) {
@@ -1445,33 +1476,36 @@ const ViewProject = ({
     } else if (activeTab === PROJECT_TABS.sessions) {
       if (override) {
         _forEach(FILTERS_PANELS_ORDER, (value) => {
-          if (url.searchParams.has(value)) {
-            url.searchParams.delete(value)
+          if (url.searchParams.has(`${value}_sess`)) {
+            url.searchParams.delete(`${value}_sess`)
           }
         })
       }
 
       _forEach(items, (item) => {
-        if (url.searchParams.has(item.column)) {
-          url.searchParams.delete(item.column)
+        if (url.searchParams.has(`${item.column}_sess`)) {
+          url.searchParams.delete(`${item.column}_sess`)
         }
         _forEach(item.filter, (filter) => {
-          url.searchParams.append(item.column, filter)
+          url.searchParams.append(`${item.column}_sess`, filter)
         })
       })
 
       const { pathname, search } = url
       navigate(`${pathname}${search}`)
 
+      const converted = convertFilters(newFilters)
+      resetSessions()
+
       if (!override) {
-        setFilters([
+        setFiltersSessions([
           ...filters,
-          ...newFilters,
+          ...converted,
         ])
         return
       }
 
-      setFilters(newFilters)
+      setFiltersSessions(converted)
     } else {
       if (override) {
         _forEach(FILTERS_PANELS_ORDER, (value) => {
@@ -1528,6 +1562,18 @@ const ViewProject = ({
       })
       setFiltersPerf(newFilters)
       loadAnalyticsPerf(true, newFilters)
+    } else if (activeTab === PROJECT_TABS.sessions) {
+      newFilters = _map(filtersSessions, (f) => {
+        if (f.column === column && f.filter === filter) {
+          return {
+            ...f,
+            isExclusive,
+          }
+        }
+
+        return f
+      })
+      setFiltersSessions(newFilters)
     } else {
       newFilters = _map(filters, (f) => {
         if (f.column === column && f.filter === filter) {
@@ -1575,6 +1621,7 @@ const ViewProject = ({
       }
 
       if (activeTab === PROJECT_TABS.sessions) {
+        resetSessions()
         loadSessions()
         return
       }
@@ -1860,6 +1907,40 @@ const ViewProject = ({
     }
   }, [activeTab])
 
+  useEffect(() => {
+    try {
+      // @ts-ignore
+      const url = new URL(window.location)
+      const { searchParams } = url
+      const initialFilters: any[] = []
+      // eslint-disable-next-line lodash/prefer-lodash-method
+      searchParams.forEach((value, key) => {
+        if (!_includes(key, '_sess')) {
+          return
+        }
+
+        const keySess = _replace(key, '_sess', '')
+
+        if (!_includes(validFilters, keySess)) {
+          return
+        }
+
+        const isExclusive = _startsWith(value, '!')
+        initialFilters.push({
+          column: keySess,
+          filter: isExclusive ? value.substring(1) : value,
+          isExclusive,
+        })
+      })
+
+      setFiltersSessions(initialFilters)
+    } catch (reason) {
+      console.error(`[ERROR] useEffect - Parsing initial filters from url also using for sessions tab: ${reason}`)
+    } finally {
+      setAreFiltersSessionsParsed(true)
+    }
+  }, [])
+
   // Parsing timeBucket from url
   useEffect(() => {
     if (arePeriodParsed) {
@@ -1955,11 +2036,11 @@ const ViewProject = ({
   }, [project, period, chartType, filters, forecasedChartData, timeBucket, periodPairs, areFiltersParsed, areTimeBucketParsed, arePeriodParsed, t, activeTab, areFiltersPerfParsed]) // eslint-disable-line
 
   useEffect(() => {
-    if (activeTab === PROJECT_TABS.sessions) {
+    if (activeTab === PROJECT_TABS.sessions && areFiltersSessionsParsed) {
       loadSessions()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, dateRange, filters, id, period, projectPassword, timezone])
+  }, [activeTab, dateRange, filtersSessions, id, period, projectPassword, timezone, areFiltersSessionsParsed])
 
   useEffect(() => {
     if (period !== KEY_FOR_ALL_TIME) {
@@ -2199,6 +2280,7 @@ const ViewProject = ({
     navigate(`${pathname}${search}`)
     setFilters([])
     setFiltersPerf([])
+    setFiltersSessions([])
     if (activeTab === PROJECT_TABS.performance) {
       loadAnalyticsPerf(true, [])
     } else if (activeTab === PROJECT_TABS.traffic) {
@@ -2745,7 +2827,7 @@ const ViewProject = ({
             {activeTab === PROJECT_TABS.sessions && !activeSession && (
               <>
                 <Filters
-                  filters={filters}
+                  filters={filtersSessions}
                   onRemoveFilter={filterHandler}
                   onChangeExclusive={onChangeExclusive}
                   tnMapping={tnMapping}
@@ -3339,7 +3421,12 @@ const ViewProject = ({
           setProjectFilter={onFilterSearch}
           pid={id}
           tnMapping={tnMapping}
-          filters={activeTab === PROJECT_TABS.traffic ? filters : filtersPerf}
+          filters={activeTab === PROJECT_TABS.performance
+            ? filtersPerf
+            : activeTab === PROJECT_TABS.sessions
+              ? filtersSessions
+              : filters
+          }
         />
         {!embedded && (
           <Footer authenticated={authenticated} minimal />

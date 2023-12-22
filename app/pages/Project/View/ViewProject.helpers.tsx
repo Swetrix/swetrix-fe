@@ -1241,10 +1241,44 @@ const getFormatDate = (date: Date) => {
   return `${yyyy}-${mm}-${dd}`
 }
 
+/*
+  Converts an array of filters like:
+  [
+    {
+      "column": "cc",
+      "filter": [
+        "NL", "PL"
+      ]
+    }
+  ]
+  to
+  [
+    {
+      "column": "cc",
+      "filter": "NL"
+    },
+    {
+      "column": "cc",
+      "filter": "PL"
+    }
+  ]
+*/
+const convertFilters = (filters: any) => {
+  return _reduce(filters, (prev: any, curr: any) => {
+    const { column, filter } = curr
+    const converted = _map(filter, (el: any) => ({
+      column,
+      filter: el,
+    }))
+
+    return [...prev, ...converted]
+  }, [])
+}
+
 export {
   iconClassName, getFormatDate, panelIconMapping, typeNameMapping, validFilters,
   validPeriods, validTimeBacket, noRegionPeriods, getSettings,
   getExportFilename, getColumns, onCSVExportClick, CHART_METRICS_MAPPING,
   CHART_METRICS_MAPPING_PERF, getColumnsPerf, getSettingsPerf, transformAIChartData, FILTER_CHART_METRICS_MAPPING_FOR_COMPARE,
-  getSettingsFunnels, getSettingsSession,
+  getSettingsFunnels, getSettingsSession, convertFilters,
 }
