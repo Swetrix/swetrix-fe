@@ -394,17 +394,6 @@ const ViewProject = ({
     generateAlert(t('apiNotifications.funnelDeleted'), 'success')
     setFunnelActionLoading(false)
   }
-
-  useEffect(() => {
-    // @ts-ignore
-    const url = new URL(window.location)
-    const { searchParams } = url
-    const tab = searchParams.get('tab') as string
-
-    if (PROJECT_TABS[tab]) {
-      setActiveTab(tab)
-    }
-  }, [])
   // pgActiveFragment is a active fragment for pagination
   const [pgActiveFragment, setPgActiveFragment] = useState<number>(0)
 
@@ -1029,6 +1018,7 @@ const ViewProject = ({
   }
 
   const loadSession = async (psid: string) => {
+    console.log(psid)
     if (sessionLoading) {
       return
     }
@@ -1038,6 +1028,7 @@ const ViewProject = ({
     try {
       const session = await getSession(id, psid, timezone, projectPassword)
 
+      console.log('[INFO] (loadSession)(getSession)', session)
       setActiveSession(session)
     } catch (reason: any) {
       console.error('[ERROR] (loadSession)(getSession)', reason)
@@ -1046,6 +1037,22 @@ const ViewProject = ({
 
     setSessionLoading(false)
   }
+
+  useEffect(() => {
+    // @ts-ignore
+    const url = new URL(window.location)
+    const { searchParams } = url
+    const psid = searchParams.get('psid') as string
+    const tab = searchParams.get('tab') as string
+
+    if (psid && tab === PROJECT_TABS.sessions) {
+      loadSession(psid)
+    }
+
+    if (PROJECT_TABS[tab]) {
+      setActiveTab(tab)
+    }
+  }, [])
 
   const loadSessions = async () => {
     if (sessionsLoading) {
@@ -2858,7 +2865,12 @@ const ViewProject = ({
                     {activeSession?.psid}
                   </h2>
                   <button
-                    onClick={() => setActiveSession(null)}
+                    onClick={() => {
+                      setActiveSession(null)
+                      const url = new URL(window.location.href)
+                      url.searchParams.delete('psid')
+                      window.history.pushState({}, '', url.toString())
+                    }}
                     className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 lg:mt-0 text-gray-900 dark:text-gray-100'
                   >
                     <ChevronLeftIcon className='w-4 h-4' />

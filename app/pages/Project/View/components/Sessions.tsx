@@ -31,7 +31,13 @@ const Session = ({ session, onClick, className }: ISessionComponent) => {
   return (
     <li
       className={cx('relative flex justify-between gap-x-6 py-5 bg-gray-50 hover:bg-gray-200 dark:bg-slate-900 dark:hover:bg-slate-800 cursor-pointer px-4 sm:px-6 lg:px-8', className)}
-      onClick={() => onClick(session.psid)}
+      onClick={() => {
+        const url = new URL(window.location.href)
+        url.searchParams.set('psid', session.psid)
+        window.history.pushState({}, '', url.toString())
+        
+        onClick(session.psid)
+      }}
     >
       <div className='flex min-w-0 gap-x-4'>
         <div className='min-w-0 flex-auto'>
