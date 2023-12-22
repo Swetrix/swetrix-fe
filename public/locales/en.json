@@ -263,6 +263,7 @@
       "gdpr": "GDPR-compatible",
       "usfl": "User flow",
       "funnels": "Funnels",
+      "sessionAnalysis": "Session analysis",
       "alrt": "Custom alerts",
       "pbld": "Public dashboards",
       "shad": "Dashboard sharing",
