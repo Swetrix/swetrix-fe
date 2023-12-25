@@ -14,7 +14,9 @@
     "typecheck": "tsc",
     "lint": "eslint app",
     "lint:fix": "eslint app --fix",
-    "lint:tsc": "tsc --noEmit"
+    "lint:tsc": "tsc --noEmit",
+    "format": "prettier --check --ignore-unknown ./app ./public",
+    "format:fix": "prettier --write --ignore-unknown ./app ./public"
   },
   "dependencies": {
     "@blaumaus/react-alert": "^7.0.5",
