@@ -1311,6 +1311,7 @@ const ViewProject = ({
     if (PROJECT_TABS[tab]) {
       setActiveTab(tab)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const loadSessions = async () => {
@@ -2414,6 +2415,7 @@ const ViewProject = ({
     if (areFiltersPerfParsed && areTimeBucketParsed && arePeriodParsed && activeTab === PROJECT_TABS.performance) {
       loadAnalyticsPerf()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     project,
     period,
@@ -2428,7 +2430,7 @@ const ViewProject = ({
     t,
     activeTab,
     areFiltersPerfParsed,
-  ]) // eslint-disable-line
+  ])
 
   useEffect(() => {
     if (activeTab === PROJECT_TABS.sessions && areFiltersSessionsParsed) {

@@ -47,7 +47,7 @@ const App: React.FC<IApp> = ({ ssrTheme, ssrAuthenticated }) => {
   const authenticated = isBrowser ? (loading ? !!accessToken : reduxAuthenticated) : ssrAuthenticated
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (accessToken && !reduxAuthenticated) {
         try {
           const me = await authMe()
