@@ -98,11 +98,12 @@ const Billing: React.FC<IBilling> = ({ ssrAuthenticated, ssrTheme }): JSX.Elemen
     // eslint-disable-next-line no-use-before-define
     const interval = setInterval(paddleSetup, 200)
 
+    // prettier-ignore
     function paddleSetup() {
       if (isSelfhosted) {
         clearInterval(interval)
       } else if ((window as any)?.Paddle) {
-        ;(window as any).Paddle.Setup({
+        (window as any).Paddle.Setup({
           vendor: PADDLE_VENDOR_ID,
           eventCallback,
         })
