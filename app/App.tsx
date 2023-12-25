@@ -46,6 +46,7 @@ const App: React.FC<IApp> = ({ ssrTheme, ssrAuthenticated }) => {
   const accessToken = getAccessToken()
   const authenticated = isBrowser ? (loading ? !!accessToken : reduxAuthenticated) : ssrAuthenticated
 
+  // prettier-ignore
   useEffect(() => {
     (async () => {
       if (accessToken && !reduxAuthenticated) {
