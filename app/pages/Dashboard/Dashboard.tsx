@@ -90,6 +90,7 @@ interface IMiniCard {
   percChange?: number
 }
 
+
 const MiniCard = ({ labelTKey, t, total, percChange }: IMiniCard): JSX.Element => {
   const statsDidGrowUp = percChange ? percChange >= 0 : false
 
@@ -259,7 +260,7 @@ const ProjectCard = ({
         </div>
         {!confirmed && (
           <Modal
-            onClose={() => {
+            onClose={() =>  {
               setShowInviteModal(false)
             }}
             onSubmit={() => {
