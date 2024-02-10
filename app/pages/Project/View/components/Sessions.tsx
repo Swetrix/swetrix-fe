@@ -91,7 +91,7 @@ export const Sessions: React.FC<ISessions> = ({ sessions, onClick }) => {
   return (
     <ClientOnly
       fallback={
-        <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900'>
+        <div className='bg-gray-50 dark:bg-slate-900'>
           <Loader />
         </div>
       }
