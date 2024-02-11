@@ -342,6 +342,7 @@
   },
   "profileSettings": {
     "logoutAll": "Log out from all devices",
+    "planLimitNotificationPercentage": "At what percentage of the plan limit should we notify you?",
     "account": "Account",
     "general": "General settings",
     "update": "Update profile",
