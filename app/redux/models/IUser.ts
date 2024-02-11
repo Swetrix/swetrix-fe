@@ -40,4 +40,5 @@ export interface IUser {
   refCode: string | null
   referrerID: string | null
   paypalPaymentsEmail: string | null
+  planLimitNotificationPercentage: number
 }

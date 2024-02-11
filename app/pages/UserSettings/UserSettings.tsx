@@ -36,6 +36,8 @@ import {
   GDPR_EXPORT_TIMEFRAME,
   TimeFormat,
   isSelfhosted,
+  percentageList,
+  defaultPercentage,
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import { ISharedProject } from 'redux/models/ISharedProject'
@@ -137,6 +139,7 @@ interface IForm extends Partial<IUser> {
   repeat: string
   password: string
   email: string
+  planLimitNotificationPercentage: number
 }
 
 const UserSettings = ({
@@ -185,6 +188,7 @@ const UserSettings = ({
     email: user.email || '',
     password: '',
     repeat: '',
+    planLimitNotificationPercentage: user.planLimitNotificationPercentage || defaultPercentage,
     timeFormat: user.timeFormat || TimeFormat['12-hour'],
   })
   const [showPasswordFields, setShowPasswordFields] = useState<boolean>(false)
@@ -523,7 +527,6 @@ const UserSettings = ({
     <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900 flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
       <form className='max-w-7xl w-full mx-auto' onSubmit={handleSubmit}>
         <h2 className='mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50'>{t('titles.profileSettings')}</h2>
-        {/* Tabs selector */}
         <div className='mt-2'>
           <div className='sm:hidden'>
             <Select
@@ -923,6 +926,24 @@ const UserSettings = ({
                                 reportFrequencies[_findIndex(translatedFrequencies, (freq) => freq === f)],
                               )
                             }
+                            capitalise
+                          />
+                          <br />
+                          <Select
+                            title={form.planLimitNotificationPercentage + '%'}
+                            label={t('profileSettings.planLimitNotificationPercentage')}
+                            className='w-full'
+                            items={percentageList}
+                            iconExtractor={reportIconExtractor}
+                            keyExtractor={(item) => item.value}
+                            labelExtractor={(item) => item.label}
+                            onSelect={(f) => {
+                              const precentageValue = _find(percentageList, (item) => item.label === f)?.value
+                              setForm((prev) => ({
+                                ...prev,
+                                planLimitNotificationPercentage: Number(precentageValue),
+                              }))
+                            }}
                             capitalise
                           />
                         </div>

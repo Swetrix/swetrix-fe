@@ -50,80 +50,96 @@ export interface ITBPeriodPairs {
   isCustomDate?: boolean
 }
 
+export const percentageList = [
+  { value: 0, label: 'Disabled' },
+  { value: 10, label: '10%' },
+  { value: 20, label: '20%' },
+  { value: 30, label: '30%' },
+  { value: 40, label: '40%' },
+  { value: 50, label: '50%' },
+  { value: 60, label: '60%' },
+  { value: 70, label: '70%' },
+  { value: 80, label: '80%' },
+  { value: 90, label: '90%' },
+  { value: 100, label: '100%' }
+]
+
+export const defaultPercentage = 80
+
 export const tbPeriodPairs = (
   t: Function,
   tbs?: string[] | null,
   dates?: Date[],
   language?: string,
 ): ITBPeriodPairs[] => [
-  {
-    label: t('project.thisHour'),
-    period: '1h',
-    tbs: ['minute'],
-  },
-  {
-    label: t('project.today'),
-    period: 'today',
-    tbs: ['hour'],
-  },
-  {
-    label: t('project.yesterday'),
-    period: 'yesterday',
-    tbs: ['hour'],
-  },
-  {
-    label: t('project.last24h'),
-    period: '1d',
-    countDays: 1,
-    tbs: ['hour'],
-  },
-  {
-    label: t('project.lastXDays', { amount: 7 }),
-    period: '7d',
-    tbs: ['hour', 'day'],
-    countDays: 7,
-  },
-  {
-    label: t('project.lastXWeeks', { amount: 4 }),
-    period: '4w',
-    tbs: ['day'],
-    countDays: 28,
-  },
-  {
-    label: t('project.lastXMonths', { amount: 3 }),
-    period: '3M',
-    tbs: ['month'],
-    countDays: 90,
-  },
-  {
-    label: t('project.lastXMonths', { amount: 12 }),
-    period: '12M',
-    tbs: ['month'],
-    countDays: 365,
-  },
-  {
-    label: t('project.lastXMonths', { amount: 24 }),
-    period: '24M',
-    tbs: ['month'],
-  },
-  {
-    label: t('project.all'),
-    period: KEY_FOR_ALL_TIME,
-    tbs: ['month', 'year'],
-  },
-  {
-    label: dates ? getCustomLabel(dates, t, language) : t('project.custom'),
-    dropdownLabel: t('project.custom'),
-    isCustomDate: true,
-    period: 'custom',
-    tbs: tbs || ['custom'],
-  },
-  {
-    label: t('project.compare'),
-    period: 'compare',
-    tbs: tbs || ['custom'],
-  },
-]
+    {
+      label: t('project.thisHour'),
+      period: '1h',
+      tbs: ['minute'],
+    },
+    {
+      label: t('project.today'),
+      period: 'today',
+      tbs: ['hour'],
+    },
+    {
+      label: t('project.yesterday'),
+      period: 'yesterday',
+      tbs: ['hour'],
+    },
+    {
+      label: t('project.last24h'),
+      period: '1d',
+      countDays: 1,
+      tbs: ['hour'],
+    },
+    {
+      label: t('project.lastXDays', { amount: 7 }),
+      period: '7d',
+      tbs: ['hour', 'day'],
+      countDays: 7,
+    },
+    {
+      label: t('project.lastXWeeks', { amount: 4 }),
+      period: '4w',
+      tbs: ['day'],
+      countDays: 28,
+    },
+    {
+      label: t('project.lastXMonths', { amount: 3 }),
+      period: '3M',
+      tbs: ['month'],
+      countDays: 90,
+    },
+    {
+      label: t('project.lastXMonths', { amount: 12 }),
+      period: '12M',
+      tbs: ['month'],
+      countDays: 365,
+    },
+    {
+      label: t('project.lastXMonths', { amount: 24 }),
+      period: '24M',
+      tbs: ['month'],
+    },
+    {
+      label: t('project.all'),
+      period: KEY_FOR_ALL_TIME,
+      tbs: ['month', 'year'],
+    },
+    {
+      label: dates ? getCustomLabel(dates, t, language) : t('project.custom'),
+      dropdownLabel: t('project.custom'),
+      isCustomDate: true,
+      period: 'custom',
+      tbs: tbs || ['custom'],
+    },
+    {
+      label: t('project.compare'),
+      period: 'compare',
+      tbs: tbs || ['custom'],
+    },
+  ]
 
 export const captchaTbPeriodPairs = (
   t: Function,
@@ -131,69 +147,69 @@ export const captchaTbPeriodPairs = (
   dates?: Date[],
   language?: string,
 ): ITBPeriodPairs[] => [
-  {
-    label: t('project.thisHour'),
-    period: '1h',
-    tbs: ['minute'],
-  },
-  {
-    label: t('project.today'),
-    period: 'today',
-    tbs: ['hour'],
-  },
-  {
-    label: t('project.yesterday'),
-    period: 'yesterday',
-    tbs: ['hour'],
-  },
-  {
-    label: t('project.last24h'),
-    period: '1d',
-    countDays: 1,
-    tbs: ['hour'],
-  },
-  {
-    label: t('project.lastXDays', { amount: 7 }),
-    period: '7d',
-    tbs: ['hour', 'day'],
-    countDays: 7,
-  },
-  {
-    label: t('project.lastXWeeks', { amount: 4 }),
-    period: '4w',
-    tbs: ['day'],
-    countDays: 28,
-  },
-  {
-    label: t('project.lastXMonths', { amount: 3 }),
-    period: '3M',
-    tbs: ['month'],
-    countDays: 90,
-  },
-  {
-    label: t('project.lastXMonths', { amount: 12 }),
-    period: '12M',
-    tbs: ['month'],
-    countDays: 365,
-  },
-  {
-    label: t('project.lastXMonths', { amount: 24 }),
-    period: '24M',
-    tbs: ['month'],
-  },
-  {
-    label: t('project.all'),
-    period: KEY_FOR_ALL_TIME,
-    tbs: ['month', 'year'],
-  },
-  {
-    label: dates ? getCustomLabel(dates, t, language) : t('project.custom'),
-    dropdownLabel: t('project.custom'),
-    isCustomDate: true,
-    period: 'custom',
-    tbs: tbs || ['custom'],
-  },
-]
+    {
+      label: t('project.thisHour'),
+      period: '1h',
+      tbs: ['minute'],
+    },
+    {
+      label: t('project.today'),
+      period: 'today',
+      tbs: ['hour'],
+    },
+    {
+      label: t('project.yesterday'),
+      period: 'yesterday',
+      tbs: ['hour'],
+    },
+    {
+      label: t('project.last24h'),
+      period: '1d',
+      countDays: 1,
+      tbs: ['hour'],
+    },
+    {
+      label: t('project.lastXDays', { amount: 7 }),
+      period: '7d',
+      tbs: ['hour', 'day'],
+      countDays: 7,
+    },
+    {
+      label: t('project.lastXWeeks', { amount: 4 }),
+      period: '4w',
+      tbs: ['day'],
+      countDays: 28,
+    },
+    {
+      label: t('project.lastXMonths', { amount: 3 }),
+      period: '3M',
+      tbs: ['month'],
+      countDays: 90,
+    },
+    {
+      label: t('project.lastXMonths', { amount: 12 }),
+      period: '12M',
+      tbs: ['month'],
+      countDays: 365,
+    },
+    {
+      label: t('project.lastXMonths', { amount: 24 }),
+      period: '24M',
+      tbs: ['month'],
+    },
+    {
+      label: t('project.all'),
+      period: KEY_FOR_ALL_TIME,
+      tbs: ['month', 'year'],
+    },
+    {
+      label: dates ? getCustomLabel(dates, t, language) : t('project.custom'),
+      dropdownLabel: t('project.custom'),
+      isCustomDate: true,
+      period: 'custom',
+      tbs: tbs || ['custom'],
+    },
+  ]
 
 export const filtersPeriodPairs = ['1h', '1d', '7d', '4w', '3M', '12M', 'custom', 'compare']
 
@@ -205,19 +221,19 @@ export const tbPeriodPairsCompare = (
   label: string
   period: string
 }[] => [
-  {
-    label: t('project.previousPeriod'),
-    period: 'previous',
-  },
-  {
-    label: dates ? getCustomLabel(dates, t, language) : t('project.custom'),
-    period: 'custom',
-  },
-  {
-    label: t('project.disableCompare'),
-    period: 'disable',
-  },
-]
+    {
+      label: t('project.previousPeriod'),
+      period: 'previous',
+    },
+    {
+      label: dates ? getCustomLabel(dates, t, language) : t('project.custom'),
+      period: 'custom',
+    },
+    {
+      label: t('project.disableCompare'),
+      period: 'disable',
+    },
+  ]
 
 export const PERIOD_PAIRS_COMPARE: {
   COMPARE: string
@@ -247,13 +263,13 @@ export const timeBucketToDays: {
   lt: number
   tb: string[]
 }[] = [
-  // { lt: 0, tb: ['minute'] }, // 1 hour
-  { lt: 1, tb: ['hour'] }, // 1 days
-  { lt: 7, tb: ['hour', 'day'] }, // 7 days
-  { lt: 28, tb: ['day'] }, // 4 weeks
-  { lt: 366, tb: ['month'] }, // 12 months
-  { lt: 732, tb: ['month'] }, // 24 months
-]
+    // { lt: 0, tb: ['minute'] }, // 1 hour
+    { lt: 1, tb: ['hour'] }, // 1 days
+    { lt: 7, tb: ['hour', 'day'] }, // 7 days
+    { lt: 28, tb: ['day'] }, // 4 weeks
+    { lt: 366, tb: ['month'] }, // 12 months
+    { lt: 732, tb: ['month'] }, // 24 months
+  ]
 
 export const tbsFormatMapper: IStringObject = {
   minute: '%I:%M %p',
@@ -305,11 +321,11 @@ export const reportFrequencyForEmailsOptions: {
   value: string
   label: string
 }[] = [
-  { value: 'quarterly', label: 'Quarterly' },
-  { value: 'monthly', label: 'Monthly' },
-  { value: 'weekly', label: 'Weekly' },
-  { value: 'never', label: 'Never' },
-]
+    { value: 'quarterly', label: 'Quarterly' },
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'weekly', label: 'Weekly' },
+    { value: 'never', label: 'Never' },
+  ]
 
 export const GDPR_EXPORT_TIMEFRAME: number = 14 // days
 
