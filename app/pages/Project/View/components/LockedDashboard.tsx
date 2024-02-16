@@ -26,6 +26,9 @@ const LockedDashboard = ({ user, project, isSharedProject }: ILockedDashboard) =
       if (user?.dashboardBlockReason === DashboardBlockReason.payment_failed) {
         return t('project.locked.descPaymentFailed')
       }
+      if (user?.dashboardBlockReason === DashboardBlockReason.subscription_cancelled) {
+        return t('project.locked.descSubCancelled')
+      }
     }
 
     if (isSharedProject) {
