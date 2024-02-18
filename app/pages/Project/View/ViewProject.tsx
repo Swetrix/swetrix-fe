@@ -25,6 +25,7 @@ import {
 import cx from 'clsx'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
+import { useHotkeys } from 'react-hotkeys-hook'
 import _keys from 'lodash/keys'
 import _map from 'lodash/map'
 import _includes from 'lodash/includes'
@@ -111,6 +112,7 @@ import LineChart from 'ui/icons/LineChart'
 import BarChart from 'ui/icons/BarChart'
 import Forecast from 'modals/Forecast'
 import NewFunnel from 'modals/NewFunnel'
+import ViewProjectHotkeys from 'modals/ViewProjectHotkeys'
 import routes from 'routesPath'
 import Header from 'components/Header'
 import Footer from 'components/Footer'
@@ -421,6 +423,8 @@ const ViewProject = ({
     // if we do not have activeTab in url, we return activeTab from localStorage or default tab trafic
     return projectTab || PROJECT_TABS.traffic
   })
+
+  const [isHotkeysHelpOpened, setIsHotkeysHelpOpened] = useState(false)
 
   // sessions
   const [sessionsSkip, setSessionsSkip] = useState<number>(0)
@@ -2736,6 +2740,10 @@ const ViewProject = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActiveCompare, activePeriodCompare, dateRangeCompare])
 
+  useHotkeys('shift+?', () => {
+    setIsHotkeysHelpOpened((val) => !val)
+  })
+
   const TabsSelector = () => (
     <div>
       <div className='sm:hidden'>
@@ -3907,6 +3915,7 @@ const ViewProject = ({
             activeTB={t(`project.${timeBucket}`)}
             tb={timeBucket}
           />
+          <ViewProjectHotkeys isOpened={isHotkeysHelpOpened} onClose={() => setIsHotkeysHelpOpened(false)} />
           <NewFunnel
             project={project}
             projectPassword={projectPassword}
