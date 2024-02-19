@@ -155,6 +155,10 @@ import {
   FILTER_CHART_METRICS_MAPPING_FOR_COMPARE,
   getSettingsFunnels,
   convertFilters,
+  SHORTCUTS_TABS_LISTENERS,
+  SHORTCUTS_TABS_MAP,
+  SHORTCUTS_GENERAL_LISTENERS,
+  SHORTCUTS_TIMEBUCKETS_LISTENERS,
 } from './ViewProject.helpers'
 import CCRow from './components/CCRow'
 import FunnelsList from './components/FunnelsList'
@@ -2740,8 +2744,95 @@ const ViewProject = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isActiveCompare, activePeriodCompare, dateRangeCompare])
 
+  /* KEYBOARD SHORTCUTS */
+  const generalShortcutsActions = {
+    B: () => setChartTypeOnClick(chartTypes.bar),
+    '∫': () => setChartTypeOnClick(chartTypes.bar),
+    L: () => setChartTypeOnClick(chartTypes.line),
+    '¬': () => setChartTypeOnClick(chartTypes.line),
+    S: () => setShowFiltersSearch(true),
+    ß: () => setShowFiltersSearch(true),
+    F: onForecastOpen,
+    ƒ: onForecastOpen,
+    r: refreshStats,
+  }
+
+  const timebucketShortcutsMap = {
+    h: '1h',
+    t: 'today',
+    y: 'yesterday',
+    d: '1d',
+    w: '7d',
+    m: '4w',
+    q: '3M',
+    l: '12M',
+    z: '24M',
+    a: KEY_FOR_ALL_TIME,
+    u: 'custom',
+    c: 'compare',
+  }
+
+  // 'Keyboard shortcuts' help modal
   useHotkeys('shift+?', () => {
     setIsHotkeysHelpOpened((val) => !val)
+  })
+
+  // 'Tabs switching' shortcuts
+  useHotkeys(SHORTCUTS_TABS_LISTENERS, ({ key }) => {
+    if (key === 'E') {
+      openSettingsHandler()
+      return
+    }
+
+    // @ts-ignore
+    const tab = SHORTCUTS_TABS_MAP[key]
+
+    if (!tab) {
+      return
+    }
+
+    setProjectTab(tab)
+    setActiveTab(tab)
+  })
+
+  // 'General' shortcuts
+  useHotkeys(SHORTCUTS_GENERAL_LISTENERS, ({ key }) => {
+    // @ts-ignore
+    generalShortcutsActions[key]?.()
+  })
+
+  // 'Timebuckets selection' shortcuts
+  useHotkeys(SHORTCUTS_TIMEBUCKETS_LISTENERS, ({ key }) => {
+    const pairs = tbPeriodPairs(t, undefined, undefined, language)
+    // @ts-ignore
+    const pair = _find(pairs, ({ period }) => period === timebucketShortcutsMap[key])
+
+    if (!pair) {
+      return
+    }
+
+    if (pair.isCustomDate) {
+      // @ts-ignore
+      refCalendar.current?.openCalendar?.()
+      return
+    }
+
+    if (pair.period === 'compare') {
+      if (activeTab === PROJECT_TABS.alerts) {
+        return
+      }
+
+      if (isActiveCompare) {
+        compareDisable()
+      } else {
+        setIsActiveCompare(true)
+      }
+
+      return
+    }
+
+    setDateRange(null)
+    updatePeriod(pair)
   })
 
   const TabsSelector = () => (
