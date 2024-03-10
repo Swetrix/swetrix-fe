@@ -319,7 +319,10 @@
       "success": "Your email has been successfully verified!"
     },
     "socialisation": {
-      "success": "Socialisation successful",
+      "authSuccess": "Authentication successful",
+      "failed": "Authentication failed",
+      "failedDesc": "An error has occurred while authenticating through a third party service, please try again or contact support.",
+      "successDesc": "You are now authenticated through a 3rd party service and can safely close this page if it didn't close automatically.",
       "orSingUpWith": "or sign up with"
     },
     "common": {
