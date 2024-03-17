@@ -664,7 +664,6 @@ const ProjectSettings = ({
                   handleInput(e)
                 }
               }}
-              disabled={form?.isPasswordProtected}
               name='public'
               id='public'
               className='mt-4'
@@ -687,7 +686,6 @@ const ProjectSettings = ({
                     setShowProtected(true)
                   }
                 }}
-                disabled={form?.public}
                 name='isPasswordProtected'
                 id='isPasswordProtected'
                 className='mt-4'
