@@ -2921,7 +2921,7 @@ const ViewProject = ({
     )
   }
 
-  if (!project.isDataExists && !analyticsLoading && !isSharedProject) {
+  if (!project.isDataExists && !analyticsLoading && !isSharedProject && !project?.isPublic) {
     return (
       <>
         {!embedded && <Header ssrTheme={ssrTheme} authenticated={authenticated} />}
