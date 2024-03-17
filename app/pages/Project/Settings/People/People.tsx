@@ -210,30 +210,17 @@ const People: React.FunctionComponent<IPeopleProps> = ({
   const {
     t,
     i18n: { language },
-  }: {
-    t: (
-      key: string,
-      options?: {
-        [key: string]: string | number | null
-      },
-    ) => string
-    i18n: {
-      language: string
-    }
   } = useTranslation('common')
-  const [form, setForm] = useState<{
-    email: string
-    role: string
-  }>({
+  const [form, setForm] = useState({
     email: '',
     role: '',
   })
-  const [beenSubmitted, setBeenSubmitted] = useState<boolean>(false)
+  const [beenSubmitted, setBeenSubmitted] = useState(false)
   const [errors, setErrors] = useState<{
     email?: string
     role?: string
   }>({})
-  const [validated, setValidated] = useState<boolean>(false)
+  const [validated, setValidated] = useState(false)
   const { id, name, share } = project
 
   const validate = () => {

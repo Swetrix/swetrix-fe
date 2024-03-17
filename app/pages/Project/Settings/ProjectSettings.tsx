@@ -69,19 +69,7 @@ const tabDeleteDataModal = [
   },
 ]
 
-const ModalMessage = ({
-  dateRange,
-  setDateRange,
-  setTab,
-  t,
-  tab,
-  pid,
-  activeFilter,
-  setActiveFilter,
-  filterType,
-  setFilterType,
-  language,
-}: {
+interface IModalMessage {
   dateRange: Date[]
   setDateRange: (a: Date[]) => void
   setTab: (i: string) => void
@@ -98,7 +86,21 @@ const ModalMessage = ({
   filterType: string
   setFilterType: (a: string) => void
   language: string
-}): JSX.Element => {
+}
+
+const ModalMessage = ({
+  dateRange,
+  setDateRange,
+  setTab,
+  t,
+  tab,
+  pid,
+  activeFilter,
+  setActiveFilter,
+  filterType,
+  setFilterType,
+  language,
+}: IModalMessage): JSX.Element => {
   const [filterList, setFilterList] = useState<string[]>([])
   const [searchList, setSearchList] = useState<string[]>([])
 
@@ -300,16 +302,6 @@ const ProjectSettings = ({
   const {
     t,
     i18n: { language },
-  }: {
-    t: (
-      key: string,
-      options?: {
-        [key: string]: string | number | null
-      },
-    ) => string
-    i18n: {
-      language: string
-    }
   } = useTranslation('common')
   // @ts-ignore
   const {
@@ -752,7 +744,7 @@ const ProjectSettings = ({
                 </div>
               )}
             </div>
-            {!isSelfhosted && !project?.shared && (
+            {!isSelfhosted && (
               <>
                 <hr className='mt-8 xs:mt-2 sm:mt-5 border-gray-200 dark:border-gray-600' />
                 <Emails projectId={id} projectName={project.name} />
