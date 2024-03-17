@@ -20,6 +20,7 @@ import PaidFeature from 'modals/PaidFeature'
 import { roles, roleViewer, roleAdmin, INVITATION_EXPIRES_IN } from 'redux/constants'
 import useOnClickOutside from 'hooks/useOnClickOutside'
 import { IProject, IShareOwnerProject } from 'redux/models/IProject'
+import { IUser } from 'redux/models/IUser'
 
 const NoEvents = ({ t }: { t: (key: string) => string }): JSX.Element => (
   <div className='flex flex-col py-6 sm:px-6 lg:px-8'>
@@ -29,17 +30,7 @@ const NoEvents = ({ t }: { t: (key: string) => string }): JSX.Element => (
   </div>
 )
 
-const UsersList = ({
-  data,
-  onRemove,
-  t,
-  share,
-  setProjectShareData,
-  pid,
-  updateProjectFailed,
-  language,
-  roleUpdatedNotification,
-}: {
+interface IUsersList {
   data: IShareOwnerProject
   onRemove: (id: string) => void
   t: (
@@ -54,9 +45,23 @@ const UsersList = ({
   updateProjectFailed: (message: string) => void
   language: string
   roleUpdatedNotification: (email: string, role?: string) => void
-}) => {
-  const [open, setOpen] = useState<boolean>(false)
-  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  authedUserEmail: string | undefined
+}
+
+const UsersList = ({
+  data,
+  onRemove,
+  t,
+  share,
+  setProjectShareData,
+  pid,
+  updateProjectFailed,
+  language,
+  roleUpdatedNotification,
+  authedUserEmail,
+}: IUsersList) => {
+  const [open, setOpen] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const openRef = useRef<HTMLDivElement>(null)
   useOnClickOutside(openRef, () => setOpen(false))
   const { id, created, confirmed, role, user } = data
@@ -96,7 +101,8 @@ const UsersList = ({
             <button
               onClick={() => setOpen(!open)}
               type='button'
-              className='inline-flex items-center shadow-sm pl-2 pr-1 py-0.5 border border-gray-200 dark:border-gray-600 text-sm leading-5 font-medium rounded-full bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600'
+              disabled={user.email === authedUserEmail}
+              className='inline-flex disabled:opacity-80 disabled:cursor-not-allowed items-center shadow-sm pl-2 pr-1 py-0.5 border border-gray-200 dark:border-gray-600 text-sm leading-5 font-medium rounded-full bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600'
             >
               {t(`project.settings.roles.${role}.name`)}
               <ChevronDownIcon style={{ transform: open ? 'rotate(180deg)' : '' }} className='w-4 h-4 pt-px ml-0.5' />
@@ -194,6 +200,7 @@ interface IPeopleProps {
   inviteUserNotification: (email: string, type?: string) => void
   removeUserNotification: (email: string) => void
   isPaidTierUsed: boolean
+  user: IUser
 }
 
 const People: React.FunctionComponent<IPeopleProps> = ({
@@ -204,6 +211,7 @@ const People: React.FunctionComponent<IPeopleProps> = ({
   inviteUserNotification,
   removeUserNotification,
   isPaidTierUsed,
+  user: currentUser,
 }: IPeopleProps): JSX.Element => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [isPaidFeatureOpened, setIsPaidFeatureOpened] = useState<boolean>(false)
@@ -371,6 +379,7 @@ const People: React.FunctionComponent<IPeopleProps> = ({
                           updateProjectFailed={updateProjectFailed}
                           roleUpdatedNotification={roleUpdatedNotification}
                           pid={id}
+                          authedUserEmail={currentUser?.email}
                         />
                       ))}
                     </tbody>
