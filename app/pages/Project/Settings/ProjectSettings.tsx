@@ -264,6 +264,7 @@ interface IProjectSettings {
   deleteProjectFailed: (message: string) => void
   loadProjects: (shared: boolean, skip: number) => void
   isLoading: boolean
+  isLoadingShared: boolean
   projects: IProject[]
   showError: (message: string) => void
   removeProject: (pid: string, shared: boolean) => void
@@ -274,7 +275,7 @@ interface IProjectSettings {
   setProjectProtectedPassword: (pid: string, password: string) => void
   dashboardPaginationPage: number
   dashboardPaginationPageShared: number
-  loading: boolean
+  authLoading: boolean
   isSettings: boolean
 }
 
@@ -286,6 +287,7 @@ const ProjectSettings = ({
   deleteProjectFailed,
   loadProjects,
   isLoading,
+  isLoadingShared,
   projects,
   showError,
   removeProject,
@@ -296,7 +298,7 @@ const ProjectSettings = ({
   setProjectProtectedPassword,
   dashboardPaginationPage,
   dashboardPaginationPageShared,
-  loading,
+  authLoading,
   isSettings,
 }: IProjectSettings) => {
   const {
@@ -352,7 +354,7 @@ const ProjectSettings = ({
     : dashboardPaginationPage * ENTRIES_PER_PAGE_DASHBOARD
 
   useEffect(() => {
-    if (loading) {
+    if (authLoading) {
       return
     }
 
@@ -361,7 +363,7 @@ const ProjectSettings = ({
       navigate(routes.dashboard)
     }
 
-    if (!isLoading && isSettings && !projectDeleting) {
+    if (!isLoading && !isLoadingShared && isSettings && !projectDeleting) {
       if (_isEmpty(project) || project?.uiHidden) {
         showError(t('project.noExist'))
         navigate(routes.dashboard)
@@ -373,7 +375,7 @@ const ProjectSettings = ({
         })
       }
     }
-  }, [user, project, isLoading, isSettings, navigate, showError, projectDeleting, t, loading])
+  }, [user, project, isLoading, isSettings, navigate, showError, projectDeleting, t, authLoading, isLoadingShared])
 
   const onSubmit = async (data: IForm) => {
     if (!projectSaving) {
@@ -573,7 +575,7 @@ const ProjectSettings = ({
     document.title = pageTitle
   }, [form, t, isSettings])
 
-  if (loading) {
+  if (authLoading || isLoading || isLoadingShared) {
     return (
       <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900 flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
         <Loader />
