@@ -40,12 +40,13 @@ interface IUsersList {
     },
   ) => string
   share?: IShareOwnerProject[]
-  setProjectShareData: (item: Partial<IProject>, id: string) => void
+  setProjectShareData: (item: Partial<IProject>, id: string, shared: boolean) => void
   pid: string
   updateProjectFailed: (message: string) => void
   language: string
   roleUpdatedNotification: (email: string, role?: string) => void
   authedUserEmail: string | undefined
+  isSharedProject: boolean
 }
 
 const UsersList = ({
@@ -59,6 +60,7 @@ const UsersList = ({
   language,
   roleUpdatedNotification,
   authedUserEmail,
+  isSharedProject,
 }: IUsersList) => {
   const [open, setOpen] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -71,11 +73,11 @@ const UsersList = ({
       const results = await changeShareRole(id, { role: newRole })
       const newShared: IShareOwnerProject[] = _map(share, (itShare) => {
         if (itShare.id === results.id) {
-          return { ...results, user: itShare.user }
+          return { ...results, user: itShare.user, role: newRole }
         }
         return itShare
       })
-      setProjectShareData({ share: newShared }, pid)
+      setProjectShareData({ share: newShared }, pid, isSharedProject)
       roleUpdatedNotification(t('apiNotifications.roleUpdated'))
     } catch (e) {
       console.error(`[ERROR] Error while updating user's role: ${e}`)
@@ -201,6 +203,7 @@ interface IPeopleProps {
   removeUserNotification: (email: string) => void
   isPaidTierUsed: boolean
   user: IUser
+  isSharedProject: boolean
 }
 
 const People: React.FunctionComponent<IPeopleProps> = ({
@@ -212,6 +215,7 @@ const People: React.FunctionComponent<IPeopleProps> = ({
   removeUserNotification,
   isPaidTierUsed,
   user: currentUser,
+  isSharedProject,
 }: IPeopleProps): JSX.Element => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [isPaidFeatureOpened, setIsPaidFeatureOpened] = useState<boolean>(false)
@@ -380,6 +384,7 @@ const People: React.FunctionComponent<IPeopleProps> = ({
                           roleUpdatedNotification={roleUpdatedNotification}
                           pid={id}
                           authedUserEmail={currentUser?.email}
+                          isSharedProject={isSharedProject}
                         />
                       ))}
                     </tbody>

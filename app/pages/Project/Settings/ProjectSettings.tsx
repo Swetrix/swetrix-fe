@@ -751,7 +751,7 @@ const ProjectSettings = ({
             {!isSelfhosted && (
               <>
                 <hr className='mt-2 sm:mt-5 border-gray-200 dark:border-gray-600' />
-                <People project={project} />
+                <People project={project} isSharedProject={isSharedProject} />
               </>
             )}
           </>
