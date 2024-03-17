@@ -748,7 +748,7 @@ const ProjectSettings = ({
                 <Emails projectId={id} projectName={project.name} />
               </>
             )}
-            {!isSelfhosted && !project?.shared && (
+            {!isSelfhosted && (
               <>
                 <hr className='mt-2 sm:mt-5 border-gray-200 dark:border-gray-600' />
                 <People project={project} />
