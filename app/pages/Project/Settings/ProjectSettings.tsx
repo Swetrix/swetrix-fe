@@ -575,7 +575,7 @@ const ProjectSettings = ({
     document.title = pageTitle
   }, [form, t, isSettings])
 
-  if (authLoading || isLoading || isLoadingShared) {
+  if (authLoading) {
     return (
       <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900 flex flex-col py-6 px-4 sm:px-6 lg:px-8'>
         <Loader />
