@@ -2663,16 +2663,7 @@ const ViewProject = ({
   useEffect(() => {
     loadAnalyticsPerf()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activePerfMeasure])
-
-  useEffect(() => {
-    if (activeChartMetricsPerf !== CHART_METRICS_MAPPING_PERF.quantiles) {
-      return
-    }
-
-    loadAnalyticsPerf()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeChartMetricsPerf])
+  }, [activePerfMeasure, activeChartMetricsPerf])
 
   const openSettingsHandler = () => {
     navigate(_replace(routes.project_settings, ':id', id))
