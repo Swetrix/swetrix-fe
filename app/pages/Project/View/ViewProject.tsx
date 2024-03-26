@@ -1630,9 +1630,6 @@ const ViewProject = ({
         )
         setChartDataPerf(chartPerf)
 
-        console.log('chart:', chartPerf)
-        console.log('bbSettings:', bbSettings)
-
         setPanelsDataPerf({
           types: _keys(dataPerf.params),
           data: dataPerf.params,
