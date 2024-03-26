@@ -388,7 +388,7 @@ const ViewProject = ({
   })
   // similar activeChartMetrics but using for performance tab
   const [activeChartMetricsPerf, setActiveChartMetricsPerf] = useState<string>(CHART_METRICS_MAPPING_PERF.timing)
-  const [activePerfMeasure, setActivePerfMeasure] = useState(CHART_MEASURES_MAPPING_PERF.p95)
+  const [activePerfMeasure, setActivePerfMeasure] = useState(CHART_MEASURES_MAPPING_PERF.median)
   // checkIfAllMetricsAreDisabled when all metrics are disabled, we are hidden chart
   const checkIfAllMetricsAreDisabled = useMemo(
     () => !_some({ ...activeChartMetrics, ...activeChartMetricsCustomEvents }, (value) => value),
