@@ -532,6 +532,7 @@ const SELFHOSTED_PROJECT_TABS: IStringObject = {
   performance: 'performance',
   funnels: 'funnels',
   sessions: 'sessions',
+  errors: 'errors',
 }
 
 const PRODUCTION_PROJECT_TABS: IStringObject = {
@@ -539,6 +540,7 @@ const PRODUCTION_PROJECT_TABS: IStringObject = {
   performance: 'performance',
   funnels: 'funnels',
   sessions: 'sessions',
+  errors: 'errors',
   alerts: 'alerts',
 }
 
