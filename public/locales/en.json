@@ -532,6 +532,7 @@
     "performance": "Performance",
     "funnels": "Funnels",
     "sessions": "Sessions",
+    "xOccurrences": "{{x}} occurrences",
     "errors": "Errors",
     "alerts": "Alerts",
     "alertsDesc": "Automated alerts is a powerful tool that allows you to run automated tasks when specific events occur.\nWe can automatically monitor your project for traffic spikes and notify you via Telegram.",

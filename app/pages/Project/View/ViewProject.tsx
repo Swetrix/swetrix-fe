@@ -3787,7 +3787,7 @@ const ViewProject = ({
                   {!errorsLoading && _isEmpty(errors) && (
                     <NoEvents filters={filtersErrors} resetFilters={resetFilters} />
                   )}
-                  <Errors errors={errors} onClick={loadError} />
+                  <Errors errors={errors} onClick={loadError} timezone={timezone} />
                   {canLoadMoreSessions && (
                     <button
                       type='button'
