@@ -514,6 +514,9 @@
     "disabled": "Disabled",
     "pageviews": "Pageviews",
     "captchaEvents": "CAPTCHA events",
+    "firstSeen": "First seen",
+    "lastSeen": "Last seen",
+    "atFile": "At {{filename}}, line {{lineno}}, column {{colno}}",
     "unique": "Unique views",
     "createdAt": "Created at",
     "inc": "Increased by",
@@ -592,6 +595,13 @@
       "custom_events": "Custom events"
     }
   },
+  "error": {
+    "status": {
+      "active": "Active",
+      "fixed": "Fixed",
+      "regressed": "Regressed"
+    }
+  },
   "notFoundPage": {
     "title": "Page not found",
     "description": "Sorry, we couldn’t find the page you’re looking for.\nPlease check the URL in the address bar and try again.",
@@ -621,6 +631,8 @@
     "trendlineUnique": "Unique visitors trendline",
     "backToFunnels": "Back to funnels list",
     "backToSessions": "Back to sessions list",
+    "backToErrors": "Back to errors list",
+    "occurrences": "Occurrences",
     "visitPage": "Visit {{page}}",
     "visitors": "Visitors",
     "events": "Events",

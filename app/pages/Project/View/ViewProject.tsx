@@ -87,6 +87,7 @@ import {
   OS_LOGO_MAP,
   OS_LOGO_MAP_DARK,
   ITBPeriodPairs,
+  ERROR_PANELS_ORDER,
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import {
@@ -132,6 +133,7 @@ import {
   getSessions,
   getSession,
   getErrors,
+  getError,
 } from 'api'
 import { getChartPrediction } from 'api/ai'
 import { Panel, CustomEvents } from './Panels'
@@ -180,6 +182,9 @@ import { SessionChart } from './components/SessionChart'
 import { Errors } from './components/Errors'
 import LockedDashboard from './components/LockedDashboard'
 import WaitingForAnEvent from './components/WaitingForAnEvent'
+import { ErrorChart } from './components/ErrorChart'
+import { ErrorDetails } from './components/ErrorDetails'
+import { IError } from './interfaces/error'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -445,6 +450,8 @@ const ViewProject = ({
   const [canLoadMoreErrors, setCanLoadMoreErrors] = useState<boolean>(false)
   const [errors, setErrors] = useState<any[]>([])
   const [errorsLoading, setErrorsLoading] = useState<boolean | null>(null) // null - not loaded, true - loading, false - loaded
+  const [activeError, setActiveError] = useState<any>(null)
+  const [errorLoading, setErrorLoading] = useState<boolean>(false)
 
   const [activeFunnel, setActiveFunnel] = useState<IFunnel | null>(null)
   const [funnelToEdit, setFunnelToEdit] = useState<IFunnel | undefined>(undefined)
@@ -784,6 +791,7 @@ const ViewProject = ({
       viewsPerUnique: t('dashboard.viewsPerUnique'),
       trendlineTotal: t('project.trendlineTotal'),
       trendlineUnique: t('project.trendlineUnique'),
+      occurrences: t('project.occurrences'),
       sessionDuration: t('dashboard.sessionDuration'),
       ...dataNamesCustomEvents,
     }),
@@ -1327,19 +1335,19 @@ const ViewProject = ({
 
     return getCustomEventsMetadata(id, event, timeBucket, period, '', '', timezone, projectPassword)
   }
-  const loadError = async (psid: string) => {
-    // if (sessionLoading) {
-    //   return
-    // }
-    // setSessionLoading(true)
-    // try {
-    //   const session = await getSession(id, psid, timezone, projectPassword)
-    //   setActiveSession(session)
-    // } catch (reason: any) {
-    //   console.error('[ERROR] (loadSession)(getSession)', reason)
-    //   showError(reason) // todo: error message i18n
-    // }
-    // setSessionLoading(false)
+  const loadError = async (eid: string) => {
+    if (errorLoading) {
+      return
+    }
+    setErrorLoading(true)
+    try {
+      const error = await getError(id, eid, period, undefined, undefined, timezone, projectPassword)
+      setActiveError(error)
+    } catch (reason: any) {
+      console.error('[ERROR] (loadError)(getError)', reason)
+      showError(reason) // todo: error message i18n
+    }
+    setErrorLoading(false)
   }
 
   const loadSession = async (psid: string) => {
@@ -1445,7 +1453,7 @@ const ViewProject = ({
     setErrorsLoading(true)
 
     try {
-      let dataErrors: { sessions: ISession[]; appliedFilters: any[] }
+      let dataErrors: { errors: IError[]; appliedFilters: any[] }
       let from
       let to
 
@@ -3762,9 +3770,7 @@ const ViewProject = ({
                       {t('project.backToSessions')}
                     </button>
                   </div>
-                  {activeSession?.details && (
-                    <SessionDetails details={activeSession?.details} psid={activeSession?.psid} />
-                  )}
+                  {activeSession?.details && <SessionDetails details={activeSession.details} />}
                   <SessionChart
                     chart={activeSession?.chart}
                     timeBucket={activeSession?.timeBucket}
@@ -3776,7 +3782,7 @@ const ViewProject = ({
                   <Pageflow pages={activeSession?.pages} />
                 </>
               )}
-              {activeTab === PROJECT_TABS.errors && (
+              {activeTab === PROJECT_TABS.errors && !activeError && (
                 <>
                   <Filters
                     filters={filtersErrors}
@@ -3787,12 +3793,12 @@ const ViewProject = ({
                   {!errorsLoading && _isEmpty(errors) && (
                     <NoEvents filters={filtersErrors} resetFilters={resetFilters} />
                   )}
-                  <Errors errors={errors} onClick={loadError} timezone={timezone} />
-                  {canLoadMoreSessions && (
+                  <Errors errors={errors} onClick={loadError} />
+                  {canLoadMoreErrors && (
                     <button
                       type='button'
                       title={t('project.refreshStats')}
-                      onClick={() => loadErrors()}
+                      onClick={loadErrors}
                       className={cx(
                         'flex items-center mx-auto mt-2 text-gray-700 dark:text-gray-50 relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
                         {
@@ -3804,6 +3810,245 @@ const ViewProject = ({
                       {t('project.loadMore')}
                     </button>
                   )}
+                </>
+              )}
+              {activeTab === PROJECT_TABS.errors && activeError && (
+                <>
+                  <button
+                    onClick={() => {
+                      setActiveError(null)
+                      const url = new URL(window.location.href)
+                      url.searchParams.delete('eid')
+                      window.history.pushState({}, '', url.toString())
+                    }}
+                    className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 lg:mt-0 text-gray-900 dark:text-gray-100'
+                  >
+                    <ChevronLeftIcon className='w-4 h-4' />
+                    {t('project.backToErrors')}
+                  </button>
+                  {activeError?.details && <ErrorDetails details={activeError.details} />}
+                  <ErrorChart
+                    chart={activeError?.chart}
+                    timeBucket={activeError?.timeBucket}
+                    timeFormat={timeFormat}
+                    rotateXAxis={rotateXAxis}
+                    chartType={chartType}
+                    dataNames={dataNames}
+                  />
+                  <div className='mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
+                    {!_isEmpty(activeError?.params) &&
+                      _map(ERROR_PANELS_ORDER, (type: keyof typeof tnMapping) => {
+                        const panelName = tnMapping[type]
+                        // @ts-ignore
+                        const panelIcon = panelIconMapping[type]
+
+                        if (type === 'cc') {
+                          const ccPanelName = tnMapping[countryActiveTab]
+
+                          const rowMapper = (entry: ICountryEntry) => {
+                            const { name: entryName, cc } = entry
+
+                            if (cc) {
+                              return <CCRow cc={cc} name={entryName} language={language} />
+                            }
+
+                            return <CCRow cc={entryName} language={language} />
+                          }
+
+                          return (
+                            <Panel
+                              projectPassword={projectPassword}
+                              t={t}
+                              key={countryActiveTab}
+                              icon={panelIcon}
+                              id={countryActiveTab}
+                              onFilter={filterHandler}
+                              activeTab={activeTab}
+                              name={<CountryDropdown onSelect={setCountryActiveTab} title={ccPanelName} />}
+                              data={activeError.params[countryActiveTab]}
+                              rowMapper={rowMapper}
+                            />
+                          )
+                        }
+
+                        if (type === 'br') {
+                          const rowMapper = (entry: any) => {
+                            const { name: entryName } = entry
+                            // @ts-ignore
+                            const logoUrl = BROWSER_LOGO_MAP[entryName]
+
+                            if (!logoUrl) {
+                              return (
+                                <>
+                                  <GlobeAltIcon className='w-5 h-5' />
+                                  &nbsp;
+                                  {entryName}
+                                </>
+                              )
+                            }
+
+                            return (
+                              <>
+                                <img src={logoUrl} className='w-5 h-5' alt='' />
+                                &nbsp;
+                                {entryName}
+                              </>
+                            )
+                          }
+
+                          return (
+                            <Panel
+                              projectPassword={projectPassword}
+                              t={t}
+                              key={type}
+                              icon={panelIcon}
+                              id={type}
+                              activeTab={activeTab}
+                              onFilter={filterHandler}
+                              name={panelName}
+                              data={activeError.params[type]}
+                              rowMapper={rowMapper}
+                            />
+                          )
+                        }
+
+                        if (type === 'os') {
+                          const rowMapper = (entry: any) => {
+                            const { name: entryName } = entry
+                            // @ts-ignore
+                            const logoPathLight = OS_LOGO_MAP[entryName]
+                            // @ts-ignore
+                            const logoPathDark = OS_LOGO_MAP_DARK[entryName]
+
+                            let logoPath = _theme === 'dark' ? logoPathDark : logoPathLight
+                            logoPath ||= logoPathLight
+
+                            if (!logoPath) {
+                              return (
+                                <>
+                                  <GlobeAltIcon className='w-5 h-5' />
+                                  &nbsp;
+                                  {entryName}
+                                </>
+                              )
+                            }
+
+                            const logoUrl = `/${logoPath}`
+
+                            return (
+                              <>
+                                <img src={logoUrl} className='w-5 h-5 dark:fill-gray-50' alt='' />
+                                &nbsp;
+                                {entryName}
+                              </>
+                            )
+                          }
+
+                          return (
+                            <Panel
+                              projectPassword={projectPassword}
+                              t={t}
+                              key={type}
+                              icon={panelIcon}
+                              id={type}
+                              activeTab={activeTab}
+                              onFilter={filterHandler}
+                              name={panelName}
+                              data={activeError.params[type]}
+                              rowMapper={rowMapper}
+                            />
+                          )
+                        }
+
+                        if (type === 'dv') {
+                          return (
+                            <Panel
+                              projectPassword={projectPassword}
+                              t={t}
+                              key={type}
+                              activeTab={activeTab}
+                              icon={panelIcon}
+                              id={type}
+                              onFilter={filterHandler}
+                              name={panelName}
+                              data={activeError.params[type]}
+                              capitalize
+                            />
+                          )
+                        }
+
+                        if (type === 'pg') {
+                          return (
+                            <Panel
+                              projectPassword={projectPassword}
+                              t={t}
+                              key={type}
+                              icon={panelIcon}
+                              id={type}
+                              onFilter={filterHandler}
+                              onFragmentChange={setPgActiveFragment}
+                              // @ts-ignore
+                              rowMapper={({ name: entryName }) => {
+                                if (!entryName) {
+                                  return _toUpper(t('project.redactedPage'))
+                                }
+
+                                let decodedUri = entryName as string
+
+                                try {
+                                  decodedUri = decodeURIComponent(entryName)
+                                } catch (_) {
+                                  // do nothing
+                                }
+
+                                return decodedUri
+                              }}
+                              name={pgPanelNameMapping[pgActiveFragment]}
+                              data={activeError.params[type]}
+                              period={period}
+                              activeTab={activeTab}
+                              pid={id}
+                              timeBucket={timeBucket}
+                              filters={filters}
+                              from={dateRange ? getFormatDate(dateRange[0]) : null}
+                              to={dateRange ? getFormatDate(dateRange[1]) : null}
+                              timezone={timezone}
+                            />
+                          )
+                        }
+
+                        if (type === 'lc') {
+                          return (
+                            <Panel
+                              projectPassword={projectPassword}
+                              t={t}
+                              key={type}
+                              icon={panelIcon}
+                              id={type}
+                              activeTab={activeTab}
+                              onFilter={filterHandler}
+                              name={panelName}
+                              data={activeError.params[type]}
+                              rowMapper={({ name: entryName }) => getLocaleDisplayName(entryName, language)}
+                            />
+                          )
+                        }
+
+                        return (
+                          <Panel
+                            projectPassword={projectPassword}
+                            t={t}
+                            key={type}
+                            icon={panelIcon}
+                            id={type}
+                            activeTab={activeTab}
+                            onFilter={filterHandler}
+                            name={panelName}
+                            data={activeError.params[type]}
+                          />
+                        )
+                      })}
+                  </div>
                 </>
               )}
               {activeTab === PROJECT_TABS.alerts && !isSharedProject && project?.isOwner && authenticated && (

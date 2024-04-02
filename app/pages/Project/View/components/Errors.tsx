@@ -6,72 +6,52 @@ import _map from 'lodash/map'
 import cx from 'clsx'
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 import Loader from 'ui/Loader'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
 import { IError } from '../interfaces/error'
-
-dayjs.extend(timezone)
+import { getRelativeDateIfPossible } from 'utils/date'
+import { Badge } from 'ui/Badge'
 
 interface IErrors {
   errors: IError[]
   onClick: (psid: string) => void
-  timezone: string
 }
 
 interface IErrorItem {
   error: IError
-  timezone: string
   onClick: (psid: string) => void
   className?: string
 }
 
-const DIVISIONS = [
-  { amount: 60, name: 'seconds' },
-  { amount: 60, name: 'minutes' },
-  { amount: 24, name: 'hours' },
-  { amount: 7, name: 'days' },
-  { amount: 4.34524, name: 'weeks' },
-  { amount: 12, name: 'months' },
-  { amount: Number.POSITIVE_INFINITY, name: 'years' },
-]
-
-// @ts-ignore
-const formatTimeAgo = (date, language: string) => {
-  const rtf = new Intl.RelativeTimeFormat(language)
-
-  // @ts-ignore
-  let duration = (date - new Date()) / 1000
-
-  for (let i = 0; i < DIVISIONS.length; i++) {
-    const division = DIVISIONS[i]
-    if (Math.abs(duration) < division.amount) {
-      // @ts-ignore
-      return rtf.format(Math.round(duration), division.name)
-    }
-    duration /= division.amount
-  }
-}
-
-const ErrorItem = ({ error, onClick, className, timezone }: IErrorItem) => {
+const ErrorItem = ({ error, onClick, className }: IErrorItem) => {
   const {
     t,
     i18n: { language },
   } = useTranslation('common')
   const lastSeen = useMemo(() => {
-    if (!Intl?.RelativeTimeFormat) {
-      return new Date(error.last_seen).toLocaleDateString(language, {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-      })
+    return getRelativeDateIfPossible(error.last_seen, language)
+  }, [error.last_seen, language])
+  const status: {
+    label: string
+    colour: 'red' | 'yellow' | 'slate'
+  } = useMemo(() => {
+    if (error.status === 'active') {
+      return {
+        label: t('error.status.active'),
+        colour: 'red',
+      }
     }
 
-    const date = dayjs.tz(error.last_seen, timezone).toDate()
+    if (error.status === 'regressed') {
+      return {
+        label: t('error.status.regressed'),
+        colour: 'yellow',
+      }
+    }
 
-    return formatTimeAgo(date, language)
-  }, [error.last_seen, language, timezone])
+    return {
+      label: t('error.status.fixed'),
+      colour: 'slate',
+    }
+  }, [error.status, t])
 
   const eidUrl = new URL(window.location.href)
   eidUrl.searchParams.set('eid', error.eid)
@@ -102,7 +82,16 @@ const ErrorItem = ({ error, onClick, className, timezone }: IErrorItem) => {
               <span className='text-gray-500 mx-1 font-normal text-sm'>{error.filename}</span>
             </p>
             <p className='mt-1 flex text-base leading-5 text-gray-500 dark:text-gray-300'>{error.message}</p>
-            <p className='mt-1 flex text-base leading-5 text-gray-500 dark:text-gray-300'>{lastSeen}</p>
+            <p className='mt-1 flex text-base leading-5 text-gray-500 dark:text-gray-300'>
+              <Badge className='sm:hidden mr-2' label={status.label} colour={status.colour} />
+              {lastSeen}
+              <span className='text-gray-400 mx-1 text-sm sm:hidden'>|</span>
+              <span className='sm:hidden'>
+                {t('dashboard.xOccurrences', {
+                  x: error.count,
+                })}
+              </span>
+            </p>
           </div>
         </div>
         <div className='flex shrink-0 items-center gap-x-4'>
@@ -112,11 +101,7 @@ const ErrorItem = ({ error, onClick, className, timezone }: IErrorItem) => {
                 x: error.count,
               })}
             </p>
-            {/* {error.active ? (
-              <Badge label={t('dashboard.active')} colour='green' />
-            ) : (
-              <Badge label={t('billing.inactive')} colour='yellow' />
-            )} */}
+            <Badge label={status.label} colour={status.colour} />
           </div>
           <ChevronRightIcon className='h-5 w-5 flex-none text-gray-400' aria-hidden='true' />
         </div>
@@ -125,7 +110,7 @@ const ErrorItem = ({ error, onClick, className, timezone }: IErrorItem) => {
   )
 }
 
-export const Errors: React.FC<IErrors> = ({ errors, onClick, timezone }) => {
+export const Errors: React.FC<IErrors> = ({ errors, onClick }) => {
   return (
     <ClientOnly
       fallback={
@@ -140,7 +125,6 @@ export const Errors: React.FC<IErrors> = ({ errors, onClick, timezone }) => {
             <ErrorItem
               key={error.eid}
               error={error}
-              timezone={timezone}
               onClick={onClick}
               className={`${index === 0 && 'rounded-t-md'} ${index === errors.length - 1 && 'rounded-b-md'}`}
             />

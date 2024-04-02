@@ -549,6 +549,27 @@ export const getSession = (pid: string, psid: string, timezone: string = '', pas
       throw _isEmpty(error.response.data?.message) ? error.response.data : error.response.data.message
     })
 
+export const getError = (
+  pid: string,
+  eid: string,
+  period: string = '7d',
+  from: string = '',
+  to: string = '',
+  timezone: string = '',
+  password: string | undefined = '',
+) =>
+  api
+    .get(`log/get-error?pid=${pid}&eid=${eid}&period=${period}&from=${from}&to=${to}&timezone=${timezone}`, {
+      headers: {
+        'x-password': password,
+      },
+    })
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message) ? error.response.data : error.response.data.message
+    })
+
 export const getFunnelData = (
   pid: string,
   period: string = '3d',
