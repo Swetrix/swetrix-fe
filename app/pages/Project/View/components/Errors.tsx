@@ -48,7 +48,7 @@ const ErrorItem = ({ error, onClick, className }: IErrorItem) => {
     }
 
     return {
-      label: t('error.status.fixed'),
+      label: t('error.status.resolved'),
       colour: 'slate',
     }
   }, [error.status, t])

@@ -598,7 +598,7 @@
   "error": {
     "status": {
       "active": "Active",
-      "fixed": "Fixed",
+      "resolved": "Resolved",
       "regressed": "Regressed"
     }
   },
