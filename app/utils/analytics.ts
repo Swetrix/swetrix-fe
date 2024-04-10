@@ -17,18 +17,8 @@ const checkIgnore = (path: string | undefined | null, ignore: RegExp[]) => {
   return false
 }
 
-const pathsToIgnore = [
-  /^\/projects\/(?!new$)[^/]+$/i,
-  /^\/projects\/settings/i,
-  /^\/verify/i,
-  /^\/password-reset/i,
-  /^\/change-email/i,
-  /^\/share/i,
-  /^\/captchas\/(?!new$)[^/]+$/i,
-  /^\/captchas\/settings/i,
-]
 
-const refsToIgnore = [
+const REFS_TO_IGNORE = [
   /https:\/\/swetrix.com\/projects\/(?!new$)[^/]+$/i,
   /https:\/\/swetrix.com\/projects\/settings/i,
   /https:\/\/swetrix.com\/verify/i,
@@ -37,6 +27,41 @@ const refsToIgnore = [
   /https:\/\/swetrix.com\/share/i,
   /https:\/\/swetrix.com\/captchas\/(?!new$)[^/]+$/i,
   /https:\/\/swetrix.com\/captchas\/settings/i,
+]
+
+const PATHS_REPLACEMENT_MAP = [
+  {
+    regex: /^\/projects\/(?!new$)[^/]+$/i,
+    replacement: '/projects/[id]',
+  },
+  {
+    regex: /^\/projects\/settings/i,
+    replacement: '/projects/settings/[id]',
+  },
+  {
+    regex: /^\/verify/i,
+    replacement: '/verify/[token]',
+  },
+  {
+    regex: /^\/password-reset/i,
+    replacement: '/password-reset/[token]',
+  },
+  {
+    regex: /^\/change-email/i,
+    replacement: '/change-email/[token]',
+  },
+  {
+    regex: /^\/share/i,
+    replacement: '/share/[token]',
+  },
+  {
+    regex: /^\/captchas\/(?!new$)[^/]+$/i,
+    replacement: '/captchas/[id]',
+  },
+  {
+    regex: /^\/captchas\/settings/i,
+    replacement: '/captchas/settings/[id]',
+  },
 ]
 
 Swetrix.init(SWETRIX_PID, {
