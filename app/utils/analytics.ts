@@ -3,21 +3,6 @@ import { isDevelopment, isSelfhosted } from 'redux/constants'
 
 const SWETRIX_PID = 'STEzHcB1rALV'
 
-const checkIgnore = (path: string | undefined | null, ignore: RegExp[]) => {
-  if (!path) {
-    return false
-  }
-
-  for (let i = 0; i < ignore.length; ++i) {
-    if (ignore[i].test(path)) {
-      return true
-    }
-  }
-
-  return false
-}
-
-
 const REFS_TO_IGNORE = [
   /https:\/\/swetrix.com\/projects\/(?!new$)[^/]+$/i,
   /https:\/\/swetrix.com\/projects\/settings/i,
@@ -63,6 +48,20 @@ const PATHS_REPLACEMENT_MAP = [
     replacement: '/captchas/settings/[id]',
   },
 ]
+
+const checkIgnore = (path: string | undefined | null, ignore: RegExp[]) => {
+  if (!path) {
+    return false
+  }
+
+  for (let i = 0; i < ignore.length; ++i) {
+    if (ignore[i].test(path)) {
+      return true
+    }
+  }
+
+  return false
+}
 
 Swetrix.init(SWETRIX_PID, {
   devMode: isDevelopment,
