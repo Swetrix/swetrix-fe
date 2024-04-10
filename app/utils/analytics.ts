@@ -63,38 +63,26 @@ const checkIgnore = (path: string | undefined | null, ignore: RegExp[]) => {
   return false
 }
 
+
+const getNewPath = (path: string | undefined | null) => {
+  if (!path) {
+    return path
+  }
+
+  for (let i = 0; i < PATHS_REPLACEMENT_MAP.length; ++i) {
+    const map = PATHS_REPLACEMENT_MAP[i]
+
+    if (map.regex.test(path)) {
+      return map.replacement
+    }
+  }
+
+  return path
+}
+
 Swetrix.init(SWETRIX_PID, {
   devMode: isDevelopment,
 })
-
-const trackViews = () => {
-  if (!isSelfhosted) {
-    Swetrix.trackViews({
-      callback: ({ pg, prev, ref }) => {
-        const result = {
-          pg,
-          prev,
-          ref,
-        }
-
-        if (checkIgnore(pg, pathsToIgnore)) {
-          result.pg = null
-        }
-
-        if (checkIgnore(prev, pathsToIgnore)) {
-          result.prev = null
-        }
-
-        if (checkIgnore(ref, refsToIgnore)) {
-          result.ref = undefined
-        }
-
-        return result
-      },
-      heartbeatOnBackground: true,
-    })
-  }
-}
 
 const trackCustom = (ev: string, meta?: any) => {
   if (!isSelfhosted) {
