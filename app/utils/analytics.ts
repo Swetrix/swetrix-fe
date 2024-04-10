@@ -84,6 +84,31 @@ Swetrix.init(SWETRIX_PID, {
   devMode: isDevelopment,
 })
 
+
+const trackViews = () => {
+  if (!isSelfhosted) {
+    Swetrix.trackViews({
+      callback: ({ pg, prev, ref }) => {
+        const result = {
+          pg,
+          prev,
+          ref,
+        }
+
+        result.pg = getNewPath(pg)
+        result.prev = getNewPath(prev)
+
+        if (checkIgnore(ref, REFS_TO_IGNORE)) {
+          result.ref = undefined
+        }
+
+        return result
+      },
+      heartbeatOnBackground: true,
+    })
+  }
+}
+
 const trackCustom = (ev: string, meta?: any) => {
   if (!isSelfhosted) {
     Swetrix.track({
