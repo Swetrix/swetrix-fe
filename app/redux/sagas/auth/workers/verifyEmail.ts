@@ -1,7 +1,7 @@
 import { call, put } from 'redux-saga/effects'
 
 import { authActions } from 'redux/reducers/auth'
-const { verifyEmail } = require('api')
+import { verifyEmail } from 'api'
 
 export default function* verifyEmailWorker({
   payload: { data, successfulCallback, errorCallback },

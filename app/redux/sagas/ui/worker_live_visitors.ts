@@ -7,7 +7,7 @@ import UIActions from 'redux/reducers/ui'
 import { LIVE_VISITORS_UPDATE_INTERVAL, tabForSharedProject } from 'redux/constants'
 import { ISharedProject } from '../../models/ISharedProject'
 import { IProject } from '../../models/IProject'
-const { getLiveVisitors } = require('api')
+import { getLiveVisitors } from 'api'
 
 export default function* liveVisitors() {
   while (true) {

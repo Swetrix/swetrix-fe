@@ -141,3 +141,4 @@ yarn.lock
 
 # remix.run
 /public/build
+vite.config.ts.timestamp-*

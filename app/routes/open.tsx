@@ -3,7 +3,7 @@ import { redirect } from '@remix-run/node'
 import type { LinksFunction } from '@remix-run/node'
 import { isSelfhosted } from 'redux/constants'
 
-import Style from 'styles/ProjectViewStyle.css'
+import Style from 'styles/ProjectViewStyle.css?url'
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: Style }]

@@ -1,6 +1,6 @@
 /* eslint-disable react/forbid-prop-types, react/no-unstable-nested-components, react/display-name */
 import React, { useState, useEffect, useMemo, memo, useRef, useCallback } from 'react'
-import { ClientOnly } from 'remix-utils'
+import { ClientOnly } from 'remix-utils/client-only'
 import useSize from 'hooks/useSize'
 import { useNavigate, useParams, Link } from '@remix-run/react'
 import bb from 'billboard.js'
@@ -43,6 +43,7 @@ import _size from 'lodash/size'
 import _truncate from 'lodash/truncate'
 import _isString from 'lodash/isString'
 import PropTypes from 'prop-types'
+import SwetrixSDK from '@swetrix/sdk'
 
 import { withProjectProtected } from 'hoc/projectProtected'
 
@@ -177,7 +178,6 @@ import { SessionDetails } from './components/SessionDetails'
 import { SessionChart } from './components/SessionChart'
 import LockedDashboard from './components/LockedDashboard'
 import WaitingForAnEvent from './components/WaitingForAnEvent'
-const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
 const SESSIONS_TAKE = 30

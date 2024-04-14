@@ -3,7 +3,7 @@ import { call, put } from 'redux-saga/effects'
 import { authActions } from 'redux/reducers/auth'
 import { errorsActions } from 'redux/reducers/errors'
 import { IUser } from '../../../models/IUser'
-const { changeUserDetails } = require('api')
+import { changeUserDetails } from 'api'
 
 export default function* updateUserProfileWorker({
   payload: { data, callback },

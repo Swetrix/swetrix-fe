@@ -27,6 +27,8 @@ const api = axios.create({
   baseURL,
 })
 
+console.log('authActions:', authActions)
+
 // Function that will be called to refresh authorization
 const refreshAuthLogic = (failedRequest: { response: AxiosResponse }) =>
   axios

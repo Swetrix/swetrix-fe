@@ -1,6 +1,6 @@
 import CaptchaView from 'pages/Captcha/View'
 import type { LinksFunction } from '@remix-run/node'
-import ProjectViewStyle from 'styles/ProjectViewStyle.css'
+import ProjectViewStyle from 'styles/ProjectViewStyle.css?url'
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: ProjectViewStyle }]
 

@@ -4,7 +4,7 @@ import Debug from 'debug'
 import UIActions from 'redux/reducers/ui'
 import { getRefreshToken, removeRefreshToken } from 'utils/refreshToken'
 import { IStats } from '../../../models/IStats'
-const { getGeneralStats, logoutApi, logoutAllApi } = require('api')
+import { getGeneralStats, logoutApi, logoutAllApi } from 'api'
 
 const debug = Debug('swetrix:rx:s:logout')
 

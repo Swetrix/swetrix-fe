@@ -8,7 +8,7 @@ import UIActions from 'redux/reducers/ui'
 import { setAccessToken } from 'utils/accessToken'
 import { setRefreshToken } from 'utils/refreshToken'
 import sagaActions from '../../actions/index'
-const { login } = require('api')
+import { login } from 'api'
 
 export default function* singinWorker({
   payload: { credentials, callback },

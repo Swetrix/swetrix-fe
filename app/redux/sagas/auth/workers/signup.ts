@@ -7,7 +7,7 @@ import { setRefreshToken } from 'utils/refreshToken'
 import { getCookie, deleteCookie } from 'utils/cookie'
 import { REFERRAL_COOKIE } from 'redux/constants'
 import sagaActions from '../../actions'
-const { signup } = require('api')
+import { signup } from 'api'
 
 export default function* signupWorder({
   payload: { data: rawData, callback },

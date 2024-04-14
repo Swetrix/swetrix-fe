@@ -1,6 +1,6 @@
 import { call, put } from 'redux-saga/effects'
 import sagaActions from '../actions'
-const { verifyShare } = require('api')
+import { verifyShare } from 'api'
 
 export default function* shareVerify({
   payload: { data, successfulCallback, errorCallback },

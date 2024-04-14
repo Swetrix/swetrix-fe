@@ -4,7 +4,7 @@ import Debug from 'debug'
 import UIActions from 'redux/reducers/ui'
 import { isSelfhosted } from 'redux/constants'
 import { IStats } from 'redux/models/IStats'
-const { getGeneralStats } = require('api')
+import { getGeneralStats } from 'api'
 
 const debug = Debug('swetrix:rx:s:general-stats')
 

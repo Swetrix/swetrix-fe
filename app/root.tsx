@@ -3,7 +3,6 @@ import { json, redirect } from '@remix-run/node'
 import { useState } from 'react'
 import {
   Links,
-  LiveReload,
   Meta,
   Scripts,
   useLoaderData,
@@ -20,11 +19,11 @@ import clsx from 'clsx'
 import _replace from 'lodash/replace'
 // @ts-ignore
 import { transitions, positions, Provider as AlertProvider } from '@blaumaus/react-alert'
-import BillboardCss from 'billboard.js/dist/billboard.min.css'
+import BillboardCss from 'billboard.js/dist/billboard.min.css?url'
 
 import AlertTemplate from 'ui/Alert'
 import { trackViews } from 'utils/analytics'
-import { useChangeLanguage } from 'remix-i18next'
+import { useChangeLanguage } from 'remix-i18next/react'
 import { useTranslation } from 'react-i18next'
 import AppWrapper from 'App'
 import { detectLanguage } from 'i18n'
@@ -32,12 +31,12 @@ import { detectTheme, isAuthenticated, isWWW } from 'utils/server'
 import { LocaleLinks } from 'components/LocaleLinks'
 import { SEO } from 'components/SEO'
 
-import mainCss from 'styles/index.css'
-import tailwindCss from 'styles/tailwind.css'
-import FlatpickerCss from 'styles/Flatpicker.css'
-import FlatpickrLightCss from 'flatpickr/dist/themes/light.css'
-import FlatpickrDarkCss from 'flatpickr/dist/themes/dark.css'
-import FontsCss from 'styles/fonts.css'
+import mainCss from 'styles/index.css?url'
+import tailwindCss from 'styles/tailwind.css?url'
+import FlatpickerCss from 'styles/Flatpicker.css?url'
+import FlatpickrLightCss from 'flatpickr/dist/themes/light.css?url'
+import FlatpickrDarkCss from 'flatpickr/dist/themes/dark.css?url'
+import FontsCss from 'styles/fonts.css?url'
 
 trackViews()
 
@@ -156,7 +155,6 @@ export function ErrorBoundary() {
         </div>
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   )
@@ -275,7 +273,6 @@ export default function App() {
         </Provider>
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 // @ts-ignore
-import { saveAs } from 'file-saver'
+import { saveAs } from 'file-saver-es'
 import {
   GlobeEuropeAfricaIcon,
   LanguageIcon,
