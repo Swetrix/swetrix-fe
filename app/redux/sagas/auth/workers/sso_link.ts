@@ -4,7 +4,7 @@ import { authActions } from 'redux/reducers/auth'
 import { errorsActions } from 'redux/reducers/errors'
 import { alertsActions } from 'redux/reducers/alerts'
 import { openBrowserWindow } from 'utils/generic'
-const { linkBySSOHash, generateSSOAuthURL, authMe } = require('api')
+import { linkBySSOHash, generateSSOAuthURL, authMe } from 'api'
 
 const AUTH_WINDOW_WIDTH = 600
 const AUTH_WINDOW_HEIGHT = 800

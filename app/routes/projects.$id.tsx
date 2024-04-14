@@ -6,7 +6,7 @@ import _split from 'lodash/split'
 
 import { API_URL } from 'redux/constants'
 import { detectTheme, isEmbedded, isAuthenticated, getProjectPassword, getProjectTabs } from 'utils/server'
-import ProjectViewStyle from 'styles/ProjectViewStyle.css'
+import ProjectViewStyle from 'styles/ProjectViewStyle.css?url'
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: ProjectViewStyle }]
 

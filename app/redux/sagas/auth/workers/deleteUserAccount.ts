@@ -2,7 +2,7 @@ import { call, put } from 'redux-saga/effects'
 
 import { authActions } from 'redux/reducers/auth'
 import { alertsActions } from 'redux/reducers/alerts'
-const { deleteUser } = require('api')
+import { deleteUser } from 'api'
 
 export default function* deleteUserAccountWorker({
   payload: { errorCallback, successCallback, t, deletionFeedback },

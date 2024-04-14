@@ -2,13 +2,13 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "build": "remix build",
-    "dev": "remix dev",
+    "build": "remix vite:build",
+    "dev": "remix vite:dev",
     "deploy": "flyctl deploy --remote-only",
     "import-env": "node fly_import_env.js --env-file .env",
-    "dev:staging": "cross-env STAGING=true remix dev",
-    "start": "remix-serve build",
-    "start:staging": "cross-env STAGING=true remix-serve build",
+    "dev:staging": "cross-env STAGING=true remix vite:dev",
+    "start": "remix-serve ./build/server/index.js",
+    "start:staging": "cross-env STAGING=true remix-serve ./build/server/index.js",
     "test": "jest --transformIgnorePatterns \"node_modules/(?!axios)/\"",
     "test:ci": "CI=true npm run test",
     "typecheck": "tsc",
@@ -41,7 +41,7 @@
     "dangerously-set-html-content": "^1.1.0",
     "dayjs": "^1.11.10",
     "debug": "^4.3.4",
-    "file-saver": "^2.0.5",
+    "file-saver-es": "^2.0.5",
     "flatpickr": "^4.6.13",
     "i18n-iso-countries": "^7.11.0",
     "i18next": "^23.11.2",
@@ -169,9 +169,12 @@
     "prettier": "^3.2.5",
     "resize-observer-polyfill": "^1.5.1",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vite": "^5.2.8",
+    "vite-tsconfig-paths": "^4.3.2"
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "type": "module"
 }

@@ -6,7 +6,7 @@ import { getRefreshToken } from 'utils/refreshToken'
 import UIActions from 'redux/reducers/ui'
 import { isSelfhosted } from 'redux/constants'
 import sagaActions from '../actions'
-const { getLastPost } = require('api')
+import { getLastPost } from 'api'
 
 const debug = Debug('swetrix:rx:s:initialise')
 

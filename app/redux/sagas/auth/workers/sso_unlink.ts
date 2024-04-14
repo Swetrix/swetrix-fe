@@ -6,7 +6,7 @@ import { authActions } from 'redux/reducers/auth'
 import { errorsActions } from 'redux/reducers/errors'
 import { alertsActions } from 'redux/reducers/alerts'
 import { SSO_PROVIDERS } from 'redux/constants'
-const { unlinkSSO, authMe } = require('api')
+import { unlinkSSO, authMe } from 'api'
 
 export interface ISSOUnlink {
   payload: {

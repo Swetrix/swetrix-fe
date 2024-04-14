@@ -8,7 +8,7 @@ import { openBrowserWindow } from 'utils/generic'
 import { getCookie, deleteCookie } from 'utils/cookie'
 import { REFERRAL_COOKIE } from 'redux/constants'
 import sagaActions from '../../actions/index'
-const { getJWTBySSOHash, generateSSOAuthURL } = require('api')
+import { getJWTBySSOHash, generateSSOAuthURL } from 'api'
 
 const AUTH_WINDOW_WIDTH = 600
 const AUTH_WINDOW_HEIGHT = 800

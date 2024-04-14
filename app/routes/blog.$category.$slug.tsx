@@ -1,6 +1,6 @@
 import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/node'
 import { redirect, json } from '@remix-run/node'
-import singlePostCss from 'css/mdfile.css'
+import singlePostCss from 'css/mdfile.css?url'
 import { getPost } from 'utils/getPosts'
 import { isSelfhosted, TITLE_SUFFIX, getOgImageUrl } from 'redux/constants'
 import Post from 'pages/Blog/Post'
