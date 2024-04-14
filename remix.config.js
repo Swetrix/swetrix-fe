@@ -11,11 +11,7 @@ module.exports = {
   postcss: true,
   serverModuleFormat: 'cjs',
   future: {
-    v2_errorBoundary: true,
-    v2_meta: true,
-    v2_normalizeFormMethod: true,
     v2_dev: true,
-    v2_headers: true,
     v2_routeConvention: true,
   },
   serverDependenciesToBundle: [
@@ -30,6 +26,7 @@ module.exports = {
     'robust-predicates',
     'marked',
     'billboard.js',
+		/^remix-utils.*/,
   ],
   serverMinify: process.env.NODE_ENV === 'production',
   routes(defineRoutes) {
