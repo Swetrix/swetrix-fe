@@ -27,6 +27,7 @@ module.exports = {
     'marked',
     'billboard.js',
 		/^remix-utils.*/,
+		/^remix-i18next.*/,
   ],
   serverMinify: process.env.NODE_ENV === 'production',
   routes(defineRoutes) {
