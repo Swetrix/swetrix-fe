@@ -3,52 +3,6 @@ import { isDevelopment, isSelfhosted } from 'redux/constants'
 
 const SWETRIX_PID = 'STEzHcB1rALV'
 
-const REFS_TO_IGNORE = [
-  /https:\/\/swetrix.com\/projects\/(?!new$)[^/]+$/i,
-  /https:\/\/swetrix.com\/projects\/settings/i,
-  /https:\/\/swetrix.com\/verify/i,
-  /https:\/\/swetrix.com\/password-reset/i,
-  /https:\/\/swetrix.com\/change-email/i,
-  /https:\/\/swetrix.com\/share/i,
-  /https:\/\/swetrix.com\/captchas\/(?!new$)[^/]+$/i,
-  /https:\/\/swetrix.com\/captchas\/settings/i,
-]
-
-const PATHS_REPLACEMENT_MAP = [
-  {
-    regex: /^\/projects\/(?!new$)[^/]+$/i,
-    replacement: '/projects/[id]',
-  },
-  {
-    regex: /^\/projects\/settings/i,
-    replacement: '/projects/settings/[id]',
-  },
-  {
-    regex: /^\/verify/i,
-    replacement: '/verify/[token]',
-  },
-  {
-    regex: /^\/password-reset/i,
-    replacement: '/password-reset/[token]',
-  },
-  {
-    regex: /^\/change-email/i,
-    replacement: '/change-email/[token]',
-  },
-  {
-    regex: /^\/share/i,
-    replacement: '/share/[token]',
-  },
-  {
-    regex: /^\/captchas\/(?!new$)[^/]+$/i,
-    replacement: '/captchas/[id]',
-  },
-  {
-    regex: /^\/captchas\/settings/i,
-    replacement: '/captchas/settings/[id]',
-  },
-]
-
 const checkIgnore = (path: string | undefined | null, ignore: RegExp[]) => {
   if (!path) {
     return false
@@ -63,27 +17,31 @@ const checkIgnore = (path: string | undefined | null, ignore: RegExp[]) => {
   return false
 }
 
+const pathsToIgnore = [
+  /^\/projects\/(?!new$)[^/]+$/i,
+  /^\/projects\/settings/i,
+  /^\/verify/i,
+  /^\/password-reset/i,
+  /^\/change-email/i,
+  /^\/share/i,
+  /^\/captchas\/(?!new$)[^/]+$/i,
+  /^\/captchas\/settings/i,
+]
 
-const getNewPath = (path: string | undefined | null) => {
-  if (!path) {
-    return path
-  }
-
-  for (let i = 0; i < PATHS_REPLACEMENT_MAP.length; ++i) {
-    const map = PATHS_REPLACEMENT_MAP[i]
-
-    if (map.regex.test(path)) {
-      return map.replacement
-    }
-  }
-
-  return path
-}
+const refsToIgnore = [
+  /https:\/\/swetrix.com\/projects\/(?!new$)[^/]+$/i,
+  /https:\/\/swetrix.com\/projects\/settings/i,
+  /https:\/\/swetrix.com\/verify/i,
+  /https:\/\/swetrix.com\/password-reset/i,
+  /https:\/\/swetrix.com\/change-email/i,
+  /https:\/\/swetrix.com\/share/i,
+  /https:\/\/swetrix.com\/captchas\/(?!new$)[^/]+$/i,
+  /https:\/\/swetrix.com\/captchas\/settings/i,
+]
 
 Swetrix.init(SWETRIX_PID, {
   devMode: isDevelopment,
 })
-
 
 const trackViews = () => {
   if (!isSelfhosted) {
@@ -95,10 +53,15 @@ const trackViews = () => {
           ref,
         }
 
-        result.pg = getNewPath(pg)
-        result.prev = getNewPath(prev)
+        if (checkIgnore(pg, pathsToIgnore)) {
+          result.pg = null
+        }
 
-        if (checkIgnore(ref, REFS_TO_IGNORE)) {
+        if (checkIgnore(prev, pathsToIgnore)) {
+          result.prev = null
+        }
+
+        if (checkIgnore(ref, refsToIgnore)) {
           result.ref = undefined
         }
 
