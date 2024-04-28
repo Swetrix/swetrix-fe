@@ -21,6 +21,16 @@ interface IErrorItem {
   className?: string
 }
 
+interface ISeparator {
+  className?: string
+}
+
+const Separator = ({ className }: ISeparator) => (
+  <svg viewBox='0 0 2 2' className={cx('h-0.5 w-0.5 flex-none fill-gray-400', className)}>
+    <circle cx={1} cy={1} r={1} />
+  </svg>
+)
+
 const ErrorItem = ({ error, onClick, className }: IErrorItem) => {
   const {
     t,
@@ -68,24 +78,19 @@ const ErrorItem = ({ error, onClick, className }: IErrorItem) => {
       }}
       to={stringifiedUrl}
     >
-      <li
-        className={cx(
-          'relative flex justify-between gap-x-6 py-5 bg-gray-50 hover:bg-gray-200 dark:bg-slate-900 dark:hover:bg-slate-800 cursor-pointer px-4 sm:px-6 lg:px-8',
-          className,
-        )}
-      >
+      <li className='relative flex justify-between gap-x-6 py-4 bg-gray-200/60 hover:bg-gray-200 dark:bg-[#162032] dark:hover:bg-slate-800 cursor-pointer px-4 sm:px-6 mb-4 rounded-lg'>
         <div className='flex min-w-0 gap-x-4'>
           <div className='min-w-0 flex-auto'>
-            <p className='font-semibold leading-6 text-gray-900 dark:text-gray-50'>
+            <p className='flex items-center gap-x-2 font-semibold leading-6 text-gray-900 dark:text-gray-50'>
               <span className='font-bold text-base'>{error.name}</span>
-              <span className='text-gray-400 mx-1 text-sm'>|</span>
+              <Separator />
               <span className='text-gray-500 mx-1 font-normal text-sm'>{error.filename}</span>
             </p>
             <p className='mt-1 flex text-base leading-5 text-gray-500 dark:text-gray-300'>{error.message}</p>
-            <p className='mt-1 flex text-base leading-5 text-gray-500 dark:text-gray-300'>
+            <p className='mt-1 flex items-center gap-x-2 text-base leading-5 text-gray-500 dark:text-gray-300'>
               <Badge className='sm:hidden mr-2' label={status.label} colour={status.colour} />
               {lastSeen}
-              <span className='text-gray-400 mx-1 text-sm sm:hidden'>|</span>
+              <Separator className='sm:hidden' />
               <span className='sm:hidden'>
                 {t('dashboard.xOccurrences', {
                   x: error.count,
@@ -120,7 +125,7 @@ export const Errors: React.FC<IErrors> = ({ errors, onClick }) => {
       }
     >
       {() => (
-        <ul className='divide-y divide-gray-100 dark:divide-slate-700 mt-2'>
+        <ul className='mt-4'>
           {_map(errors, (error, index) => (
             <ErrorItem
               key={error.eid}
