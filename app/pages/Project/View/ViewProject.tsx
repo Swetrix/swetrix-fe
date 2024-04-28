@@ -1355,6 +1355,7 @@ const ViewProject = ({
 
     return getCustomEventsMetadata(id, event, timeBucket, period, '', '', timezone, projectPassword)
   }
+
   const loadError = async (eid: string) => {
     if (errorLoading) {
       return
@@ -1402,6 +1403,19 @@ const ViewProject = ({
 
     if (PROJECT_TABS[tab]) {
       setActiveTab(tab)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    // @ts-ignore
+    const url = new URL(window.location)
+    const { searchParams } = url
+    const eid = searchParams.get('eid') as string
+    const tab = searchParams.get('tab') as string
+
+    if (eid && tab === PROJECT_TABS.errors) {
+      loadError(eid)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
