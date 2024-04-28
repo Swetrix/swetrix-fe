@@ -720,6 +720,7 @@
     "metricVis": "Metrics visualisation",
     "filters": "Filters",
     "showResolved": "Show resolved",
+    "resolve": "Resolve",
     "refreshStats": "Refresh stats",
     "barChart": "Bar chart",
     "lineChart": "Line chart",

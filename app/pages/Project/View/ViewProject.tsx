@@ -3520,6 +3520,17 @@ const ViewProject = ({
                             headless
                           />
                         )}
+                        {activeTab === PROJECT_TABS.errors && activeError && (
+                          <button
+                            type='button'
+                            onClick={() => {}}
+                            className={cx('text-sm p-2 font-medium text-gray-700 dark:text-gray-50', {
+                              'cursor-not-allowed opacity-50': isLoading || errorLoading,
+                            })}
+                          >
+                            {t('project.resolve')}
+                          </button>
+                        )}
                         {activeTab === PROJECT_TABS.errors && (
                           <Dropdown
                             items={errorFilters}
