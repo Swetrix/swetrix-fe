@@ -26,8 +26,8 @@ export const ErrorDetails = ({ details }: IErrorDetailsComponent) => {
   return (
     <div className='flex justify-center lg:justify-start gap-5 mb-5 flex-wrap'>
       <div className='flex flex-col'>
-        <p className='font-bold text-4xl text-slate-900 dark:text-gray-50'>{`${details.name}: ${details.message}`}</p>
-        <p className='font-medium text-slate-700 dark:text-gray-200'>
+        <p className='font-bold max-md:text-xl md:text-3xl text-slate-900 dark:text-gray-50'>{`${details.name}: ${details.message}`}</p>
+        <p className='text-sm font-medium text-slate-700 dark:text-gray-200'>
           {t('dashboard.atFile', {
             filename: details.filename,
             lineno: details.lineno,
@@ -37,6 +37,9 @@ export const ErrorDetails = ({ details }: IErrorDetailsComponent) => {
       </div>
 
       <MetricCard
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
         label={t('dashboard.firstSeen')}
         value={details.first_seen || 'N/A'}
         valueMapper={(value) => (
@@ -45,6 +48,9 @@ export const ErrorDetails = ({ details }: IErrorDetailsComponent) => {
       />
 
       <MetricCard
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
         label={t('dashboard.lastSeen')}
         value={details.last_seen || 'N/A'}
         valueMapper={(value) => (
