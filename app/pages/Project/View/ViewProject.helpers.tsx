@@ -192,6 +192,10 @@ const CHART_METRICS_MAPPING = {
   cumulativeMode: 'cumulativeMode',
 }
 
+const ERROR_FILTERS_MAPPING = {
+  showResolved: 'showResolved',
+}
+
 const FILTER_CHART_METRICS_MAPPING_FOR_COMPARE = ['bounce', 'viewsPerUnique', 'trendlines', 'customEvents']
 
 const CHART_METRICS_MAPPING_PERF = {
@@ -1563,4 +1567,5 @@ export {
   SHORTCUTS_TIMEBUCKETS_LISTENERS,
   CHART_MEASURES_MAPPING_PERF,
   getSettingsError,
+  ERROR_FILTERS_MAPPING,
 }

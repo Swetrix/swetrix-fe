@@ -160,6 +160,7 @@ import {
   SHORTCUTS_GENERAL_LISTENERS,
   SHORTCUTS_TIMEBUCKETS_LISTENERS,
   CHART_MEASURES_MAPPING_PERF,
+  ERROR_FILTERS_MAPPING,
 } from './ViewProject.helpers'
 import CCRow from './components/CCRow'
 import FunnelsList from './components/FunnelsList'
@@ -394,6 +395,11 @@ const ViewProject = ({
     [CHART_METRICS_MAPPING.viewsPerUnique]: false,
     [CHART_METRICS_MAPPING.trendlines]: false,
     [CHART_METRICS_MAPPING.cumulativeMode]: false,
+  })
+  const [activeErrorFilters, setActiveErrorFilters] = useState<{
+    [key: string]: boolean
+  }>({
+    [ERROR_FILTERS_MAPPING.showResolved]: false,
   })
   // similar activeChartMetrics but using for performance tab
   const [activeChartMetricsPerf, setActiveChartMetricsPerf] = useState<string>(CHART_METRICS_MAPPING_PERF.timing)
@@ -706,6 +712,16 @@ const ViewProject = ({
     ]
   }, [t, activeChartMetrics])
 
+  const errorFilters = useMemo(() => {
+    return [
+      {
+        id: ERROR_FILTERS_MAPPING.showResolved,
+        label: t('project.showResolved'),
+        active: activeErrorFilters[ERROR_FILTERS_MAPPING.showResolved],
+      },
+    ]
+  }, [t, activeErrorFilters])
+
   // chartMetricsPerf is a list of metrics for dropdown in performance tab
   const chartMetricsPerf = useMemo(() => {
     return [
@@ -908,6 +924,10 @@ const ViewProject = ({
     }, 0),
     [activeTab],
   )
+
+  const switchActiveErrorFilter = (pairID: string) => {
+    setActiveErrorFilters((prev) => ({ ...prev, [pairID]: !prev[pairID] }))
+  }
 
   // onErrorLoading is a function for redirect to dashboard when project do not exist
   const onErrorLoading = () => {
@@ -3495,6 +3515,24 @@ const ViewProject = ({
                               }
 
                               switchActiveChartMetric(pairID)
+                            }}
+                            chevron='mini'
+                            headless
+                          />
+                        )}
+                        {activeTab === PROJECT_TABS.errors && (
+                          <Dropdown
+                            items={errorFilters}
+                            title={t('project.filters')}
+                            labelExtractor={(pair) => {
+                              const { label, id: pairID, active } = pair
+
+                              return <Checkbox className='px-4 py-2' label={label} id={pairID} checked={active} />
+                            }}
+                            selectItemClassName='group text-gray-700 dark:text-gray-50 dark:border-gray-800 dark:bg-slate-800 block text-sm cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-700'
+                            keyExtractor={(pair) => pair.id}
+                            onSelect={({ id: pairID }) => {
+                              switchActiveErrorFilter(pairID)
                             }}
                             chevron='mini'
                             headless
