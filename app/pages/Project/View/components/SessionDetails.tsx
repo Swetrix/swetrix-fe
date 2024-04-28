@@ -51,6 +51,9 @@ export const SessionDetails = ({ details }: ISessionDetailsComponent) => {
   return (
     <div className='flex justify-center lg:justify-start gap-5 mb-5 flex-wrap'>
       <MetricCardSelect
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
         values={geo}
         selectLabel={t('project.geo')}
         valueMapper={({ value }, index) => {
@@ -69,14 +72,32 @@ export const SessionDetails = ({ details }: ISessionDetailsComponent) => {
           )
         }}
       />
-      <MetricCard label={t('project.mapping.os')} value={details.os || 'N/A'} />
       <MetricCard
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
+        label={t('project.mapping.os')}
+        value={details.os || 'N/A'}
+      />
+      <MetricCard
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
         label={t('project.mapping.dv')}
         value={details.dv || 'N/A'}
         valueMapper={(value) => _capitalize(value)}
       />
-      <MetricCard label={t('project.mapping.br')} value={details.br || 'N/A'} />
       <MetricCard
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
+        label={t('project.mapping.br')}
+        value={details.br || 'N/A'}
+      />
+      <MetricCard
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
         label={t('project.mapping.lc')}
         value={details.lc || 'N/A'}
         valueMapper={(value) => {
@@ -88,6 +109,9 @@ export const SessionDetails = ({ details }: ISessionDetailsComponent) => {
         }}
       />
       <MetricCard
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
         label={t('project.mapping.ref')}
         value={details.ref || 'N/A'}
         valueMapper={(value) => {
@@ -104,8 +128,17 @@ export const SessionDetails = ({ details }: ISessionDetailsComponent) => {
           )
         }}
       />
-      <MetricCardSelect values={utm} selectLabel={t('project.campaigns')} />
+      <MetricCardSelect
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
+        values={utm}
+        selectLabel={t('project.campaigns')}
+      />
       <MetricCard
+        classes={{
+          value: 'max-md:text-xl md:text-3xl',
+        }}
         label={t('dashboard.sessionDuration')}
         value={details.sdur as number}
         valueMapper={(value) => getStringFromTime(getTimeFromSeconds(value))}

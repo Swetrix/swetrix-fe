@@ -38,7 +38,8 @@
     "incorrectPassword": "Incorrect password, please try again.",
     "funnelCreated": "The funnel has been created",
     "funnelUpdated": "The funnel has been updated",
-    "funnelDeleted": "The funnel has been deleted"
+    "funnelDeleted": "The funnel has been deleted",
+    "errorCode": "Error code: {{error}}"
   },
   "common": {
     "features": "Features",
@@ -92,7 +93,9 @@
     "nothingFound": "Nothing found",
     "oneMember": "1 Member",
     "xMembers": "{{number}} Members",
-    "general": "General"
+    "general": "General",
+    "fixIt": "Fix it",
+    "bookADemo": "Book an enterprise demo"
   },
   "performance": {
     "slogan": "End user <span>performance monitoring</span> to deliver fast websites.",
@@ -296,6 +299,9 @@
     "cookieDetails": "If you click on the buttons above, a cookie will be stored for {{days}} days to reward the person who referred you and give you {{discount}}% off your first bill.",
     "buttons": "Click on these buttons to receive {{discount}}% off your first bill!"
   },
+  "unsubscribe": {
+    "success": "You've unsubscribed from analytics email reports"
+  },
   "auth": {
     "recovery": {
       "title": "Account recovery",
@@ -498,6 +504,7 @@
   "dashboard": {
     "newProject": "New project",
     "newFunnel": "New funnel",
+    "reloadPage": "Reload page",
     "newCaptchaProject": "New CAPTCHA project",
     "verifyEmailTitle": "Please, verify the email address first",
     "verifyEmailDesc": "To start using our service and creating your projects, you first need to confirm your email address.\n\nA link to confirm your account was sent to the email address you provided during registration, if it was not delivered - you can request the link again in your account settings.",
@@ -537,6 +544,8 @@
     "sessions": "Sessions",
     "xOccurrences": "{{x}} occurrences",
     "errors": "Errors",
+    "xPageviews": "{{x}} pageviews",
+    "onePageview": "1 pageview",
     "alerts": "Alerts",
     "alertsDesc": "Automated alerts is a powerful tool that allows you to run automated tasks when specific events occur.\nWe can automatically monitor your project for traffic spikes and notify you via Telegram.",
     "funnelsDesc": "Funnels is a powerful tool that allows you to track the conversion rate of your users through a series of steps.\nThe analysis provided by the marketing funnel gives you the ability to discover potential problems, improve your website, and boost your conversion rate.",
@@ -561,13 +570,15 @@
   "alert": {
     "create": "Create an alert",
     "customEvent": "Custom event name",
-    "add": "Add Alert",
+    "add": "Add alert",
     "delete": "Delete alert",
     "noNameError": "Please enter a name for the alert.",
     "queryValueError": "Please fill threshold and the query value has to be a number.",
     "noIntegration": "You have not configured an integration yet. Create one in your <url>account settings</url>.",
-    "noNotification": "No notification channels set",
+    "noNotificationChannel": "You do not have a notification channel set up, please set it up to be notified when one of your alerts is triggered.",
     "lastTriggered": "Last Triggered",
+    "lastTriggeredOn": "Last triggered on {{date}}",
+    "notYetTriggered": "Not yet triggered",
     "never": "Never",
     "qDelete": "Delete the alert?",
     "settingsOf": "Settings of {{name}}",

@@ -1,6 +1,6 @@
 /* eslint-disable react/forbid-prop-types, react/no-unstable-nested-components, react/display-name */
 import React, { useState, useEffect, useMemo, memo, useRef, useCallback } from 'react'
-import { ClientOnly } from 'remix-utils'
+import { ClientOnly } from 'remix-utils/client-only'
 import useSize from 'hooks/useSize'
 import { useNavigate, useParams, Link } from '@remix-run/react'
 import bb from 'billboard.js'
@@ -3753,24 +3753,21 @@ const ViewProject = ({
               )}
               {activeTab === PROJECT_TABS.sessions && activeSession && (
                 <>
-                  <div className='flex items-baseline space-x-2 mt-2'>
-                    <h2 className='text-xl font-bold text-gray-900 dark:text-gray-50 break-words break-all'>
-                      {activeSession?.psid}
-                    </h2>
-                    <button
-                      onClick={() => {
-                        setActiveSession(null)
-                        const url = new URL(window.location.href)
-                        url.searchParams.delete('psid')
-                        window.history.pushState({}, '', url.toString())
-                      }}
-                      className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 lg:mt-0 text-gray-900 dark:text-gray-100'
-                    >
-                      <ChevronLeftIcon className='w-4 h-4' />
-                      {t('project.backToSessions')}
-                    </button>
-                  </div>
-                  {activeSession?.details && <SessionDetails details={activeSession.details} />}
+                  <button
+                    onClick={() => {
+                      setActiveSession(null)
+                      const url = new URL(window.location.href)
+                      url.searchParams.delete('psid')
+                      window.history.pushState({}, '', url.toString())
+                    }}
+                    className='flex items-center text-base font-normal underline decoration-dashed hover:decoration-solid mb-4 mx-auto lg:mx-0 mt-2 text-gray-900 dark:text-gray-100'
+                  >
+                    <ChevronLeftIcon className='w-4 h-4' />
+                    {t('project.backToSessions')}
+                  </button>
+                  {activeSession?.details && (
+                    <SessionDetails details={activeSession?.details} psid={activeSession?.psid} />
+                  )}
                   <SessionChart
                     chart={activeSession?.chart}
                     timeBucket={activeSession?.timeBucket}
