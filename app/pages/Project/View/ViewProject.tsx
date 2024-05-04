@@ -928,10 +928,14 @@ const ViewProject = ({
     [activeTab],
   )
 
-  const switchActiveErrorFilter = (pairID: string) => {
-    setErrorOptions((prev) => ({ ...prev, [pairID]: !prev[pairID] }))
-    resetErrors()
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const switchActiveErrorFilter = useCallback(
+    _debounce((pairID: string) => {
+      setErrorOptions((prev) => ({ ...prev, [pairID]: !prev[pairID] }))
+      resetErrors()
+    }, 0),
+    [],
+  )
 
   const updateStatusInErrors = (status: 'active' | 'resolved') => {
     if (!activeError?.details?.eid) {
