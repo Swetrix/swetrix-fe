@@ -88,6 +88,7 @@ import {
   OS_LOGO_MAP_DARK,
   ITBPeriodPairs,
   ERROR_PANELS_ORDER,
+  ERRORS_FILTERS_PANELS_ORDER,
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import {
@@ -2039,11 +2040,12 @@ const ViewProject = ({
     }
 
     resetSessions()
+    resetErrors()
 
     sdkInstance?._emitEvent('filtersupdate', newFilters)
     if (activeTab === PROJECT_TABS.performance) {
       loadAnalyticsPerf(true, newFiltersPerf)
-    } else {
+    } else if (activeTab === PROJECT_TABS.traffic) {
       loadAnalytics(true, newFilters)
     }
   }
@@ -2122,7 +2124,7 @@ const ViewProject = ({
       setFiltersSessions(converted)
     } else if (activeTab === PROJECT_TABS.errors) {
       if (override) {
-        _forEach(FILTERS_PANELS_ORDER, (value) => {
+        _forEach(ERRORS_FILTERS_PANELS_ORDER, (value) => {
           if (url.searchParams.has(`${value}_err`)) {
             url.searchParams.delete(`${value}_err`)
           }
@@ -2182,6 +2184,7 @@ const ViewProject = ({
     }
 
     resetSessions()
+    resetErrors()
   }
 
   // this function is used for requesting the data from the API when the exclusive filter is changed
@@ -2753,6 +2756,7 @@ const ViewProject = ({
 
         setCanLoadMoreSessions(false)
         resetSessions()
+        resetErrors()
 
         sdkInstance?._emitEvent('timeupdate', {
           period: 'custom',
@@ -2805,7 +2809,7 @@ const ViewProject = ({
       loadErrors()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, dateRange, filtersSessions, id, period, projectPassword, timezone, areFiltersErrorsParsed])
+  }, [activeTab, dateRange, filtersErrors, id, period, projectPassword, timezone, areFiltersErrorsParsed])
 
   useEffect(() => {
     if (period !== KEY_FOR_ALL_TIME) {
@@ -2937,6 +2941,7 @@ const ViewProject = ({
 
       setCanLoadMoreSessions(false)
       resetSessions()
+      resetErrors()
 
       setDateRange(null)
     }
@@ -4737,6 +4742,7 @@ const ViewProject = ({
             loading={funnelActionLoading}
           />
           <SearchFilters
+            type={activeTab === PROJECT_TABS.errors ? 'errors' : 'traffic'}
             projectPassword={projectPassword}
             showModal={showFiltersSearch}
             setShowModal={setShowFiltersSearch}

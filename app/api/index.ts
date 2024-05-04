@@ -1237,6 +1237,19 @@ export const getFilters = (pid: string, type: string, password = '') =>
       throw error
     })
 
+export const getErrorsFilters = (pid: string, type: string, password = '') =>
+  api
+    .get(`log/errors-filters?pid=${pid}&type=${type}`, {
+      headers: {
+        'x-password': password,
+      },
+    })
+    .then((response): string[] => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw error
+    })
+
 export const resetFilters = (pid: string, type: string, filters: string[]) =>
   api
     .delete(`project/reset-filters/${pid}?type=${type}&filters=${JSON.stringify(filters)}`)
