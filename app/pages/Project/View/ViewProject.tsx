@@ -3434,36 +3434,38 @@ const ViewProject = ({
                                 <MagnifyingGlassIcon className='w-5 h-5 stroke-2 text-gray-700 dark:text-gray-50' />
                               </button>
                             </div>
-                            {activeTab !== PROJECT_TABS.funnels && activeTab !== PROJECT_TABS.sessions && (
-                              <Dropdown
-                                header={t('project.exportData')}
-                                items={[
-                                  ...exportTypes,
-                                  ...customExportTypes,
-                                  { label: t('project.lookingForMore'), lookingForMore: true, onClick: () => {} },
-                                ]}
-                                title={[<ArrowDownTrayIcon key='download-icon' className='w-5 h-5' />]}
-                                labelExtractor={(item) => {
-                                  const { label } = item
+                            {activeTab !== PROJECT_TABS.funnels &&
+                              activeTab !== PROJECT_TABS.sessions &&
+                              activeTab !== PROJECT_TABS.errors && (
+                                <Dropdown
+                                  header={t('project.exportData')}
+                                  items={[
+                                    ...exportTypes,
+                                    ...customExportTypes,
+                                    { label: t('project.lookingForMore'), lookingForMore: true, onClick: () => {} },
+                                  ]}
+                                  title={[<ArrowDownTrayIcon key='download-icon' className='w-5 h-5' />]}
+                                  labelExtractor={(item) => {
+                                    const { label } = item
 
-                                  return label
-                                }}
-                                keyExtractor={(item) => item.label}
-                                onSelect={(item, e) => {
-                                  if (item.lookingForMore) {
-                                    e?.stopPropagation()
-                                    window.open(MARKETPLACE_URL, '_blank')
+                                    return label
+                                  }}
+                                  keyExtractor={(item) => item.label}
+                                  onSelect={(item, e) => {
+                                    if (item.lookingForMore) {
+                                      e?.stopPropagation()
+                                      window.open(MARKETPLACE_URL, '_blank')
 
-                                    return
-                                  }
+                                      return
+                                    }
 
-                                  item.onClick(panelsData, t)
-                                }}
-                                chevron='mini'
-                                buttonClassName='!p-2 rounded-md hover:bg-white hover:shadow-sm dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200'
-                                headless
-                              />
-                            )}
+                                    item.onClick(panelsData, t)
+                                  }}
+                                  chevron='mini'
+                                  buttonClassName='!p-2 rounded-md hover:bg-white hover:shadow-sm dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200'
+                                  headless
+                                />
+                              )}
                             <div
                               className={cx(
                                 'border-gray-200 dark:border-gray-600 lg:px-3 sm:mr-3 space-x-2 lg:border-x',
