@@ -512,6 +512,7 @@ export const getErrors = (
   pid: string,
   period: string = '3d',
   filters: string[] = [],
+  options: any = {},
   from: string = '',
   to: string = '',
   take: number = 30,
@@ -523,7 +524,7 @@ export const getErrors = (
     .get(
       `log/errors?pid=${pid}&take=${take}&skip=${skip}&period=${period}&filters=${JSON.stringify(
         filters,
-      )}&from=${from}&to=${to}&timezone=${timezone}`,
+      )}&options=${JSON.stringify(options)}&from=${from}&to=${to}&timezone=${timezone}`,
       {
         headers: {
           'x-password': password,

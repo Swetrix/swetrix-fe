@@ -398,7 +398,7 @@ const ViewProject = ({
     [CHART_METRICS_MAPPING.trendlines]: false,
     [CHART_METRICS_MAPPING.cumulativeMode]: false,
   })
-  const [activeErrorFilters, setActiveErrorFilters] = useState<{
+  const [errorOptions, setErrorOptions] = useState<{
     [key: string]: boolean
   }>({
     [ERROR_FILTERS_MAPPING.showResolved]: false,
@@ -720,10 +720,10 @@ const ViewProject = ({
       {
         id: ERROR_FILTERS_MAPPING.showResolved,
         label: t('project.showResolved'),
-        active: activeErrorFilters[ERROR_FILTERS_MAPPING.showResolved],
+        active: errorOptions[ERROR_FILTERS_MAPPING.showResolved],
       },
     ]
-  }, [t, activeErrorFilters])
+  }, [t, errorOptions])
 
   // chartMetricsPerf is a list of metrics for dropdown in performance tab
   const chartMetricsPerf = useMemo(() => {
@@ -929,7 +929,8 @@ const ViewProject = ({
   )
 
   const switchActiveErrorFilter = (pairID: string) => {
-    setActiveErrorFilters((prev) => ({ ...prev, [pairID]: !prev[pairID] }))
+    setErrorOptions((prev) => ({ ...prev, [pairID]: !prev[pairID] }))
+    resetErrors()
   }
 
   const updateStatusInErrors = (status: 'active' | 'resolved') => {
@@ -1565,6 +1566,7 @@ const ViewProject = ({
           id,
           '',
           filtersErrors,
+          errorOptions,
           from,
           to,
           ERRORS_TAKE,
@@ -1577,6 +1579,7 @@ const ViewProject = ({
           id,
           period,
           filtersErrors,
+          errorOptions,
           '',
           '',
           ERRORS_TAKE,
@@ -1942,6 +1945,7 @@ const ViewProject = ({
     let newFiltersErrors
     const columnPerf = `${column}_perf`
     const columnSessions = `${column}_sess`
+    const columnErrors = `${column}_err`
 
     if (activeTab === PROJECT_TABS.performance) {
       if (_find(filtersPerf, (f) => f.filter === filter)) {
@@ -1993,7 +1997,7 @@ const ViewProject = ({
 
         // @ts-ignore
         const url = new URL(window.location)
-        url.searchParams.delete(columnSessions)
+        url.searchParams.delete(columnErrors)
         const { pathname, search } = url
         navigate(`${pathname}${search}`)
         setFiltersErrors(newFiltersErrors)
@@ -2002,7 +2006,7 @@ const ViewProject = ({
 
         // @ts-ignore
         const url = new URL(window.location)
-        url.searchParams.append(columnSessions, filter)
+        url.searchParams.append(columnErrors, filter)
         const { pathname, search } = url
         navigate(`${pathname}${search}`)
         setFiltersErrors(newFiltersErrors)
@@ -2809,7 +2813,7 @@ const ViewProject = ({
       loadErrors()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, dateRange, filtersErrors, id, period, projectPassword, timezone, areFiltersErrorsParsed])
+  }, [activeTab, errorOptions, dateRange, filtersErrors, id, period, projectPassword, timezone, areFiltersErrorsParsed])
 
   useEffect(() => {
     if (period !== KEY_FOR_ALL_TIME) {
