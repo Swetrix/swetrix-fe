@@ -948,8 +948,6 @@ const ViewProject = ({
     }
   }
 
-  console.log('errors:', errors)
-
   const markErrorAsResolved = async () => {
     if (errorStatusUpdating || !activeError?.details?.eid) {
       return
