@@ -3912,9 +3912,7 @@ const ViewProject = ({
                     <ChevronLeftIcon className='w-4 h-4' />
                     {t('project.backToSessions')}
                   </button>
-                  {activeSession?.details && (
-                    <SessionDetails details={activeSession?.details} psid={activeSession?.psid} />
-                  )}
+                  {activeSession?.details && <SessionDetails details={activeSession?.details} />}
                   <SessionChart
                     chart={activeSession?.chart}
                     timeBucket={activeSession?.timeBucket}
@@ -4173,7 +4171,9 @@ const ViewProject = ({
                               onFilter={filterHandler}
                               name={panelName}
                               data={activeError.params[type]}
-                              rowMapper={({ name: entryName }) => getLocaleDisplayName(entryName, language)}
+                              rowMapper={({ name: entryName }: { name: string }) =>
+                                getLocaleDisplayName(entryName, language)
+                              }
                             />
                           )
                         }
@@ -4477,7 +4477,9 @@ const ViewProject = ({
                               onFilter={filterHandler}
                               name={panelName}
                               data={panelsData.data[type]}
-                              rowMapper={({ name: entryName }) => getLocaleDisplayName(entryName, language)}
+                              rowMapper={({ name: entryName }: { name: string }) =>
+                                getLocaleDisplayName(entryName, language)
+                              }
                               customTabs={customTabs}
                             />
                           )
