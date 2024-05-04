@@ -134,6 +134,7 @@ import {
   getSession,
   getErrors,
   getError,
+  updateErrorStatus,
 } from 'api'
 import { getChartPrediction } from 'api/ai'
 import { Panel, CustomEvents } from './Panels'
@@ -458,6 +459,7 @@ const ViewProject = ({
   const [errorsLoading, setErrorsLoading] = useState<boolean | null>(null) // null - not loaded, true - loading, false - loaded
   const [activeError, setActiveError] = useState<any>(null)
   const [errorLoading, setErrorLoading] = useState<boolean>(false)
+  const [errorStatusUpdating, setErrorStatusUpdating] = useState(false)
 
   const [activeFunnel, setActiveFunnel] = useState<IFunnel | null>(null)
   const [funnelToEdit, setFunnelToEdit] = useState<IFunnel | undefined>(undefined)
@@ -927,6 +929,69 @@ const ViewProject = ({
 
   const switchActiveErrorFilter = (pairID: string) => {
     setActiveErrorFilters((prev) => ({ ...prev, [pairID]: !prev[pairID] }))
+  }
+
+  const updateStatusInErrors = (status: 'active' | 'resolved') => {
+    if (!activeError?.details?.eid) {
+      return
+    }
+
+    const index = _findIndex(errors, (error) => error.eid === activeError.details.eid)
+
+    if (index === -1) {
+      return
+    }
+
+    errors[index] = {
+      ...errors[index],
+      status,
+    }
+  }
+
+  console.log('errors:', errors)
+
+  const markErrorAsResolved = async () => {
+    if (errorStatusUpdating || !activeError?.details?.eid) {
+      return
+    }
+
+    setErrorStatusUpdating(true)
+
+    try {
+      await updateErrorStatus(project.id, 'resolved', activeError.details.eid)
+      await loadError(activeError.details.eid)
+      updateStatusInErrors('resolved')
+    } catch (reason) {
+      console.error('[markErrorAsResolved]', reason)
+      generateAlert(t('apiNotifications.updateErrorStatusFailed'), 'error')
+      setErrorStatusUpdating(false)
+      return
+    }
+
+    generateAlert(t('apiNotifications.errorStatusUpdated'), 'success')
+    setErrorStatusUpdating(false)
+  }
+
+  const markErrorAsActive = async () => {
+    if (errorStatusUpdating || !activeError?.details?.eid) {
+      return
+    }
+
+    setErrorStatusUpdating(true)
+
+    try {
+      await updateErrorStatus(project.id, 'active', activeError.details.eid)
+      await loadError(activeError.details.eid)
+      updateStatusInErrors('active')
+    } catch (reason) {
+      console.error('[markErrorAsResolved]', reason)
+      generateAlert(t('apiNotifications.updateErrorStatusFailed'), 'error')
+      setErrorStatusUpdating(false)
+      return
+    }
+
+    generateAlert(t('apiNotifications.errorStatusUpdated'), 'success')
+    setErrorStatusUpdating(false)
   }
 
   // onErrorLoading is a function for redirect to dashboard when project do not exist
@@ -3534,17 +3599,38 @@ const ViewProject = ({
                             headless
                           />
                         )}
-                        {activeTab === PROJECT_TABS.errors && activeError && (
-                          <button
-                            type='button'
-                            onClick={() => {}}
-                            className={cx('text-sm p-2 font-medium text-gray-700 dark:text-gray-50', {
-                              'cursor-not-allowed opacity-50': isLoading || errorLoading,
-                            })}
-                          >
-                            {t('project.resolve')}
-                          </button>
-                        )}
+                        {activeTab === PROJECT_TABS.errors &&
+                          activeError &&
+                          activeError?.details?.status !== 'resolved' && (
+                            <button
+                              type='button'
+                              disabled={errorStatusUpdating}
+                              onClick={markErrorAsResolved}
+                              className={cx('text-sm p-2 font-medium text-gray-700 dark:text-gray-50', {
+                                'cursor-not-allowed': isLoading || errorLoading,
+                                'opacity-50': errorLoading && !errorStatusUpdating,
+                                'animate-pulse cursor-not-allowed': errorStatusUpdating,
+                              })}
+                            >
+                              {t('project.resolve')}
+                            </button>
+                          )}
+                        {activeTab === PROJECT_TABS.errors &&
+                          activeError &&
+                          activeError?.details?.status === 'resolved' && (
+                            <button
+                              type='button'
+                              disabled={errorStatusUpdating}
+                              onClick={markErrorAsActive}
+                              className={cx('text-sm p-2 font-medium text-gray-700 dark:text-gray-50', {
+                                'cursor-not-allowed': isLoading || errorLoading,
+                                'opacity-50': errorLoading && !errorStatusUpdating,
+                                'animate-pulse cursor-not-allowed': errorStatusUpdating,
+                              })}
+                            >
+                              {t('project.markAsActive')}
+                            </button>
+                          )}
                         {activeTab === PROJECT_TABS.errors && (
                           <Dropdown
                             items={errorFilters}

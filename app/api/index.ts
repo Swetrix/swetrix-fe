@@ -1351,3 +1351,12 @@ export const unsubscribeFromEmailReports3rdParty = (token: string) =>
       debug('%s', error)
       throw error
     })
+
+export const updateErrorStatus = (pid: string, status: 'resolved' | 'active', eid?: string, eids?: string[]) =>
+  api
+    .patch('log/error-status', { pid, eid, eids, status })
+    .then((response): any => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message) ? error.response.data : error.response.data.message
+    })

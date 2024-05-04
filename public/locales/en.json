@@ -39,7 +39,9 @@
     "funnelCreated": "The funnel has been created",
     "funnelUpdated": "The funnel has been updated",
     "funnelDeleted": "The funnel has been deleted",
-    "errorCode": "Error code: {{error}}"
+    "errorCode": "Error code: {{error}}",
+    "updateErrorStatusFailed": "Error occured while updating error status",
+    "errorStatusUpdated": "Error status has been updated"
   },
   "common": {
     "features": "Features",
@@ -721,6 +723,7 @@
     "filters": "Filters",
     "showResolved": "Show resolved",
     "resolve": "Resolve",
+    "markAsActive": "Mark as active",
     "refreshStats": "Refresh stats",
     "barChart": "Bar chart",
     "lineChart": "Line chart",
