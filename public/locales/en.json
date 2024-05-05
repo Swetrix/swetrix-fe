@@ -640,6 +640,8 @@
     "exportData": "Export data",
     "asCSV": "As CSV",
     "noEvTitle": "No events yet",
+    "noErrorDetails": "No error details",
+    "noErrorDesc": "This error does not exist or has not occurred within the specified time frame.",
     "showAll": "Show all views",
     "trendlineUnique": "Unique visitors trendline",
     "backToFunnels": "Back to funnels list",

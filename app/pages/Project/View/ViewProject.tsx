@@ -188,6 +188,7 @@ import WaitingForAnEvent from './components/WaitingForAnEvent'
 import { ErrorChart } from './components/ErrorChart'
 import { ErrorDetails } from './components/ErrorDetails'
 import { IError } from './interfaces/error'
+import NoErrorDetails from './components/NoErrorDetails'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -461,6 +462,7 @@ const ViewProject = ({
   const [activeError, setActiveError] = useState<any>(null)
   const [errorLoading, setErrorLoading] = useState<boolean>(false)
   const [errorStatusUpdating, setErrorStatusUpdating] = useState(false)
+  const [activeEID, setActiveEID] = useState<string | null>(null)
 
   const [activeFunnel, setActiveFunnel] = useState<IFunnel | null>(null)
   const [funnelToEdit, setFunnelToEdit] = useState<IFunnel | undefined>(undefined)
@@ -942,7 +944,7 @@ const ViewProject = ({
       return
     }
 
-    const index = _findIndex(errors, (error) => error.eid === activeError.details.eid)
+    const index = _findIndex(errors, (error) => error.eid === activeEID)
 
     if (index === -1) {
       return
@@ -955,15 +957,15 @@ const ViewProject = ({
   }
 
   const markErrorAsResolved = async () => {
-    if (errorStatusUpdating || !activeError?.details?.eid) {
+    if (errorStatusUpdating || !activeEID || !activeError?.details?.eid) {
       return
     }
 
     setErrorStatusUpdating(true)
 
     try {
-      await updateErrorStatus(project.id, 'resolved', activeError.details.eid)
-      await loadError(activeError.details.eid)
+      await updateErrorStatus(project.id, 'resolved', activeEID)
+      await loadError(activeEID)
       updateStatusInErrors('resolved')
     } catch (reason) {
       console.error('[markErrorAsResolved]', reason)
@@ -977,15 +979,15 @@ const ViewProject = ({
   }
 
   const markErrorAsActive = async () => {
-    if (errorStatusUpdating || !activeError?.details?.eid) {
+    if (errorStatusUpdating || !activeEID || !activeError?.details?.eid) {
       return
     }
 
     setErrorStatusUpdating(true)
 
     try {
-      await updateErrorStatus(project.id, 'active', activeError.details.eid)
-      await loadError(activeError.details.eid)
+      await updateErrorStatus(project.id, 'active', activeEID)
+      await loadError(activeEID)
       updateStatusInErrors('active')
     } catch (reason) {
       console.error('[markErrorAsResolved]', reason)
@@ -1427,9 +1429,6 @@ const ViewProject = ({
 
   const loadError = useCallback(
     async (eid: string) => {
-      if (errorLoading) {
-        return
-      }
       setErrorLoading(true)
 
       try {
@@ -1450,12 +1449,21 @@ const ViewProject = ({
 
         setActiveError(error)
       } catch (reason: any) {
-        console.error('[ERROR] (loadError)(getError)', reason)
-        showError(reason) // todo: error message i18n
+        if (reason?.status === 400) {
+          // this error did not occur within specified time frame
+          setErrorLoading(false)
+          setActiveError(null)
+          return
+        }
+
+        const message = _isEmpty(reason.data?.message) ? reason.data : reason.data.message
+
+        console.error('[ERROR] (loadError)(getError)', message)
+        showError(message)
       }
       setErrorLoading(false)
     },
-    [dateRange, errorLoading, id, period, projectPassword, showError, timezone],
+    [dateRange, id, period, projectPassword, showError, timezone],
   )
 
   const loadSession = async (psid: string) => {
@@ -1502,19 +1510,20 @@ const ViewProject = ({
     const tab = searchParams.get('tab') as string
 
     if (eid && tab === PROJECT_TABS.errors) {
-      loadError(eid)
+      // loadError(eid)
+      setActiveEID(eid)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    if (!activeError?.details?.eid) {
+    if (!activeEID) {
       return
     }
 
-    loadError(activeError.details.eid)
+    loadError(activeEID)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, dateRange, activeError?.details?.eid])
+  }, [period, dateRange, activeEID])
 
   const loadSessions = async () => {
     if (sessionsLoading) {
@@ -2315,8 +2324,8 @@ const ViewProject = ({
       }
 
       if (activeTab === PROJECT_TABS.errors) {
-        if (activeError?.details?.eid) {
-          await loadError(activeError.details.eid)
+        if (activeEID) {
+          await loadError(activeEID)
           return
         }
 
@@ -3973,7 +3982,7 @@ const ViewProject = ({
                   <Pageflow pages={activeSession?.pages} />
                 </>
               )}
-              {activeTab === PROJECT_TABS.errors && !activeError && (
+              {activeTab === PROJECT_TABS.errors && !activeEID && (
                 <>
                   <Filters
                     filters={filtersErrors}
@@ -3984,7 +3993,13 @@ const ViewProject = ({
                   {!errorsLoading && _isEmpty(errors) && (
                     <NoEvents filters={filtersErrors} resetFilters={resetFilters} />
                   )}
-                  <Errors errors={errors} onClick={loadError} />
+                  <Errors
+                    errors={errors}
+                    onClick={(eidToLoad) => {
+                      setActiveEID(eidToLoad)
+                      setErrorLoading(true)
+                    }}
+                  />
                   {canLoadMoreErrors && (
                     <button
                       type='button'
@@ -4003,11 +4018,12 @@ const ViewProject = ({
                   )}
                 </>
               )}
-              {activeTab === PROJECT_TABS.errors && activeError && (
+              {activeTab === PROJECT_TABS.errors && activeEID && (
                 <>
                   <button
                     onClick={() => {
                       setActiveError(null)
+                      setActiveEID(null)
                       const url = new URL(window.location.href)
                       url.searchParams.delete('eid')
                       window.history.pushState({}, '', url.toString())
@@ -4018,14 +4034,16 @@ const ViewProject = ({
                     {t('project.backToErrors')}
                   </button>
                   {activeError?.details && <ErrorDetails details={activeError.details} />}
-                  <ErrorChart
-                    chart={activeError?.chart}
-                    timeBucket={activeError?.timeBucket}
-                    timeFormat={timeFormat}
-                    rotateXAxis={rotateXAxis}
-                    chartType={chartType}
-                    dataNames={dataNames}
-                  />
+                  {activeError?.chart && (
+                    <ErrorChart
+                      chart={activeError?.chart}
+                      timeBucket={activeError?.timeBucket}
+                      timeFormat={timeFormat}
+                      rotateXAxis={rotateXAxis}
+                      chartType={chartType}
+                      dataNames={dataNames}
+                    />
+                  )}
                   <div className='mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
                     {!_isEmpty(activeError?.params) &&
                       _map(ERROR_PANELS_ORDER, (type: keyof typeof tnMapping) => {
@@ -4242,6 +4260,7 @@ const ViewProject = ({
                         )
                       })}
                   </div>
+                  {!errorLoading && _isEmpty(activeError) && <NoErrorDetails />}
                 </>
               )}
               {activeTab === PROJECT_TABS.alerts && !isSharedProject && project?.isOwner && authenticated && (
