@@ -300,21 +300,6 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
                   >
                     <span className='text-base font-semibold'>{t('common.liveDemo')}</span>
                   </a>
-                  <span
-                    onClick={() => {
-                      throw new Error('TEST ERROR THROW HELLO!')
-                    }}
-                  >
-                    THROW ERROR
-                  </span>
-                  <span
-                    onClick={() => {
-                      // eslint-disable-next-line
-                      eval('const test;')
-                    }}
-                  >
-                    2 THROW ERROR 2
-                  </span>
                 </div>
                 <a
                   href={BOOK_A_CALL_URL}

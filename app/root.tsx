@@ -23,7 +23,7 @@ import { transitions, positions, Provider as AlertProvider } from '@blaumaus/rea
 import BillboardCss from 'billboard.js/dist/billboard.min.css'
 
 import AlertTemplate from 'ui/Alert'
-// import { trackViews } from 'utils/analytics'
+import { trackViews } from 'utils/analytics'
 import { useChangeLanguage } from 'remix-i18next/react'
 import { useTranslation } from 'react-i18next'
 import AppWrapper from 'App'
@@ -39,7 +39,7 @@ import FlatpickrLightCss from 'flatpickr/dist/themes/light.css'
 import FlatpickrDarkCss from 'flatpickr/dist/themes/dark.css'
 import FontsCss from 'styles/fonts.css'
 
-// trackViews()
+trackViews()
 
 declare global {
   interface Window {
@@ -276,18 +276,6 @@ export default function App() {
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
-        <script src='http://127.0.0.1:5500/dist/swetrix.js' defer></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `document.addEventListener('DOMContentLoaded', function() {
-              swetrix.init('79eF2Z9rNNvv', {
-                devMode: true,
-                apiURL: 'http://localhost:5005/log',
-              })
-              swetrix.trackErrors()
-            })`,
-          }}
-        />
       </body>
     </html>
   )
