@@ -1585,7 +1585,7 @@ const ViewProject = ({
     }
   }
 
-  const loadErrors = async () => {
+  const loadErrors = async (forcedSkip?: number) => {
     if (errorsLoading) {
       return
     }
@@ -1593,6 +1593,7 @@ const ViewProject = ({
     setErrorsLoading(true)
 
     try {
+      const skip = typeof forcedSkip === 'number' ? forcedSkip : errorsSkip
       let dataErrors: { errors: IError[]; appliedFilters: any[] }
       let from
       let to
@@ -1611,7 +1612,7 @@ const ViewProject = ({
           from,
           to,
           ERRORS_TAKE,
-          errorsSkip,
+          skip,
           timezone,
           projectPassword,
         )
@@ -1624,14 +1625,20 @@ const ViewProject = ({
           '',
           '',
           ERRORS_TAKE,
-          errorsSkip,
+          skip,
           timezone,
           projectPassword,
         )
       }
 
       setErrors((prev) => [...prev, ...(dataErrors?.errors || [])])
-      setErrorsSkip((prev) => ERRORS_TAKE + prev)
+      setErrorsSkip((prev) => {
+        if (typeof forcedSkip === 'number') {
+          return ERRORS_TAKE + forcedSkip
+        }
+
+        return ERRORS_TAKE + prev
+      })
 
       if (dataErrors?.errors?.length < ERRORS_TAKE) {
         setCanLoadMoreErrors(false)
@@ -2331,7 +2338,7 @@ const ViewProject = ({
         }
 
         resetErrors()
-        loadErrors()
+        loadErrors(0)
         return
       }
 
@@ -3372,7 +3379,11 @@ const ViewProject = ({
     )
   }
 
-  if (!project.isErrorDataExists && activeTab === PROJECT_TABS.errors) {
+  if (
+    typeof project.isErrorDataExists === 'boolean' && // to prevent flickering
+    !project.isErrorDataExists &&
+    activeTab === PROJECT_TABS.errors
+  ) {
     return (
       <>
         {!embedded && <Header ssrTheme={ssrTheme} authenticated={authenticated} />}
@@ -4026,7 +4037,7 @@ const ViewProject = ({
                     <button
                       type='button'
                       title={t('project.refreshStats')}
-                      onClick={loadErrors}
+                      onClick={() => loadErrors()}
                       className={cx(
                         'flex items-center mx-auto mt-2 text-gray-700 dark:text-gray-50 relative rounded-md p-2 bg-gray-50 text-sm font-medium hover:bg-white hover:shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 focus:dark:ring-gray-200 focus:dark:border-gray-200',
                         {
