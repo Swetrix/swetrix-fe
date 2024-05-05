@@ -1425,20 +1425,38 @@ const ViewProject = ({
     return getCustomEventsMetadata(id, event, timeBucket, period, '', '', timezone, projectPassword)
   }
 
-  const loadError = async (eid: string) => {
-    if (errorLoading) {
-      return
-    }
-    setErrorLoading(true)
-    try {
-      const error = await getError(id, eid, period, undefined, undefined, timezone, projectPassword)
-      setActiveError(error)
-    } catch (reason: any) {
-      console.error('[ERROR] (loadError)(getError)', reason)
-      showError(reason) // todo: error message i18n
-    }
-    setErrorLoading(false)
-  }
+  const loadError = useCallback(
+    async (eid: string) => {
+      if (errorLoading) {
+        return
+      }
+      setErrorLoading(true)
+
+      try {
+        let error
+        let from
+        let to
+
+        if (dateRange) {
+          from = getFormatDate(dateRange[0])
+          to = getFormatDate(dateRange[1])
+        }
+
+        if (period === 'custom' && dateRange) {
+          error = await getError(id, eid, '', from, to, timezone, projectPassword)
+        } else {
+          error = await getError(id, eid, period, '', '', timezone, projectPassword)
+        }
+
+        setActiveError(error)
+      } catch (reason: any) {
+        console.error('[ERROR] (loadError)(getError)', reason)
+        showError(reason) // todo: error message i18n
+      }
+      setErrorLoading(false)
+    },
+    [dateRange, errorLoading, id, period, projectPassword, showError, timezone],
+  )
 
   const loadSession = async (psid: string) => {
     if (sessionLoading) {
@@ -1488,6 +1506,15 @@ const ViewProject = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!activeError?.details?.eid) {
+      return
+    }
+
+    loadError(activeError.details.eid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period, dateRange, activeError?.details?.eid])
 
   const loadSessions = async () => {
     if (sessionsLoading) {
