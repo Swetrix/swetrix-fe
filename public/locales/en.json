@@ -668,6 +668,10 @@
       "title": "Waiting for your first pageview",
       "desc": "We're waiting for your first pageview! If your integration is set up correctly, you should see it within 1 minute.\n<snippet>Click here</snippet> to view your JavaScript tracking code.\nStill not working? Try <turl>troubleshooting</turl> your integration or <curl>contact us</curl> for help with your setup."
     },
+    "waitingError": {
+      "title": "Waiting for your first error.. hopefully not :)",
+      "desc": "We're waiting for your first error event! If your integration is set up correctly, you should see it within 1 minute when it happens.\n<howto>Click here</howto> to learn how to set up error tracking for your website.\nStill not working? Try <turl>troubleshooting</turl> your integration or <curl>contact us</curl> for help with your setup."
+    },
     "trendlineTotal": "Pageviews trendline",
     "noEvContent": "No events have been recorded for the specified period, please try a different period.",
     "noCaptchaEv": "No events have been captured for the specified timeframe.\nIf you haven't set up CAPTCHA yet, you can check out our <url>Docs</url> to easily integrate it into your app.",

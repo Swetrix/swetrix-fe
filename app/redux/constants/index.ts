@@ -344,6 +344,7 @@ export const BOOK_A_CALL_URL: string = 'https://cal.com/swetrix'
 export const PERFORMANCE_LIVE_DEMO_URL: string = '/projects/STEzHcB1rALV?tab=performance'
 export const MARKETPLACE_URL: string = 'https://marketplace.swetrix.com'
 export const DOCS_URL: string = 'https://docs.swetrix.com'
+export const ERROR_TRACKING_DOCS_URL: string = 'https://docs.swetrix.com/error-tracking'
 export const CAPTCHA_URL: string = 'https://captcha.swetrix.com'
 export const DOCS_CAPTCHA_URL: string = `${DOCS_URL}/captcha/introduction`
 export const DOCS_REFERRAL_PROGRAM_URL: string = `${DOCS_URL}/affiliate/about`

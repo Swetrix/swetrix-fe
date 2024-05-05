@@ -189,6 +189,7 @@ import { ErrorChart } from './components/ErrorChart'
 import { ErrorDetails } from './components/ErrorDetails'
 import { IError } from './interfaces/error'
 import NoErrorDetails from './components/NoErrorDetails'
+import WaitingForAnError from './components/WaitingForAnError'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -3350,7 +3351,7 @@ const ViewProject = ({
     )
   }
 
-  if (!project.isDataExists && !analyticsLoading) {
+  if (!project.isDataExists && activeTab !== PROJECT_TABS.errors && !analyticsLoading) {
     return (
       <>
         {!embedded && <Header ssrTheme={ssrTheme} authenticated={authenticated} />}
@@ -3365,6 +3366,27 @@ const ViewProject = ({
             {name}
           </h2>
           <WaitingForAnEvent project={project} />
+        </div>
+        {!embedded && <Footer authenticated={authenticated} minimal />}
+      </>
+    )
+  }
+
+  if (!project.isErrorDataExists && activeTab === PROJECT_TABS.errors) {
+    return (
+      <>
+        {!embedded && <Header ssrTheme={ssrTheme} authenticated={authenticated} />}
+        <div
+          className={cx('max-w-[1584px] bg-gray-50 dark:bg-slate-900 w-full mx-auto py-6 px-2 sm:px-4 lg:px-8', {
+            'min-h-min-footer': !embedded,
+            'min-h-[100vh]': embedded,
+          })}
+        >
+          <TabsSelector />
+          <h2 className='text-xl mt-2 font-bold text-gray-900 dark:text-gray-50 break-words break-all text-center sm:text-left'>
+            {name}
+          </h2>
+          <WaitingForAnError />
         </div>
         {!embedded && <Footer authenticated={authenticated} minimal />}
       </>
