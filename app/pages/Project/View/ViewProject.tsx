@@ -2269,7 +2269,7 @@ const ViewProject = ({
   }
 
   // this function is used for requesting the data from the API when you press the reset button
-  const refreshStats = () => {
+  const refreshStats = async () => {
     if (!isLoading && !dataLoading) {
       if (activeTab === PROJECT_TABS.performance) {
         loadAnalyticsPerf(true)
@@ -2288,6 +2288,11 @@ const ViewProject = ({
       }
 
       if (activeTab === PROJECT_TABS.errors) {
+        if (activeError?.details?.eid) {
+          await loadError(activeError.details.eid)
+          return
+        }
+
         resetErrors()
         loadErrors()
         return
@@ -3418,6 +3423,7 @@ const ViewProject = ({
                             <div
                               className={cx('border-gray-200 dark:border-gray-600', {
                                 'lg:border-r': activeTab === PROJECT_TABS.funnels,
+                                hidden: activeTab === PROJECT_TABS.errors && activeError,
                               })}
                             >
                               <button
@@ -3474,7 +3480,8 @@ const ViewProject = ({
                                     isPanelsDataEmpty ||
                                     analyticsLoading ||
                                     checkIfAllMetricsAreDisabled ||
-                                    activeTab === PROJECT_TABS.sessions,
+                                    activeTab === PROJECT_TABS.sessions ||
+                                    activeTab === PROJECT_TABS.errors,
                                 },
                               )}
                             >
@@ -3644,7 +3651,7 @@ const ViewProject = ({
                               {t('project.markAsActive')}
                             </button>
                           )}
-                        {activeTab === PROJECT_TABS.errors && (
+                        {activeTab === PROJECT_TABS.errors && !activeError && (
                           <Dropdown
                             items={errorFilters}
                             title={t('project.filters')}
