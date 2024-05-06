@@ -4071,6 +4071,7 @@ const ViewProject = ({
                       {t('project.loadMore')}
                     </button>
                   )}
+                  {_isEmpty(errors) && errorsLoading && <Loader />}
                 </>
               )}
               {activeTab === PROJECT_TABS.errors && activeEID && (
@@ -4315,6 +4316,7 @@ const ViewProject = ({
                         )
                       })}
                   </div>
+                  {_isEmpty(activeError) && errorLoading && <Loader />}
                   {!errorLoading && _isEmpty(activeError) && <NoErrorDetails />}
                 </>
               )}
