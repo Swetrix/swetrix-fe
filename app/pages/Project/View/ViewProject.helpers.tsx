@@ -941,6 +941,14 @@ const getSettingsError = (
 
   const columns = getColumns(chart, { occurrences: true }, {})
 
+  let regionStart
+
+  if (xAxisSize > 1) {
+    regionStart = dayjs(chart.x[xAxisSize - 2]).toDate()
+  } else {
+    regionStart = dayjs(chart.x[xAxisSize - 1]).toDate()
+  }
+
   return {
     data: {
       x: 'x',
@@ -951,6 +959,16 @@ const getSettingsError = (
       colors: {
         occurrences: '#dc2626',
         occurrencesCompare: 'rgba(220, 38, 38, 0.4)',
+      },
+      regions: {
+        occurrences: [
+          {
+            start: regionStart,
+            style: {
+              dasharray: '6 2',
+            },
+          },
+        ],
       },
     },
     // grid: {

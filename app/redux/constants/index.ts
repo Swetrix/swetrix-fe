@@ -197,6 +197,10 @@ export const captchaTbPeriodPairs = (
 
 export const filtersPeriodPairs = ['1h', '1d', '7d', '4w', '3M', '12M', 'custom', 'compare']
 
+// TODO: add 'custom' later after an issue with it is resolved
+// currently if you select a date range - it will not display errors within the last day of the date range
+export const errorPeriodPairs = ['1h', '1d', '7d', '4w', '3M', '12M']
+
 export const tbPeriodPairsCompare = (
   t: Function,
   dates?: Date[],
@@ -342,6 +346,7 @@ export const UTM_GENERATOR_URL: string = 'https://url.swetrix.com'
 export const LIVE_DEMO_URL: string = '/projects/STEzHcB1rALV'
 export const BOOK_A_CALL_URL: string = 'https://cal.com/swetrix'
 export const PERFORMANCE_LIVE_DEMO_URL: string = '/projects/STEzHcB1rALV?tab=performance'
+export const ERROR_TRACKING_LIVE_DEMO_URL: string = '/projects/STEzHcB1rALV?tab=errors'
 export const MARKETPLACE_URL: string = 'https://marketplace.swetrix.com'
 export const DOCS_URL: string = 'https://docs.swetrix.com'
 export const ERROR_TRACKING_DOCS_URL: string = 'https://docs.swetrix.com/error-tracking'

@@ -116,6 +116,19 @@
       "desc": "Swetrix is built with a privacy-first and transparent approach. We do not use cookies or collect personal information from our users. There's no cross-site or cross-device tracking. No data is ever sold to advertisers or anyone else.\nThe Swetrix dashboard is very intuitive to use, giving you real-time data and a clear view of your website. There are no layers of menus, no need to export your data into custom reports to understand it properly."
     }
   },
+  "errors": {
+    "slogan": "End user <span>error tracking</span> tool to deliver bug-free experiences.",
+    "description": "Focus on making beautiful apps, and we will let you know if something goes wrong.",
+    "fast": {
+      "title": "Deliver bug-free experiences",
+      "desc": "Everyone hates bugs, so in addition to <indexUrl>traffic</indexUrl> and <perfUrl>performance</perfUrl> analytics, Swetrix allows you to monitor your website errors to quickly resolve them. Easily set up error monitoring with a <oneLC>one line of code</oneLC>, so you can focus on building your applications, not hunting for bugs.",
+      "list": ["Get a bird's eye insights on what kind of errors are present on your website", "View specific error details and aggregated data by geolocation, browser, device type, page and other metrics", "Understand if the bug is new or regressed, making it easier to fix"]
+    },
+    "track": {
+      "title": "Track all errors with one tool",
+      "desc": "With Swetrix, you can track exactly what kind of errors your users are experiencing and when. We also give you insight into which browsers, operating systems, devices and more, making it even easier to resolve issues."
+    }
+  },
   "main": {
     "ukrSupport": "Support the Ukrainian army to fight Russian invasion.",
     "slogan": "<span>Ultimate open-source web analytics</span> to satisfy all your needs.",
@@ -1002,7 +1015,8 @@
     "open": "Open startup",
     "passwordProtected": "This project is password protected",
     "confirm": "Check your inbox",
-    "performance": "End user performance monitoring to deliver fast websites"
+    "performance": "End user performance monitoring to deliver fast websites",
+    "errors": "End user error tracking tool to deliver bug-free experiences"
   },
   "header": {
     "switchTheme": "Switch theme",

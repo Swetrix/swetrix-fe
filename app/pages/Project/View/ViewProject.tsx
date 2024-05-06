@@ -89,6 +89,7 @@ import {
   ITBPeriodPairs,
   ERROR_PANELS_ORDER,
   ERRORS_FILTERS_PANELS_ORDER,
+  errorPeriodPairs,
 } from 'redux/constants'
 import { IUser } from 'redux/models/IUser'
 import {
@@ -666,6 +667,28 @@ const ViewProject = ({
 
   // sharedRoles is a role for shared project
   const sharedRoles = useMemo(() => _find(user.sharedProjects, (p) => p.project.id === id)?.role || {}, [user, id])
+
+  const timeBucketSelectorItems = useMemo(() => {
+    if (activeTab === PROJECT_TABS.errors) {
+      return _filter(periodPairs, (el) => {
+        return _includes(errorPeriodPairs, el.period)
+      })
+    }
+
+    if (isActiveCompare) {
+      return _filter(periodPairs, (el) => {
+        return _includes(filtersPeriodPairs, el.period)
+      })
+    }
+
+    if (_includes(filtersPeriodPairs, period)) {
+      return periodPairs
+    }
+
+    return _filter(periodPairs, (el) => {
+      return el.period !== PERIOD_PAIRS_COMPARE.COMPARE
+    })
+  }, [activeTab, isActiveCompare, period, periodPairs])
 
   // for search filters
   const [showFiltersSearch, setShowFiltersSearch] = useState(false)
@@ -1524,7 +1547,7 @@ const ViewProject = ({
 
     loadError(activeEID)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period, dateRange, activeEID])
+  }, [period, dateRange, timeBucket, activeEID])
 
   const loadSessions = async () => {
     if (sessionsLoading) {
@@ -1585,7 +1608,7 @@ const ViewProject = ({
     }
   }
 
-  const loadErrors = async (forcedSkip?: number) => {
+  const loadErrors = async (forcedSkip?: number, override?: boolean) => {
     if (errorsLoading) {
       return
     }
@@ -1631,7 +1654,12 @@ const ViewProject = ({
         )
       }
 
-      setErrors((prev) => [...prev, ...(dataErrors?.errors || [])])
+      if (override) {
+        setErrors(dataErrors?.errors || [])
+      } else {
+        setErrors((prev) => [...prev, ...(dataErrors?.errors || [])])
+      }
+
       setErrorsSkip((prev) => {
         if (typeof forcedSkip === 'number') {
           return ERRORS_TAKE + forcedSkip
@@ -2278,6 +2306,7 @@ const ViewProject = ({
 
         return f
       })
+      resetErrors()
       setFiltersErrors(newFilters)
     } else {
       newFilters = _map(filters, (f) => {
@@ -3794,20 +3823,13 @@ const ViewProject = ({
                           />
                         )}
                         <TBPeriodSelector
+                          classes={{
+                            timeBucket: activeTab === PROJECT_TABS.errors && !activeEID ? 'hidden' : '',
+                          }}
                           activePeriod={activePeriod}
                           updateTimebucket={updateTimebucket}
                           timeBucket={timeBucket}
-                          items={
-                            isActiveCompare
-                              ? _filter(periodPairs, (el) => {
-                                  return _includes(filtersPeriodPairs, el.period)
-                                })
-                              : _includes(filtersPeriodPairs, period)
-                                ? periodPairs
-                                : _filter(periodPairs, (el) => {
-                                    return el.period !== PERIOD_PAIRS_COMPARE.COMPARE
-                                  })
-                          }
+                          items={timeBucketSelectorItems}
                           title={activePeriod?.label}
                           onSelect={(pair) => {
                             if (pair.period === PERIOD_PAIRS_COMPARE.COMPARE) {
@@ -3836,7 +3858,7 @@ const ViewProject = ({
                             }
                           }}
                         />
-                        {isActiveCompare && (
+                        {isActiveCompare && activeTab !== PROJECT_TABS.errors && (
                           <>
                             <div className='mx-2 text-md font-medium text-gray-600 whitespace-pre-line dark:text-gray-200'>
                               vs
