@@ -7,16 +7,28 @@ import { useTranslation } from 'react-i18next'
 import Flag from 'react-flagkit'
 import i18next from 'i18next'
 import { Popover, Transition, Menu } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon, ChevronDownIcon, ArrowSmallRightIcon } from '@heroicons/react/24/outline'
+import {
+  Bars3Icon,
+  XMarkIcon,
+  ChevronDownIcon,
+  ArrowSmallRightIcon,
+  ChartPieIcon,
+  PlayCircleIcon,
+  PhoneIcon,
+  BoltIcon,
+  FaceSmileIcon,
+  PuzzlePieceIcon,
+} from '@heroicons/react/24/outline'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/solid'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import duration from 'dayjs/plugin/duration'
 import _map from 'lodash/map'
 import _includes from 'lodash/includes'
+import _startsWith from 'lodash/startsWith'
 import cx from 'clsx'
 
-import routesPath from 'routesPath'
+import routes from 'routesPath'
 import { authActions } from 'redux/reducers/auth'
 import sagaActions from 'redux/sagas/actions'
 import UIActions from 'redux/reducers/ui'
@@ -41,6 +53,105 @@ const TRIAL_STATUS_MAPPING = {
   ENDS_TODAY: 2,
   ENDS_TOMORROW: 3,
   ENDS_IN_X_DAYS: 4,
+}
+
+const getSolutions = (t: typeof i18next.t) => [
+  {
+    name: t('header.solutions.analytics.title'),
+    description: t('header.solutions.analytics.desc'),
+    link: routes.main,
+    icon: ChartPieIcon,
+  },
+  {
+    name: t('header.solutions.performance.title'),
+    description: t('header.solutions.performance.desc'),
+    link: routes.main,
+    icon: BoltIcon,
+  },
+  {
+    name: t('header.solutions.errors.title'),
+    description: t('header.solutions.errors.desc'),
+    link: routes.main,
+    icon: FaceSmileIcon,
+  },
+  {
+    name: t('header.solutions.captcha.title'),
+    description: t('header.solutions.captcha.desc'),
+    link: routes.main,
+    icon: PuzzlePieceIcon,
+  },
+]
+
+const getCallsToAction = (t: typeof i18next.t) => [
+  { name: 'Watch demo', href: '#', icon: PlayCircleIcon },
+  { name: 'Contact sales', href: '#', icon: PhoneIcon },
+]
+
+const SolutionsMenu = ({ t }: { t: typeof i18next.t }) => {
+  const solutions = getSolutions(t)
+  const ctas = getCallsToAction(t)
+
+  return (
+    <Popover className='relative'>
+      <Popover.Button className='inline-flex items-center gap-x-1 font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'>
+        <span>{t('header.solutions.title')}</span>
+        <ChevronDownIcon className='h-3 w-3 stroke-2' aria-hidden='true' />
+      </Popover.Button>
+
+      <Transition
+        as={Fragment}
+        enter='transition ease-out duration-200'
+        enterFrom='opacity-0 translate-y-1'
+        enterTo='opacity-100 translate-y-0'
+        leave='transition ease-in duration-150'
+        leaveFrom='opacity-100 translate-y-0'
+        leaveTo='opacity-0 translate-y-1'
+      >
+        <Popover.Panel className='absolute z-30 mt-5 flex w-screen max-w-max max-md:px-4'>
+          {/* <div className='w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5'> */}
+          <div className='rounded-lg border backdrop-blur-2xl flex flex-col max-md:w-full w-[650px] p-[6px] bg-gray-100/80 border-gray-300/80 dark:bg-slate-800/80 dark:border-slate-900/80 divide-y divide-gray-300/80 dark:divide-slate-900/60'>
+            <div className='grid grid-cols-2 p-4 w-full gap-1'>
+              {_map(solutions, (item) => (
+                <div
+                  key={item.name}
+                  className='group relative flex gap-x-2 rounded-lg p-2 hover:bg-gray-300/50 dark:hover:bg-slate-700/80'
+                >
+                  <item.icon className='h-5 w-5 text-gray-600 dark:text-gray-300 mt-1' aria-hidden='true' />
+                  <div>
+                    {_startsWith(item.link, '/') ? (
+                      <Link to={item.link} className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
+                        {item.name}
+                        <span className='absolute inset-0' />
+                      </Link>
+                    ) : (
+                      <a href={item.link} className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
+                        {item.name}
+                        <span className='absolute inset-0' />
+                      </a>
+                    )}
+
+                    <p className='text-xs mt-1 text-gray-600 dark:text-neutral-100'>{item.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className='grid grid-cols-2 gap-1 px-4 py-2'>
+              {_map(ctas, (item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className='flex items-center justify-center gap-x-2 rounded-lg p-3 text-gray-800 dark:text-gray-100 hover:bg-gray-300/50 dark:hover:bg-slate-700/80'
+                >
+                  <item.icon className='h-5 w-5 flex-none text-gray-400 dark:text-gray-300' aria-hidden='true' />
+                  {item.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        </Popover.Panel>
+      </Transition>
+    </Popover>
+  )
 }
 
 const ThemeMenu = ({
@@ -230,7 +341,7 @@ const ProfileMenu = ({
             <Menu.Item>
               {({ active }) => (
                 <Link
-                  to={routesPath.changelog}
+                  to={routes.changelog}
                   className={cx('block px-4 py-2 text-sm text-gray-700 dark:text-gray-50', {
                     'bg-gray-100 dark:bg-slate-800': active,
                   })}
@@ -243,7 +354,7 @@ const ProfileMenu = ({
           <Menu.Item>
             {({ active }) => (
               <Link
-                to={routesPath.contact}
+                to={routes.contact}
                 className={cx('block px-4 py-2 text-sm text-gray-700 dark:text-gray-50', {
                   'bg-gray-100 dark:bg-slate-800': active,
                 })}
@@ -256,7 +367,7 @@ const ProfileMenu = ({
             <Menu.Item>
               {({ active }) => (
                 <Link
-                  to={routesPath.billing}
+                  to={routes.billing}
                   className={cx('block px-4 py-2 text-sm text-gray-700 dark:text-gray-50', {
                     'bg-gray-100 dark:bg-slate-800': active,
                   })}
@@ -271,7 +382,7 @@ const ProfileMenu = ({
         <Menu.Item>
           {({ active }) => (
             <Link
-              to={routesPath.user_settings}
+              to={routes.user_settings}
               className={cx('block px-4 py-2 text-sm text-gray-700 dark:text-gray-50', {
                 'bg-gray-100 dark:bg-slate-800': active,
               })}
@@ -334,7 +445,7 @@ const AuthedHeader = ({
       <div className='w-full py-4 flex items-center justify-between border-b border-indigo-500 dark:border-slate-600 lg:border-none'>
         <div className='flex items-center'>
           {/* Logo */}
-          <Link to={routesPath.main}>
+          <Link to={routes.main}>
             <span className='sr-only'>Swetrix</span>
             <img
               className='-translate-y-[3px]'
@@ -348,7 +459,7 @@ const AuthedHeader = ({
           <div className='hidden ml-10 space-x-1 lg:flex gap-4'>
             {user?.planCode === 'trial' && (
               <Link
-                to={routesPath.billing}
+                to={routes.billing}
                 className={cx('font-semibold leading-6 text-base', {
                   'text-amber-600 hover:text-amber-500': rawStatus === TRIAL_STATUS_MAPPING.ENDS_IN_X_DAYS,
                   'text-rose-600 hover:text-rose-500':
@@ -363,7 +474,7 @@ const AuthedHeader = ({
             )}
             {user?.planCode === 'none' && (
               <Link
-                to={routesPath.billing}
+                to={routes.billing}
                 className='font-semibold leading-6 text-base text-rose-600 hover:text-rose-500'
                 key='NoSubscription'
               >
@@ -372,7 +483,7 @@ const AuthedHeader = ({
             )}
             {isSelfhosted ? (
               <a
-                href={`https://swetrix.com${routesPath.blog}`}
+                href={`https://swetrix.com${routes.blog}`}
                 target='_blank'
                 rel='noopener noreferrer'
                 className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
@@ -381,7 +492,7 @@ const AuthedHeader = ({
               </a>
             ) : (
               <Link
-                to={routesPath.blog}
+                to={routes.blog}
                 className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
               >
                 {t('footer.blog')}
@@ -396,7 +507,7 @@ const AuthedHeader = ({
               {t('common.docs')}
             </a>
             <Link
-              to={routesPath.dashboard}
+              to={routes.dashboard}
               className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
             >
               {t('common.dashboard')}
@@ -439,7 +550,7 @@ const AuthedHeader = ({
       <div className='py-4 flex gap-4 flex-wrap justify-center space-x-2 lg:hidden'>
         {isSelfhosted ? (
           <a
-            href={`https://swetrix.com${routesPath.blog}`}
+            href={`https://swetrix.com${routes.blog}`}
             target='_blank'
             rel='noopener noreferrer'
             className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
@@ -448,7 +559,7 @@ const AuthedHeader = ({
           </a>
         ) : (
           <Link
-            to={routesPath.blog}
+            to={routes.blog}
             className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
           >
             {t('footer.blog')}
@@ -463,7 +574,7 @@ const AuthedHeader = ({
           {t('common.docs')}
         </a>
         <Link
-          to={routesPath.dashboard}
+          to={routes.dashboard}
           className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
         >
           {t('common.dashboard')}
@@ -511,7 +622,7 @@ const NotAuthedHeader = ({
               />
             </span>
           ) : (
-            <Link to={routesPath.main}>
+            <Link to={routes.main}>
               <span className='sr-only'>Swetrix</span>
               <img
                 className='-translate-y-[3px]'
@@ -525,9 +636,10 @@ const NotAuthedHeader = ({
 
           {!refPage && (
             <div className='hidden ml-10 space-x-1 lg:flex gap-4 items-center'>
+              {!isSelfhosted && <SolutionsMenu t={t as typeof i18next.t} />}
               {isSelfhosted ? (
                 <a
-                  href={`https://swetrix.com${routesPath.blog}`}
+                  href={`https://swetrix.com${routes.blog}`}
                   target='_blank'
                   rel='noopener noreferrer'
                   className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
@@ -536,7 +648,7 @@ const NotAuthedHeader = ({
                 </a>
               ) : (
                 <Link
-                  to={routesPath.blog}
+                  to={routes.blog}
                   className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
                 >
                   {t('footer.blog')}
@@ -544,7 +656,7 @@ const NotAuthedHeader = ({
               )}
               {!isSelfhosted && (
                 <Link
-                  to={`${routesPath.main}#pricing`}
+                  to={`${routes.main}#pricing`}
                   className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
                   key='Pricing'
                 >
@@ -597,7 +709,7 @@ const NotAuthedHeader = ({
             <>
               <span className='text-slate-700'>|</span>
               <Link
-                to={routesPath.signin}
+                to={routes.signin}
                 className='flex items-center font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
               >
                 {t('auth.common.signin')}
@@ -633,7 +745,7 @@ const NotAuthedHeader = ({
         <div className='py-4 flex gap-4 flex-wrap justify-center space-x-2 lg:hidden'>
           {isSelfhosted ? (
             <a
-              href={`https://swetrix.com${routesPath.blog}`}
+              href={`https://swetrix.com${routes.blog}`}
               target='_blank'
               rel='noopener noreferrer'
               className='font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
@@ -642,14 +754,14 @@ const NotAuthedHeader = ({
             </a>
           ) : (
             <Link
-              to={routesPath.blog}
+              to={routes.blog}
               className='flex items-center font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
             >
               {t('footer.blog')}
             </Link>
           )}
           <Link
-            to={`${routesPath.main}#pricing`}
+            to={`${routes.main}#pricing`}
             className='flex items-center font-semibold leading-6 text-base text-slate-800 hover:text-slate-700 dark:text-slate-200 dark:hover:text-white'
             key='Pricing'
           >
@@ -790,7 +902,7 @@ const Header: React.FC<IHeader> = ({ ssrTheme, authenticated, refPage, transpare
           <div className='rounded-lg shadow-lg ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-gray-750 divide-y-2 divide-gray-50 dark:divide-gray-800'>
             <div className='pt-5 pb-6 px-5'>
               <div className='flex items-center justify-between'>
-                <Link to={routesPath.main}>
+                <Link to={routes.main}>
                   <span className='sr-only'>Swetrix</span>
                   <img
                     height='28px'
@@ -846,7 +958,7 @@ const Header: React.FC<IHeader> = ({ ssrTheme, authenticated, refPage, transpare
                   <>
                     {user?.planCode === 'trial' && (
                       <Link
-                        to={routesPath.billing}
+                        to={routes.billing}
                         className={cx('font-semibold leading-6 text-base text-center', {
                           'text-amber-600 hover:text-amber-500': rawStatus === TRIAL_STATUS_MAPPING.ENDS_IN_X_DAYS,
                           'text-rose-600 hover:text-rose-500':
@@ -861,7 +973,7 @@ const Header: React.FC<IHeader> = ({ ssrTheme, authenticated, refPage, transpare
                     )}
                     {user?.planCode === 'none' && (
                       <Link
-                        to={routesPath.billing}
+                        to={routes.billing}
                         className='font-semibold leading-6 text-base text-rose-600 hover:text-rose-500'
                         key='NoSubscription'
                       >
@@ -871,7 +983,7 @@ const Header: React.FC<IHeader> = ({ ssrTheme, authenticated, refPage, transpare
                     {/* Temporarily put it here until the header is fully redesigned */}
                     {!isSelfhosted && user?.planCode !== 'none' && user?.planCode !== 'trial' && (
                       <Link
-                        to={routesPath.billing}
+                        to={routes.billing}
                         className='w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700'
                         key='Billing'
                       >
@@ -880,7 +992,7 @@ const Header: React.FC<IHeader> = ({ ssrTheme, authenticated, refPage, transpare
                     )}
                     <div onClick={() => buttonRef.current?.click()}>
                       <Link
-                        to={routesPath.user_settings}
+                        to={routes.user_settings}
                         className='w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 dark:text-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700'
                       >
                         {t('common.accountSettings')}
@@ -900,7 +1012,7 @@ const Header: React.FC<IHeader> = ({ ssrTheme, authenticated, refPage, transpare
                   <>
                     <div onClick={() => buttonRef.current?.click()}>
                       <Link
-                        to={routesPath.signin}
+                        to={routes.signin}
                         className='w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-indigo-600 bg-gray-50 hover:bg-indigo-50'
                       >
                         {t('auth.common.signin')}
@@ -908,7 +1020,7 @@ const Header: React.FC<IHeader> = ({ ssrTheme, authenticated, refPage, transpare
                     </div>
                     <div onClick={() => buttonRef.current?.click()}>
                       <Link
-                        to={routesPath.signup}
+                        to={routes.signup}
                         className='w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700'
                         aria-label={t('titles.signup')}
                       >
