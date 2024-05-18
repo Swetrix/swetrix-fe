@@ -40,6 +40,7 @@ import {
   DOCS_URL,
   SUPPORTED_THEMES,
   isBrowser,
+  CAPTCHA_URL,
 } from 'redux/constants'
 import Dropdown from 'ui/Dropdown'
 import { IUser } from 'redux/models/IUser'
@@ -65,26 +66,26 @@ const getSolutions = (t: typeof i18next.t) => [
   {
     name: t('header.solutions.performance.title'),
     description: t('header.solutions.performance.desc'),
-    link: routes.main,
+    link: routes.performance,
     icon: BoltIcon,
   },
   {
     name: t('header.solutions.errors.title'),
     description: t('header.solutions.errors.desc'),
-    link: routes.main,
+    link: routes.errorTracking,
     icon: FaceSmileIcon,
   },
   {
     name: t('header.solutions.captcha.title'),
     description: t('header.solutions.captcha.desc'),
-    link: routes.main,
+    link: CAPTCHA_URL,
     icon: PuzzlePieceIcon,
   },
 ]
 
 const getCallsToAction = (t: typeof i18next.t) => [
-  { name: 'Watch demo', href: '#', icon: PlayCircleIcon },
-  { name: 'Contact sales', href: '#', icon: PhoneIcon },
+  { name: t('header.watchDemo'), link: 'https://www.youtube.com/watch?v=XBp38fZREIE', icon: PlayCircleIcon },
+  { name: t('header.contactSales'), link: routes.contact, icon: PhoneIcon },
 ]
 
 const SolutionsMenu = ({ t }: { t: typeof i18next.t }) => {
@@ -108,7 +109,6 @@ const SolutionsMenu = ({ t }: { t: typeof i18next.t }) => {
         leaveTo='opacity-0 translate-y-1'
       >
         <Popover.Panel className='absolute z-30 mt-5 flex w-screen max-w-max max-md:px-4'>
-          {/* <div className='w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5'> */}
           <div className='rounded-lg border backdrop-blur-2xl flex flex-col max-md:w-full w-[650px] p-[6px] bg-gray-100/80 border-gray-300/80 dark:bg-slate-800/80 dark:border-slate-900/80 divide-y divide-gray-300/80 dark:divide-slate-900/60'>
             <div className='grid grid-cols-2 p-4 w-full gap-1'>
               {_map(solutions, (item) => (
@@ -124,7 +124,12 @@ const SolutionsMenu = ({ t }: { t: typeof i18next.t }) => {
                         <span className='absolute inset-0' />
                       </Link>
                     ) : (
-                      <a href={item.link} className='text-sm font-semibold text-gray-900 dark:text-gray-50'>
+                      <a
+                        href={item.link}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-sm font-semibold text-gray-900 dark:text-gray-50'
+                      >
                         {item.name}
                         <span className='absolute inset-0' />
                       </a>
@@ -136,16 +141,33 @@ const SolutionsMenu = ({ t }: { t: typeof i18next.t }) => {
               ))}
             </div>
             <div className='grid grid-cols-2 gap-1 px-4 py-2'>
-              {_map(ctas, (item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className='flex items-center justify-center gap-x-2 rounded-lg p-3 text-gray-800 dark:text-gray-100 hover:bg-gray-300/50 dark:hover:bg-slate-700/80'
-                >
-                  <item.icon className='h-5 w-5 flex-none text-gray-400 dark:text-gray-300' aria-hidden='true' />
-                  {item.name}
-                </a>
-              ))}
+              {_map(ctas, (item) => {
+                if (_startsWith(item.link, '/')) {
+                  return (
+                    <Link
+                      key={item.name}
+                      to={item.link}
+                      className='flex items-center justify-center gap-x-2 rounded-lg p-3 text-gray-800 dark:text-gray-100 hover:bg-gray-300/50 dark:hover:bg-slate-700/80'
+                    >
+                      <item.icon className='h-5 w-5 flex-none text-gray-400 dark:text-gray-300' aria-hidden='true' />
+                      {item.name}
+                    </Link>
+                  )
+                }
+
+                return (
+                  <a
+                    key={item.name}
+                    href={item.link}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='flex items-center justify-center gap-x-2 rounded-lg p-3 text-gray-800 dark:text-gray-100 hover:bg-gray-300/50 dark:hover:bg-slate-700/80'
+                  >
+                    <item.icon className='h-5 w-5 flex-none text-gray-400 dark:text-gray-300' aria-hidden='true' />
+                    {item.name}
+                  </a>
+                )
+              })}
             </div>
           </div>
         </Popover.Panel>
@@ -481,6 +503,7 @@ const AuthedHeader = ({
                 {t('billing.inactive')}
               </Link>
             )}
+            {!isSelfhosted && <SolutionsMenu t={t as typeof i18next.t} />}
             {isSelfhosted ? (
               <a
                 href={`https://swetrix.com${routes.blog}`}
@@ -548,6 +571,7 @@ const AuthedHeader = ({
         </div>
       </div>
       <div className='py-4 flex gap-4 flex-wrap justify-center space-x-2 lg:hidden'>
+        {!isSelfhosted && <SolutionsMenu t={t as typeof i18next.t} />}
         {isSelfhosted ? (
           <a
             href={`https://swetrix.com${routes.blog}`}
@@ -743,6 +767,7 @@ const NotAuthedHeader = ({
       </div>
       {!refPage && (
         <div className='py-4 flex gap-4 flex-wrap justify-center space-x-2 lg:hidden'>
+          {!isSelfhosted && <SolutionsMenu t={t as typeof i18next.t} />}
           {isSelfhosted ? (
             <a
               href={`https://swetrix.com${routes.blog}`}
