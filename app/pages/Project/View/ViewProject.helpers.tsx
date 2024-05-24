@@ -777,13 +777,16 @@ const getSettings = (
         </ul>`
       },
     },
-    point: chartType === chartTypes.bar ? {} : {
-      focus: {
-        only: xAxisSize > 1,
-      },
-      pattern: ['circle'],
-      r: 3,
-    },
+    point:
+      chartType === chartTypes.bar
+        ? {}
+        : {
+            focus: {
+              only: xAxisSize > 1,
+            },
+            pattern: ['circle'],
+            r: 3,
+          },
     legend: {
       usePoint: true,
       item: {
@@ -903,13 +906,16 @@ const getSettingsSession = (
           }).join('')}`
       },
     },
-    point: chartType === chartTypes.bar ? {} : {
-      focus: {
-        only: xAxisSize > 1,
-      },
-      pattern: ['circle'],
-      r: 3,
-    },
+    point:
+      chartType === chartTypes.bar
+        ? {}
+        : {
+            focus: {
+              only: xAxisSize > 1,
+            },
+            pattern: ['circle'],
+            r: 3,
+          },
     legend: {
       usePoint: true,
       item: {
@@ -1028,13 +1034,16 @@ const getSettingsError = (
           ).join('')}`
       },
     },
-    point: chartType === chartTypes.bar ? {} : {
-      focus: {
-        only: xAxisSize > 1,
-      },
-      pattern: ['circle'],
-      r: 3,
-    },
+    point:
+      chartType === chartTypes.bar
+        ? {}
+        : {
+            focus: {
+              only: xAxisSize > 1,
+            },
+            pattern: ['circle'],
+            r: 3,
+          },
     legend: {
       usePoint: true,
       item: {
@@ -1403,13 +1412,16 @@ const getSettingsPerf = (
       </ul>`
       },
     },
-    point: chartType === chartTypes.bar ? {} : {
-      focus: {
-        only: xAxisSize > 1,
-      },
-      pattern: ['circle'],
-      r: 3,
-    },
+    point:
+      chartType === chartTypes.bar
+        ? {}
+        : {
+            focus: {
+              only: xAxisSize > 1,
+            },
+            pattern: ['circle'],
+            r: 3,
+          },
     legend: {
       usePoint: true,
       item: {
