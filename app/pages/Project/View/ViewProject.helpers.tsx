@@ -777,7 +777,7 @@ const getSettings = (
         </ul>`
       },
     },
-    point: {
+    point: chartType === chartTypes.bar ? {} : {
       focus: {
         only: xAxisSize > 1,
       },
@@ -903,7 +903,7 @@ const getSettingsSession = (
           }).join('')}`
       },
     },
-    point: {
+    point: chartType === chartTypes.bar ? {} : {
       focus: {
         only: xAxisSize > 1,
       },
@@ -1028,7 +1028,7 @@ const getSettingsError = (
           ).join('')}`
       },
     },
-    point: {
+    point: chartType === chartTypes.bar ? {} : {
       focus: {
         only: xAxisSize > 1,
       },
@@ -1403,7 +1403,7 @@ const getSettingsPerf = (
       </ul>`
       },
     },
-    point: {
+    point: chartType === chartTypes.bar ? {} : {
       focus: {
         only: xAxisSize > 1,
       },
