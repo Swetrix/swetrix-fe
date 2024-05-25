@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from '@remix-run/react'
-import PropTypes from 'prop-types'
 import { useTranslation, Trans } from 'react-i18next'
 import _size from 'lodash/size'
 import _keys from 'lodash/keys'
@@ -324,12 +323,6 @@ const Signup = ({ signup, authSSO, ssrTheme, authenticated: reduxAuthenticated, 
       </div>
     </div>
   )
-}
-
-Signup.propTypes = {
-  signup: PropTypes.func.isRequired,
-  authSSO: PropTypes.func.isRequired,
-  ssrTheme: PropTypes.string.isRequired,
 }
 
 export default Signup

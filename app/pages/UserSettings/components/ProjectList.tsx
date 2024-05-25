@@ -1,6 +1,5 @@
 import React, { memo, useState } from 'react'
 import dayjs from 'dayjs'
-import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 import Button from 'ui/Button'
@@ -113,14 +112,6 @@ const ProjectList = ({
       </td>
     </tr>
   )
-}
-
-ProjectList.propTypes = {
-  item: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-  sharedProjectError: PropTypes.func.isRequired,
-  removeProject: PropTypes.func.isRequired,
-  removeShareProject: PropTypes.func.isRequired,
-  userSharedUpdate: PropTypes.func.isRequired,
 }
 
 export default memo(ProjectList)

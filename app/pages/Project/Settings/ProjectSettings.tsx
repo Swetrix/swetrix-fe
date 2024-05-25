@@ -1,4 +1,3 @@
-/* eslint-disable react/forbid-prop-types */
 import React, { useState, useEffect, useMemo, memo } from 'react'
 import { useNavigate, useParams } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'

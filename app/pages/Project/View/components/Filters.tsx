@@ -2,7 +2,6 @@ import React, { memo } from 'react'
 import cx from 'clsx'
 import _truncate from 'lodash/truncate'
 import _map from 'lodash/map'
-import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 
 import countries from 'utils/isoCountries'
@@ -147,23 +146,6 @@ export const Filters = ({ filters, onRemoveFilter, onChangeExclusive, tnMapping 
       })}
     </div>
   )
-}
-
-Filters.propTypes = {
-  filters: PropTypes.arrayOf(
-    PropTypes.shape({
-      column: PropTypes.string,
-      filter: PropTypes.string,
-      isExclusive: PropTypes.bool,
-    }),
-  ),
-  onRemoveFilter: PropTypes.func.isRequired,
-  onChangeExclusive: PropTypes.func.isRequired,
-  tnMapping: PropTypes.objectOf(PropTypes.string).isRequired,
-}
-
-Filters.defaultProps = {
-  filters: [],
 }
 
 export default memo(Filters)

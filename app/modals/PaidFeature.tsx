@@ -1,12 +1,16 @@
 import React from 'react'
 import { useNavigate } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
-import PropTypes from 'prop-types'
 
 import Modal from 'ui/Modal'
 import routes from 'routesPath'
 
-const PaidFeature = ({ onClose, isOpened }: { onClose: () => void; isOpened: boolean }): JSX.Element => {
+interface IPaidFeature {
+  onClose: () => void
+  isOpened: boolean
+}
+
+const PaidFeature = ({ onClose, isOpened }: IPaidFeature): JSX.Element => {
   const {
     t,
   }: {
@@ -30,11 +34,6 @@ const PaidFeature = ({ onClose, isOpened }: { onClose: () => void; isOpened: boo
       isOpened={isOpened}
     />
   )
-}
-
-PaidFeature.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  isOpened: PropTypes.bool.isRequired,
 }
 
 export default PaidFeature

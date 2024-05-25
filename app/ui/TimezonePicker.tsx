@@ -2,7 +2,6 @@ import React from 'react'
 import spacetime from 'spacetime'
 import soft from 'timezone-soft'
 import { useTranslation } from 'react-i18next'
-import PropTypes from 'prop-types'
 import _find from 'lodash/find'
 import _reduce from 'lodash/reduce'
 import _includes from 'lodash/includes'
@@ -98,15 +97,6 @@ const TimezoneSelect = ({ value, onChange }: ITimezoneSelect): JSX.Element => {
       capitalise
     />
   )
-}
-
-TimezoneSelect.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-  onChange: PropTypes.func,
-}
-
-TimezoneSelect.defaultProps = {
-  onChange: () => {},
 }
 
 export default TimezoneSelect

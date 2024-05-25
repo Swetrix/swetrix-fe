@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { TrashIcon, InboxStackIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
-import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 import _keys from 'lodash/keys'
 import _isEmpty from 'lodash/isEmpty'
@@ -154,7 +153,7 @@ const EmailList = ({
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
   const openRef = useRef<HTMLDivElement>(null)
   useOnClickOutside(openRef, () => setOpen(false))
-  const { id, addedAt, isConfirmed, projectId, email, reportFrequency } = data
+  const { id, addedAt, isConfirmed, projectId, email, reportFrequency } = data || {}
 
   const changeRole = async (reportType: { value: string; label: string }) => {
     try {
@@ -265,20 +264,6 @@ const EmailList = ({
       </td>
     </tr>
   )
-}
-
-EmailList.propTypes = {
-  data: PropTypes.shape({
-    created: PropTypes.string,
-    email: PropTypes.string,
-  }),
-  onRemove: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  language: PropTypes.string.isRequired,
-}
-
-EmailList.defaultProps = {
-  data: {},
 }
 
 const NoSubscribers = ({ t }: { t: (string: string) => string }): JSX.Element => (
@@ -530,13 +515,6 @@ const Emails = ({
       />
     </div>
   )
-}
-
-Emails.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  emailFailed: PropTypes.func.isRequired,
-  addEmail: PropTypes.func.isRequired,
-  removeEmail: PropTypes.func.isRequired,
 }
 
 export default Emails

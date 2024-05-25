@@ -3,7 +3,6 @@ import { ChevronDownIcon, CheckIcon } from '@heroicons/react/24/solid'
 import { TrashIcon, UserPlusIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import cx from 'clsx'
-import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 import _keys from 'lodash/keys'
 import _isEmpty from 'lodash/isEmpty'
@@ -66,7 +65,7 @@ const UsersList = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const openRef = useRef<HTMLDivElement>(null)
   useOnClickOutside(openRef, () => setOpen(false))
-  const { id, created, confirmed, role, user } = data
+  const { id, created, confirmed, role, user } = data || {}
 
   const changeRole = async (newRole: string) => {
     try {
@@ -179,19 +178,6 @@ const UsersList = ({
       </td>
     </tr>
   )
-}
-
-UsersList.propTypes = {
-  share: PropTypes.arrayOf(PropTypes.object).isRequired, // eslint-disable-line react/forbid-prop-types
-  data: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  pid: PropTypes.string.isRequired,
-  onRemove: PropTypes.func.isRequired,
-  updateProjectFailed: PropTypes.func.isRequired,
-  language: PropTypes.string.isRequired,
-}
-
-UsersList.defaultProps = {
-  data: {},
 }
 
 interface IPeopleProps {
@@ -533,17 +519,6 @@ const People: React.FunctionComponent<IPeopleProps> = ({
       />
     </div>
   )
-}
-
-People.propTypes = {
-  // @ts-ignore
-  // eslint-disable-next-line react/forbid-prop-types
-  project: PropTypes.object.isRequired,
-  updateProjectFailed: PropTypes.func.isRequired,
-  setProjectShareData: PropTypes.func.isRequired,
-  roleUpdatedNotification: PropTypes.func.isRequired,
-  inviteUserNotification: PropTypes.func.isRequired,
-  removeUserNotification: PropTypes.func.isRequired,
 }
 
 export default People

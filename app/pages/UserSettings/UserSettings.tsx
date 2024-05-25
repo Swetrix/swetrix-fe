@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, react/forbid-prop-types */
+/* eslint-disable no-param-reassign */
 import React, { useState, useEffect, memo, useRef, useMemo } from 'react'
 import { useNavigate } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils/client-only'
@@ -22,7 +22,6 @@ import {
   ComputerDesktopIcon,
   CursorArrowRaysIcon,
 } from '@heroicons/react/24/outline'
-import PropTypes from 'prop-types'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import cx from 'clsx'
@@ -1091,35 +1090,6 @@ const UserSettings = ({
       />
     </div>
   )
-}
-
-UserSettings.propTypes = {
-  onDelete: PropTypes.func.isRequired,
-  onGDPRExportFailed: PropTypes.func.isRequired,
-  onDeleteProjectCache: PropTypes.func.isRequired,
-  removeProject: PropTypes.func.isRequired,
-  removeShareProject: PropTypes.func.isRequired,
-  setUserShareData: PropTypes.func.isRequired,
-  setProjectsShareData: PropTypes.func.isRequired,
-  userSharedUpdate: PropTypes.func.isRequired,
-  sharedProjectError: PropTypes.func.isRequired,
-  updateUserData: PropTypes.func.isRequired,
-  genericError: PropTypes.func.isRequired,
-  updateProfileFailed: PropTypes.func.isRequired,
-  updateUserProfileAsync: PropTypes.func.isRequired,
-  accountUpdated: PropTypes.func.isRequired,
-  setAPIKey: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
-  dontRemember: PropTypes.bool.isRequired,
-  isPaidTierUsed: PropTypes.bool.isRequired,
-  linkSSO: PropTypes.func.isRequired,
-  unlinkSSO: PropTypes.func.isRequired,
-  theme: PropTypes.string.isRequired,
-  logoutLocal: PropTypes.func.isRequired,
-  logoutAll: PropTypes.func.isRequired,
-  referralStatistics: PropTypes.object.isRequired,
-  activeReferrals: PropTypes.array.isRequired,
-  setCache: PropTypes.func.isRequired,
 }
 
 export default memo(withAuthentication(UserSettings, auth.authenticated))

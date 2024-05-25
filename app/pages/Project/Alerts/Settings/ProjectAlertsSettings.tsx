@@ -1,9 +1,7 @@
-/* eslint-disable react/forbid-prop-types */
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams, useLocation, Link } from '@remix-run/react'
 import { useTranslation, Trans } from 'react-i18next'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import PropTypes from 'prop-types'
 
 import _isEmpty from 'lodash/isEmpty'
 import _size from 'lodash/size'
@@ -424,14 +422,6 @@ const ProjectAlertsSettings = ({
       />
     </div>
   )
-}
-
-ProjectAlertsSettings.propTypes = {
-  alerts: PropTypes.array.isRequired,
-  setProjectAlerts: PropTypes.func.isRequired,
-  showError: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
-  loading: PropTypes.bool.isRequired,
 }
 
 export default withAuthentication(ProjectAlertsSettings, auth.authenticated)

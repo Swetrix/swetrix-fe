@@ -1,6 +1,5 @@
 import React, { useState, useEffect, memo } from 'react'
 import { Link } from '@remix-run/react'
-import PropTypes from 'prop-types'
 import { useTranslation, Trans } from 'react-i18next'
 import _keys from 'lodash/keys'
 import _isEmpty from 'lodash/isEmpty'
@@ -315,14 +314,6 @@ const Signin = ({ login, loginSuccess, loginFailed, authSSO, ssrTheme }: ISignin
       </div>
     </div>
   )
-}
-
-Signin.propTypes = {
-  login: PropTypes.func.isRequired,
-  loginSuccess: PropTypes.func.isRequired,
-  loginFailed: PropTypes.func.isRequired,
-  authSSO: PropTypes.func.isRequired,
-  ssrTheme: PropTypes.string.isRequired,
 }
 
 export default memo(withAuthentication(Signin, auth.notAuthenticated))

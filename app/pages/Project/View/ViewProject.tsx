@@ -1,4 +1,4 @@
-/* eslint-disable react/forbid-prop-types, react/no-unstable-nested-components, react/display-name */
+/* eslint-disable react/no-unstable-nested-components, react/display-name */
 import React, { useState, useEffect, useMemo, memo, useRef, useCallback } from 'react'
 import { ClientOnly } from 'remix-utils/client-only'
 import useSize from 'hooks/useSize'
@@ -43,7 +43,6 @@ import _every from 'lodash/every'
 import _size from 'lodash/size'
 import _truncate from 'lodash/truncate'
 import _isString from 'lodash/isString'
-import PropTypes from 'prop-types'
 
 import { withProjectProtected } from 'hoc/projectProtected'
 
@@ -257,7 +256,7 @@ const ViewProject = ({
   setPublicProject,
   setLiveStatsForProject,
   authenticated: csrAuthenticated,
-  timezone,
+  timezone = DEFAULT_TIMEZONE,
   user,
   sharedProjects,
   extensions,
@@ -4958,31 +4957,6 @@ const ViewProject = ({
       )}
     </ClientOnly>
   )
-}
-
-ViewProject.propTypes = {
-  projects: PropTypes.arrayOf(PropTypes.object).isRequired,
-  sharedProjects: PropTypes.arrayOf(PropTypes.object).isRequired,
-  cache: PropTypes.objectOf(PropTypes.object).isRequired,
-  showError: PropTypes.func.isRequired,
-  setProjectCache: PropTypes.func.isRequired,
-  setProjectViewPrefs: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  setPublicProject: PropTypes.func.isRequired,
-  setLiveStatsForProject: PropTypes.func.isRequired,
-  authenticated: PropTypes.bool.isRequired,
-  extensions: PropTypes.arrayOf(PropTypes.object).isRequired,
-  timezone: PropTypes.string,
-  embedded: PropTypes.bool.isRequired,
-  ssrAuthenticated: PropTypes.bool.isRequired,
-  authLoading: PropTypes.bool.isRequired,
-  updateProject: PropTypes.func.isRequired,
-  queryPassword: PropTypes.string,
-}
-
-ViewProject.defaultProps = {
-  timezone: DEFAULT_TIMEZONE,
-  queryPassword: null,
 }
 
 export default memo(withProjectProtected(ViewProject))

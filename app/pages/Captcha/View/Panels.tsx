@@ -10,7 +10,6 @@ import {
   ArrowLongLeftIcon,
 } from '@heroicons/react/24/outline'
 import cx from 'clsx'
-import PropTypes from 'prop-types'
 import { pie } from 'billboard.js'
 import _keys from 'lodash/keys'
 import _values from 'lodash/values'
@@ -35,7 +34,7 @@ import Button from 'ui/Button'
 import { IEntry } from 'redux/models/IEntry'
 
 import LiveVisitorsDropdown from './components/LiveVisitorsDropdown'
-import InteractiveMap from './components/InteractiveMap'
+import InteractiveMap from '../../Project/View/components/InteractiveMap'
 import { iconClassName } from './ViewCaptcha.helpers'
 
 const ENTRIES_PER_PANEL = 5
@@ -53,9 +52,9 @@ const PanelContainer = ({
   noSwitch,
   icon,
   type,
-  openModal,
-  activeFragment,
-  setActiveFragment,
+  openModal = () => {},
+  activeFragment = 0,
+  setActiveFragment = () => {},
 }: {
   name: string
   children?: React.ReactNode
@@ -130,24 +129,6 @@ const PanelContainer = ({
     <div className='flex flex-col h-full scroll-auto overflow-auto'>{children}</div>
   </div>
 )
-
-PanelContainer.propTypes = {
-  name: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
-  noSwitch: PropTypes.bool,
-  activeFragment: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  setActiveFragment: PropTypes.func,
-  icon: PropTypes.node,
-  openModal: PropTypes.func,
-}
-
-PanelContainer.defaultProps = {
-  icon: null,
-  noSwitch: false,
-  activeFragment: 0,
-  setActiveFragment: () => {},
-  openModal: () => {},
-}
 
 // First tab with stats
 const Overview = ({
@@ -404,25 +385,17 @@ const CustomEvents = ({
   )
 }
 
-CustomEvents.propTypes = {
-  customs: PropTypes.objectOf(PropTypes.number).isRequired,
-  onFilter: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  chartData: PropTypes.objectOf(PropTypes.any).isRequired,
-}
-
 const Panel = ({
   name,
   data,
-  rowMapper,
+  rowMapper = (row: IEntry): string => row.name,
   capitalize,
   linkContent,
   t,
   icon,
   id,
   hideFilters,
-  onFilter,
+  onFilter = () => {},
 }: {
   name: string
   data: IEntry[]
@@ -661,28 +634,6 @@ const Panel = ({
       )}
     </PanelContainer>
   )
-}
-
-Panel.propTypes = {
-  name: PropTypes.string.isRequired,
-  data: PropTypes.objectOf(PropTypes.number).isRequired,
-  id: PropTypes.string,
-  rowMapper: PropTypes.func,
-  onFilter: PropTypes.func,
-  capitalize: PropTypes.bool,
-  linkContent: PropTypes.bool,
-  hideFilters: PropTypes.bool,
-  icon: PropTypes.node,
-}
-
-Panel.defaultProps = {
-  id: null,
-  rowMapper: (row: IEntry): string => row.name,
-  capitalize: false,
-  linkContent: false,
-  onFilter: () => {},
-  hideFilters: false,
-  icon: null,
 }
 
 const PanelMemo = memo(Panel)

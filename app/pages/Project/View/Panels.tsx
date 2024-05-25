@@ -12,7 +12,6 @@ import {
   RectangleGroupIcon,
 } from '@heroicons/react/24/outline'
 import cx from 'clsx'
-import PropTypes from 'prop-types'
 import { pie } from 'billboard.js'
 import _keys from 'lodash/keys'
 import _values from 'lodash/values'
@@ -116,12 +115,12 @@ const PanelContainer = ({
   noSwitch,
   icon,
   type,
-  activeFragment,
-  setActiveFragment,
-  customTabs,
+  activeFragment = 0,
+  setActiveFragment = () => {},
+  customTabs = [],
   activeTab,
   isCustomContent,
-  onExpandClick,
+  onExpandClick = () => {},
 }: IPanelContainer): JSX.Element => (
   <div
     className={cx(
@@ -257,27 +256,6 @@ const PanelContainer = ({
   </div>
 )
 
-PanelContainer.propTypes = {
-  name: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-  children: PropTypes.node.isRequired,
-  noSwitch: PropTypes.bool,
-  activeFragment: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  setActiveFragment: PropTypes.func,
-  onExpandClick: PropTypes.func,
-  icon: PropTypes.node,
-}
-
-PanelContainer.defaultProps = {
-  icon: null,
-  noSwitch: false,
-  activeFragment: 0,
-  setActiveFragment: () => {},
-  onExpandClick: () => {},
-  customTabs: [],
-  activeTab: '',
-  isCustomContent: false,
-}
-
 // Options for circle chart showing the stats of data
 const getPieOptions = (customs: any, uniques: number, t: any) => {
   const tQuantity = t('project.quantity')
@@ -410,7 +388,7 @@ const KVTable = ({ data, t, uniques, loading }: IKVTable) => {
 }
 
 // Tabs with custom events like submit form, press button, go to the link rate etc.
-const CustomEvents = ({ customs, chartData, onFilter, t, customTabs, getCustomEventMetadata }: ICustomEvents) => {
+const CustomEvents = ({ customs, chartData, onFilter, t, customTabs = [], getCustomEventMetadata }: ICustomEvents) => {
   const [page, setPage] = useState(0)
   const [modal, setModal] = useState(false)
   const [activeEvents, setActiveEvents] = useState<any>({})
@@ -910,20 +888,6 @@ const CustomEvents = ({ customs, chartData, onFilter, t, customTabs, getCustomEv
   )
 }
 
-CustomEvents.propTypes = {
-  customs: PropTypes.objectOf(PropTypes.number).isRequired,
-  onFilter: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  chartData: PropTypes.objectOf(PropTypes.any).isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
-  customTabs: PropTypes.array,
-}
-
-CustomEvents.defaultProps = {
-  customTabs: [],
-}
-
 interface IPanel {
   name: string | JSX.Element
   data: IEntry[]
@@ -952,16 +916,16 @@ interface IPanel {
 const Panel = ({
   name,
   data,
-  rowMapper,
-  valueMapper,
+  rowMapper = (row: IEntry): string => row.name,
+  valueMapper = (value: number): number => value,
   capitalize,
   linkContent,
   t,
   icon,
   id,
   hideFilters,
-  onFilter,
-  customTabs,
+  onFilter = () => {},
+  customTabs = [],
   pid,
   period,
   timeBucket,
@@ -969,7 +933,7 @@ const Panel = ({
   to,
   timezone,
   activeTab,
-  onFragmentChange,
+  onFragmentChange = () => {},
   filters,
   projectPassword,
 }: IPanel): JSX.Element => {
@@ -1302,46 +1266,6 @@ const Panel = ({
       )}
     </PanelContainer>
   )
-}
-
-Panel.propTypes = {
-  name: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.node]).isRequired,
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      count: PropTypes.number,
-    }),
-  ).isRequired,
-  id: PropTypes.string,
-  rowMapper: PropTypes.func,
-  valueMapper: PropTypes.func,
-  onFilter: PropTypes.func,
-  capitalize: PropTypes.bool,
-  linkContent: PropTypes.bool,
-  hideFilters: PropTypes.bool,
-  icon: PropTypes.node,
-  onFragmentChange: PropTypes.func,
-}
-
-Panel.defaultProps = {
-  id: null,
-  rowMapper: (row: IEntry): string => row.name,
-  valueMapper: (value: number): number => value,
-  capitalize: false,
-  linkContent: false,
-  onFilter: () => {},
-  hideFilters: false,
-  icon: null,
-  customTabs: [],
-  to: null,
-  from: null,
-  timezone: null,
-  timeBucket: null,
-  period: null,
-  pid: null,
-  activeTab: null,
-  onFragmentChange: () => {},
-  filters: [],
 }
 
 const PanelMemo = memo(Panel)
