@@ -49,11 +49,7 @@ LogoComponent.defaultProps = {
 }
 
 const Press = (): JSX.Element => {
-  const {
-    t,
-  }: {
-    t: (key: string) => string
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
 
   return (
     <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900'>

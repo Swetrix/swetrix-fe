@@ -283,20 +283,9 @@ const ViewProject = ({
 }: IViewProject) => {
   const authenticated = isBrowser ? (authLoading ? ssrAuthenticated : csrAuthenticated) : ssrAuthenticated
 
-  // t is used for translation
   const {
     t,
     i18n: { language },
-  }: {
-    t: (
-      key: string,
-      options?: {
-        [key: string]: string | number | null
-      },
-    ) => string
-    i18n: {
-      language: string
-    }
   } = useTranslation('common')
 
   const _theme = isBrowser ? theme : ssrTheme

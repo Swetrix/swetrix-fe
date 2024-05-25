@@ -1064,11 +1064,7 @@ const getSettingsError = (
 }
 
 // function to get the settings and data for the funnels chart
-const getSettingsFunnels = (
-  funnel: IAnalyticsFunnel[],
-  totalPageviews: number,
-  t: (key: string, params?: any) => string,
-) => {
+const getSettingsFunnels = (funnel: IAnalyticsFunnel[], totalPageviews: number, t: typeof i18next.t) => {
   const values = _map(funnel, (step) => {
     if (_startsWith(step.value, '/')) {
       return t('project.visitPage', { page: step.value })

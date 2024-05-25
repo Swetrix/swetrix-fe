@@ -99,16 +99,7 @@ const CaptchaSettings = ({
   loading,
   isSettings,
 }: ICaptchaSettings): JSX.Element => {
-  const {
-    t,
-  }: {
-    t: (
-      key: string,
-      options?: {
-        [key: string]: string | number | boolean | undefined
-      },
-    ) => string
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
   // @ts-ignore
   const {
     id,

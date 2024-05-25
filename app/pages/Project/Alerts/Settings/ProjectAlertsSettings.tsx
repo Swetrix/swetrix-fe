@@ -53,16 +53,7 @@ const ProjectAlertsSettings = ({
   const navigate = useNavigate()
   const { id, pid } = useParams()
   const { pathname } = useLocation()
-  const {
-    t,
-  }: {
-    t: (
-      key: string,
-      options?: {
-        [key: string]: string | number | null | undefined
-      },
-    ) => string
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
   const isSettings: boolean =
     !_isEmpty(id) && _replace(_replace(routes.alert_settings, ':id', id as string), ':pid', pid as string) === pathname
   const alert = useMemo(() => _find(alerts, { id }), [alerts, id])

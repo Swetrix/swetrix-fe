@@ -49,12 +49,7 @@ const getPaidFeatures = (t: any, tier: any) => {
 }
 
 interface IPricing {
-  t: (
-    key: string,
-    options?: {
-      [key: string]: string | number
-    },
-  ) => string
+  t: typeof i18next.t
   language: string
   authenticated: boolean
   isBillingPage?: boolean

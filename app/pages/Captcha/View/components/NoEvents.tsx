@@ -15,11 +15,7 @@ interface INoEvents {
 }
 
 const NoEvents = ({ filters, resetFilters }: INoEvents): JSX.Element => {
-  const {
-    t,
-  }: {
-    t: (key: string) => string
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
 
   return (
     <div className='flex flex-col py-6 sm:px-6 lg:px-8 mt-5'>

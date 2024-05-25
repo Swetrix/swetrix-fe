@@ -1,4 +1,5 @@
 import React, { memo } from 'react'
+import type i18next from 'i18next'
 import cx from 'clsx'
 import _truncate from 'lodash/truncate'
 import _map from 'lodash/map'
@@ -17,7 +18,7 @@ interface IFilter {
   onChangeExclusive: (column: string, filter: string, isExclusive: boolean) => void
   tnMapping: Record<string, string>
   language: string
-  t: (key: string) => string
+  t: typeof i18next.t
   canChangeExclusive?: boolean
   removable?: boolean
 }

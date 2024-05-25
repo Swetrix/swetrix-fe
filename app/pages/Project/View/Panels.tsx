@@ -1,4 +1,5 @@
 import React, { memo, useState, useEffect, useMemo, Fragment } from 'react'
+import type i18next from 'i18next'
 import InnerHTML from 'dangerously-set-html-content'
 import { ArrowLongRightIcon, ArrowLongLeftIcon } from '@heroicons/react/24/solid'
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
@@ -302,7 +303,7 @@ interface ICustomEvents {
   customs: any
   chartData: any
   onFilter: any
-  t: (arg0: string) => string
+  t: typeof i18next.t
   getCustomEventMetadata: (event: string) => any
   customTabs: any
 }
@@ -895,7 +896,7 @@ interface IPanel {
   valueMapper: any
   capitalize: boolean
   linkContent: boolean
-  t: (arg0: string) => string
+  t: typeof i18next.t
   icon: any
   id: string
   hideFilters: boolean

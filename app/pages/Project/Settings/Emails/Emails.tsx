@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import type i18next from 'i18next'
 import { TrashIcon, InboxStackIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 import { useTranslation } from 'react-i18next'
 import dayjs from 'dayjs'
@@ -42,12 +43,7 @@ const ModalMessage = ({
     email: string
     reportFrequency: string
   }
-  t: (
-    key: string,
-    options?: {
-      [key: string]: string | number | boolean | undefined
-    },
-  ) => string
+  t: typeof i18next.t
 }): JSX.Element => (
   <div>
     <h2 className='text-xl font-bold text-gray-700 dark:text-gray-200'>
@@ -138,12 +134,7 @@ const EmailList = ({
     reportFrequency: string
   }
   onRemove: (id: string) => void
-  t: (
-    key: string,
-    options?: {
-      [key: string]: string | number | boolean | undefined
-    },
-  ) => string
+  t: typeof i18next.t
   setEmails: (value: ISubscribers[] | ((prevVar: ISubscribers[]) => ISubscribers[])) => void
   emailFailed: (message: string) => void
   language: string
@@ -266,7 +257,7 @@ const EmailList = ({
   )
 }
 
-const NoSubscribers = ({ t }: { t: (string: string) => string }): JSX.Element => (
+const NoSubscribers = ({ t }: { t: typeof i18next.t }): JSX.Element => (
   <div className='flex flex-col py-6 sm:px-6 lg:px-8'>
     <div className='max-w-7xl w-full mx-auto text-gray-900 dark:text-gray-50'>
       <h2 className='text-xl mb-8 text-center leading-snug px-4'>{t('project.settings.noPeople')}</h2>
@@ -293,14 +284,6 @@ const Emails = ({
   const {
     t,
     i18n: { language },
-  }: {
-    t: (
-      string: string,
-      options?: {
-        [key: string]: string | number | boolean | undefined | null
-      },
-    ) => string
-    i18n: { language: string }
   } = useTranslation('common')
   const [form, setForm] = useState<{
     email: string

@@ -48,11 +48,7 @@ interface ITimezoneSelect {
 }
 
 const TimezoneSelect = ({ value, onChange }: ITimezoneSelect): JSX.Element => {
-  const {
-    t,
-  }: {
-    t: (key: string) => string
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
   const labelExtractor = (option: { label: string }) => option?.label
   const keyExtractor = (option: { value: string }) => option?.value
 

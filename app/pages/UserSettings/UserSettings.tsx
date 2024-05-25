@@ -185,16 +185,7 @@ const UserSettings = ({
   setCache,
 }: IProps): JSX.Element => {
   const navigate = useNavigate()
-  const {
-    t,
-  }: {
-    t: (
-      key: string,
-      options?: {
-        [key: string]: string | number | null
-      },
-    ) => string
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
   const [activeTab, setActiveTab] = useState<string>(TAB_MAPPING.ACCOUNT)
   const [form, setForm] = useState<IForm>({
     email: user.email || '',

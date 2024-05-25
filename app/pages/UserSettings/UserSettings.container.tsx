@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import type i18next from 'i18next'
 import UIActions from 'redux/reducers/ui'
 import { errorsActions } from 'redux/reducers/errors'
 import { authActions } from 'redux/reducers/auth'
@@ -33,7 +34,7 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
     )
   },
   onDelete: (
-    t: (key: string) => string,
+    t: typeof i18next.t,
     deletionFeedback: string,
     onSuccess: {
       (): void

@@ -11,11 +11,7 @@ interface IPaidFeature {
 }
 
 const PaidFeature = ({ onClose, isOpened }: IPaidFeature): JSX.Element => {
-  const {
-    t,
-  }: {
-    t: (key: string, options?: { [key: string]: string | number }) => string
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
   const navigate = useNavigate()
 
   const onSubmit = () => {

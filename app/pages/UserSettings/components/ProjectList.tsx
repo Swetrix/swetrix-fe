@@ -27,16 +27,6 @@ const ProjectList = ({
   const {
     t,
     i18n: { language },
-  }: {
-    t: (
-      key: string,
-      options?: {
-        [key: string]: string | number
-      },
-    ) => string
-    i18n: {
-      language: string
-    }
   } = useTranslation('common')
 
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)

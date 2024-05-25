@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import type i18next from 'i18next'
 import { Link, useNavigate } from '@remix-run/react'
 import { useTranslation, Trans } from 'react-i18next'
 import _size from 'lodash/size'
@@ -36,15 +37,10 @@ interface ISignup {
       dontRemember: boolean
       checkIfLeaked: boolean
     },
-    t: (
-      key: string,
-      options?: {
-        [key: string]: string | number
-      },
-    ) => string,
+    t: typeof i18next.t,
     callback: (res: any) => void,
   ) => void
-  authSSO: (provider: string, dontRemember: boolean, t: (key: string) => string, callback: (res: any) => void) => void
+  authSSO: (provider: string, dontRemember: boolean, t: typeof i18next.t, callback: (res: any) => void) => void
   ssrTheme: string
   authenticated: boolean
   loading: boolean

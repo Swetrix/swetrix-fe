@@ -60,11 +60,7 @@ interface ISocialisations {
 }
 
 const Socialisations = ({ user, linkSSO, unlinkSSO, genericError, theme }: ISocialisations) => {
-  const {
-    t,
-  }: {
-    t: (key: string) => string
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
   const [isLoading, setIsLoading] = useState(false)
 
   const _linkSSO = (provider: string) => {

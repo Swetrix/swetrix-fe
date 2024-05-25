@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type i18next from 'i18next'
 import { ResponsiveSankey } from '@nivo/sankey'
 import { connect } from 'react-redux'
 import { StateType, AppDispatch } from 'redux/store'
@@ -64,7 +65,7 @@ interface IJSXUserFlow {
   setUserFlowAscending: (data: IUserFlow, id: string, pd: string, fltr: any) => void
   setUserFlowDescending: (data: IUserFlow, id: string, pd: string, fltr: any) => void
   generateError: (message: string) => void
-  t: (key: string) => string
+  t: typeof i18next.t
   filters: string[]
   setReversed: () => void
   projectPassword?: string

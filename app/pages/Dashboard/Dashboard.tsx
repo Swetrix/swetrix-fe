@@ -1,5 +1,6 @@
 import React, { memo, useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from '@remix-run/react'
+import type i18next from 'i18next'
 import { ClientOnly } from 'remix-utils/client-only'
 import cx from 'clsx'
 import _isEmpty from 'lodash/isEmpty'
@@ -54,12 +55,7 @@ interface IProjectCard {
   active?: boolean
   birdseye: IOverall
   type: 'analytics' | 'captcha'
-  t: (
-    key: string,
-    options?: {
-      [key: string]: string | number | null | undefined
-    },
-  ) => string
+  t: typeof i18next.t
   live?: string | number
   isPublic?: boolean
   confirmed?: boolean
@@ -79,12 +75,7 @@ interface IProjectCard {
 
 interface IMiniCard {
   labelTKey: string
-  t: (
-    key: string,
-    options?: {
-      [key: string]: string | number | null | undefined
-    },
-  ) => string
+  t: typeof i18next.t
   total?: number | string
   percChange?: number
 }
@@ -291,12 +282,12 @@ ProjectCard.defaultProps = {
 }
 
 interface INoProjects {
-  t: (key: string) => string
+  t: typeof i18next.t
   onClick: () => void
 }
 
 interface IAddProject {
-  t: (key: string) => string
+  t: typeof i18next.t
   onClick: () => void
   sitesCount: number
 }

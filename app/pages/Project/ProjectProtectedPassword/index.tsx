@@ -30,16 +30,7 @@ const ProjectProtectedPassword = ({
   embedded: boolean
   isAuth: boolean
 }): JSX.Element => {
-  const {
-    t,
-  }: {
-    t: (
-      key: string,
-      optinions?: {
-        [key: string]: string | number
-      },
-    ) => string
-  } = useTranslation('common')
+  const { t } = useTranslation('common')
   const [form, setForm] = useState<IProjectProtectedPasswordForm>({
     password: '',
   })

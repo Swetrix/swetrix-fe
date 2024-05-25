@@ -1,4 +1,5 @@
 import React, { memo, useState, useEffect, useMemo, Fragment } from 'react'
+import type i18next from 'i18next'
 import { ArrowSmallUpIcon, ArrowSmallDownIcon } from '@heroicons/react/24/solid'
 import {
   FunnelIcon,
@@ -143,7 +144,7 @@ const Overview = ({
   overall: any
   chartData: any
   activePeriod: any
-  t: (arg: string) => string
+  t: typeof i18next.t
   live: number | string
   sessionDurationAVG: number
   projectId: string
@@ -305,7 +306,7 @@ const CustomEvents = ({
   customs: any
   chartData: any
   onFilter: any
-  t: (arg0: string) => string
+  t: typeof i18next.t
 }) => {
   const keys = _keys(customs)
   const uniques = _sum(chartData.uniques)
@@ -402,7 +403,7 @@ const Panel = ({
   rowMapper: any
   capitalize: boolean
   linkContent: boolean
-  t: (arg0: string) => string
+  t: typeof i18next.t
   icon: any
   id: string
   hideFilters: boolean
