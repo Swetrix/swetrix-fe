@@ -161,10 +161,10 @@ const mapDispatchToProps = (dispatch: AppDispatch) => ({
   // setThemeType: (theme) => {
   //   dispatch(UIActions.setThemeType(theme))
   // },
-  linkSSO: (t: (key: string) => string, callback: (e: any) => void, provider: string) => {
+  linkSSO: (t: typeof i18next.t, callback: (e: any) => void, provider: string) => {
     dispatch(sagaActions.linkSSO(t, callback, provider))
   },
-  unlinkSSO: (t: (key: string) => string, callback: (e: any) => void, provider: string) => {
+  unlinkSSO: (t: typeof i18next.t, callback: (e: any) => void, provider: string) => {
     dispatch(sagaActions.unlinkSSO(t, callback, provider))
   },
   updateShowLiveVisitorsInTitle: (show: boolean, callback: (isSuccess: boolean) => void) => {

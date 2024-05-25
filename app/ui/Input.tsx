@@ -5,7 +5,7 @@ import { ExclamationCircleIcon } from '@heroicons/react/24/solid'
 import Beta from 'ui/Beta'
 
 interface IInput {
-  label: string | JSX.Element
+  label?: string | JSX.Element
   hint?: string | JSX.Element
   placeholder?: string
   type?: string

@@ -1,4 +1,5 @@
 import React from 'react'
+import type i18next from 'i18next'
 // @ts-ignore
 import { saveAs } from 'file-saver'
 import {
@@ -1469,7 +1470,7 @@ export const filterInvalidViewPrefs = (prefs: any): any => {
   )
 }
 
-const typeNameMapping = (t: (str: string) => string) => ({
+const typeNameMapping = (t: typeof i18next.t) => ({
   cc: t('project.mapping.cc'),
   rg: t('project.mapping.rg'),
   ct: t('project.mapping.ct'),

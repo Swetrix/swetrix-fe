@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect, memo, useRef, useMemo } from 'react'
+import type i18next from 'i18next'
 import { useNavigate } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils/client-only'
 import { useTranslation } from 'react-i18next'
@@ -77,7 +78,7 @@ const TAB_MAPPING = {
   COMMUNICATIONS: 'communications',
 }
 
-const getTabs = (t: (key: string) => string) => {
+const getTabs = (t: typeof i18next.t) => {
   if (isSelfhosted) {
     return [
       {
@@ -118,7 +119,7 @@ const getTabs = (t: (key: string) => string) => {
 }
 
 interface IProps {
-  onDelete: (t: (key: string) => string, deletionFeedback: string, callback: () => void) => void
+  onDelete: (t: typeof i18next.t, deletionFeedback: string, callback: () => void) => void
   onDeleteProjectCache: () => void
   removeProject: (id: string) => void
   removeShareProject: (id: string) => void
@@ -136,8 +137,8 @@ interface IProps {
   user: IUser
   dontRemember: boolean
   isPaidTierUsed: boolean
-  linkSSO: (t: (key: string) => string, callback: (e: any) => void, provider: string) => void
-  unlinkSSO: (t: (key: string) => string, callback: (e: any) => void, provider: string) => void
+  linkSSO: (t: typeof i18next.t, callback: (e: any) => void, provider: string) => void
+  unlinkSSO: (t: typeof i18next.t, callback: (e: any) => void, provider: string) => void
   theme: string
   updateShowLiveVisitorsInTitle: (show: boolean, callback: (isSuccess: boolean) => void) => void
   logoutLocal: () => void

@@ -523,6 +523,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
           </div>
           <div className='mt-[60px] flex items-center max-w-7xl w-full mx-auto flex-wrap justify-center xl:justify-between'>
             {_map(
+              // @ts-expect-error
               t('main.features', { returnObjects: true }),
               (
                 item: {
@@ -593,6 +594,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
               </h2>
               <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-10 sm:gap-y-24 justify-between justify-items-center text-slate-900 dark:text-white pt-20 pb-36'>
                 {_map(
+                  // @ts-expect-error
                   t('main.mFeatures', { returnObjects: true }),
                   (
                     item: {
@@ -745,6 +747,7 @@ const Main: React.FC<IMain> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
             </p>
             <div className='flex items-center flex-col md:flex-row justify-between mt-16'>
               {_map(
+                // @ts-expect-error
                 t('main.lTestimonials', { returnObjects: true }),
                 (
                   item: {

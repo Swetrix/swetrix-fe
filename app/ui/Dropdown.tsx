@@ -14,9 +14,9 @@ interface IDropdown {
   /* (array): An array of items to be displayed in the dropdown menu. */
   items: any[]
   /* (function): A function that returns the label for each item in the dropdown menu. */
-  labelExtractor: (item: any) => string | number | React.ReactNode
+  labelExtractor?: (item: any) => string | number | React.ReactNode
   /* (function): A function that returns the key for each item in the dropdown menu. */
-  keyExtractor: (item: any) => string | number | React.ReactNode
+  keyExtractor?: (item: any) => string | number | React.ReactNode
   /* (function): A function that is called when an item is selected. */
   onSelect: (item: any, e?: React.MouseEvent<HTMLElement>) => void | null
   aside?: boolean

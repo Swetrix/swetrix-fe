@@ -46,6 +46,17 @@ const checkIfBarsNeeded = (panelID: string) => {
   return _includes(panelsWithBars, panelID)
 }
 
+interface IPanelContainer {
+  name: string
+  children?: React.ReactNode
+  noSwitch?: boolean
+  icon?: React.ReactNode
+  type: string
+  openModal?: () => void
+  activeFragment?: number | string
+  setActiveFragment?: (arg: number) => void
+}
+
 // noSwitch - 'previous' and 'next' buttons
 const PanelContainer = ({
   name,
@@ -56,16 +67,7 @@ const PanelContainer = ({
   openModal = () => {},
   activeFragment = 0,
   setActiveFragment = () => {},
-}: {
-  name: string
-  children?: React.ReactNode
-  noSwitch?: boolean
-  icon?: React.ReactNode
-  type: string
-  openModal?: () => void
-  activeFragment: number | string
-  setActiveFragment: (arg: number) => void
-}): JSX.Element => (
+}: IPanelContainer): JSX.Element => (
   <div
     className={cx(
       'relative bg-white dark:bg-slate-800/25 pt-5 px-4 min-h-72 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden',
@@ -160,7 +162,7 @@ const Overview = ({
   }
 
   return (
-    <PanelContainer name={t('project.overview')} noSwitch type='' openModal={() => {}}>
+    <PanelContainer name={t('project.overview')} noSwitch type=''>
       <div className='flex text-lg justify-between'>
         <div className='flex items-center dark:text-gray-50'>
           <PulsatingCircle className='mr-1.5' type='big' />
@@ -386,6 +388,19 @@ const CustomEvents = ({
   )
 }
 
+interface IPanel {
+  name: string
+  data: IEntry[]
+  rowMapper?: (row: any) => string | JSX.Element
+  capitalize?: boolean
+  linkContent?: boolean
+  t: typeof i18next.t
+  icon: any
+  id: string
+  hideFilters?: boolean
+  onFilter: any
+}
+
 const Panel = ({
   name,
   data,
@@ -397,18 +412,7 @@ const Panel = ({
   id,
   hideFilters,
   onFilter = () => {},
-}: {
-  name: string
-  data: IEntry[]
-  rowMapper: any
-  capitalize: boolean
-  linkContent: boolean
-  t: typeof i18next.t
-  icon: any
-  id: string
-  hideFilters: boolean
-  onFilter: any
-}): JSX.Element => {
+}: IPanel): JSX.Element => {
   const [page, setPage] = useState(0)
   const currentIndex = page * ENTRIES_PER_PANEL
   const total = useMemo(() => _reduce(data, (prev, curr) => prev + curr.count, 0), [data])
@@ -554,7 +558,7 @@ const Panel = ({
                     className={cx('flex items-center label hover:underline text-blue-600 dark:text-blue-500', {
                       capitalize,
                     })}
-                    href={rowData}
+                    href={rowData as string}
                     target='_blank'
                     rel='noopener noreferrer nofollow'
                     aria-label={`${rowData} (opens in a new tab)`}

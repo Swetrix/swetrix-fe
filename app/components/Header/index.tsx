@@ -5,7 +5,7 @@ import { Link } from '@remix-run/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 import Flag from 'react-flagkit'
-import type i18next from 'i18next'
+import i18next from 'i18next'
 import { Popover, Transition, Menu, Disclosure, Dialog } from '@headlessui/react'
 import {
   Bars3Icon,

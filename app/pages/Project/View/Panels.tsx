@@ -42,7 +42,7 @@ import Button from 'ui/Button'
 import Chart from 'ui/Chart'
 import Loader from 'ui/Loader'
 import { PROJECT_TABS } from 'redux/constants'
-import { IEntry } from 'redux/models/IEntry'
+import { ICountryEntry, IEntry } from 'redux/models/IEntry'
 import InteractiveMap from './components/InteractiveMap'
 import UserFlow from './components/UserFlow'
 import { iconClassName } from './ViewProject.helpers'
@@ -892,14 +892,14 @@ const CustomEvents = ({ customs, chartData, onFilter, t, customTabs = [], getCus
 interface IPanel {
   name: string | JSX.Element
   data: IEntry[]
-  rowMapper: any
-  valueMapper: any
-  capitalize: boolean
-  linkContent: boolean
+  rowMapper?: (row: any) => string | JSX.Element
+  valueMapper?: (value: number) => number
+  capitalize?: boolean
+  linkContent?: boolean
   t: typeof i18next.t
   icon: any
   id: string
-  hideFilters: boolean
+  hideFilters?: boolean
   onFilter: any
   customTabs?: any
   pid?: string | null
@@ -1184,7 +1184,7 @@ const Panel = ({
                     className={cx('flex items-center label hover:underline text-blue-600 dark:text-blue-500', {
                       capitalize,
                     })}
-                    href={rowData}
+                    href={rowData as string}
                     target='_blank'
                     rel='noopener noreferrer nofollow'
                     aria-label={`${rowData} (opens in a new tab)`}

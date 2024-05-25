@@ -57,6 +57,7 @@ const loginAsync = (
 const authSSO = (
   provider: string,
   dontRemember: boolean,
+  // @ts-expect-error
   t: typeof i18next.t = () => '',
   callback: (res: any) => void = () => {},
 ) => ({
@@ -70,6 +71,7 @@ const authSSO = (
 })
 
 // currently only google is supported, in future we should provide a variable specifying the provider
+// @ts-expect-error
 const linkSSO = (t: typeof i18next.t = () => '', callback: (res: any) => void = () => {}, provider = 'google') => ({
   type: types.LINK_SSO,
   payload: {
@@ -80,6 +82,7 @@ const linkSSO = (t: typeof i18next.t = () => '', callback: (res: any) => void = 
 })
 
 // currently only google is supported, in future we should provide a variable specifying the provider
+// @ts-expect-error
 const unlinkSSO = (t: typeof i18next.t = () => '', callback: (res: any) => void = () => {}, provider = 'google') => ({
   type: types.UNLINK_SSO,
   payload: {

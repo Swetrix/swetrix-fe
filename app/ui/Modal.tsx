@@ -13,8 +13,8 @@ import Spin from './icons/Spin'
 
 interface IModal {
   className?: string
-  type: 'error' | 'success' | 'info' | 'warning' | 'confirmed'
-  title: string
+  type?: 'error' | 'success' | 'info' | 'warning' | 'confirmed'
+  title?: string
   message: React.ReactNode | string
   isOpened: boolean
   onClose: () => void
