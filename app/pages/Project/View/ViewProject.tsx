@@ -3594,15 +3594,18 @@ const ViewProject = ({
                               activeTab !== PROJECT_TABS.errors && (
                                 <Dropdown
                                   header={t('project.exportData')}
-                                  items={[
-                                    ...exportTypes,
-                                    ...customExportTypes,
-                                    !isSelfhosted && {
-                                      label: t('project.lookingForMore'),
-                                      lookingForMore: true,
-                                      onClick: () => {},
-                                    },
-                                  ].filter((el) => !!el)}
+                                  items={_filter(
+                                    [
+                                      ...exportTypes,
+                                      ...customExportTypes,
+                                      !isSelfhosted && {
+                                        label: t('project.lookingForMore'),
+                                        lookingForMore: true,
+                                        onClick: () => {},
+                                      },
+                                    ],
+                                    (el) => !!el,
+                                  )}
                                   title={[<ArrowDownTrayIcon key='download-icon' className='w-5 h-5' />]}
                                   labelExtractor={(item) => {
                                     const { label } = item
