@@ -133,11 +133,9 @@ const Signin = ({ login, loginSuccess, loginFailed, authSSO, ssrTheme }: ISignin
   }
 
   const handleInput = ({ target }: { target: HTMLInputElement }) => {
-    const value = target.type === 'checkbox' ? target.checked : target.value
-
     setForm((oldForm) => ({
       ...oldForm,
-      [target.name]: value,
+      [target.name]: target.value,
     }))
   }
 
@@ -225,9 +223,13 @@ const Signin = ({ login, loginSuccess, loginFailed, authSSO, ssrTheme }: ISignin
             <div className='flex items-center justify-between'>
               <Checkbox
                 checked={form.dontRemember}
-                onChange={handleInput}
+                onChange={(checked) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    dontRemember: checked,
+                  }))
+                }
                 name='dontRemember'
-                id='dontRemember'
                 label={t('auth.common.noRemember')}
               />
               {!isSelfhosted && (

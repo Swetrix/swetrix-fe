@@ -134,11 +134,10 @@ const Signup = ({ signup, authSSO, ssrTheme, authenticated: reduxAuthenticated, 
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event
-    const value = target.type === 'checkbox' ? target.checked : target.value
 
     setForm((oldForm) => ({
       ...oldForm,
-      [target.name]: value,
+      [target.name]: target.value,
     }))
   }
 
@@ -194,9 +193,13 @@ const Signup = ({ signup, authSSO, ssrTheme, authenticated: reduxAuthenticated, 
                 />
                 <Checkbox
                   checked={form.tos}
-                  onChange={handleInput}
+                  onChange={(checked) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      tos: checked,
+                    }))
+                  }
                   name='tos'
-                  id='tos'
                   label={
                     <span>
                       <Trans
@@ -230,9 +233,13 @@ const Signup = ({ signup, authSSO, ssrTheme, authenticated: reduxAuthenticated, 
                 <div className='flex'>
                   <Checkbox
                     checked={form.checkIfLeaked}
-                    onChange={handleInput}
+                    onChange={(checked) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        checkIfLeaked: checked,
+                      }))
+                    }
                     name='checkIfLeaked'
-                    id='checkIfLeaked'
                     label={t('auth.common.checkLeakedPassword')}
                   />
                   <Tooltip

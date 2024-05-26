@@ -111,11 +111,10 @@ const BasicSignup: React.FC<IBasicSignup> = ({ ssrTheme }): JSX.Element => {
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event
-    const value = target.type === 'checkbox' ? target.checked : target.value
 
     setForm((oldForm) => ({
       ...oldForm,
-      [target.name]: value,
+      [target.name]: target.value,
     }))
   }
 
@@ -160,9 +159,13 @@ const BasicSignup: React.FC<IBasicSignup> = ({ ssrTheme }): JSX.Element => {
       <div className='mt-4 flex'>
         <Checkbox
           checked={form.checkIfLeaked}
-          onChange={handleInput}
+          onChange={(checked) =>
+            setForm((prev) => ({
+              ...prev,
+              checkIfLeaked: checked,
+            }))
+          }
           name='checkIfLeaked'
-          id='checkIfLeaked'
           label={t('auth.common.checkLeakedPassword')}
         />
         <Tooltip

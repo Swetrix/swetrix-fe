@@ -616,22 +616,28 @@ const ProjectSettings = ({
         />
         <Checkbox
           checked={Boolean(form.active)}
-          onChange={handleInput}
+          onChange={(checked) =>
+            setForm((prev) => ({
+              ...prev,
+              active: checked,
+            }))
+          }
           name='active'
-          id='active'
           className='mt-4'
           label={t('project.settings.enabled')}
           hint={t('project.settings.enabledHint')}
         />
         <Checkbox
           checked={Boolean(form.public)}
-          onChange={(e: any) => {
+          onChange={(checked) => {
             if (!form.isPasswordProtected) {
-              handleInput(e)
+              setForm((prev) => ({
+                ...prev,
+                public: checked,
+              }))
             }
           }}
           name='public'
-          id='public'
           className='mt-4'
           label={t('project.settings.public')}
           hint={t('project.settings.publicHint')}
@@ -652,7 +658,6 @@ const ProjectSettings = ({
             }
           }}
           name='isPasswordProtected'
-          id='isPasswordProtected'
           className='mt-4'
           label={t('project.settings.protected')}
           hint={t('project.settings.protectedHint')}

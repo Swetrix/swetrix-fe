@@ -284,11 +284,10 @@ const CaptchaSettings = ({
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event
-    const value = target.type === 'checkbox' ? target.checked : target.value
 
     setForm((oldForm) => ({
       ...oldForm,
-      [target.name]: value,
+      [target.name]: target.value,
     }))
   }
 
@@ -515,18 +514,26 @@ const CaptchaSettings = ({
             <hr className='mt-5 border-gray-200 dark:border-gray-600' />
             <Checkbox
               checked={Boolean(form.active)}
-              onChange={handleInput}
+              onChange={(checked) =>
+                setForm((prev) => ({
+                  ...prev,
+                  active: checked,
+                }))
+              }
               name='active'
-              id='active'
               className='mt-4'
               label={t('project.captcha.settings.enabled')}
               hint={t('project.captcha.settings.enabledHint')}
             />
             <Checkbox
               checked={Boolean(form.public)}
-              onChange={handleInput}
+              onChange={(checked) =>
+                setForm((prev) => ({
+                  ...prev,
+                  public: checked,
+                }))
+              }
               name='public'
-              id='public'
               className='mt-4'
               label={t('project.settings.public')}
               hint={t('project.settings.publicHint')}

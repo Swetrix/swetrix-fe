@@ -336,12 +336,10 @@ const UserSettings = ({
     }
   }
 
-  const handleShowLiveVisitorsSave = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleShowLiveVisitorsSave = (checked: boolean) => {
     if (settingUpdating) {
       return
     }
-
-    const { checked } = e.target
 
     setSettingUpdating(true)
     updateShowLiveVisitorsInTitle(checked, (isSuccess: boolean) => {
@@ -356,12 +354,10 @@ const UserSettings = ({
     })
   }
 
-  const handleReceiveLoginNotifications = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleReceiveLoginNotifications = async (checked: boolean) => {
     if (settingUpdating) {
       return
     }
-
-    const { checked } = e.target
 
     setSettingUpdating(true)
 
@@ -892,7 +888,6 @@ const UserSettings = ({
                     onChange={handleShowLiveVisitorsSave}
                     disabled={settingUpdating}
                     name='active'
-                    id='active'
                     className='mt-4'
                     label={t('profileSettings.showVisitorsInTitle')}
                   />
@@ -950,7 +945,6 @@ const UserSettings = ({
                           onChange={handleReceiveLoginNotifications}
                           disabled={settingUpdating}
                           name='receiveLoginNotifications'
-                          id='receiveLoginNotifications'
                           className='mt-4'
                           label={t('profileSettings.receiveLoginNotifications')}
                         />

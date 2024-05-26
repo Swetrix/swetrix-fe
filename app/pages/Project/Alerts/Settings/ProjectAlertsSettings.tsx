@@ -221,11 +221,10 @@ const ProjectAlertsSettings = ({
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event
-    const value = target.type === 'checkbox' ? target.checked : target.value
 
     setForm((prevForm) => ({
       ...prevForm,
-      [target.name]: value,
+      [target.name]: target.value,
     }))
   }
 
@@ -278,9 +277,13 @@ const ProjectAlertsSettings = ({
         />
         <Checkbox
           checked={Boolean(form.active)}
-          onChange={handleInput}
+          onChange={(checked) =>
+            setForm((prev) => ({
+              ...prev,
+              active: checked,
+            }))
+          }
           name='active'
-          id='active'
           className='mt-4'
           label={t('alert.enabled')}
           hint={t('alert.enabledHint')}
