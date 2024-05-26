@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import type { LinksFunction, LoaderFunctionArgs, HeadersFunction } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import { useState } from 'react'
