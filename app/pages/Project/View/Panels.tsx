@@ -1023,7 +1023,6 @@ const Panel = ({
         {/* @ts-ignore */}
         <UserFlow
           projectPassword={projectPassword}
-          disableLegend
           pid={pid || ''}
           period={period || ''}
           timeBucket={timeBucket || ''}

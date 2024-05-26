@@ -80,7 +80,7 @@ interface IMiniCard {
   percChange?: number
 }
 
-const MiniCard = ({ labelTKey, t, total, percChange }: IMiniCard): JSX.Element => {
+const MiniCard = ({ labelTKey, t, total = 0, percChange }: IMiniCard): JSX.Element => {
   const statsDidGrowUp = percChange ? percChange >= 0 : false
 
   return (
@@ -115,17 +115,12 @@ const MiniCard = ({ labelTKey, t, total, percChange }: IMiniCard): JSX.Element =
   )
 }
 
-MiniCard.defaultProps = {
-  total: 0,
-  percChange: null,
-}
-
 const ProjectCard = ({
   name,
   active,
   birdseye,
   t,
-  live,
+  live = 'N/A',
   isPublic,
   confirmed,
   id,
@@ -267,18 +262,6 @@ const ProjectCard = ({
       </li>
     </div>
   )
-}
-
-ProjectCard.defaultProps = {
-  isPublic: false,
-  active: false,
-  shared: false,
-  captcha: false,
-  confirmed: false,
-  name: '',
-  live: 'N/A',
-  isTransferring: false,
-  getRole: () => '',
 }
 
 interface INoProjects {

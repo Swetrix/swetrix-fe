@@ -20,7 +20,7 @@ const GoogleAuth: React.FC<IGoogleAuth> = ({
   setIsLoading,
   authSSO,
   dontRemember,
-  callback,
+  callback = () => {},
   isMiniButton,
   className,
 }) => {
@@ -64,13 +64,6 @@ const GoogleAuth: React.FC<IGoogleAuth> = ({
       </>
     </Button>
   )
-}
-
-GoogleAuth.defaultProps = {
-  dontRemember: false,
-  isMiniButton: false,
-  callback: () => {},
-  className: '',
 }
 
 export default GoogleAuth

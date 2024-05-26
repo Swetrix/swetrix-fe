@@ -24,7 +24,7 @@ const GithubAuth: React.FC<IGoogleAuth> = ({
   setIsLoading,
   authSSO,
   dontRemember,
-  callback,
+  callback = () => {},
   isMiniButton,
   className,
   ssrTheme,
@@ -71,13 +71,6 @@ const GithubAuth: React.FC<IGoogleAuth> = ({
       </>
     </Button>
   )
-}
-
-GithubAuth.defaultProps = {
-  dontRemember: false,
-  isMiniButton: false,
-  callback: () => {},
-  className: '',
 }
 
 export default GithubAuth
