@@ -169,7 +169,6 @@ const Signup = ({ signup, authSSO, ssrTheme, authenticated: reduxAuthenticated, 
               <form className='space-y-6' onSubmit={handleSubmit}>
                 <Input
                   name='email'
-                  id='email'
                   type='email'
                   label={t('auth.common.email')}
                   value={form.email}
@@ -178,7 +177,6 @@ const Signup = ({ signup, authSSO, ssrTheme, authenticated: reduxAuthenticated, 
                 />
                 <Input
                   name='password'
-                  id='password'
                   type='password'
                   label={t('auth.common.password')}
                   hint={t('auth.common.hint', { amount: MIN_PASSWORD_CHARS })}
@@ -188,7 +186,6 @@ const Signup = ({ signup, authSSO, ssrTheme, authenticated: reduxAuthenticated, 
                 />
                 <Input
                   name='repeat'
-                  id='repeat'
                   type='password'
                   label={t('auth.common.repeat')}
                   value={form.repeat}

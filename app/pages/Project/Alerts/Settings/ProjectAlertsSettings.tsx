@@ -269,8 +269,6 @@ const ProjectAlertsSettings = ({
         )}
         <Input
           name='name'
-          id='name'
-          type='text'
           label={t('alert.name')}
           value={form.name || ''}
           placeholder={t('alert.name')}
@@ -307,8 +305,6 @@ const ProjectAlertsSettings = ({
         {form.queryMetric === QUERY_METRIC.CUSTOM_EVENTS && (
           <Input
             name='queryCustomEvent'
-            id='queryCustomEvent'
-            type='text'
             label={t('alert.customEvent')}
             value={form.queryCustomEvent || ''}
             placeholder={t('alert.customEvent')}
@@ -336,8 +332,6 @@ const ProjectAlertsSettings = ({
         </div>
         <Input
           name='queryValue'
-          id='queryValue'
-          type='text'
           label={t('alert.threshold')}
           value={form.queryValue || ''}
           placeholder='10'

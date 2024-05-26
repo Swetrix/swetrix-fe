@@ -407,8 +407,6 @@ const CaptchaSettings = ({
         {tab === tabForNew && (
           <Input
             name='name'
-            id='name'
-            type='text'
             label={t('project.captcha.settings.name')}
             value={form.name}
             placeholder='My awesome project'
@@ -433,8 +431,6 @@ const CaptchaSettings = ({
           <>
             <Input
               name='id'
-              id='id'
-              type='text'
               label={t('project.captcha.settings.pid')}
               value={form.id}
               className='mt-4'
@@ -444,8 +440,6 @@ const CaptchaSettings = ({
             />
             <Input
               name='origins'
-              id='origins'
-              type='text'
               label={t('project.settings.origins')}
               hint={t('project.settings.originsHint')}
               value={(form.origins as string) || ''}
@@ -455,8 +449,6 @@ const CaptchaSettings = ({
             />
             <Input
               name='ipBlacklist'
-              id='ipBlacklist'
-              type='text'
               label={t('project.settings.ipBlacklist')}
               hint={t('project.settings.ipBlacklistHint')}
               value={(form.ipBlacklist as string) || ''}
@@ -481,8 +473,6 @@ const CaptchaSettings = ({
                   <div className='group relative'>
                     <Input
                       name='sercretKey'
-                      id='sercretKey'
-                      type='text'
                       className='pr-9'
                       value={captchaSecretKey}
                       onChange={handleInput}

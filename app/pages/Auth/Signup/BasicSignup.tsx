@@ -133,7 +133,6 @@ const BasicSignup: React.FC<IBasicSignup> = ({ ssrTheme }): JSX.Element => {
     <form className='space-y-6' onSubmit={handleSubmit}>
       <Input
         name='email'
-        id='email'
         type='email'
         value={form.email}
         placeholder={t('auth.signup.email')}
@@ -142,7 +141,6 @@ const BasicSignup: React.FC<IBasicSignup> = ({ ssrTheme }): JSX.Element => {
       />
       <Input
         name='password'
-        id='password'
         type='password'
         value={form.password}
         placeholder={t('auth.common.password')}
@@ -152,7 +150,6 @@ const BasicSignup: React.FC<IBasicSignup> = ({ ssrTheme }): JSX.Element => {
       />
       <Input
         name='repeat'
-        id='repeat'
         type='password'
         value={form.repeat}
         placeholder={t('auth.common.repeat')}
