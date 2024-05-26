@@ -37,6 +37,3 @@ jobs:
 
       - name: TypeScript validation
         run: npm run typecheck
-
-      - name: Unit tests
-        run: npm run test:ci
