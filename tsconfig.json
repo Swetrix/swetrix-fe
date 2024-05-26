@@ -6,6 +6,7 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
+    // We need Bundler instead of Node so IDE would not complain for imports from remix-utils/*
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "target": "ES2019",
