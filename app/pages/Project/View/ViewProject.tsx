@@ -1641,7 +1641,7 @@ const ViewProject = ({
         setCanLoadMoreSessions(true)
       }
     } catch (e) {
-      console.error('[ERROR](loadAnalytics) Loading analytics data failed')
+      console.error('[ERROR](loadSessions) Loading sessions data failed')
       console.error(e)
     } finally {
       setSessionsLoading(false)
@@ -3093,6 +3093,10 @@ const ViewProject = ({
 
   // updatePeriod using for update period and timeBucket also update url
   const updatePeriod = (newPeriod: { period: string; label?: string }) => {
+    if (period === newPeriod.period) {
+      return
+    }
+
     const newPeriodFull = _find(periodPairs, (el) => el.period === newPeriod.period)
     let tb = timeBucket
     // @ts-ignore
@@ -3521,8 +3525,6 @@ const ViewProject = ({
       </>
     )
   }
-
-  console.log('s:', sessionsLoading, sessions)
 
   return (
     <ClientOnly>
