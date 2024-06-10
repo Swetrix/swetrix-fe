@@ -14,7 +14,8 @@
     "lint:fix": "eslint app --fix",
     "lint:tsc": "tsc --noEmit",
     "format": "prettier --check --ignore-unknown ./app ./public",
-    "format:fix": "prettier --write --ignore-unknown ./app ./public"
+    "format:fix": "prettier --write --ignore-unknown ./app ./public",
+    "unused:find": "knip"
   },
   "dependencies": {
     "@blaumaus/react-alert": "^7.0.7",
@@ -150,6 +151,7 @@
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-lodash": "^7.4.0",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "knip": "^5.18.2",
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
     "resize-observer-polyfill": "^1.5.1",
