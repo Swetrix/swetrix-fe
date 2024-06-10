@@ -21,7 +21,6 @@
     "@blaumaus/react-alert": "^7.0.7",
     "@headlessui/react": "^2.0.4",
     "@heroicons/react": "^2.1.3",
-    "@nivo/core": "^0.87.0",
     "@nivo/sankey": "^0.87.0",
     "@reduxjs/toolkit": "^1.9.7",
     "@remix-run/node": "^2.9.2",
