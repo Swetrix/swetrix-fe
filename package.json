@@ -15,7 +15,7 @@
     "lint:tsc": "tsc --noEmit",
     "format": "prettier --check --ignore-unknown ./app ./public",
     "format:fix": "prettier --write --ignore-unknown ./app ./public",
-    "unused:find": "knip"
+    "knip": "knip"
   },
   "dependencies": {
     "@blaumaus/react-alert": "^7.0.7",
@@ -137,11 +137,10 @@
     "@tailwindcss/typography": "^0.5.13",
     "@types/debug": "^4.1.12",
     "@types/lodash": "^4.17.4",
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-flatpickr": "^3.8.11",
-    "@types/redux-mock-store": "^1.0.6",
     "@typescript-eslint/parser": "^7.10.0",
     "@typescript-eslint/typescript-estree": "^7.10.0",
     "autoprefixer": "^10.4.19",
@@ -153,7 +152,6 @@
     "knip": "^5.18.2",
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
-    "resize-observer-polyfill": "^1.5.1",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5"
   },
