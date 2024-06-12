@@ -1,6 +1,5 @@
 import React, { memo, useState, useEffect, useMemo, Fragment } from 'react'
 import type i18next from 'i18next'
-import { ArrowSmallUpIcon, ArrowSmallDownIcon } from '@heroicons/react/24/solid'
 import {
   FunnelIcon,
   MapIcon,

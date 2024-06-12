@@ -13,8 +13,6 @@ import {
 import dayjs from 'dayjs'
 import { area, bar } from 'billboard.js'
 import _map from 'lodash/map'
-import _split from 'lodash/split'
-import _replace from 'lodash/replace'
 import _size from 'lodash/size'
 
 import {
