@@ -4238,7 +4238,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={countryActiveTab}
                               icon={panelIcon}
                               id={countryActiveTab}
@@ -4279,7 +4278,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4327,7 +4325,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4344,7 +4341,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               activeTab={activeTab}
                               icon={panelIcon}
@@ -4361,7 +4357,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4401,7 +4396,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4419,7 +4413,6 @@ const ViewProject = ({
                         return (
                           <Panel
                             projectPassword={projectPassword}
-                            t={t}
                             key={type}
                             icon={panelIcon}
                             id={type}
@@ -4501,7 +4494,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={countryActiveTab}
                               icon={panelIcon}
                               id={countryActiveTab}
@@ -4543,7 +4535,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4592,7 +4583,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4610,7 +4600,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               activeTab={activeTab}
                               icon={panelIcon}
@@ -4628,7 +4617,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4649,7 +4637,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={utmActiveTab}
                               icon={panelIcon}
                               id={utmActiveTab}
@@ -4668,7 +4655,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4709,7 +4695,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4728,7 +4713,6 @@ const ViewProject = ({
                         return (
                           <Panel
                             projectPassword={projectPassword}
-                            t={t}
                             key={type}
                             icon={panelIcon}
                             id={type}
@@ -4742,7 +4726,6 @@ const ViewProject = ({
                       })}
                     {!_isEmpty(panelsData.customs) && (
                       <CustomEvents
-                        t={t}
                         customs={panelsData.customs}
                         onFilter={filterHandler}
                         chartData={chartData}
@@ -4807,7 +4790,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={countryActiveTab}
                               icon={panelIcon}
                               id={countryActiveTab}
@@ -4827,7 +4809,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4847,7 +4828,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4895,7 +4875,6 @@ const ViewProject = ({
                           return (
                             <Panel
                               projectPassword={projectPassword}
-                              t={t}
                               key={type}
                               icon={panelIcon}
                               id={type}
@@ -4914,7 +4893,6 @@ const ViewProject = ({
                         return (
                           <Panel
                             projectPassword={projectPassword}
-                            t={t}
                             key={type}
                             icon={panelIcon}
                             id={type}

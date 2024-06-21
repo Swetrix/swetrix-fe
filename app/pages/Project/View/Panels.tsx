@@ -46,6 +46,8 @@ import InteractiveMap from './components/InteractiveMap'
 import UserFlow from './components/UserFlow'
 import { iconClassName } from './ViewProject.helpers'
 import Spin from 'ui/icons/Spin'
+import { useTranslation } from 'react-i18next'
+import CustomEventsDropdown from './components/CustomEventsDropdown'
 
 const ENTRIES_PER_PANEL = 5
 const ENTRIES_PER_CUSTOM_EVENTS_PANEL = 6
@@ -303,7 +305,6 @@ interface ICustomEvents {
   customs: any
   chartData: any
   onFilter: any
-  t: typeof i18next.t
   getCustomEventMetadata: (event: string) => any
   customTabs: any
 }
@@ -316,7 +317,7 @@ interface ISortRows {
 
 interface IKVTable {
   data: any
-  t: any
+  t: typeof i18next.t
   uniques: number
 }
 
@@ -379,9 +380,11 @@ const KVTable = ({ data, t, uniques }: IKVTable) => {
 }
 
 // Tabs with custom events like submit form, press button, go to the link rate etc.
-const CustomEvents = ({ customs, chartData, onFilter, t, customTabs = [], getCustomEventMetadata }: ICustomEvents) => {
+const CustomEvents = ({ customs, chartData, onFilter, customTabs = [], getCustomEventMetadata }: ICustomEvents) => {
+  const { t } = useTranslation('common')
   const [page, setPage] = useState(0)
   const [detailsOpened, setDetailsOpened] = useState(false)
+  const [activeTab, setActiveTab] = useState<'customEv' | 'properties'>('customEv')
   const [activeEvents, setActiveEvents] = useState<any>({})
   const [loadingEvents, setLoadingEvents] = useState<any>({})
   const [eventsMetadata, setEventsMetadata] = useState<any>({})
@@ -643,7 +646,7 @@ const CustomEvents = ({ customs, chartData, onFilter, t, customTabs = [], getCus
   if (activeFragment === 1 && !_isEmpty(chartData)) {
     return (
       <PanelContainer
-        name={t('project.customEv')}
+        name={<CustomEventsDropdown onSelect={setActiveTab} title={t(`project.${activeTab}`)} />}
         type='ce'
         setActiveFragment={setActiveFragment}
         activeFragment={activeFragment}
@@ -672,7 +675,7 @@ const CustomEvents = ({ customs, chartData, onFilter, t, customTabs = [], getCus
 
     return (
       <PanelContainer
-        name={t('project.customEv')}
+        name={<CustomEventsDropdown onSelect={setActiveTab} title={t(`project.${activeTab}`)} />}
         type='ce'
         activeFragment={activeFragment}
         setActiveFragment={setActiveFragment}
@@ -689,7 +692,7 @@ const CustomEvents = ({ customs, chartData, onFilter, t, customTabs = [], getCus
   return (
     <PanelContainer
       customTabs={customTabs}
-      name={t('project.customEv')}
+      name={<CustomEventsDropdown onSelect={setActiveTab} title={t(`project.${activeTab}`)} />}
       type='ce'
       setActiveFragment={setActiveFragment}
       activeFragment={activeFragment}
@@ -823,7 +826,6 @@ interface IPanel {
   valueMapper?: (value: number) => number
   capitalize?: boolean
   linkContent?: boolean
-  t: typeof i18next.t
   icon: any
   id: string
   hideFilters?: boolean
@@ -848,7 +850,6 @@ const Panel = ({
   valueMapper = (value: number): number => value,
   capitalize,
   linkContent,
-  t,
   icon,
   id,
   hideFilters,
@@ -865,6 +866,7 @@ const Panel = ({
   filters,
   projectPassword,
 }: IPanel): JSX.Element => {
+  const { t } = useTranslation('common')
   const [page, setPage] = useState(0)
   const currentIndex = page * ENTRIES_PER_PANEL
   const total = useMemo(() => _reduce(data, (prev, curr) => prev + curr.count, 0), [data])

@@ -48,7 +48,7 @@ import Checkbox from 'ui/Checkbox'
 import FlatPicker from 'ui/Flatpicker'
 import routes from 'routesPath'
 import { getProject, getCaptchaData } from 'api'
-import { Panel, CustomEvents } from './Panels'
+import { Panel } from 'pages/Project/View/Panels'
 import {
   getFormatDate,
   panelIconMapping,
@@ -846,7 +846,6 @@ const ViewCaptcha = ({
 
                         return (
                           <Panel
-                            t={t}
                             key={type}
                             icon={panelIcon}
                             id={type}
@@ -861,7 +860,6 @@ const ViewCaptcha = ({
                       if (type === 'dv') {
                         return (
                           <Panel
-                            t={t}
                             key={type}
                             icon={panelIcon}
                             id={type}
@@ -900,7 +898,6 @@ const ViewCaptcha = ({
 
                         return (
                           <Panel
-                            t={t}
                             key={type}
                             icon={panelIcon}
                             id={type}
@@ -946,7 +943,6 @@ const ViewCaptcha = ({
 
                         return (
                           <Panel
-                            t={t}
                             key={type}
                             icon={panelIcon}
                             id={type}
@@ -960,7 +956,6 @@ const ViewCaptcha = ({
 
                       return (
                         <Panel
-                          t={t}
                           key={type}
                           icon={panelIcon}
                           id={type}
@@ -970,9 +965,6 @@ const ViewCaptcha = ({
                         />
                       )
                     })}
-                  {!_isEmpty(panelsData.customs) && (
-                    <CustomEvents t={t} customs={panelsData.customs} onFilter={filterHandler} chartData={chartData} />
-                  )}
                 </div>
               </div>
             </div>
