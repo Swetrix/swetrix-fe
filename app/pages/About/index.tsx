@@ -77,7 +77,7 @@ const team = [
   {
     name: 'Andrii Romasiun',
     role: 'Founder; Product Developer.',
-    photo: '/assets/authors/andrii.png',
+    photo: '/assets/team/andrii.png',
     desc: "I've been interested in programming and tech for a long time and have developed many projects, from small open source tools to large enterprise applications.\n\nI founded Swetrix in 2021 and have been working on it since then. I've developed most of our major features, like performance monitoring, error tracking, sessions analysis and the marketplace.",
     socials: {
       LinkedIn: 'https://www.linkedin.com/in/andriir/',
@@ -108,8 +108,8 @@ const team = [
   {
     name: 'Yevhenii Kulisidi',
     role: 'Lead Backend Developer.',
-    photo: '/assets/yevhenii.jpg',
-    desc: 'An amazing backend engineer. Works on Swetrix API, Swetrix Marketplace and integrations.',
+    photo: '/assets/team/yevhenii.png',
+    desc: 'I am a backend engineer specialising in Node.js and TypeScript. I mainly work on the Swetrix API, focusing on its scalability, efficiency and integration.',
     socials: {
       LinkedIn: 'https://www.linkedin.com/in/kulisidi/',
       Github: 'https://github.com/yevheniikulisidi',
