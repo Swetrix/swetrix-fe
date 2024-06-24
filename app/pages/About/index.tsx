@@ -46,13 +46,19 @@ interface ITeammate {
 }
 
 const Teammate = ({ photo, name, role, socials, desc }: ITeammate): JSX.Element => (
-  // md:even:flex-row-reverse
-  <div className='flex flex-col-reverse py-6 md:flex-row md:gap-x-8'>
-    <img alt={name} src={photo} className='h-auto w-80 rounded-full object-scale-down shadow-lg md:w-2/5' />
-    <div className='mb-4 md:mb-0 md:w-3/5'>
+  <div className='flex flex-col py-6 md:flex-row md:gap-x-8'>
+    <div className='flex justify-center md:w-2/5'>
+      <img
+        alt={name}
+        src={photo}
+        className='size-80 rounded-full object-cover shadow-lg'
+        style={{ aspectRatio: '1 / 1' }}
+      />
+    </div>
+    <div className='mb-4 mt-5 text-center md:mb-0 md:mt-0 md:w-3/5 md:text-start'>
       <p className='mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-50 lg:mt-0'>{name}</p>
       <p className='text-xl tracking-tight text-gray-900 dark:text-gray-50'>{role}</p>
-      <div className='mt-2 flex space-x-4'>
+      <div className='mt-2 flex justify-center space-x-4 md:justify-start'>
         {_map(socials, (value, key) => (
           <a
             key={value}
@@ -78,7 +84,7 @@ const team = [
     name: 'Andrii Romasiun',
     role: 'Founder; Product Developer.',
     photo: '/assets/team/andrii.png',
-    desc: "I've been interested in programming and tech for a long time and have developed many projects, from small open source tools to large enterprise applications.\n\nI founded Swetrix in 2021 and have been working on it since then. I've developed most of our major features, like performance monitoring, error tracking, sessions analysis and the marketplace.",
+    desc: "I've been interested in programming, tech and business for a long time and have developed many projects, from small open source tools to large enterprise applications.\n\nI founded Swetrix in 2021 and have been working on it since then. I've developed most of our major features, like performance monitoring, error tracking, sessions analysis and the marketplace.",
     socials: {
       LinkedIn: 'https://www.linkedin.com/in/andriir/',
       Twitter: 'https://twitter.com/blaumaus_',
@@ -88,7 +94,7 @@ const team = [
   {
     name: 'Yehor Dremliuha',
     role: 'Co-Founder; Software Engineer.',
-    photo: '/assets/yehor.jpg',
+    photo: '/assets/team/yehor.png',
     desc: "I am a software engineer with a passion for creating high quality software. I'm a big fan of IT, cybersecurity and AI and have developed many projects in this field.\n\nI'm working on Swetrix integrations, AI and backend services and I'm responsible for a lot of different business tasks. I'm also the creator of 'Your Journey To Fluent Python' - an innovative book to learn programming in Python.",
     socials: {
       LinkedIn: 'https://www.linkedin.com/in/yehor-dremliuha-0b6161212/',
@@ -98,8 +104,8 @@ const team = [
   {
     name: 'Maxim Mrug',
     role: 'Co-Founder; Frontend Engineer.',
-    photo: '/assets/maxim.jpg',
-    desc: 'A great frontend developer.\nKnows JavaScript and TypeScript like his native language.',
+    photo: '/assets/team/max.png',
+    desc: "At Swetrix my main focus is frontend development and I've been working with it for years. I started my journey with Vue and have tried many frameworks since then, now I mainly work with React and at Swetrix with Remix.",
     socials: {
       LinkedIn: 'https://www.linkedin.com/in/maksim-mrug-047b52235/',
       Github: 'https://github.com/kruzhambus',
@@ -120,7 +126,7 @@ const team = [
 const About = (): JSX.Element => (
   <div>
     <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900'>
-      <div className='mx-auto max-w-prose whitespace-pre-line px-4 pb-16 pt-12 sm:px-6 md:w-8/12 md:max-w-none lg:px-8'>
+      <div className='mx-auto max-w-7xl whitespace-pre-line px-4 pb-16 pt-12 sm:px-6 lg:px-8'>
         <h1 className='text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50'>
           We're changing the way web analytics is done
         </h1>
