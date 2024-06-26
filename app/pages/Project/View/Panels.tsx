@@ -48,6 +48,7 @@ import { iconClassName } from './ViewProject.helpers'
 import Spin from 'ui/icons/Spin'
 import { useTranslation } from 'react-i18next'
 import CustomEventsDropdown from './components/CustomEventsDropdown'
+import { ICustoms, IProperties } from './interfaces/traffic'
 
 const ENTRIES_PER_PANEL = 5
 const ENTRIES_PER_CUSTOM_EVENTS_PANEL = 6
@@ -193,7 +194,7 @@ const PanelContainer = ({
         )}
 
         {/* if this tab using Circle showing stats panel */}
-        {(type === 'ce' || type === 'os' || type === 'br' || type === 'dv') && (
+        {(type === 'ce' || type === 'props' || type === 'os' || type === 'br' || type === 'dv') && (
           <ChartPieIcon
             className={cx(iconClassName, 'ml-2 cursor-pointer', {
               'text-slate-900 dark:text-gray-50': activeFragment === 1,
@@ -204,7 +205,7 @@ const PanelContainer = ({
         )}
 
         {/* if it is a 'Custom events' tab  */}
-        {type === 'ce' && (
+        {(type === 'ce' || type === 'props') && (
           <>
             <ArrowsPointingOutIcon
               className={cx(iconClassName, 'ml-2 cursor-pointer text-slate-400 dark:text-slate-500')}
@@ -301,12 +302,22 @@ const getPieOptions = (customs: any, uniques: number, t: any) => {
   }
 }
 
-interface ICustomEvents {
-  customs: any
+interface IMetadata {
+  customs: ICustoms
+  properties: IProperties
   chartData: any
   onFilter: any
-  getCustomEventMetadata: (event: string) => any
+  getCustomEventMetadata: (event: string) => Promise<any>
+  getPropertyMetadata: (property: string) => Promise<any>
   customTabs: any
+}
+
+interface ICustomEvents extends IMetadata {
+  setActiveTab: React.Dispatch<React.SetStateAction<'customEv' | 'properties'>>
+}
+
+interface IPageProperties extends IMetadata {
+  setActiveTab: React.Dispatch<React.SetStateAction<'customEv' | 'properties'>>
 }
 
 interface ISortRows {
@@ -319,9 +330,10 @@ interface IKVTable {
   data: any
   t: typeof i18next.t
   uniques: number
+  displayKeyAsHeader?: boolean
 }
 
-const KVTable = ({ data, t, uniques }: IKVTable) => {
+const KVTable = ({ data, t, uniques, displayKeyAsHeader }: IKVTable) => {
   const processed = useMemo(() => {
     return _reduce(
       data,
@@ -350,7 +362,9 @@ const KVTable = ({ data, t, uniques }: IKVTable) => {
       <table key={key} className='mb-4 w-full border-separate border-spacing-y-1'>
         <thead>
           <tr className='text-gray-600 dark:text-gray-200'>
-            <th className='flex w-2/5 items-center pl-2 text-left sm:w-4/6'>{key}</th>
+            <th className='flex w-2/5 items-center pl-2 text-left sm:w-4/6'>
+              {displayKeyAsHeader ? key : t('project.value')}
+            </th>
             <th className='w-[30%] sm:w-1/6'>
               <p className='flex items-center justify-end'>{t('project.quantity')}</p>
             </th>
@@ -379,12 +393,17 @@ const KVTable = ({ data, t, uniques }: IKVTable) => {
   })
 }
 
-// Tabs with custom events like submit form, press button, go to the link rate etc.
-const CustomEvents = ({ customs, chartData, onFilter, customTabs = [], getCustomEventMetadata }: ICustomEvents) => {
+const CustomEvents = ({
+  customs,
+  chartData,
+  onFilter,
+  customTabs = [],
+  getCustomEventMetadata,
+  setActiveTab,
+}: ICustomEvents) => {
   const { t } = useTranslation('common')
   const [page, setPage] = useState(0)
   const [detailsOpened, setDetailsOpened] = useState(false)
-  const [activeTab, setActiveTab] = useState<'customEv' | 'properties'>('customEv')
   const [activeEvents, setActiveEvents] = useState<any>({})
   const [loadingEvents, setLoadingEvents] = useState<any>({})
   const [eventsMetadata, setEventsMetadata] = useState<any>({})
@@ -631,7 +650,7 @@ const CustomEvents = ({ customs, chartData, onFilter, customTabs = [], getCustom
               {activeEvents[ev] && !loadingEvents[ev] && (
                 <tr>
                   <td className='pl-9' colSpan={3}>
-                    <KVTable data={eventsMetadata[ev]} t={t} uniques={uniques} />
+                    <KVTable data={eventsMetadata[ev]} t={t} uniques={uniques} displayKeyAsHeader />
                   </td>
                 </tr>
               )}
@@ -646,7 +665,7 @@ const CustomEvents = ({ customs, chartData, onFilter, customTabs = [], getCustom
   if (activeFragment === 1 && !_isEmpty(chartData)) {
     return (
       <PanelContainer
-        name={<CustomEventsDropdown onSelect={setActiveTab} title={t(`project.${activeTab}`)} />}
+        name={<CustomEventsDropdown onSelect={setActiveTab} title={t('project.customEv')} />}
         type='ce'
         setActiveFragment={setActiveFragment}
         activeFragment={activeFragment}
@@ -675,7 +694,7 @@ const CustomEvents = ({ customs, chartData, onFilter, customTabs = [], getCustom
 
     return (
       <PanelContainer
-        name={<CustomEventsDropdown onSelect={setActiveTab} title={t(`project.${activeTab}`)} />}
+        name={<CustomEventsDropdown onSelect={setActiveTab} title={t('project.customEv')} />}
         type='ce'
         activeFragment={activeFragment}
         setActiveFragment={setActiveFragment}
@@ -692,7 +711,7 @@ const CustomEvents = ({ customs, chartData, onFilter, customTabs = [], getCustom
   return (
     <PanelContainer
       customTabs={customTabs}
-      name={<CustomEventsDropdown onSelect={setActiveTab} title={t(`project.${activeTab}`)} />}
+      name={<CustomEventsDropdown onSelect={setActiveTab} title={t('project.customEv')} />}
       type='ce'
       setActiveFragment={setActiveFragment}
       activeFragment={activeFragment}
@@ -817,6 +836,396 @@ const CustomEvents = ({ customs, chartData, onFilter, customTabs = [], getCustom
       />
     </PanelContainer>
   )
+}
+
+const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, setActiveTab }: IPageProperties) => {
+  const { t } = useTranslation('common')
+  const [page, setPage] = useState(0)
+  const [detailsOpened, setDetailsOpened] = useState(false)
+  const [activeProperties, setActiveProperties] = useState<any>({})
+  const [loadingDetails, setLoadingDetails] = useState<any>({})
+  const [details, setDetails] = useState<any>({})
+  const [processedProperties, setProcessedProperties] = useState<IProperties>(properties)
+  const currentIndex = page * ENTRIES_PER_CUSTOM_EVENTS_PANEL
+  const keys = _keys(processedProperties)
+  const keysToDisplay = useMemo(
+    () => _slice(keys, currentIndex, currentIndex + ENTRIES_PER_CUSTOM_EVENTS_PANEL),
+    [keys, currentIndex],
+  )
+  const uniques = _sum(chartData.uniques)
+  const [activeFragment, setActiveFragment] = useState<number>(0)
+  const totalPages = useMemo(() => _ceil(_size(keys) / ENTRIES_PER_CUSTOM_EVENTS_PANEL), [keys])
+  const canGoPrev = () => page > 0
+  const canGoNext = () => page < _floor((_size(keys) - 1) / ENTRIES_PER_CUSTOM_EVENTS_PANEL)
+  const [sort, setSort] = useState<ISortRows>({
+    label: 'quantity',
+    sortByAscend: false,
+    sortByDescend: false,
+  })
+
+  useEffect(() => {
+    const sizeKeys = _size(keys)
+
+    if (currentIndex > sizeKeys) {
+      setPage(_floor(sizeKeys / ENTRIES_PER_CUSTOM_EVENTS_PANEL))
+    }
+  }, [currentIndex, keys])
+
+  useEffect(() => {
+    setProcessedProperties(properties)
+    setSort({
+      label: 'quantity',
+      sortByAscend: false,
+      sortByDescend: false,
+    })
+  }, [properties])
+
+  useEffect(() => {
+    setPage(0)
+  }, [chartData])
+
+  const onPrevious = () => {
+    if (canGoPrev()) {
+      setPage(page - 1)
+    }
+  }
+
+  const onNext = () => {
+    if (canGoNext()) {
+      setPage(page + 1)
+    }
+  }
+
+  function sortedAsc<T>(obj: T, sortByKeys?: boolean): T {
+    if (sortByKeys) {
+      // @ts-expect-error
+      return _fromPairs(_sortBy(_toPairs(obj), (pair) => pair[0])) as T
+    }
+
+    return _fromPairs(
+      // @ts-expect-error
+      _toPairs(obj).sort((a: any, b: any) => {
+        return b[1] - a[1]
+      }),
+    ) as T
+  }
+
+  function sortedDesc<T>(obj: T, sortByKeys?: boolean): T {
+    if (sortByKeys) {
+      // @ts-expect-error
+      return _fromPairs(_reverse(_sortBy(_toPairs(obj), (pair) => pair[0]))) as T
+    }
+
+    return _fromPairs(
+      // @ts-expect-error
+      _toPairs(obj).sort((a: any, b: any) => {
+        return a[1] - b[1]
+      }),
+    ) as T
+  }
+
+  const togglePropertyDetails = (property: string) => async (e: any) => {
+    e.stopPropagation()
+
+    setActiveProperties((events: any) => ({
+      ...events,
+      [property]: !events[property],
+    }))
+
+    if (!details[property]) {
+      setLoadingDetails((events: any) => ({
+        ...events,
+        [property]: true,
+      }))
+
+      try {
+        const data = await getPropertyMetadata(property)
+        setDetails((metadata: any) => ({
+          ...metadata,
+          [property]: data,
+        }))
+      } catch (reason) {
+        console.error(`[ERROR](togglePropertyDetails) Failed to get metadata for property ${property}`, reason)
+        setDetails((metadata: any) => ({
+          ...metadata,
+          [property]: [],
+        }))
+      }
+
+      setLoadingDetails((events: any) => ({
+        ...events,
+        [property]: false,
+      }))
+    }
+  }
+
+  const onModalClose = () => {
+    setDetailsOpened(false)
+
+    // a timeout is needed to prevent the flicker of data fields in the modal when closing
+    setTimeout(() => {
+      setActiveProperties({})
+      setDetails({})
+    }, 300)
+  }
+
+  const onSortBy = (label: string) => {
+    const sortByKeys = label === 'event'
+
+    if (sort.sortByAscend) {
+      setProcessedProperties(sortedDesc(processedProperties, sortByKeys))
+      setSort({
+        label,
+        sortByAscend: false,
+        sortByDescend: true,
+      })
+      return
+    }
+
+    if (sort.sortByDescend) {
+      setProcessedProperties(properties)
+      setSort({
+        label,
+        sortByAscend: false,
+        sortByDescend: false,
+      })
+      return
+    }
+
+    setProcessedProperties(sortedAsc(processedProperties, sortByKeys))
+    setSort({
+      label,
+      sortByAscend: true,
+      sortByDescend: false,
+    })
+  }
+
+  const PropertiesTable = () => (
+    <div className='overflow-y-auto'>
+      <table className='w-full border-separate border-spacing-y-1'>
+        <thead>
+          <tr className='text-base text-gray-900 dark:text-gray-50'>
+            <th
+              className='flex w-2/5 cursor-pointer items-center pl-2 text-left hover:opacity-90 sm:w-4/6'
+              onClick={() => onSortBy('event')}
+            >
+              {t('project.property')}
+              <Sort
+                className='ml-1'
+                sortByAscend={sort.label === 'event' && sort.sortByAscend}
+                sortByDescend={sort.label === 'event' && sort.sortByDescend}
+              />
+            </th>
+            <th className='w-[30%] sm:w-1/6'>
+              <p
+                className='flex cursor-pointer items-center justify-end hover:opacity-90'
+                onClick={() => onSortBy('quantity')}
+              >
+                {t('project.quantity')}
+                <Sort
+                  className='ml-1'
+                  sortByAscend={sort.label === 'quantity' && sort.sortByAscend}
+                  sortByDescend={sort.label === 'quantity' && sort.sortByDescend}
+                />
+                &nbsp;&nbsp;
+              </p>
+            </th>
+            <th className='w-[30%] pr-2 sm:w-1/6'>
+              <p
+                className='flex cursor-pointer items-center justify-end hover:opacity-90'
+                onClick={() => onSortBy('conversion')}
+              >
+                {t('project.conversion')}
+                <Sort
+                  className='ml-1'
+                  sortByAscend={sort.label === 'conversion' && sort.sortByAscend}
+                  sortByDescend={sort.label === 'conversion' && sort.sortByDescend}
+                />
+              </p>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {_map(keysToDisplay, (ev) => (
+            <Fragment key={ev}>
+              <tr
+                className={cx(
+                  'group cursor-pointer text-base text-gray-900 even:bg-gray-50 hover:bg-gray-100 dark:text-gray-50 dark:even:bg-slate-800 hover:dark:bg-slate-700',
+                  {
+                    'animate-pulse bg-gray-100 dark:bg-slate-700': loadingDetails[ev],
+                  },
+                )}
+                onClick={togglePropertyDetails(ev)}
+              >
+                <td className='flex items-center py-1 text-left'>
+                  {loadingDetails[ev] ? (
+                    <Spin className='ml-1 mr-2' />
+                  ) : activeProperties[ev] ? (
+                    <ChevronUpIcon className='h-5 w-auto pl-1 pr-2 text-gray-500 hover:opacity-80 dark:text-gray-300' />
+                  ) : (
+                    <ChevronDownIcon className='h-5 w-auto pl-1 pr-2 text-gray-500 hover:opacity-80 dark:text-gray-300' />
+                  )}
+                  {ev}
+                </td>
+                <td className='py-1 text-right'>
+                  {processedProperties[ev]}
+                  &nbsp;&nbsp;
+                </td>
+                <td className='py-1 pr-2 text-right'>
+                  {uniques === 0 ? 100 : _round((processedProperties[ev] / uniques) * 100, 2)}%
+                </td>
+              </tr>
+              {activeProperties[ev] && !loadingDetails[ev] && (
+                <tr>
+                  <td className='pl-9' colSpan={3}>
+                    <KVTable data={details[ev]} t={t} uniques={uniques} />
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+
+  return (
+    <PanelContainer
+      name={<CustomEventsDropdown onSelect={setActiveTab} title={t('project.properties')} />}
+      type='props'
+      setActiveFragment={setActiveFragment}
+      activeFragment={activeFragment}
+      onExpandClick={() => setDetailsOpened(true)}
+    >
+      <table className='table-fixed'>
+        <thead>
+          <tr className='text-gray-900 dark:text-gray-50'>
+            <th
+              className='flex w-4/6 cursor-pointer items-center text-left hover:opacity-90'
+              onClick={() => onSortBy('event')}
+            >
+              {t('project.property')}
+              <Sort
+                className='ml-1'
+                sortByAscend={sort.label === 'event' && sort.sortByAscend}
+                sortByDescend={sort.label === 'event' && sort.sortByDescend}
+              />
+            </th>
+            <th className='w-1/6 text-right'>
+              <p className='flex cursor-pointer items-center hover:opacity-90' onClick={() => onSortBy('quantity')}>
+                {t('project.quantity')}
+                <Sort
+                  className='ml-1'
+                  sortByAscend={sort.label === 'quantity' && sort.sortByAscend}
+                  sortByDescend={sort.label === 'quantity' && sort.sortByDescend}
+                />
+                &nbsp;&nbsp;
+              </p>
+            </th>
+            <th className='w-1/6 text-right'>
+              <p className='flex cursor-pointer items-center hover:opacity-90' onClick={() => onSortBy('conversion')}>
+                {t('project.conversion')}
+                <Sort
+                  className='ml-1'
+                  sortByAscend={sort.label === 'conversion' && sort.sortByAscend}
+                  sortByDescend={sort.label === 'conversion' && sort.sortByDescend}
+                />
+              </p>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {_map(keysToDisplay, (ev) => (
+            <tr
+              key={ev}
+              className='group cursor-pointer text-gray-900 hover:bg-gray-100 dark:text-gray-50 hover:dark:bg-slate-700'
+              onClick={() => onFilter('ev', ev)}
+            >
+              <td className='flex items-center text-left'>
+                {ev}
+                <FunnelIcon className='ml-2 hidden h-4 w-4 text-gray-500 group-hover:block dark:text-gray-300' />
+              </td>
+              <td className='text-right'>
+                {processedProperties[ev]}
+                &nbsp;&nbsp;
+              </td>
+              <td className='text-right'>
+                {/*
+                  Added a uniques === 0 check because uniques value may be zero and dividing by zero will cause an
+                  Infinity% value to be displayed.
+                */}
+                {uniques === 0 ? 100 : _round((processedProperties[ev] / uniques) * 100, 2)}%
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {/* for pagination in tabs */}
+      {_size(keys) > ENTRIES_PER_CUSTOM_EVENTS_PANEL && (
+        <div className='w-card-toggle-sm absolute bottom-0 sm:!w-card-toggle'>
+          <div className='mb-2 flex select-none justify-between'>
+            <div>
+              <span className='text-xs font-light lowercase text-gray-500 dark:text-gray-200'>
+                {_size(keys)} {t('project.results')}
+              </span>
+              <span className='text-xs font-light text-gray-500 dark:text-gray-200'>
+                . {t('project.page')} {page + 1} / {totalPages}
+              </span>
+            </div>
+            <div className='flex w-[4.5rem] justify-between'>
+              <Button
+                className={cx(
+                  'border-none bg-gray-100 px-1.5 py-0.5 font-light text-gray-500 shadow dark:bg-slate-800 dark:text-gray-200',
+                  {
+                    'cursor-not-allowed opacity-50': !canGoPrev(),
+                    'hover:bg-gray-200 hover:dark:bg-slate-700': canGoPrev(),
+                  },
+                )}
+                type='button'
+                onClick={onPrevious}
+                disabled={!canGoPrev()}
+                focus={false}
+              >
+                <ArrowLongLeftIcon className='h-5 w-5' />
+              </Button>
+              <Button
+                className={cx(
+                  'border-none bg-gray-100 px-1.5 py-0.5 font-light text-gray-500 shadow dark:bg-slate-800 dark:text-gray-200',
+                  {
+                    'cursor-not-allowed opacity-50': !canGoNext(),
+                    'hover:bg-gray-200 hover:dark:bg-slate-700': canGoNext(),
+                  },
+                )}
+                onClick={onNext}
+                disabled={!canGoNext()}
+                type='button'
+                focus={false}
+              >
+                <ArrowLongRightIcon className='h-5 w-5' />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      <Modal
+        onClose={onModalClose}
+        isOpened={detailsOpened}
+        title={t('project.properties')}
+        message={<PropertiesTable />}
+        size='large'
+      />
+    </PanelContainer>
+  )
+}
+
+const Metadata = (props: IMetadata) => {
+  const [activeTab, setActiveTab] = useState<'customEv' | 'properties'>('customEv')
+
+  if (activeTab === 'customEv') {
+    return <CustomEvents {...props} setActiveTab={setActiveTab} />
+  }
+
+  return <PageProperties {...props} setActiveTab={setActiveTab} />
 }
 
 interface IPanel {
@@ -1198,6 +1607,6 @@ const Panel = ({
 }
 
 const PanelMemo = memo(Panel)
-const CustomEventsMemo = memo(CustomEvents)
+const MetadataMemo = memo(Metadata)
 
-export { PanelMemo as Panel, CustomEventsMemo as CustomEvents }
+export { PanelMemo as Panel, MetadataMemo as Metadata }

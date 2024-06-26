@@ -137,9 +137,10 @@ import {
   getErrors,
   getError,
   updateErrorStatus,
+  getPropertyMetadata,
 } from 'api'
 import { getChartPrediction } from 'api/ai'
-import { Panel, CustomEvents } from './Panels'
+import { Panel, Metadata } from './Panels'
 import {
   onCSVExportClick,
   getFormatDate,
@@ -192,6 +193,7 @@ import { IError } from './interfaces/error'
 import NoErrorDetails from './components/NoErrorDetails'
 import WaitingForAnError from './components/WaitingForAnError'
 import NoSessionDetails from './components/NoSessionDetails'
+import { ICustoms, IParams, IProperties, ITrafficLogResponse } from './interfaces/traffic'
 const SwetrixSDK = require('@swetrix/sdk')
 
 const CUSTOM_EV_DROPDOWN_MAX_VISIBLE_LENGTH = 32
@@ -351,9 +353,15 @@ const ViewProject = ({
   // similar areFiltersParsed and areFiltersPerfParsed but using for timeBucket
   const [areTimeBucketParsed, setAreTimeBucketParsed] = useState<boolean>(false)
 
-  // panelsData is a data used for components <Panels /> and <CustomEvents />,
+  // panelsData is a data used for components <Panels /> and <Metadata />,
   // also using for logic with custom events on chart and export data like csv
-  const [panelsData, setPanelsData] = useState<any>({})
+  const [panelsData, setPanelsData] = useState<{
+    types: (keyof IParams)[]
+    data: IParams
+    customs: ICustoms
+    properties: IProperties
+    // @ts-expect-error
+  }>({})
   const [overall, setOverall] = useState<Partial<IOverallObject>>({})
   const [overallPerformance, setOverallPerformance] = useState<Partial<IOverallPerformanceObject>>({})
   // isPanelsDataEmpty is a true we are display components <NoEvents /> and do not show dropdowns with activeChartMetrics
@@ -1176,15 +1184,12 @@ const ViewProject = ({
 
     setDataLoading(true)
     try {
-      let data: {
-        timeBucket?: any
-        chart?: any
-        params?: any
-        customs?: any
-        appliedFilters?: any
+      let data: ITrafficLogResponse & {
         overall?: IOverallObject
       }
-      let dataCompare
+      let dataCompare: ITrafficLogResponse & {
+        overall?: IOverallObject
+      }
       let key = ''
       let keyCompare = ''
       let from
@@ -1264,6 +1269,7 @@ const ViewProject = ({
           }
         }
 
+        // @ts-expect-error
         setProjectCache(id, dataCompare, keyCompare)
       }
 
@@ -1362,19 +1368,21 @@ const ViewProject = ({
         return
       }
 
-      const { chart, params, customs, appliedFilters } = data
+      const { chart, params, customs, properties, appliedFilters } = data
       let newTimebucket = timeBucket
       sdkInstance?._emitEvent('load', sdkData)
 
       if (period === KEY_FOR_ALL_TIME && !_isEmpty(data.timeBucket)) {
-        // eslint-disable-next-line prefer-destructuring
+        // @ts-expect-error
         newTimebucket = _includes(data.timeBucket, timeBucket) ? timeBucket : data.timeBucket[0]
+        // @ts-expect-error
         setPeriodPairs((prev) => {
           // find in prev state period === KEY_FOR_ALL_TIME and change tbs
           const newPeriodPairs = _map(prev, (item) => {
             if (item.period === KEY_FOR_ALL_TIME) {
               return {
                 ...item,
+                // @ts-expect-error
                 tbs: data.timeBucket.length > 2 ? [data.timeBucket[0], data.timeBucket[1]] : data.timeBucket,
               }
             }
@@ -1386,14 +1394,18 @@ const ViewProject = ({
       }
 
       if (!_isEmpty(appliedFilters)) {
+        // @ts-expect-error
         setFilters(appliedFilters)
       }
 
+      // @ts-expect-error
       if (!_isEmpty(dataCompare)) {
+        // @ts-expect-error
         if (!_isEmpty(dataCompare?.chart)) {
           setDataChartCompare(dataCompare.chart)
         }
 
+        // @ts-expect-error
         if (!_isEmpty(dataCompare?.overall)) {
           setOverallCompare(dataCompare.overall)
         }
@@ -1413,6 +1425,7 @@ const ViewProject = ({
           rotateXAxis,
           chartType,
           customEventsChart,
+          // @ts-expect-error
           dataCompare?.chart,
         )
         setChartData(chart)
@@ -1421,6 +1434,7 @@ const ViewProject = ({
           types: _keys(params),
           data: params,
           customs,
+          properties,
         })
 
         if (activeTab === PROJECT_TABS.traffic) {
@@ -1461,6 +1475,23 @@ const ViewProject = ({
     }
 
     return getCustomEventsMetadata(id, event, timeBucket, period, '', '', timezone, projectPassword)
+  }
+
+  const _getPropertyMetadata = async (event: string) => {
+    if (period === 'custom' && dateRange) {
+      return getPropertyMetadata(
+        id,
+        event,
+        timeBucket,
+        '',
+        getFormatDate(dateRange[0]),
+        getFormatDate(dateRange[1]),
+        timezone,
+        projectPassword,
+      )
+    }
+
+    return getPropertyMetadata(id, event, timeBucket, period, '', '', timezone, projectPassword)
   }
 
   const loadError = useCallback(
@@ -4725,12 +4756,14 @@ const ViewProject = ({
                         )
                       })}
                     {!_isEmpty(panelsData.customs) && (
-                      <CustomEvents
+                      <Metadata
                         customs={panelsData.customs}
+                        properties={panelsData.properties}
                         onFilter={filterHandler}
                         chartData={chartData}
                         customTabs={_filter(customPanelTabs, (tab) => tab.panelID === 'ce')}
                         getCustomEventMetadata={getCustomEventMetadata}
+                        getPropertyMetadata={_getPropertyMetadata}
                       />
                     )}
                   </div>

@@ -635,6 +635,7 @@
     "support": "Contact support"
   },
   "project": {
+    "metadata": "Metadata",
     "search": "Search",
     "loadMore": "Load more",
     "unknownCountry": "Unknown country",
@@ -716,6 +717,7 @@
     "ratio": "Ratio",
     "customEv": "Custom events",
     "properties": "Properties",
+    "property": "Property",
     "noParamData": "No data for this parameter yet",
     "conflictMetric": "The metric you selected conflicts with an already selected one",
     "prev": "Previous",

@@ -406,6 +406,31 @@ export const getCustomEventsMetadata = (
       throw _isEmpty(error.response.data?.message) ? error.response.data : error.response.data.message
     })
 
+export const getPropertyMetadata = (
+  pid: string,
+  property: string,
+  tb: string = 'hour',
+  period: string = '1d',
+  from: string = '',
+  to: string = '',
+  timezone: string = '',
+  password: string | undefined = '',
+) =>
+  api
+    .get(
+      `log/property?pid=${pid}&timeBucket=${tb}&period=${period}&from=${from}&to=${to}&timezone=${timezone}&property=${property}`,
+      {
+        headers: {
+          'x-password': password,
+        },
+      },
+    )
+    .then((response) => response.data)
+    .catch((error) => {
+      debug('%s', error)
+      throw _isEmpty(error.response.data?.message) ? error.response.data : error.response.data.message
+    })
+
 export const getProjectCompareData = (
   pid: string,
   tb: string = 'hour',
