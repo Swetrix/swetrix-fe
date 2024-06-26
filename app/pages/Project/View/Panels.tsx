@@ -194,7 +194,7 @@ const PanelContainer = ({
         )}
 
         {/* if this tab using Circle showing stats panel */}
-        {(type === 'ce' || type === 'props' || type === 'os' || type === 'br' || type === 'dv') && (
+        {(type === 'ce' || type === 'os' || type === 'br' || type === 'dv') && (
           <ChartPieIcon
             className={cx(iconClassName, 'ml-2 cursor-pointer', {
               'text-slate-900 dark:text-gray-50': activeFragment === 1,
@@ -661,6 +661,20 @@ const CustomEvents = ({
     </div>
   )
 
+  if (_isEmpty(customs)) {
+    return (
+      <PanelContainer
+        name={<CustomEventsDropdown onSelect={setActiveTab} title={t('project.customEv')} />}
+        type='ce'
+        setActiveFragment={setActiveFragment}
+        activeFragment={activeFragment}
+        onExpandClick={() => setDetailsOpened(true)}
+      >
+        <p className='mt-1 text-base text-gray-700 dark:text-gray-300'>{t('project.noParamData')}</p>
+      </PanelContainer>
+    )
+  }
+
   // for showing chart circle of stats a data
   if (activeFragment === 1 && !_isEmpty(chartData)) {
     return (
@@ -1088,6 +1102,20 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
       </table>
     </div>
   )
+
+  if (_isEmpty(properties)) {
+    return (
+      <PanelContainer
+        name={<CustomEventsDropdown onSelect={setActiveTab} title={t('project.properties')} />}
+        type='props'
+        setActiveFragment={setActiveFragment}
+        activeFragment={activeFragment}
+        onExpandClick={() => setDetailsOpened(true)}
+      >
+        <p className='mt-1 text-base text-gray-700 dark:text-gray-300'>{t('project.noParamData')}</p>
+      </PanelContainer>
+    )
+  }
 
   return (
     <PanelContainer

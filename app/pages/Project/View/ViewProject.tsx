@@ -4755,17 +4755,15 @@ const ViewProject = ({
                           />
                         )
                       })}
-                    {!_isEmpty(panelsData.customs) && (
-                      <Metadata
-                        customs={panelsData.customs}
-                        properties={panelsData.properties}
-                        onFilter={filterHandler}
-                        chartData={chartData}
-                        customTabs={_filter(customPanelTabs, (tab) => tab.panelID === 'ce')}
-                        getCustomEventMetadata={getCustomEventMetadata}
-                        getPropertyMetadata={_getPropertyMetadata}
-                      />
-                    )}
+                    <Metadata
+                      customs={panelsData.customs}
+                      properties={panelsData.properties}
+                      onFilter={filterHandler}
+                      chartData={chartData}
+                      customTabs={_filter(customPanelTabs, (tab) => tab.panelID === 'ce')}
+                      getCustomEventMetadata={getCustomEventMetadata}
+                      getPropertyMetadata={_getPropertyMetadata}
+                    />
                   </div>
                 </div>
               )}
