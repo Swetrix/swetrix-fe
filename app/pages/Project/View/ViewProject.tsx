@@ -146,7 +146,6 @@ import {
   getFormatDate,
   panelIconMapping,
   typeNameMapping,
-  validFilters,
   validPeriods,
   validTimeBacket,
   noRegionPeriods,
@@ -165,6 +164,7 @@ import {
   SHORTCUTS_TIMEBUCKETS_LISTENERS,
   CHART_MEASURES_MAPPING_PERF,
   ERROR_FILTERS_MAPPING,
+  isFilterValid,
 } from './ViewProject.helpers'
 import CCRow from './components/CCRow'
 import FunnelsList from './components/FunnelsList'
@@ -2167,6 +2167,8 @@ const ViewProject = ({
     }
 
     if (activeTab === PROJECT_TABS.traffic) {
+      console.log('col / fil:', column, filter)
+
       // eslint-disable-next-line no-lonely-if
       if (_find(filters, (f) => f.filter === filter) /* && f.filter === filter) */) {
         // selected filter is already included into the filters array -> removing it
@@ -2206,6 +2208,8 @@ const ViewProject = ({
       loadAnalytics(true, newFilters)
     }
   }
+
+  console.log('filters:', filters)
 
   const onFilterSearch = (
     items: {
@@ -2743,7 +2747,7 @@ const ViewProject = ({
 
           const keyPerf = _replace(key, '_perf', '')
 
-          if (!_includes(validFilters, keyPerf)) {
+          if (!isFilterValid(keyPerf)) {
             return
           }
 
@@ -2767,7 +2771,7 @@ const ViewProject = ({
         const initialFilters: any[] = []
         // eslint-disable-next-line lodash/prefer-lodash-method
         searchParams.forEach((value, key) => {
-          if (!_includes(validFilters, key)) {
+          if (!isFilterValid(key, true)) {
             return
           }
 
@@ -2799,7 +2803,7 @@ const ViewProject = ({
 
         const keySess = _replace(key, '_sess', '')
 
-        if (!_includes(validFilters, keySess)) {
+        if (!isFilterValid(keySess)) {
           return
         }
 
@@ -2833,7 +2837,7 @@ const ViewProject = ({
 
         const keyErr = _replace(key, '_err', '')
 
-        if (!_includes(validFilters, keyErr)) {
+        if (!isFilterValid(keyErr)) {
           return
         }
 
@@ -3257,7 +3261,7 @@ const ViewProject = ({
     const { searchParams } = url
     // eslint-disable-next-line lodash/prefer-lodash-method
     searchParams.forEach((value, key) => {
-      if (!_includes(validFilters, key)) {
+      if (!isFilterValid(key, true)) {
         return
       }
       searchParams.delete(key)

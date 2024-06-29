@@ -330,10 +330,11 @@ interface IKVTable {
   data: any
   t: typeof i18next.t
   uniques: number
+  onClick: (key: string, value: string) => void
   displayKeyAsHeader?: boolean
 }
 
-const KVTable = ({ data, t, uniques, displayKeyAsHeader }: IKVTable) => {
+const KVTable = ({ data, t, uniques, displayKeyAsHeader, onClick }: IKVTable) => {
   const processed = useMemo(() => {
     return _reduce(
       data,
@@ -377,7 +378,10 @@ const KVTable = ({ data, t, uniques, displayKeyAsHeader }: IKVTable) => {
           {_map(value, ({ value: nestedValue, count }) => (
             <tr
               key={nestedValue}
-              className='group py-3 text-gray-900 even:bg-gray-50 hover:bg-gray-100 dark:text-gray-50 dark:even:bg-slate-800 hover:dark:bg-slate-700'
+              onClick={() => {
+                onClick(key, nestedValue)
+              }}
+              className='group cursor-pointer py-3 text-gray-900 even:bg-gray-50 hover:bg-gray-100 dark:text-gray-50 dark:even:bg-slate-800 hover:dark:bg-slate-700'
             >
               <td className='flex items-center py-1 pl-2 text-left'>{nestedValue}</td>
               <td className='py-1 text-right'>
@@ -391,6 +395,34 @@ const KVTable = ({ data, t, uniques, displayKeyAsHeader }: IKVTable) => {
       </table>
     )
   })
+}
+
+function sortAsc<T>(obj: T, sortByKeys?: boolean): T {
+  if (sortByKeys) {
+    // @ts-expect-error
+    return _fromPairs(_sortBy(_toPairs(obj), (pair) => pair[0])) as T
+  }
+
+  return _fromPairs(
+    // @ts-expect-error
+    _toPairs(obj).sort((a: any, b: any) => {
+      return b[1] - a[1]
+    }),
+  ) as T
+}
+
+function sortDesc<T>(obj: T, sortByKeys?: boolean): T {
+  if (sortByKeys) {
+    // @ts-expect-error
+    return _fromPairs(_reverse(_sortBy(_toPairs(obj), (pair) => pair[0]))) as T
+  }
+
+  return _fromPairs(
+    // @ts-expect-error
+    _toPairs(obj).sort((a: any, b: any) => {
+      return a[1] - b[1]
+    }),
+  ) as T
 }
 
 const CustomEvents = ({
@@ -459,30 +491,6 @@ const CustomEvents = ({
     }
   }
 
-  const sortedAsc = (obj: any, sortByKeys?: boolean) => {
-    if (sortByKeys) {
-      return _fromPairs(_sortBy(_toPairs(obj), (pair) => pair[0]))
-    }
-
-    return _fromPairs(
-      _toPairs(obj).sort((a: any, b: any) => {
-        return b[1] - a[1]
-      }),
-    )
-  }
-
-  const sortedDesc = (obj: any, sortByKeys?: boolean) => {
-    if (sortByKeys) {
-      return _fromPairs(_reverse(_sortBy(_toPairs(obj), (pair) => pair[0])))
-    }
-
-    return _fromPairs(
-      _toPairs(obj).sort((a: any, b: any) => {
-        return a[1] - b[1]
-      }),
-    )
-  }
-
   const toggleEventMetadata = (ev: string) => async (e: any) => {
     e.stopPropagation()
 
@@ -532,7 +540,7 @@ const CustomEvents = ({
     const sortByKeys = label === 'event'
 
     if (sort.sortByAscend) {
-      setCustomsEventsData(sortedDesc(customsEventsData, sortByKeys))
+      setCustomsEventsData(sortDesc(customsEventsData, sortByKeys))
       setSort({
         label,
         sortByAscend: false,
@@ -551,7 +559,7 @@ const CustomEvents = ({
       return
     }
 
-    setCustomsEventsData(sortedAsc(customsEventsData, sortByKeys))
+    setCustomsEventsData(sortAsc(customsEventsData, sortByKeys))
     setSort({
       label,
       sortByAscend: true,
@@ -650,7 +658,7 @@ const CustomEvents = ({
               {activeEvents[ev] && !loadingEvents[ev] && (
                 <tr>
                   <td className='pl-9' colSpan={3}>
-                    <KVTable data={eventsMetadata[ev]} t={t} uniques={uniques} displayKeyAsHeader />
+                    <KVTable data={eventsMetadata[ev]} t={t} uniques={uniques} onClick={() => {}} displayKeyAsHeader />
                   </td>
                 </tr>
               )}
@@ -910,34 +918,6 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
     }
   }
 
-  function sortedAsc<T>(obj: T, sortByKeys?: boolean): T {
-    if (sortByKeys) {
-      // @ts-expect-error
-      return _fromPairs(_sortBy(_toPairs(obj), (pair) => pair[0])) as T
-    }
-
-    return _fromPairs(
-      // @ts-expect-error
-      _toPairs(obj).sort((a: any, b: any) => {
-        return b[1] - a[1]
-      }),
-    ) as T
-  }
-
-  function sortedDesc<T>(obj: T, sortByKeys?: boolean): T {
-    if (sortByKeys) {
-      // @ts-expect-error
-      return _fromPairs(_reverse(_sortBy(_toPairs(obj), (pair) => pair[0]))) as T
-    }
-
-    return _fromPairs(
-      // @ts-expect-error
-      _toPairs(obj).sort((a: any, b: any) => {
-        return a[1] - b[1]
-      }),
-    ) as T
-  }
-
   const togglePropertyDetails = (property: string) => async (e: any) => {
     e.stopPropagation()
 
@@ -987,7 +967,7 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
     const sortByKeys = label === 'event'
 
     if (sort.sortByAscend) {
-      setProcessedProperties(sortedDesc(processedProperties, sortByKeys))
+      setProcessedProperties(sortDesc(processedProperties, sortByKeys))
       setSort({
         label,
         sortByAscend: false,
@@ -1006,7 +986,7 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
       return
     }
 
-    setProcessedProperties(sortedAsc(processedProperties, sortByKeys))
+    setProcessedProperties(sortAsc(processedProperties, sortByKeys))
     setSort({
       label,
       sortByAscend: true,
@@ -1060,39 +1040,46 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
           </tr>
         </thead>
         <tbody>
-          {_map(keysToDisplay, (ev) => (
-            <Fragment key={ev}>
+          {_map(keysToDisplay, (tag) => (
+            <Fragment key={tag}>
               <tr
                 className={cx(
                   'group cursor-pointer text-base text-gray-900 even:bg-gray-50 hover:bg-gray-100 dark:text-gray-50 dark:even:bg-slate-800 hover:dark:bg-slate-700',
                   {
-                    'animate-pulse bg-gray-100 dark:bg-slate-700': loadingDetails[ev],
+                    'animate-pulse bg-gray-100 dark:bg-slate-700': loadingDetails[tag],
                   },
                 )}
-                onClick={togglePropertyDetails(ev)}
+                onClick={togglePropertyDetails(tag)}
               >
                 <td className='flex items-center py-1 text-left'>
-                  {loadingDetails[ev] ? (
+                  {loadingDetails[tag] ? (
                     <Spin className='ml-1 mr-2' />
-                  ) : activeProperties[ev] ? (
+                  ) : activeProperties[tag] ? (
                     <ChevronUpIcon className='h-5 w-auto pl-1 pr-2 text-gray-500 hover:opacity-80 dark:text-gray-300' />
                   ) : (
                     <ChevronDownIcon className='h-5 w-auto pl-1 pr-2 text-gray-500 hover:opacity-80 dark:text-gray-300' />
                   )}
-                  {ev}
+                  {tag}
                 </td>
                 <td className='py-1 text-right'>
-                  {processedProperties[ev]}
+                  {processedProperties[tag]}
                   &nbsp;&nbsp;
                 </td>
                 <td className='py-1 pr-2 text-right'>
-                  {uniques === 0 ? 100 : _round((processedProperties[ev] / uniques) * 100, 2)}%
+                  {uniques === 0 ? 100 : _round((processedProperties[tag] / uniques) * 100, 2)}%
                 </td>
               </tr>
-              {activeProperties[ev] && !loadingDetails[ev] && (
+              {activeProperties[tag] && !loadingDetails[tag] && (
                 <tr>
                   <td className='pl-9' colSpan={3}>
-                    <KVTable data={details[ev]} t={t} uniques={uniques} />
+                    <KVTable
+                      data={details[tag]}
+                      t={t}
+                      uniques={uniques}
+                      onClick={(key, value) => {
+                        onFilter(`tag:key:${key}`, value)
+                      }}
+                    />
                   </td>
                 </tr>
               )}
@@ -1163,18 +1150,18 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
           </tr>
         </thead>
         <tbody>
-          {_map(keysToDisplay, (ev) => (
+          {_map(keysToDisplay, (tag) => (
             <tr
-              key={ev}
+              key={tag}
               className='group cursor-pointer text-gray-900 hover:bg-gray-100 dark:text-gray-50 hover:dark:bg-slate-700'
-              onClick={() => onFilter('ev', ev)}
+              onClick={() => onFilter('tag:key', tag)}
             >
               <td className='flex items-center text-left'>
-                {ev}
+                {tag}
                 <FunnelIcon className='ml-2 hidden h-4 w-4 text-gray-500 group-hover:block dark:text-gray-300' />
               </td>
               <td className='text-right'>
-                {processedProperties[ev]}
+                {processedProperties[tag]}
                 &nbsp;&nbsp;
               </td>
               <td className='text-right'>
@@ -1182,7 +1169,7 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
                   Added a uniques === 0 check because uniques value may be zero and dividing by zero will cause an
                   Infinity% value to be displayed.
                 */}
-                {uniques === 0 ? 100 : _round((processedProperties[ev] / uniques) * 100, 2)}%
+                {uniques === 0 ? 100 : _round((processedProperties[tag] / uniques) * 100, 2)}%
               </td>
             </tr>
           ))}

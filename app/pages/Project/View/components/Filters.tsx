@@ -3,6 +3,8 @@ import type i18next from 'i18next'
 import cx from 'clsx'
 import _truncate from 'lodash/truncate'
 import _map from 'lodash/map'
+import _startsWith from 'lodash/startsWith'
+import _replace from 'lodash/replace'
 import { useTranslation } from 'react-i18next'
 
 import countries from 'utils/isoCountries'
@@ -39,7 +41,7 @@ export const Filter = ({
   canChangeExclusive,
   removable,
 }: IFilter): JSX.Element => {
-  const displayColumn = tnMapping[column]
+  let displayColumn = tnMapping[column]
   let displayFilter = filter
 
   if (column === 'cc') {
@@ -53,6 +55,22 @@ export const Filter = ({
   if (column === 'lc') {
     displayFilter = getLocaleDisplayName(displayFilter, language)
   }
+
+  if (_startsWith(column, 'ev:key:')) {
+    const key = _replace(column, /^ev:key:/, '')
+    displayColumn = t('project.metamapping.ev.dynamicKey', {
+      key,
+    })
+  }
+
+  if (_startsWith(column, 'tag:key:')) {
+    const key = _replace(column, /^tag:key:/, '')
+    displayColumn = t('project.metamapping.tag.dynamicKey', {
+      key,
+    })
+  }
+
+  console.log('display filter:', column, filter)
 
   const truncatedFilter = _truncate(displayFilter)
 
