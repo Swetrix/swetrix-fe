@@ -1486,12 +1486,13 @@ const ViewProject = ({
         '',
         getFormatDate(dateRange[0]),
         getFormatDate(dateRange[1]),
+        filters,
         timezone,
         projectPassword,
       )
     }
 
-    return getPropertyMetadata(id, event, timeBucket, period, '', '', timezone, projectPassword)
+    return getPropertyMetadata(id, event, timeBucket, period, '', '', filters, timezone, projectPassword)
   }
 
   const loadError = useCallback(

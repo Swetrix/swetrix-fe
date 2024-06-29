@@ -933,10 +933,10 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
       }))
 
       try {
-        const data = await getPropertyMetadata(property)
+        const { result } = await getPropertyMetadata(property)
         setDetails((metadata: any) => ({
           ...metadata,
-          [property]: data,
+          [property]: result,
         }))
       } catch (reason) {
         console.error(`[ERROR](togglePropertyDetails) Failed to get metadata for property ${property}`, reason)

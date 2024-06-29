@@ -413,12 +413,15 @@ export const getPropertyMetadata = (
   period: string = '1d',
   from: string = '',
   to: string = '',
+  filters: string[] = [],
   timezone: string = '',
   password: string | undefined = '',
 ) =>
   api
     .get(
-      `log/property?pid=${pid}&timeBucket=${tb}&period=${period}&from=${from}&to=${to}&timezone=${timezone}&property=${property}`,
+      `log/property?pid=${pid}&timeBucket=${tb}&period=${period}&from=${from}&to=${to}&timezone=${timezone}&property=${property}&filters=${JSON.stringify(
+        filters,
+      )}`,
       {
         headers: {
           'x-password': password,
