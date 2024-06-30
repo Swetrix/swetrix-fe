@@ -2092,7 +2092,7 @@ const ViewProject = ({
   )
 
   // this funtion is used for requesting the data from the API when the filter is changed
-  const filterHandler = (column: string, filter: any, isExclusive = false) => {
+  const filterHandler = async (column: string, filter: any, isExclusive = false) => {
     let newFilters
     let newFiltersPerf
     let newFiltersSessions
@@ -2168,8 +2168,6 @@ const ViewProject = ({
     }
 
     if (activeTab === PROJECT_TABS.traffic) {
-      console.log('col / fil:', column, filter)
-
       // eslint-disable-next-line no-lonely-if
       if (_find(filters, (f) => f.filter === filter) /* && f.filter === filter) */) {
         // selected filter is already included into the filters array -> removing it
@@ -2204,13 +2202,11 @@ const ViewProject = ({
 
     sdkInstance?._emitEvent('filtersupdate', newFilters)
     if (activeTab === PROJECT_TABS.performance) {
-      loadAnalyticsPerf(true, newFiltersPerf)
+      await loadAnalyticsPerf(true, newFiltersPerf)
     } else if (activeTab === PROJECT_TABS.traffic) {
-      loadAnalytics(true, newFilters)
+      await loadAnalytics(true, newFilters)
     }
   }
-
-  console.log('filters:', filters)
 
   const onFilterSearch = (
     items: {
@@ -4763,6 +4759,7 @@ const ViewProject = ({
                     <Metadata
                       customs={panelsData.customs}
                       properties={panelsData.properties}
+                      filters={filters}
                       onFilter={filterHandler}
                       chartData={chartData}
                       customTabs={_filter(customPanelTabs, (tab) => tab.panelID === 'ce')}

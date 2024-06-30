@@ -70,8 +70,6 @@ export const Filter = ({
     })
   }
 
-  console.log('display filter:', column, filter)
-
   const truncatedFilter = _truncate(displayFilter)
 
   return (

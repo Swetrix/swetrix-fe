@@ -306,7 +306,8 @@ interface IMetadata {
   customs: ICustoms
   properties: IProperties
   chartData: any
-  onFilter: any
+  filters: any[]
+  onFilter: (column: string, filter: any, isExclusive?: boolean) => Promise<void>
   getCustomEventMetadata: (event: string) => Promise<any>
   getPropertyMetadata: (property: string) => Promise<any>
   customTabs: any
@@ -383,7 +384,10 @@ const KVTable = ({ data, t, uniques, displayKeyAsHeader, onClick }: IKVTable) =>
               }}
               className='group cursor-pointer py-3 text-gray-900 even:bg-gray-50 hover:bg-gray-100 dark:text-gray-50 dark:even:bg-slate-800 hover:dark:bg-slate-700'
             >
-              <td className='flex items-center py-1 pl-2 text-left'>{nestedValue}</td>
+              <td className='flex items-center py-1 pl-2 text-left'>
+                {nestedValue}
+                <FunnelIcon className='ml-2 hidden h-4 w-4 text-gray-500 group-hover:block dark:text-gray-300' />
+              </td>
               <td className='py-1 text-right'>
                 {count}
                 &nbsp;&nbsp;
@@ -428,6 +432,7 @@ function sortDesc<T>(obj: T, sortByKeys?: boolean): T {
 const CustomEvents = ({
   customs,
   chartData,
+  filters,
   onFilter,
   customTabs = [],
   getCustomEventMetadata,
@@ -440,6 +445,7 @@ const CustomEvents = ({
   const [loadingEvents, setLoadingEvents] = useState<any>({})
   const [eventsMetadata, setEventsMetadata] = useState<any>({})
   const [customsEventsData, setCustomsEventsData] = useState<any>(customs)
+  const [triggerEventWhenFiltersChange, setTriggerEventWhenFiltersChange] = useState<string | null>(null)
   const currentIndex = page * ENTRIES_PER_CUSTOM_EVENTS_PANEL
   const keys = _keys(customsEventsData)
   const keysToDisplay = useMemo(
@@ -479,6 +485,16 @@ const CustomEvents = ({
     setPage(0)
   }, [chartData])
 
+  useEffect(() => {
+    if (!triggerEventWhenFiltersChange) {
+      return
+    }
+
+    toggleEventMetadata(triggerEventWhenFiltersChange)()
+    setTriggerEventWhenFiltersChange(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, triggerEventWhenFiltersChange])
+
   const onPrevious = () => {
     if (canGoPrev()) {
       setPage(page - 1)
@@ -491,15 +507,18 @@ const CustomEvents = ({
     }
   }
 
-  const toggleEventMetadata = (ev: string) => async (e: any) => {
-    e.stopPropagation()
+  // is "e" is not set, then details loading is forced and all checks are skipped
+  const toggleEventMetadata = (ev: string) => async (e?: React.MouseEvent<HTMLTableRowElement>) => {
+    if (e) {
+      e.stopPropagation()
 
-    setActiveEvents((events: any) => ({
-      ...events,
-      [ev]: !events[ev],
-    }))
+      setActiveEvents((events: any) => ({
+        ...events,
+        [ev]: !events[ev],
+      }))
+    }
 
-    if (!eventsMetadata[ev]) {
+    if (!e || !eventsMetadata[ev]) {
       setLoadingEvents((events: any) => ({
         ...events,
         [ev]: true,
@@ -658,7 +677,16 @@ const CustomEvents = ({
               {activeEvents[ev] && !loadingEvents[ev] && (
                 <tr>
                   <td className='pl-9' colSpan={3}>
-                    <KVTable data={eventsMetadata[ev]} t={t} uniques={uniques} onClick={() => {}} displayKeyAsHeader />
+                    <KVTable
+                      data={eventsMetadata[ev]}
+                      t={t}
+                      uniques={uniques}
+                      onClick={async (key, value) => {
+                        await onFilter(`ev:key:${key}`, value)
+                        setTriggerEventWhenFiltersChange(ev)
+                      }}
+                      displayKeyAsHeader
+                    />
                   </td>
                 </tr>
               )}
@@ -860,7 +888,14 @@ const CustomEvents = ({
   )
 }
 
-const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, setActiveTab }: IPageProperties) => {
+const PageProperties = ({
+  properties,
+  chartData,
+  onFilter,
+  filters,
+  getPropertyMetadata,
+  setActiveTab,
+}: IPageProperties) => {
   const { t } = useTranslation('common')
   const [page, setPage] = useState(0)
   const [detailsOpened, setDetailsOpened] = useState(false)
@@ -876,6 +911,7 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
   )
   const uniques = _sum(chartData.uniques)
   const [activeFragment, setActiveFragment] = useState<number>(0)
+  const [triggerTagWhenFiltersChange, setTriggerTagWhenFiltersChange] = useState<string | null>(null)
   const totalPages = useMemo(() => _ceil(_size(keys) / ENTRIES_PER_CUSTOM_EVENTS_PANEL), [keys])
   const canGoPrev = () => page > 0
   const canGoNext = () => page < _floor((_size(keys) - 1) / ENTRIES_PER_CUSTOM_EVENTS_PANEL)
@@ -918,15 +954,28 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
     }
   }
 
-  const togglePropertyDetails = (property: string) => async (e: any) => {
-    e.stopPropagation()
+  useEffect(() => {
+    if (!triggerTagWhenFiltersChange) {
+      return
+    }
 
-    setActiveProperties((events: any) => ({
-      ...events,
-      [property]: !events[property],
-    }))
+    togglePropertyDetails(triggerTagWhenFiltersChange)()
+    setTriggerTagWhenFiltersChange(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, triggerTagWhenFiltersChange])
 
-    if (!details[property]) {
+  // is "e" is not set, then details loading is forced and all checks are skipped
+  const togglePropertyDetails = (property: string) => async (e?: React.MouseEvent<HTMLTableRowElement>) => {
+    if (e) {
+      e.stopPropagation()
+
+      setActiveProperties((events: any) => ({
+        ...events,
+        [property]: !events[property],
+      }))
+    }
+
+    if (!e || !details[property]) {
       setLoadingDetails((events: any) => ({
         ...events,
         [property]: true,
@@ -1076,8 +1125,9 @@ const PageProperties = ({ properties, chartData, onFilter, getPropertyMetadata, 
                       data={details[tag]}
                       t={t}
                       uniques={uniques}
-                      onClick={(key, value) => {
-                        onFilter(`tag:key:${key}`, value)
+                      onClick={async (key, value) => {
+                        await onFilter(`tag:key:${key}`, value)
+                        setTriggerTagWhenFiltersChange(tag)
                       }}
                     />
                   </td>
