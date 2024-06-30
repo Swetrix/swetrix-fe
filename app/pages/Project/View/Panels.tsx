@@ -525,10 +525,10 @@ const CustomEvents = ({
       }))
 
       try {
-        const data = await getCustomEventMetadata(ev)
+        const { result } = await getCustomEventMetadata(ev)
         setEventsMetadata((metadata: any) => ({
           ...metadata,
-          [ev]: data,
+          [ev]: result,
         }))
       } catch (reason) {
         console.error(`[ERROR](toggleEventMetadata) Failed to get metadata for event ${ev}`, reason)
