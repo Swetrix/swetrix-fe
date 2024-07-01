@@ -1,7 +1,9 @@
+import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import React, { memo } from 'react'
 import type i18next from 'i18next'
 import cx from 'clsx'
 import _truncate from 'lodash/truncate'
+import _isEmpty from 'lodash/isEmpty'
 import _map from 'lodash/map'
 import _startsWith from 'lodash/startsWith'
 import _replace from 'lodash/replace'
@@ -76,7 +78,7 @@ export const Filter = ({
     <span
       title={truncatedFilter === displayFilter ? undefined : displayFilter}
       className={cx(
-        'mr-2 mt-2 inline-flex items-center rounded-md bg-gray-200 py-0.5 pl-2.5 pr-1 text-sm font-medium text-gray-800 dark:bg-slate-800 dark:text-gray-50',
+        'm-1 inline-flex items-center rounded-md bg-gray-50 py-0.5 pl-2.5 pr-1 text-sm font-medium text-gray-800 dark:bg-slate-800 dark:text-gray-50',
         {
           'pr-2': !removable,
         },
@@ -124,34 +126,48 @@ interface IFilters {
   // eslint-disable-next-line no-shadow
   onChangeExclusive: (column: string, filter: string, isExclusive: boolean) => void
   tnMapping: Record<string, string>
+  resetFilters: () => void
 }
 
-const Filters = ({ filters, onRemoveFilter, onChangeExclusive, tnMapping }: IFilters) => {
+const Filters = ({ filters, onRemoveFilter, onChangeExclusive, tnMapping, resetFilters }: IFilters) => {
   const {
     t,
     i18n: { language },
   } = useTranslation('common')
 
-  return (
-    <div className='-mt-2 flex flex-wrap justify-center md:justify-start'>
-      {_map(filters, (props) => {
-        const { column, filter } = props
-        const key = `${column}${filter}`
+  if (_isEmpty(filters)) {
+    return null
+  }
 
-        return (
-          <Filter
-            key={key}
-            onRemoveFilter={onRemoveFilter}
-            onChangeExclusive={onChangeExclusive}
-            language={language}
-            t={t}
-            tnMapping={tnMapping}
-            canChangeExclusive
-            removable
-            {...props}
-          />
-        )
-      })}
+  return (
+    <div className='flex items-center justify-between rounded-md bg-slate-200 p-1 shadow dark:border dark:border-slate-800/50 dark:bg-slate-800/25'>
+      <div className=' flex items-center'>
+        <FunnelIcon className='box-content size-6 flex-shrink-0 px-1 text-gray-700 dark:text-gray-200' />
+        <div className='flex flex-wrap'>
+          {_map(filters, (props) => {
+            const { column, filter } = props
+            const key = `${column}${filter}`
+
+            return (
+              <Filter
+                key={key}
+                onRemoveFilter={onRemoveFilter}
+                onChangeExclusive={onChangeExclusive}
+                language={language}
+                t={t}
+                tnMapping={tnMapping}
+                canChangeExclusive
+                removable
+                {...props}
+              />
+            )
+          })}
+        </div>
+      </div>
+      <XMarkIcon
+        className='box-content size-6 flex-shrink-0 cursor-pointer stroke-2 px-1 text-gray-800 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-300'
+        onClick={resetFilters}
+      />
     </div>
   )
 }

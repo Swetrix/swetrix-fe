@@ -66,7 +66,7 @@ import { onCSVExportClick } from 'pages/Project/View/ViewProject.helpers'
 import TBPeriodSelector from 'pages/Project/View/components/TBPeriodSelector'
 import CCRow from '../../Project/View/components/CCRow'
 import NoEvents from './components/NoEvents'
-import Filters from './components/Filters'
+import Filters from 'pages/Project/View/components/Filters'
 
 const PageLoader = () => (
   <div className='min-h-min-footer bg-gray-50 dark:bg-slate-900'>
@@ -621,13 +621,12 @@ const ViewCaptcha = ({
     // @ts-ignore
     const url: URL = new URL(window.location)
     const { searchParams } = url
-    // eslint-disable-next-line lodash/prefer-lodash-method
-    searchParams.forEach((value, key) => {
+    for (const [key] of Array.from(searchParams.entries())) {
       if (!_includes(validFilters, key)) {
-        return
+        continue
       }
       searchParams.delete(key)
-    })
+    }
     const { pathname, search } = url
     navigate(`${pathname}${search}`)
     setFilters([])
@@ -818,6 +817,7 @@ const ViewCaptcha = ({
                   onRemoveFilter={filterHandler}
                   onChangeExclusive={onChangeExclusive}
                   tnMapping={tnMapping}
+                  resetFilters={resetFilters}
                 />
                 {dataLoading && (
                   <div className='static mt-4 !bg-transparent' id='loader'>

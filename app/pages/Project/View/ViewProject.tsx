@@ -3250,21 +3250,42 @@ const ViewProject = ({
     return conflicted
   }
 
-  // resetFilters using for reset filters and update url. Also using for components <NoEvents />
-  // its need for fix bug: when you select filter and you have not data and you can not reset filters
-  const resetFilters = () => {
-    // @ts-ignore
+  const cleanURLFilters = () => {
+    // @ts-expect-error
     const url = new URL(window.location)
     const { searchParams } = url
-    // eslint-disable-next-line lodash/prefer-lodash-method
-    searchParams.forEach((value, key) => {
+
+    for (const [key] of Array.from(searchParams.entries())) {
       if (!isFilterValid(key, true)) {
-        return
+        continue
       }
       searchParams.delete(key)
-    })
+    }
+
     const { pathname, search } = url
+
     navigate(`${pathname}${search}`)
+  }
+
+  const resetActiveTabFilters = () => {
+    cleanURLFilters()
+
+    if (activeTab === PROJECT_TABS.traffic) {
+      setFilters([])
+      loadAnalytics(true, [])
+    } else if (activeTab === PROJECT_TABS.performance) {
+      setFiltersPerf([])
+      loadAnalyticsPerf(true, [])
+    } else if (activeTab === PROJECT_TABS.sessions) {
+      setFiltersSessions([])
+    } else if (activeTab === PROJECT_TABS.errors) {
+      setFiltersErrors([])
+    }
+  }
+
+  const resetFilters = () => {
+    cleanURLFilters()
+
     setFilters([])
     setFiltersPerf([])
     setFiltersSessions([])
@@ -4118,6 +4139,7 @@ const ViewProject = ({
                     onRemoveFilter={filterHandler}
                     onChangeExclusive={onChangeExclusive}
                     tnMapping={tnMapping}
+                    resetFilters={resetActiveTabFilters}
                   />
                   {(sessionsLoading === null || sessionsLoading) && _isEmpty(sessions) && <Loader />}
                   {typeof sessionsLoading === 'boolean' && !sessionsLoading && _isEmpty(sessions) && (
@@ -4190,6 +4212,7 @@ const ViewProject = ({
                     onRemoveFilter={filterHandler}
                     onChangeExclusive={onChangeExclusive}
                     tnMapping={tnMapping}
+                    resetFilters={resetActiveTabFilters}
                   />
                   {(errorsLoading === null || errorsLoading) && _isEmpty(errors) && <Loader />}
                   {typeof errorsLoading === 'boolean' && !errorsLoading && _isEmpty(errors) && (
@@ -4493,6 +4516,7 @@ const ViewProject = ({
                     onRemoveFilter={filterHandler}
                     onChangeExclusive={onChangeExclusive}
                     tnMapping={tnMapping}
+                    resetFilters={resetActiveTabFilters}
                   />
                   {dataLoading && (
                     <div className='static mt-4 !bg-transparent' id='loader'>
@@ -4790,6 +4814,7 @@ const ViewProject = ({
                     onRemoveFilter={filterHandler}
                     onChangeExclusive={onChangeExclusive}
                     tnMapping={tnMapping}
+                    resetFilters={resetActiveTabFilters}
                   />
                   {dataLoading && (
                     <div className='static mt-4 !bg-transparent' id='loader'>
