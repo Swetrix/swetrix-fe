@@ -103,10 +103,12 @@ const App: React.FC<IApp> = ({ ssrTheme, ssrAuthenticated }) => {
     !_includes(pathname, '/alerts/') &&
     !_includes(pathname, '/settings/')
 
+  const routesWithOutHeader = [routesPath.main, routesPath.performance, routesPath.errorTracking, routesPath.marketers]
+
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
-      {!_includes([routesPath.main, routesPath.performance, routesPath.errorTracking], pathname) &&
+      {!_includes(routesWithOutHeader, pathname) &&
         !isReferralPage &&
         !isProjectViewPage && <Header ssrTheme={ssrTheme} authenticated={authenticated} />}
       <Outlet />

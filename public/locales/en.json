@@ -129,6 +129,10 @@
       "desc": "With Swetrix, you can track exactly what kind of errors your users are experiencing and when. We also give you insight into which browsers, operating systems, devices and more, making it even easier to resolve issues."
     }
   },
+  "marketers": {
+    "slogan": "<span>Discover the ultimate open-source web analytics</span> tailored for marketers",
+    "description": "Swetrix is a comprehensive tools to drive your campaigns, optimize your strategies, and achieve unparalleled success—all in one place."
+  },
   "main": {
     "ukrSupport": "Support the Ukrainian army to fight Russian invasion.",
     "slogan": "<span>Ultimate open-source web analytics</span> to satisfy all your needs.",
