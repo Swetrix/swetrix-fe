@@ -138,8 +138,8 @@
     }
   },
   "marketers": {
-    "slogan": "<span>Discover the ultimate open-source web analytics</span> tailored for marketers",
-    "description": "Swetrix is a comprehensive tools to drive your campaigns, optimize your strategies, and achieve unparalleled success—all in one place.",
+    "slogan": "Discover the ultimate <span>open-source web analytics</span> tailored for <span>marketers</span>",
+    "description": "Swetrix is a comprehensive tool to drive your campaigns, optimise your strategies, and achieve unparalleled success - all in one service.",
     "mFeatures": [
       {
         "name": "Content marketing",
@@ -170,47 +170,47 @@
         ]
       }
     ],
-    "allTexts": [
+    "whyUs": [
       {
-        "name": "Easy Integration and Setup",
+        "name": "Easy integration and configuration",
         "desc": [
-          "<span>Quick Start</span> Swetrix provides easy integration with your existing systems and quick setup, allowing marketers to start analyzing traffic swiftly. (link to integration guide)",
-          "<span>Simple Interface</span> An intuitive interface that does not require deep technical knowledge allows marketers to easily navigate and use the service."
+          "<span>Quick Start</span>: Swetrix provides easy <integrationLink>integration</integrationLink> with your existing systems and quick setup, enabling marketers to start analysing traffic quickly.",
+          "<span>Simple interface</span>: An intuitive interface that does not require deep technical knowledge allows marketers to easily navigate and use the service."
         ]
       },
       {
-        "name": "Advanced Analytics Features",
+        "name": "Advanced analytics features",
         "desc": [
-          "<span>Detailed Traffic Analysis</span> Swetrix offers a wide range of metrics to analyze user behavior, helping marketers make informed decisions.",
-          "<span>Flexible Reports</span> The ability to customize reports to meet specific needs of marketers, allowing focus on the most important metrics."
+          "<span>Detailed traffic analysis</span>: Swetrix offers a wide range of metrics to analyse user behaviour, helping marketers make informed decisions.",
+          "<span>Flexible reports</span>: Swetrix provides an ability to customise reports to meet the specific needs of marketers, allowing them to focus on the most important metrics."
         ]
       },
       {
-        "name": "Privacy and Regulatory Compliance",
+        "name": "Privacy and regulatory compliance",
         "desc": [
-          "<span>GDPR Compliance</span> Swetrix complies with GDPR requirements, ensuring safe and legal use of the service.",
-          "<span>Data Security</span> High level of data protection, which is crucial for marketers working with confidential information."
+          "<span>GDPR compliance</span>: Swetrix is GDPR compliant, which ensures safe and legal use of the service.",
+          "<span>Data security</span>: High level of data protection, which is important for marketers who work with sensitive information."
         ]
       },
       {
-        "name": "Customer Support",
+        "name": "Customer support",
         "desc": [
-          "<span>High-Quality Support</span> Swetrix provides quick and efficient support, helping marketers resolve any issues and problems.",
-          "<span>Educational Materials</span> Access to educational resources (links to communities) and tips that help maximize the effective use of the service."
+          "<span>High-quality support</span>: Swetrix provides fast and efficient support to help marketers resolve any questions or issues.",
+          "<span>Educational materials</span>: Access to learning resources and <discordUrl>tips</discordUrl> to help you make the most of the service."
         ]
       },
       {
-        "name": "Flexibility and Scalability",
+        "name": "Flexibility and scalability",
         "desc": [
-          "<span>Various Pricing Plans</span> Swetrix offers different pricing plans suitable for any budget and needs, allowing marketers to choose the optimal option.",
-          "<span>Scalability</span> The ability to expand the functionality of the service in line with the growth of the business and its needs."
+          "<span>Different pricing plans</span>: Swetrix offers different pricing plans to suit all budgets and needs, allowing marketers to choose the best option.",
+          "<span>Scalability</span>: The ability to expand the functionality of the service in line with business growth and needs."
         ]
       },
       {
-        "name": "Comparison with Competitors",
+        "name": "Comparison with the competition",
         "desc": [
-          "<span>Transparency and Trust</span> Swetrix is transparent in its operations, creating trust among users.",
-          "<span>Unique Features</span> Highlighting the unique features and advantages that distinguish Swetrix from other analytical services. (table of advantages as on the main page)"
+          "<span>Transparency and trust</span>: Swetrix is open and transparent, which creates trust among users.",
+          "<span>Unique features</span>: Swetrix offers dozens of unique and useful features, and here are some of them.."
         ]
       }
     ]

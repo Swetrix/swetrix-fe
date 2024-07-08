@@ -1,30 +1,30 @@
 import React from 'react'
 import { Link } from '@remix-run/react'
-import { ClientOnly } from 'remix-utils/client-only'
 
 import { useTranslation, Trans } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { StateType } from 'redux/store'
-import { BOOK_A_CALL_URL, isBrowser, LIVE_DEMO_URL } from 'redux/constants'
+import { BOOK_A_CALL_URL, DISCORD_URL, isBrowser, LIVE_DEMO_URL } from 'redux/constants'
 import routesPath from 'routesPath'
 
-import { ArrowSmallRightIcon, ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import { ArrowSmallRightIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
 
 import Header from 'components/Header'
 import { getAccessToken } from 'utils/accessToken'
 
-import _isEmpty from 'lodash/isEmpty'
 import _map from 'lodash/map'
+import { ComparisonTable } from 'pages/MainPage/ComparisonTable'
 
 interface IMarketers {
   ssrTheme: 'dark' | 'light'
   ssrAuthenticated: boolean
 }
 
+const INTEGRATIONS_URL = 'https://docs.swetrix.com/integrations'
+
 const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
   const { t } = useTranslation('common')
   const reduxTheme = useSelector((state: StateType) => state.ui.theme.theme)
-  const { lastBlogPost } = useSelector((state: StateType) => state.ui.misc)
   const accessToken = getAccessToken()
   const { authenticated: reduxAuthenticated, loading } = useSelector((state: StateType) => state.auth)
   const authenticated = isBrowser ? (loading ? !!accessToken : reduxAuthenticated) : ssrAuthenticated
@@ -89,30 +89,6 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
                   }}
                 />
               </h1>
-              <div className='mx-auto mb-2 mt-2 flex items-center overflow-hidden sm:text-xl lg:text-lg xl:text-lg'>
-                <p className='rounded-full bg-indigo-500/10 px-3 py-1 text-center text-sm font-semibold leading-6 text-indigo-600 ring-1 ring-inset ring-indigo-500/20 dark:text-indigo-400'>
-                  Latest news
-                </p>
-                {_isEmpty(lastBlogPost) ? (
-                  <div className='ml-1 h-6 w-full max-w-xs animate-pulse rounded-md bg-slate-300 dark:bg-slate-700' />
-                ) : (
-                  <ClientOnly
-                    fallback={
-                      <div className='ml-1 h-6 w-full max-w-xs animate-pulse rounded-md bg-slate-300 dark:bg-slate-700' />
-                    }
-                  >
-                    {() => (
-                      <Link
-                        className='ml-1 inline-flex items-center space-x-1 text-sm font-semibold leading-6 text-slate-700 hover:underline dark:text-slate-300'
-                        to={`blog/${lastBlogPost.handle}`}
-                      >
-                        <small className='text-sm'>{lastBlogPost.title}</small>
-                        <ChevronRightIcon className='h-4 w-4 text-slate-500' aria-hidden='true' />
-                      </Link>
-                    )}
-                  </ClientOnly>
-                )}
-              </div>
               <p className='mx-auto max-w-6xl text-center text-base leading-8 text-slate-900 dark:text-slate-300 sm:text-xl lg:text-lg xl:text-lg'>
                 {t('marketers.description')}
                 <br />
@@ -167,34 +143,43 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
         </div>
       </div>
 
-      <div className='mx-auto mt-[50px] max-w-5xl  px-[20px]'>
-        {_map(
-          t('marketers.allTexts', { returnObjects: true }),
-          (
-            item: {
-              name: string
-              desc: string[]
-            },
-          ) => (
-            <div className=' dark:text-white text-slate-900 mb-10'>
-              <h2 className='mb-5 text-[22px] md:text-[32px] font-extrabold'>{item.name}</h2>
-              {_map(item.desc, (descText, indexDesc) => (
-                <p className='mb-[20px] text-[16px] md:text-[22px]'>
-                  <Trans
-                    t={t}
-                    components={{
-                      span: (
-                        <span className='bg-gradient-to-r font-bold to-90% dark:to-50%  from-indigo-700 to-pink-900 bg-clip-text text-transparent dark:from-indigo-600 dark:to-indigo-400' />
-                      ),
-                    }}
-                  >
-                    {descText}
-                  </Trans>
+      <div className='mx-auto mt-12 max-w-5xl px-5'>
+        {_map(t('marketers.whyUs', { returnObjects: true }), (item: { name: string; desc: string[] }) => (
+          <div key={item.name} className='mb-10 text-slate-900 last:mb-0 dark:text-white'>
+            <h2 className='mb-5 text-4xl font-extrabold'>{item.name}</h2>
+            {_map(item.desc, (descText) => (
+              <p key={descText} className='mb-5 text-lg'>
+                <Trans
+                  t={t}
+                  components={{
+                    span: <span className='font-bold' />,
+                    integrationLink: (
+                      <a
+                        href={INTEGRATIONS_URL}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-blue-600 hover:underline dark:text-blue-500'
+                      />
+                    ),
+                    discordUrl: (
+                      <a
+                        href={DISCORD_URL}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-blue-600 hover:underline dark:text-blue-500'
+                      />
+                    ),
+                  }}
+                >
+                  {descText}
+                </Trans>
               </p>
-              ))}
-            </div>
-          ),
-        )}
+            ))}
+          </div>
+        ))}
+
+        <ComparisonTable className='py-5' />
+
         <div className='mt-10 flex flex-col items-center justify-center sm:flex-row'>
           <Link
             to={routesPath.signup}
@@ -252,7 +237,7 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
                 ) => (
                   <div
                     key={item.name}
-                    className='w-full max-w-[410px] rounded-[20px] bg-transparent p-[20px] shadow md:h-[320px] dark:shadow-white/10'
+                    className='w-full max-w-[410px] rounded-[20px] bg-transparent p-5 shadow dark:shadow-white/10 md:h-[320px]'
                   >
                     <div className='mb-5 flex items-center'>
                       <h2 className='text-xl font-semibold md:text-2xl'>{item.name}</h2>
