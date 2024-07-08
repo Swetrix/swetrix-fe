@@ -105,7 +105,11 @@
     "fast": {
       "title": "Everyone loves a fast website",
       "desc": "People love fast websites, so in addition to <indexUrl>traffic analytics</indexUrl>, Swetrix allows you to analyse your website speed and monitor other performance metrics based on real traffic from your users.\nUsers are more likely to <wpostatsUrl>abandon your website</wpostatsUrl> if it takes too long to load, stay ahead of these problems and measure insights from real interactions.",
-      "list": ["Measure which pages are taking too long to load", "Aggregate performance data by geolocation, browser, device type, page and other metrics", "Compare site speed to previous periods to analyse potential problems or improvements"]
+      "list": [
+        "Measure which pages are taking too long to load",
+        "Aggregate performance data by geolocation, browser, device type, page and other metrics",
+        "Compare site speed to previous periods to analyse potential problems or improvements"
+      ]
     },
     "metrics": {
       "title": "Analyse all key metrics in one tool",
@@ -122,7 +126,11 @@
     "fast": {
       "title": "Deliver bug-free experiences",
       "desc": "Everyone hates bugs, so in addition to <indexUrl>traffic</indexUrl> and <perfUrl>performance</perfUrl> analytics, Swetrix allows you to monitor your website errors to quickly resolve them. Easily set up error monitoring with a <oneLC>one line of code</oneLC>, so you can focus on building your applications, not hunting for bugs.",
-      "list": ["Get a bird's eye insights on what kind of errors are present on your website", "View specific error details and aggregated data by geolocation, browser, device type, page and other metrics", "Understand if the bug is new or regressed, making it easier to fix"]
+      "list": [
+        "Get a bird's eye insights on what kind of errors are present on your website",
+        "View specific error details and aggregated data by geolocation, browser, device type, page and other metrics",
+        "Understand if the bug is new or regressed, making it easier to fix"
+      ]
     },
     "track": {
       "title": "Track all errors with one tool",
@@ -131,7 +139,81 @@
   },
   "marketers": {
     "slogan": "<span>Discover the ultimate open-source web analytics</span> tailored for marketers",
-    "description": "Swetrix is a comprehensive tools to drive your campaigns, optimize your strategies, and achieve unparalleled success—all in one place."
+    "description": "Swetrix is a comprehensive tools to drive your campaigns, optimize your strategies, and achieve unparalleled success—all in one place.",
+    "mFeatures": [
+      {
+        "name": "Content marketing",
+        "desc": [
+          "Creating blogs and articles explaining how Swetrix can solve the problems of marketers who are not satisfied with other services.",
+          "Publishing case studies that demonstrate successful examples of how Swetrix has been used for various marketing campaigns."
+        ]
+      },
+      {
+        "name": "Social networks and online advertising",
+        "desc": [
+          "Use of targeted advertising on social media aimed at marketers looking for new analytical solutions.",
+          "Creating communities and groups to discuss the experience of using different analytics services and the benefits of Swetrix."
+        ]
+      },
+      {
+        "name": "Free trials and demos",
+        "desc": [
+          "Offering a free trial period that allows marketers to evaluate all the benefits of Swetrix without financial commitment.",
+          "Demonstrations of the service to show its functionality and benefits in action."
+        ]
+      },
+      {
+        "name": "Educational events",
+        "desc": [
+          "Links to community blogs, discounts.",
+          "Creating video tutorials and guides to help marketers easily master the service."
+        ]
+      }
+    ],
+    "allTexts": [
+      {
+        "name": "Easy Integration and Setup",
+        "desc": [
+          "<span>Quick Start</span> Swetrix provides easy integration with your existing systems and quick setup, allowing marketers to start analyzing traffic swiftly. (link to integration guide)",
+          "<span>Simple Interface</span> An intuitive interface that does not require deep technical knowledge allows marketers to easily navigate and use the service."
+        ]
+      },
+      {
+        "name": "Advanced Analytics Features",
+        "desc": [
+          "<span>Detailed Traffic Analysis</span> Swetrix offers a wide range of metrics to analyze user behavior, helping marketers make informed decisions.",
+          "<span>Flexible Reports</span> The ability to customize reports to meet specific needs of marketers, allowing focus on the most important metrics."
+        ]
+      },
+      {
+        "name": "Privacy and Regulatory Compliance",
+        "desc": [
+          "<span>GDPR Compliance</span> Swetrix complies with GDPR requirements, ensuring safe and legal use of the service.",
+          "<span>Data Security</span> High level of data protection, which is crucial for marketers working with confidential information."
+        ]
+      },
+      {
+        "name": "Customer Support",
+        "desc": [
+          "<span>High-Quality Support</span> Swetrix provides quick and efficient support, helping marketers resolve any issues and problems.",
+          "<span>Educational Materials</span> Access to educational resources (links to communities) and tips that help maximize the effective use of the service."
+        ]
+      },
+      {
+        "name": "Flexibility and Scalability",
+        "desc": [
+          "<span>Various Pricing Plans</span> Swetrix offers different pricing plans suitable for any budget and needs, allowing marketers to choose the optimal option.",
+          "<span>Scalability</span> The ability to expand the functionality of the service in line with the growth of the business and its needs."
+        ]
+      },
+      {
+        "name": "Comparison with Competitors",
+        "desc": [
+          "<span>Transparency and Trust</span> Swetrix is transparent in its operations, creating trust among users.",
+          "<span>Unique Features</span> Highlighting the unique features and advantages that distinguish Swetrix from other analytical services. (table of advantages as on the main page)"
+        ]
+      }
+    ]
   },
   "main": {
     "ukrSupport": "Support the Ukrainian army to fight Russian invasion.",

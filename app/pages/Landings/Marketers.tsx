@@ -10,13 +10,15 @@ import routesPath from 'routesPath'
 
 import { ArrowSmallRightIcon, ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 
-import _isEmpty from 'lodash/isEmpty'
 import Header from 'components/Header'
 import { getAccessToken } from 'utils/accessToken'
 
+import _isEmpty from 'lodash/isEmpty'
+import _map from 'lodash/map'
+
 interface IMarketers {
-  ssrTheme: 'dark' | 'light',
-  ssrAuthenticated: boolean,
+  ssrTheme: 'dark' | 'light'
+  ssrAuthenticated: boolean
 }
 
 const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
@@ -82,7 +84,7 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
                   i18nKey='marketers.slogan'
                   components={{
                     span: (
-                      <span className='bg-gradient-to-r  from-indigo-700 to-indigo-700 bg-clip-text text-transparent dark:from-indigo-600 dark:to-indigo-400' />
+                      <span className='bg-gradient-to-r  from-indigo-700 to-pink-700 bg-clip-text text-transparent dark:from-indigo-600 dark:to-indigo-400' />
                     ),
                   }}
                 />
@@ -147,7 +149,7 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
               </a>
             </div>
           </div>
-          <div className='relative z-20 mx-auto my-10 block max-w-[1400px] px-4 md:px-0'>
+          <div className='relative z-20 mx-auto mt-10 block max-w-[1400px] px-4 md:px-0'>
             <picture>
               <source
                 srcSet={theme === 'dark' ? '/assets/screenshot_dark.webp' : '/assets/screenshot_light.webp'}
@@ -164,6 +166,105 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
           </div>
         </div>
       </div>
+
+      <div className='mx-auto mt-[50px] max-w-5xl  px-[20px]'>
+        {_map(
+          t('marketers.allTexts', { returnObjects: true }),
+          (
+            item: {
+              name: string
+              desc: string[]
+            },
+          ) => (
+            <div className=' dark:text-white text-slate-900 mb-10'>
+              <h2 className='mb-5 text-[22px] md:text-[32px] font-extrabold'>{item.name}</h2>
+              {_map(item.desc, (descText, indexDesc) => (
+                <p className='mb-[20px] text-[16px] md:text-[22px]'>
+                  <Trans
+                    t={t}
+                    components={{
+                      span: (
+                        <span className='bg-gradient-to-r font-bold to-90% dark:to-50%  from-indigo-700 to-pink-900 bg-clip-text text-transparent dark:from-indigo-600 dark:to-indigo-400' />
+                      ),
+                    }}
+                  >
+                    {descText}
+                  </Trans>
+              </p>
+              ))}
+            </div>
+          ),
+        )}
+      </div>
+
+      <div className='overflow-hidden'>
+        <div className='relative isolate mx-auto w-full pt-10'>
+          <svg
+            className='absolute inset-0 -z-10 hidden h-full w-full rotate-180 stroke-gray-200 [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)] dark:stroke-white/10 sm:block'
+            aria-hidden='true'
+          >
+            <defs>
+              <pattern id='rect-pattern-2' width={200} height={200} x='50%' y={0} patternUnits='userSpaceOnUse'>
+                <path d='M.5 200V.5H200' fill='none' />
+              </pattern>
+            </defs>
+            <svg x='50%' y={0} className='overflow-visible fill-gray-50 dark:fill-slate-800/30'>
+              <path
+                d='M-200.5 0h201v201h-201Z M599.5 0h201v201h-201Z M399.5 400h201v201h-201Z M-400.5 600h201v201h-201Z'
+                strokeWidth={0}
+              />
+            </svg>
+            <rect width='100%' height='100%' strokeWidth={0} fill='url(#rect-pattern-2)' />
+          </svg>
+          <section className='relative z-20 mx-auto max-w-5xl px-3'>
+            <h2 className='mx-auto mt-20 w-full max-w-5xl text-center text-3xl font-extrabold text-slate-900 dark:text-white sm:text-5xl'>
+              Our communication strategies
+            </h2>
+            <div className=' flex flex-wrap items-start justify-center justify-items-center gap-10 pb-36 pt-10 text-slate-900 dark:text-white'>
+              {_map(
+                // @ts-expect-error
+                t('marketers.mFeatures', { returnObjects: true }),
+                (
+                  item: {
+                    name: string
+                    desc: string[]
+                  },
+                  index: number,
+                ) => (
+                  <div
+                    key={item.name}
+                    className='w-full max-w-[410px] rounded-[20px] bg-transparent p-[20px] shadow md:h-[320px] dark:shadow-white/10'
+                  >
+                    <div className='mb-5 flex items-center'>
+                      <h2 className='text-xl font-semibold md:text-2xl'>{item.name}</h2>
+                    </div>
+                    {_map(item.desc, (descText) => (
+                      <div className='mb-4 flex items-center justify-start'>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          fill='none'
+                          viewBox='0 0 24 24'
+                          strokeWidth={1.5}
+                          stroke='currentColor'
+                          className='size-4 min-w-[16px] md:size-6 md:min-w-[24px]'
+                        >
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            d='M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
+                          />
+                        </svg>
+                        <p className='ml-5 text-[16px] text-slate-700 dark:text-gray-300 md:text-[18px]'>{descText}</p>
+                      </div>
+                    ))}
+                  </div>
+                ),
+              )}
+            </div>
+          </section>
+        </div>
+      </div>
+      <div className='mx-auto max-w-[1440px]'></div>
     </main>
   )
 }
