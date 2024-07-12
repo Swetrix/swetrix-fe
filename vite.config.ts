@@ -26,7 +26,7 @@ export default defineConfig({
       /^remix-utils.*/,
       /^remix-i18next.*/,
       /^@reduxjs\/toolkit.*/,
-      /^file-saver*/,
+      // /^file-saver*/,
     ],
   },
   plugins: [

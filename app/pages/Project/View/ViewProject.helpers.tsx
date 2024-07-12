@@ -1,6 +1,6 @@
 import React from 'react'
 // @ts-ignore
-import { saveAs } from 'file-saver-es'
+import * as fileServer from 'file-saver'
 import {
   GlobeEuropeAfricaIcon,
   LanguageIcon,
@@ -46,6 +46,8 @@ import { IEntry } from 'redux/models/IEntry'
 import { getTimeFromSeconds, getStringFromTime, sumArrays, nFormatter } from 'utils/generic'
 import countries from 'utils/isoCountries'
 import { IAnalyticsFunnel } from 'redux/models/IProject'
+
+const { saveAs } = fileServer
 
 const getAvg = (arr: any) => {
   const total = _reduce(arr, (acc, c) => acc + c, 0)

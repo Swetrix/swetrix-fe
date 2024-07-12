@@ -41,7 +41,7 @@
     "dangerously-set-html-content": "^1.1.0",
     "dayjs": "^1.11.10",
     "debug": "^4.3.4",
-    "file-saver-es": "^2.0.5",
+    "file-saver": "^2.0.5",
     "flatpickr": "^4.6.13",
     "i18n-iso-countries": "^7.11.0",
     "i18next": "^23.11.2",

@@ -51,9 +51,15 @@ const refreshAuthLogic = (failedRequest: { response: AxiosResponse }) =>
     })
 
 // Instantiate the interceptor
-createAuthRefreshInterceptor(api, refreshAuthLogic, {
-  statusCodes: [401, 403],
-})
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      refreshAuthLogic(error.response)
+    }
+    return Promise.reject(error)
+  },
+)
 
 api.interceptors.request.use(
   (config) => {
