@@ -79,7 +79,7 @@ const SmallBusinesses = () => {
         <div className='relative mx-auto min-h-[740px] pb-5 pt-10 sm:px-3 lg:px-6 lg:pt-24 xl:px-8'>
           <div className='relative z-20 flex flex-col  content-between justify-center'>
             <div className='relative mx-auto flex flex-col px-4 text-left'>
-              <h1 className='mx-auto max-w-4xl text-center text-3xl font-extrabold text-slate-900 dark:text-white sm:text-5xl sm:leading-none md:text-5xl lg:text-5xl xl:text-6xl xl:leading-[110%]'>
+              <h1 className='mx-auto max-w-4xl text-center text-4xl font-extrabold text-slate-900 dark:text-white sm:text-5xl sm:leading-none md:text-5xl lg:text-5xl xl:text-6xl xl:leading-[110%]'>
                 <Trans
                   t={t}
                   i18nKey='smbs.slogan'
