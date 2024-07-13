@@ -3,7 +3,7 @@ import { Link, useLoaderData } from '@remix-run/react'
 import { useTranslation, Trans } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { StateType } from 'redux/store'
-import { BOOK_A_CALL_URL, DISCORD_URL, isBrowser, LIVE_DEMO_URL } from 'redux/constants'
+import { BOOK_A_CALL_URL, DISCORD_URL, isBrowser, LIVE_DEMO_URL, TWITTER_URL } from 'redux/constants'
 import routesPath from 'routesPath'
 
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
@@ -165,6 +165,14 @@ const SmallBusinesses = () => {
                     discordUrl: (
                       <a
                         href={DISCORD_URL}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-blue-600 hover:underline dark:text-blue-500'
+                      />
+                    ),
+                    twitterUrl: (
+                      <a
+                        href={TWITTER_URL}
                         target='_blank'
                         rel='noopener noreferrer'
                         className='text-blue-600 hover:underline dark:text-blue-500'
