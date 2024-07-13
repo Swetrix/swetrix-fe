@@ -144,43 +144,91 @@
       {
         "name": "Easy integration and configuration",
         "desc": [
-          "<span>Quick Start</span>: Swetrix provides easy <integrationLink>integration</integrationLink> with your existing systems and quick setup, enabling marketers to start analysing traffic quickly.",
-          "<span>Simple interface</span>: An intuitive interface that does not require deep technical knowledge allows marketers to easily navigate and use the service."
+          "<span>Quick Start:</span> Swetrix provides easy <integrationLink>integration</integrationLink> with your existing systems and quick setup, enabling marketers to start analysing traffic quickly.",
+          "<span>Simple interface:</span> An intuitive interface that does not require deep technical knowledge allows marketers to easily navigate and use the service."
         ]
       },
       {
         "name": "Advanced analytics features",
         "desc": [
-          "<span>Detailed traffic analysis</span>: Swetrix offers a wide range of metrics to analyse user behaviour, helping marketers make informed decisions.",
-          "<span>Flexible reports</span>: Swetrix provides an ability to customise reports to meet the specific needs of marketers, allowing them to focus on the most important metrics."
+          "<span>Detailed traffic analysis:</span> Swetrix offers a wide range of metrics to analyse user behaviour, helping marketers make informed decisions.",
+          "<span>Flexible reports:</span> Swetrix provides an ability to customise reports to meet the specific needs of marketers, allowing them to focus on the most important metrics."
         ]
       },
       {
         "name": "Privacy and regulatory compliance",
         "desc": [
-          "<span>GDPR compliance</span>: Swetrix is GDPR compliant, which ensures safe and legal use of the service.",
-          "<span>Data security</span>: High level of data protection, which is important for marketers who work with sensitive information."
+          "<span>GDPR compliance:</span> Swetrix is GDPR compliant, which ensures safe and legal use of the service.",
+          "<span>Data security:</span> High level of data protection, which is important for marketers who work with sensitive information."
         ]
       },
       {
         "name": "Customer support",
         "desc": [
-          "<span>High-quality support</span>: Swetrix provides fast and efficient support to help marketers resolve any questions or issues.",
-          "<span>Educational materials</span>: Access to learning resources and <discordUrl>tips</discordUrl> to help you make the most of the service."
+          "<span>High-quality support:</span> Swetrix provides fast and efficient support to help marketers resolve any questions or issues.",
+          "<span>Educational materials:</span> Access to learning resources and <discordUrl>tips</discordUrl> to help you make the most of the service."
         ]
       },
       {
         "name": "Flexibility and scalability",
         "desc": [
-          "<span>Different pricing plans</span>: Swetrix offers different pricing plans to suit all budgets and needs, allowing marketers to choose the best option.",
-          "<span>Scalability</span>: The ability to expand the functionality of the service in line with business growth and needs."
+          "<span>Different pricing plans:</span> Swetrix offers different pricing plans to suit all budgets and needs, allowing marketers to choose the best option.",
+          "<span>Scalability:</span> The ability to expand the functionality of the service in line with business growth and needs."
         ]
       },
       {
         "name": "Comparison with the competition",
         "desc": [
-          "<span>Transparency and trust</span>: Swetrix is open and transparent, which creates trust among users.",
-          "<span>Unique features</span>: Swetrix offers dozens of unique and useful features, and here are some of them.."
+          "<span>Transparency and trust:</span> Swetrix is open and transparent, which creates trust among users.",
+          "<span>Unique features:</span> Swetrix offers dozens of unique and useful features, and here are some of them.."
+        ]
+      }
+    ]
+  },
+  "startups": {
+    "slogan": "Privacy-focused <span>web analytics</span> tailored for <span>startups</span>",
+    "description": "Swetrix is a comprehensive tool for managing your campaigns, optimising your strategies and analysing your traffic - all in one service, without compromising user privacy.",
+    "whyUs": [
+      {
+        "name": "Privacy and regulatory compliance",
+        "desc": [
+          "<span>Data security:</span> Swetrix focuses on protecting user data by not using cookies, which ensures a high degree of privacy.",
+          "<span>GDPR compliance:</span> Unlike Google Analytics, Swetrix is GDPR compliant, making it a safe choice for startups that care about legal compliance."
+        ]
+      },
+      {
+        "name": "Simplicity and ease of use",
+        "desc": [
+          "<span>Intuitive interface:</span> Swetrix offers a simple and straightforward interface, making it easy to use even for those without technical experience.",
+          "<span>Easy integration:</span> <integrationLink>Integration</integrationLink> with Swetrix takes a minimum of time and effort, which allows startups to quickly start using the service."
+        ]
+      },
+      {
+        "name": "Focus on customer needs",
+        "desc": [
+          "<span>Personalised solutions:</span> Swetrix offers flexible settings and the ability to adapt to the individual needs of each startup.",
+          "<span>Customer support:</span> High-quality customer support that helps to quickly resolve any issues and adjustments."
+        ]
+      },
+      {
+        "name": "Accessibility and cost-effectiveness",
+        "desc": [
+          "<span>Competitive prices:</span> Swetrix offers competitive pricing, which is especially important for startups on a tight budget.",
+          "<span>Free trial period:</span> The possibility of free testing of the service allows startups to evaluate its benefits without financial risks."
+        ]
+      },
+      {
+        "name": "Functional capabilities",
+        "desc": [
+          "<span>Advanced traffic analysis:</span> Swetrix provides detailed traffic analysis with a variety of metrics to help startups better understand their users.",
+          "<span>Reports and analytics:</span> Flexible reports and analytics that help you make informed decisions based on data."
+        ]
+      },
+      {
+        "name": "Advantages compared to the competition",
+        "desc": [
+          "<span>Transparency:</span> Unlike some competitors, Swetrix is transparent in its operations, which creates trust among users.",
+          "<span>Focus on privacy:</span> Swetrix focuses on privacy protection, which sets us apart from other solutions on the market."
         ]
       }
     ]
