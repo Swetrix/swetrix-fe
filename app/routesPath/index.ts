@@ -37,7 +37,7 @@ const routes = Object.freeze({
   ref: '/ref/:id',
   blog: '/blog',
   imprint: '/imprint',
-  marketers: '/marketers',
+  forMarketers: '/for-marketers',
 })
 
 export default routes

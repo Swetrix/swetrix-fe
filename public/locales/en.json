@@ -1093,7 +1093,8 @@
     "passwordProtected": "This project is password protected",
     "confirm": "Check your inbox",
     "performance": "End user performance monitoring to deliver fast websites",
-    "errors": "End user error tracking tool to deliver bug-free experiences"
+    "errors": "End user error tracking tool to deliver bug-free experiences",
+    "forMarketers": "For marketers"
   },
   "header": {
     "switchTheme": "Switch theme",

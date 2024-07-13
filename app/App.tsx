@@ -103,7 +103,12 @@ const App: React.FC<IApp> = ({ ssrTheme, ssrAuthenticated }) => {
     !_includes(pathname, '/alerts/') &&
     !_includes(pathname, '/settings/')
 
-  const routesWithOutHeader = [routesPath.main, routesPath.performance, routesPath.errorTracking, routesPath.marketers]
+  const routesWithOutHeader = [
+    routesPath.main,
+    routesPath.performance,
+    routesPath.errorTracking,
+    routesPath.forMarketers,
+  ]
 
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
