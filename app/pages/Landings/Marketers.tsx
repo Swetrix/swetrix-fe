@@ -91,7 +91,7 @@ const Marketers = () => {
                   }}
                 />
               </h1>
-              <p className='mx-auto max-w-6xl text-center text-base leading-8 text-slate-900 dark:text-slate-300 sm:text-xl lg:text-lg xl:text-lg'>
+              <p className='mx-auto mt-4 max-w-6xl text-center text-base leading-8 text-slate-900 dark:text-slate-300 sm:text-xl lg:text-lg xl:text-lg'>
                 {t('marketers.description')}
                 <br />
                 {t('main.trackEveryMetric')}
@@ -127,7 +127,7 @@ const Marketers = () => {
               </a>
             </div>
           </div>
-          <div className='relative z-20 mx-auto mt-10 block max-w-[1400px] px-4 md:px-0'>
+          <div className='relative z-20 mx-auto mt-10 block max-w-[1300px] px-4 md:px-0'>
             <picture>
               <source
                 srcSet={theme === 'dark' ? '/assets/screenshot_dark.webp' : '/assets/screenshot_light.webp'}
