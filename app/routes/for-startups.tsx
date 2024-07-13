@@ -1,4 +1,4 @@
-import Marketers from 'pages/Landings/Marketers'
+import Startups from 'pages/Landings/Startups'
 import type { LoaderFunctionArgs } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import type { SitemapFunction } from 'remix-sitemap'
@@ -22,5 +22,5 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Index() {
-  return <Marketers />
+  return <Startups />
 }

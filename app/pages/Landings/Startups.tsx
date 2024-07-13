@@ -23,7 +23,7 @@ interface LoaderProps {
 
 const INTEGRATIONS_URL = 'https://docs.swetrix.com/integrations'
 
-const Marketers = () => {
+const Startups = () => {
   const { theme: ssrTheme, isAuth } = useLoaderData<LoaderProps>()
   const { t } = useTranslation('common')
   const reduxTheme = useSelector((state: StateType) => state.ui.theme.theme)
@@ -82,7 +82,7 @@ const Marketers = () => {
               <h1 className='mx-auto max-w-4xl text-center text-3xl font-extrabold text-slate-900 dark:text-white sm:text-5xl sm:leading-none md:text-5xl lg:text-5xl xl:text-6xl xl:leading-[110%]'>
                 <Trans
                   t={t}
-                  i18nKey='marketers.slogan'
+                  i18nKey='startups.slogan'
                   components={{
                     span: (
                       <span className='bg-gradient-to-r  from-indigo-700 to-pink-700 bg-clip-text text-transparent dark:from-indigo-600 dark:to-indigo-400' />
@@ -91,7 +91,7 @@ const Marketers = () => {
                 />
               </h1>
               <p className='mx-auto mt-4 max-w-6xl text-center text-base leading-8 text-slate-900 dark:text-slate-300 sm:text-xl lg:text-lg xl:text-lg'>
-                {t('marketers.description')}
+                {t('startups.description')}
                 <br />
                 {t('main.trackEveryMetric')}
               </p>
@@ -145,7 +145,7 @@ const Marketers = () => {
       </div>
 
       <div className='mx-auto mb-6 mt-12 max-w-5xl px-5'>
-        {_map(t('marketers.whyUs', { returnObjects: true }), (item: { name: string; desc: string[] }) => (
+        {_map(t('startups.whyUs', { returnObjects: true }), (item: { name: string; desc: string[] }) => (
           <div key={item.name} className='mb-10 text-slate-900 last:mb-0 dark:text-white'>
             <h2 className='mb-5 text-4xl font-extrabold'>{item.name}</h2>
             {_map(item.desc, (descText) => (
@@ -193,4 +193,4 @@ const Marketers = () => {
   )
 }
 
-export default Marketers
+export default Startups

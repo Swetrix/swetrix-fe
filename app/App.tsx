@@ -108,6 +108,8 @@ const App: React.FC<IApp> = ({ ssrTheme, ssrAuthenticated }) => {
     routesPath.performance,
     routesPath.errorTracking,
     routesPath.forMarketers,
+    routesPath.forStartups,
+    routesPath.forSmallBusinesses,
   ]
 
   return (
