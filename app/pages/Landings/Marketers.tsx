@@ -1,5 +1,4 @@
-import React from 'react'
-import { Link } from '@remix-run/react'
+import { Link, useLoaderData } from '@remix-run/react'
 
 import { useTranslation, Trans } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -7,27 +6,30 @@ import { StateType } from 'redux/store'
 import { BOOK_A_CALL_URL, DISCORD_URL, isBrowser, LIVE_DEMO_URL } from 'redux/constants'
 import routesPath from 'routesPath'
 
-import { ArrowSmallRightIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
+import { ArrowRightIcon } from '@heroicons/react/20/solid'
 
 import Header from 'components/Header'
 import { getAccessToken } from 'utils/accessToken'
 
 import _map from 'lodash/map'
 import { ComparisonTable } from 'pages/MainPage/ComparisonTable'
+import { DitchGoogle } from 'pages/MainPage/DitchGoogle'
 
-interface IMarketers {
-  ssrTheme: 'dark' | 'light'
-  ssrAuthenticated: boolean
+interface LoaderProps {
+  theme: 'dark' | 'light'
+  isAuth: boolean
 }
 
 const INTEGRATIONS_URL = 'https://docs.swetrix.com/integrations'
 
-const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.Element => {
+const Marketers = () => {
+  const { theme: ssrTheme, isAuth } = useLoaderData<LoaderProps>()
   const { t } = useTranslation('common')
   const reduxTheme = useSelector((state: StateType) => state.ui.theme.theme)
   const accessToken = getAccessToken()
   const { authenticated: reduxAuthenticated, loading } = useSelector((state: StateType) => state.auth)
-  const authenticated = isBrowser ? (loading ? !!accessToken : reduxAuthenticated) : ssrAuthenticated
+  const authenticated = isBrowser ? (loading ? !!accessToken : reduxAuthenticated) : isAuth
   const theme = isBrowser ? reduxTheme : ssrTheme
 
   return (
@@ -101,7 +103,7 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
                   aria-label={t('titles.signup')}
                 >
                   <span className='mr-1 text-base font-semibold'>{t('common.getStarted')}</span>
-                  <ArrowSmallRightIcon className='mt-[1px] h-4 w-5' />
+                  <ArrowRightIcon className='mt-[1px] h-4 w-5' />
                 </Link>
                 <a
                   href={LIVE_DEMO_URL}
@@ -121,7 +123,7 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
                 aria-label={`${t('common.bookADemo')} (opens in a new tab)`}
               >
                 <span className='text-base font-semibold'>{t('common.bookADemo')}</span>
-                <ArrowSmallRightIcon className='mt-[1px] h-4 w-5' />
+                <ArrowRightIcon className='mt-[1px] h-4 w-5' />
               </a>
             </div>
           </div>
@@ -143,7 +145,7 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
         </div>
       </div>
 
-      <div className='mx-auto mt-12 max-w-5xl px-5'>
+      <div className='mx-auto mb-6 mt-12 max-w-5xl px-5'>
         {_map(t('marketers.whyUs', { returnObjects: true }), (item: { name: string; desc: string[] }) => (
           <div key={item.name} className='mb-10 text-slate-900 last:mb-0 dark:text-white'>
             <h2 className='mb-5 text-4xl font-extrabold'>{item.name}</h2>
@@ -179,96 +181,15 @@ const Marketers: React.FC<IMarketers> = ({ ssrTheme, ssrAuthenticated }): JSX.El
         ))}
 
         <ComparisonTable className='py-5' />
-
-        <div className='mt-10 flex flex-col items-center justify-center sm:flex-row'>
-          <Link
-            to={routesPath.signup}
-            className='flex h-12 w-full items-center justify-center rounded-md bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 transition-all !duration-300 hover:bg-slate-700 dark:bg-indigo-700 dark:ring-indigo-700 dark:hover:bg-indigo-600 sm:mr-6 sm:max-w-[210px]'
-            aria-label={t('titles.signup')}
-          >
-            <span className='mr-1 text-base font-semibold'>{t('common.getStarted')}</span>
-            <ArrowSmallRightIcon className='mt-[1px] h-4 w-5' />
-          </Link>
-          <a
-            href={LIVE_DEMO_URL}
-            className='mt-2 flex h-12 w-full items-center justify-center rounded-md bg-transparent text-slate-900 shadow-sm ring-1 ring-slate-900 transition-all !duration-300 hover:bg-slate-200 dark:text-white dark:ring-white/20 dark:hover:bg-gray-800 sm:mt-0 sm:max-w-[210px]'
-            target='_blank'
-            rel='noopener noreferrer'
-            aria-label={`${t('common.liveDemo')} (opens in a new tab)`}
-          >
-            <span className='text-base font-semibold'>{t('common.liveDemo')}</span>
-          </a>
-        </div>
       </div>
 
-      <div className='overflow-hidden'>
-        <div className='relative isolate mx-auto w-full pt-10'>
-          <svg
-            className='absolute inset-0 -z-10 hidden h-full w-full rotate-180 stroke-gray-200 [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)] dark:stroke-white/10 sm:block'
-            aria-hidden='true'
-          >
-            <defs>
-              <pattern id='rect-pattern-2' width={200} height={200} x='50%' y={0} patternUnits='userSpaceOnUse'>
-                <path d='M.5 200V.5H200' fill='none' />
-              </pattern>
-            </defs>
-            <svg x='50%' y={0} className='overflow-visible fill-gray-50 dark:fill-slate-800/30'>
-              <path
-                d='M-200.5 0h201v201h-201Z M599.5 0h201v201h-201Z M399.5 400h201v201h-201Z M-400.5 600h201v201h-201Z'
-                strokeWidth={0}
-              />
-            </svg>
-            <rect width='100%' height='100%' strokeWidth={0} fill='url(#rect-pattern-2)' />
-          </svg>
-          <section className='relative z-20 mx-auto max-w-5xl px-3'>
-            <h2 className='mx-auto mt-20 w-full max-w-5xl text-center text-3xl font-extrabold text-slate-900 dark:text-white sm:text-5xl'>
-              Our communication strategies
-            </h2>
-            <div className=' flex flex-wrap items-start justify-center justify-items-center gap-10 pb-36 pt-10 text-slate-900 dark:text-white'>
-              {_map(
-                // @ts-expect-error
-                t('marketers.mFeatures', { returnObjects: true }),
-                (
-                  item: {
-                    name: string
-                    desc: string[]
-                  },
-                  index: number,
-                ) => (
-                  <div
-                    key={item.name}
-                    className='w-full max-w-[410px] rounded-[20px] bg-transparent p-5 shadow dark:shadow-white/10 md:h-[320px]'
-                  >
-                    <div className='mb-5 flex items-center'>
-                      <h2 className='text-xl font-semibold md:text-2xl'>{item.name}</h2>
-                    </div>
-                    {_map(item.desc, (descText) => (
-                      <div className='mb-4 flex items-center justify-start'>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          fill='none'
-                          viewBox='0 0 24 24'
-                          strokeWidth={1.5}
-                          stroke='currentColor'
-                          className='size-4 min-w-[16px] md:size-6 md:min-w-[24px]'
-                        >
-                          <path
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            d='M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z'
-                          />
-                        </svg>
-                        <p className='ml-5 text-[16px] text-slate-700 dark:text-gray-300 md:text-[18px]'>{descText}</p>
-                      </div>
-                    ))}
-                  </div>
-                ),
-              )}
-            </div>
-          </section>
-        </div>
-      </div>
-      <div className='mx-auto max-w-[1440px]'></div>
+      <DitchGoogle
+        screenshot={{
+          dark: '/assets/screenshot_dark.png',
+          light: '/assets/screenshot_light.png',
+        }}
+        theme={theme}
+      />
     </main>
   )
 }

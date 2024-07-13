@@ -1,6 +1,5 @@
 import Marketers from 'pages/Landings/Marketers'
 import type { LoaderFunctionArgs } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
 import { json, redirect } from '@remix-run/node'
 import type { SitemapFunction } from 'remix-sitemap'
 
@@ -23,7 +22,5 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Index() {
-  const { theme, isAuth } = useLoaderData<typeof loader>()
-
-  return <Marketers ssrTheme={theme} ssrAuthenticated={isAuth} />
+  return <Marketers />
 }

@@ -140,36 +140,6 @@
   "marketers": {
     "slogan": "Discover the ultimate <span>open-source web analytics</span> tailored for <span>marketers</span>",
     "description": "Swetrix is a comprehensive tool to drive your campaigns, optimise your strategies, and achieve unparalleled success - all in one service.",
-    "mFeatures": [
-      {
-        "name": "Content marketing",
-        "desc": [
-          "Creating blogs and articles explaining how Swetrix can solve the problems of marketers who are not satisfied with other services.",
-          "Publishing case studies that demonstrate successful examples of how Swetrix has been used for various marketing campaigns."
-        ]
-      },
-      {
-        "name": "Social networks and online advertising",
-        "desc": [
-          "Use of targeted advertising on social media aimed at marketers looking for new analytical solutions.",
-          "Creating communities and groups to discuss the experience of using different analytics services and the benefits of Swetrix."
-        ]
-      },
-      {
-        "name": "Free trials and demos",
-        "desc": [
-          "Offering a free trial period that allows marketers to evaluate all the benefits of Swetrix without financial commitment.",
-          "Demonstrations of the service to show its functionality and benefits in action."
-        ]
-      },
-      {
-        "name": "Educational events",
-        "desc": [
-          "Links to community blogs, discounts.",
-          "Creating video tutorials and guides to help marketers easily master the service."
-        ]
-      }
-    ],
     "whyUs": [
       {
         "name": "Easy integration and configuration",
