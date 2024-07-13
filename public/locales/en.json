@@ -233,6 +233,54 @@
       }
     ]
   },
+  "smbs": {
+    "slogan": "Privacy-focused and easy to use <span>web analytics</span> tailored for <span>small businesses</span>",
+    "description": "Swetrix is an all-in-one web analytics service that will help you as an entrepreneur or small business to track your campaigns, analyse traffic and website performance without compromising user privacy.",
+    "whyUs": [
+      {
+        "name": "Simplicity and efficiency",
+        "desc": [
+          "<span>Easy integration and configuration:</span> Swetrix <integrationLink>integrates seamlessly</integrationLink> with your existing systems, allowing you to quickly start using the service without the need for complex technical setup.",
+          "<span>Intuitive interface:</span> A clear and easy-to-use interface that allows managers to quickly get the information they need without any extra effort."
+        ]
+      },
+      {
+        "name": "Information availability",
+        "desc": [
+          "<span>Real-time:</span> Swetrix provides real-time data (within seconds), which allows managers to respond quickly to changes in customer behaviour and traffic.",
+          "<span>Flexible reports:</span> The ability to customise reports to meet specific business needs to help you make informed decisions."
+        ]
+      },
+      {
+        "name": "Privacy and security",
+        "desc": [
+          "<span>Data protection:</span> Swetrix provides a high degree of confidentiality and data protection, which is critical for executives who want to protect their customers' information.",
+          "<span>Regulatory compliance:</span> Compliance with the GDPR and other regulatory requirements, which guarantees legal security of the service."
+        ]
+      },
+      {
+        "name": "Support and assistance",
+        "desc": [
+          "<span>High-quality customer support:</span> Swetrix provides fast and efficient support, helping to resolve any issues and problems that managers may face.",
+          "<span>Educational resources:</span> we have a well-developed community on <discordUrl>Discord</discordUrl> and on <twitterUrl>Twitter</twitterUrl>, where we are always happy to help."
+        ]
+      },
+      {
+        "name": "Cost-effective and flexible",
+        "desc": [
+          "<span>Affordable prices:</span> Competitive prices that allow managers of small companies to get all the tools they need without significant financial outlays.",
+          "<span>Flexible plans:</span> The ability to choose different tariff plans to suit the size and needs of the company."
+        ]
+      },
+      {
+        "name": "Analytics and optimisation",
+        "desc": [
+          "<span>Detailed analytics:</span> Swetrix provides advanced traffic analysis to help managers better understand customer behaviour and optimise business processes.",
+          "<span>Marketing optimisation:</span> The ability to analyse the effectiveness of marketing campaigns and adjust strategies to achieve better results."
+        ]
+      }
+    ]
+  },
   "main": {
     "ukrSupport": "Support the Ukrainian army to fight Russian invasion.",
     "slogan": "<span>Ultimate open-source web analytics</span> to satisfy all your needs.",
