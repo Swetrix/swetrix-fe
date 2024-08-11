@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from '@remix-run/node'
 import { useLoaderData, Link } from '@remix-run/react'
-import { json, redirect } from '@remix-run/node'
+import { json } from '@remix-run/node'
 import type { SitemapFunction } from 'remix-sitemap'
 
 import { detectTheme, isAuthenticated } from 'utils/server'
@@ -50,14 +50,9 @@ import { Lines } from 'components/marketing/Lines'
 
 export const sitemap: SitemapFunction = () => ({
   priority: 1,
-  exclude: isSelfhosted,
 })
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  if (isSelfhosted) {
-    return redirect('/login', 302)
-  }
-
   const [theme] = detectTheme(request)
   const isAuth = isAuthenticated(request)
 
@@ -629,6 +624,41 @@ const LatestNews = () => (
   </p>
 )
 
+const HeroGrid = () => (
+  <svg
+    className='absolute inset-0 -z-10 h-full w-full stroke-gray-200 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)] dark:stroke-white/10'
+    aria-hidden='true'
+  >
+    <defs>
+      <pattern id='rect-pattern' width={200} height={200} x='50%' y={-1} patternUnits='userSpaceOnUse'>
+        <path d='M.5 200V.5H200' fill='none' />
+      </pattern>
+    </defs>
+    <svg x='50%' y={-1} className='overflow-visible fill-white dark:fill-gray-800/20'>
+      <path
+        d='M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z'
+        strokeWidth={0}
+      />
+    </svg>
+    <rect width='100%' height='100%' strokeWidth={0} fill='url(#rect-pattern)' />
+  </svg>
+)
+
+const HeroGradient = () => (
+  <div
+    className='absolute left-[calc(50%-4rem)] top-10 -z-10 transform-gpu blur-3xl sm:left-[calc(50%-18rem)] lg:left-48 lg:top-[calc(50%-30rem)] xl:left-[calc(50%-24rem)]'
+    aria-hidden='true'
+  >
+    <div
+      className='aspect-[1108/632] w-[69.25rem] bg-gradient-to-r from-[#80caff] to-[#4f46e5] opacity-20'
+      style={{
+        clipPath:
+          'polygon(73.6% 51.7%, 91.7% 11.8%, 100% 46.4%, 97.4% 82.2%, 92.5% 84.9%, 75.7% 64%, 55.3% 47.5%, 46.5% 49.4%, 45% 62.9%, 50.3% 87.2%, 21.3% 64.1%, 0.1% 100%, 5.4% 51.1%, 21.4% 63.9%, 58.9% 0.2%, 73.6% 51.7%)',
+      }}
+    />
+  </div>
+)
+
 const Hero = ({
   theme,
   ssrTheme,
@@ -643,35 +673,8 @@ const Hero = ({
 
   return (
     <div className='relative isolate overflow-x-clip'>
-      <svg
-        className='absolute inset-0 -z-10 h-full w-full stroke-gray-200 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)] dark:stroke-white/10'
-        aria-hidden='true'
-      >
-        <defs>
-          <pattern id='rect-pattern' width={200} height={200} x='50%' y={-1} patternUnits='userSpaceOnUse'>
-            <path d='M.5 200V.5H200' fill='none' />
-          </pattern>
-        </defs>
-        <svg x='50%' y={-1} className='overflow-visible fill-white dark:fill-gray-800/20'>
-          <path
-            d='M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z'
-            strokeWidth={0}
-          />
-        </svg>
-        <rect width='100%' height='100%' strokeWidth={0} fill='url(#rect-pattern)' />
-      </svg>
-      <div
-        className='absolute left-[calc(50%-4rem)] top-10 -z-10 transform-gpu blur-3xl sm:left-[calc(50%-18rem)] lg:left-48 lg:top-[calc(50%-30rem)] xl:left-[calc(50%-24rem)]'
-        aria-hidden='true'
-      >
-        <div
-          className='aspect-[1108/632] w-[69.25rem] bg-gradient-to-r from-[#80caff] to-[#4f46e5] opacity-20'
-          style={{
-            clipPath:
-              'polygon(73.6% 51.7%, 91.7% 11.8%, 100% 46.4%, 97.4% 82.2%, 92.5% 84.9%, 75.7% 64%, 55.3% 47.5%, 46.5% 49.4%, 45% 62.9%, 50.3% 87.2%, 21.3% 64.1%, 0.1% 100%, 5.4% 51.1%, 21.4% 63.9%, 58.9% 0.2%, 73.6% 51.7%)',
-          }}
-        />
-      </div>
+      <HeroGrid />
+      <HeroGradient />
       <Header ssrTheme={ssrTheme} authenticated={authenticated} transparent />
       <SupportUkraine />
       <div className='relative mx-auto min-h-[740px] pb-5 pt-10 sm:px-3 lg:px-6 lg:pt-24 xl:px-8'>
@@ -802,6 +805,31 @@ const Hero = ({
   )
 }
 
+const SelfhostedPanel = () => {
+  const { t } = useTranslation('common')
+
+  return (
+    <div className='mx-auto max-w-3xl divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow'>
+      <div className='px-4 py-5 font-bold sm:p-6'>{t('main.selfhosted.welcome')}</div>
+      <div className='px-4 py-4 sm:px-6'>
+        {/* Content goes here */}
+        {/* We use less vertical padding on card footers at all sizes than on headers or body sections */}
+      </div>
+    </div>
+  )
+}
+
+const Selfhosted = ({ ssrTheme, authenticated }: { ssrTheme: 'dark' | 'light'; authenticated: boolean }) => {
+  return (
+    <main className='relative isolate min-h-[calc(100vh-88.5px)] overflow-x-clip bg-white dark:bg-slate-900'>
+      <HeroGrid />
+      <HeroGradient />
+      <Header ssrTheme={ssrTheme} authenticated={authenticated} transparent />
+      <SelfhostedPanel />
+    </main>
+  )
+}
+
 export default function Index() {
   const { theme: ssrTheme, isAuth } = useLoaderData<typeof loader>()
 
@@ -814,6 +842,10 @@ export default function Index() {
   const theme = isBrowser ? reduxTheme : ssrTheme
   const accessToken = getAccessToken()
   const authenticated = isBrowser ? (loading ? !!accessToken : reduxAuthenticated) : isAuth
+
+  if (isSelfhosted) {
+    return <Selfhosted ssrTheme={ssrTheme} authenticated={authenticated} />
+  }
 
   return (
     <div className='overflow-hidden'>
