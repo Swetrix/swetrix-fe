@@ -232,7 +232,8 @@ const getColumns = (
     [key: string]: string[]
   },
 ) => {
-  const { views, bounce, viewsPerUnique, unique, trendlines, sessionDuration, occurrences } = activeChartMetrics
+  const { views, bounce, viewsPerUnique, unique, trendlines, sessionDuration, occurrences, avgResponseTime } =
+    activeChartMetrics
 
   const columns: any[] = [['x', ..._map(chart.x, (el) => dayjs(el).toDate())]]
 
@@ -253,6 +254,10 @@ const getColumns = (
     if (compareChart?.occurrences) {
       columns.push(['occurrencesCompare', ...compareChart.occurrences])
     }
+  }
+
+  if (avgResponseTime) {
+    columns.push(['avgResponseTime', ...chart.avgResponseTime])
   }
 
   if (views) {
@@ -939,7 +944,6 @@ const getSettingsSession = (
   }
 }
 
-// function to get the settings and data for the error details chart
 const getSettingsError = (
   chart: any,
   timeBucket: string,
@@ -1065,7 +1069,6 @@ const getSettingsError = (
   }
 }
 
-// function to get the settings and data for the funnels chart
 const getSettingsFunnels = (funnel: IAnalyticsFunnel[], totalPageviews: number, t: typeof i18next.t): ChartOptions => {
   const values = _map(funnel, (step) => {
     if (_startsWith(step.value, '/')) {
@@ -1118,7 +1121,7 @@ const getSettingsFunnels = (funnel: IAnalyticsFunnel[], totalPageviews: number, 
     },
     tooltip: {
       contents: (items: any, _: any, __: any, color: any) => {
-        const { index } = items[0]
+        const { index = 0 } = items[0] || {}
         const step = funnel[index]
         const stepTitle = values[index]
         const prevStepTitle = values[index - 1]
@@ -1205,6 +1208,131 @@ const getSettingsFunnels = (funnel: IAnalyticsFunnel[], totalPageviews: number, 
       linearGradient: true,
     },
     bindto: '#dataChart',
+  }
+}
+
+const getSettingsUptime = (
+  chart: any,
+  timeBucket: string,
+  timeFormat: string,
+  rotateXAxis: boolean,
+  chartType: string,
+): ChartOptions => {
+  const xAxisSize = _size(chart.x)
+
+  const columns = getColumns(chart, { avgResponseTime: true }, {})
+
+  let regionStart
+
+  if (xAxisSize > 1) {
+    regionStart = dayjs(chart.x[xAxisSize - 2]).toDate()
+  } else {
+    regionStart = dayjs(chart.x[xAxisSize - 1]).toDate()
+  }
+
+  return {
+    data: {
+      x: 'x',
+      columns,
+      types: {
+        avgResponseTime: chartType === chartTypes.line ? area() : bar(),
+      },
+      colors: {
+        avgResponseTime: '#709775',
+      },
+      regions: {
+        avgResponseTime: [
+          {
+            // @ts-expect-error
+            start: regionStart,
+            style: {
+              dasharray: '6 2',
+            },
+          },
+        ],
+      },
+    },
+    transition: {
+      duration: 500,
+    },
+    resize: {
+      auto: true,
+      timer: false,
+    },
+    axis: {
+      x: {
+        clipPath: false,
+        tick: {
+          fit: true,
+          rotate: rotateXAxis ? 45 : 0,
+          // @ts-expect-error
+          format:
+            timeFormat === TimeFormat['24-hour']
+              ? (x: string) => d3.timeFormat(tbsFormatMapper24h[timeBucket])(x)
+              : (x: string) => d3.timeFormat(tbsFormatMapper[timeBucket])(x),
+        },
+        localtime: timeFormat === TimeFormat['24-hour'],
+        type: 'timeseries',
+      },
+      y: {
+        tick: {
+          // @ts-expect-error
+          format: (d: string) => getStringFromTime(getTimeFromSeconds(d), true),
+        },
+        show: true,
+        inner: true,
+      },
+    },
+    tooltip: {
+      contents: (item: any, _: any, __: any, color: any) => {
+        return `<ul class='bg-gray-100 dark:text-gray-50 dark:bg-slate-800 rounded-md shadow-md px-3 py-1'>
+          <li class='font-semibold'>${
+            timeFormat === TimeFormat['24-hour']
+              ? d3.timeFormat(tbsFormatMapperTooltip24h[timeBucket])(item[0].x)
+              : d3.timeFormat(tbsFormatMapperTooltip[timeBucket])(item[0].x)
+          }</li>
+          <hr class='border-gray-200 dark:border-gray-600' />
+          ${_map(
+            item,
+            (el: { id: string; index: number; name: string; value: string; x: Date }) => `
+            <li class='flex justify-between'>
+              <div class='flex justify-items-start'>
+                <div class='w-3 h-3 rounded-sm mt-1.5 mr-2' style=background-color:${color(el.id)}></div>
+                <span>${el.name}</span>
+              </div>
+              <span class='pl-4'>${getStringFromTime(getTimeFromSeconds(el.value), true)}</span>
+            </li>
+            `,
+          ).join('')}`
+      },
+    },
+    point:
+      chartType === chartTypes.bar
+        ? {}
+        : {
+            focus: {
+              only: xAxisSize > 1,
+            },
+            pattern: ['circle'],
+            r: 2,
+          },
+    legend: {
+      item: {
+        tile: {
+          type: 'circle',
+          width: 10,
+          r: 3,
+        },
+      },
+      hide: ['uniqueCompare', 'totalCompare', 'bounceCompare', 'sessionDurationCompare'],
+    },
+    area: {
+      linearGradient: true,
+    },
+    bar: {
+      linearGradient: true,
+    },
+    bindto: '#avgResponseUptimeChart',
   }
 }
 
@@ -1523,6 +1651,8 @@ const typeNameMapping = (t: typeof i18next.t) => ({
   so: t('project.mapping.so'),
   me: t('project.mapping.me'),
   ca: t('project.mapping.ca'),
+  te: t('project.mapping.te'),
+  co: t('project.mapping.co'),
   ev: t('project.event'),
   userFlow: t('main.competitiveFeatures.usfl'),
   'tag:key': t('project.metamapping.tag.key'),
@@ -1550,44 +1680,6 @@ const getFormatDate = (date: Date) => {
   if (dd < 10) dd = `0${dd}`
   if (mm < 10) mm = `0${mm}`
   return `${yyyy}-${mm}-${dd}`
-}
-
-/*
-  Converts an array of filters like:
-  [
-    {
-      "column": "cc",
-      "filter": [
-        "NL", "PL"
-      ]
-    }
-  ]
-  to
-  [
-    {
-      "column": "cc",
-      "filter": "NL"
-    },
-    {
-      "column": "cc",
-      "filter": "PL"
-    }
-  ]
-*/
-const convertFilters = (filters: any) => {
-  return _reduce(
-    filters,
-    (prev: any, curr: any) => {
-      const { column, filter } = curr
-      const converted = _map(filter, (el: any) => ({
-        column,
-        filter: el,
-      }))
-
-      return [...prev, ...converted]
-    },
-    [],
-  )
 }
 
 const SHORTCUTS_TABS_MAP = {
@@ -1628,7 +1720,6 @@ export {
   FILTER_CHART_METRICS_MAPPING_FOR_COMPARE,
   getSettingsFunnels,
   getSettingsSession,
-  convertFilters,
   SHORTCUTS_TABS_MAP,
   SHORTCUTS_TABS_LISTENERS,
   SHORTCUTS_GENERAL_LISTENERS,
@@ -1636,4 +1727,5 @@ export {
   CHART_MEASURES_MAPPING_PERF,
   getSettingsError,
   ERROR_FILTERS_MAPPING,
+  getSettingsUptime,
 }

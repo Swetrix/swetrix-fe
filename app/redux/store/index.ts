@@ -4,24 +4,22 @@ import { useDispatch } from 'react-redux'
 import { isDevelopment } from 'redux/constants'
 import rootSaga from '../sagas'
 import authSlice from '../reducers/auth'
-import errorsSlice from '../reducers/errors'
-import alertsSlice from '../reducers/alerts'
 import miscSlice from '../reducers/ui/misc'
 import projectsSlice from '../reducers/ui/projects'
 import alertsProjectsSlice from '../reducers/ui/alerts'
 import themeSlice from '../reducers/ui/theme'
 import cacheSlice from '../reducers/ui/cache'
+import monitorsSlice from '../reducers/ui/monitors'
 
 const rootReducer = combineReducers({
   auth: authSlice,
-  errors: errorsSlice,
-  alerts: alertsSlice,
   ui: combineReducers({
     misc: miscSlice,
     projects: projectsSlice,
     alerts: alertsProjectsSlice,
     theme: themeSlice,
     cache: cacheSlice,
+    monitors: monitorsSlice,
   }),
 })
 

@@ -8,9 +8,10 @@ import _isEmpty from 'lodash/isEmpty'
 import _isNumber from 'lodash/isNumber'
 import _map from 'lodash/map'
 import { nFormatter, getStringFromTime, getTimeFromSeconds } from 'utils/generic'
-import { IOverallObject } from 'redux/models/IProject'
+import { IOverallObject, IOverallPerformanceObject } from 'redux/models/IProject'
 import { ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Badge } from 'ui/Badge'
+import { MonitorOverallObject } from 'redux/models/Uptime'
 
 interface IMetricCard {
   label: string
@@ -20,6 +21,7 @@ interface IMetricCard {
   type?: 'percent' | 'string'
   valueMapper?: (value: any, type: 'main' | 'badge') => any
   classes?: {
+    container?: string
     value?: string
     label?: string
   }
@@ -70,7 +72,7 @@ export const MetricCard: React.FC<IMetricCard> = ({
   valueMapper,
   classes,
 }) => (
-  <div className='flex flex-col'>
+  <div className={cx('flex flex-col', classes?.container)}>
     <div className={cx('whitespace-nowrap text-4xl font-bold text-slate-900 dark:text-gray-50', classes?.value)}>
       {valueMapper ? valueMapper(value, 'main') : value}
     </div>
@@ -99,6 +101,7 @@ interface IMetricCardSelect {
   classes?: {
     value?: string
     label?: string
+    container?: string
   }
 }
 
@@ -112,7 +115,7 @@ export const MetricCardSelect: React.FC<IMetricCardSelect> = ({ values, valueMap
   }
 
   return (
-    <div className='flex flex-col'>
+    <div className={cx('flex flex-col', classes?.container)}>
       <div className={cx('whitespace-nowrap text-4xl font-bold text-slate-900 dark:text-gray-50', classes?.value)}>
         {valueMapper ? valueMapper(values[selected], selected) : values[selected].value}
       </div>
@@ -157,7 +160,7 @@ interface IMetricCards {
   activePeriodCompare?: string
 }
 
-const MetricCards = ({ overall, overallCompare, activePeriodCompare }: IMetricCards) => {
+export const MetricCards = memo(({ overall, overallCompare, activePeriodCompare }: IMetricCards) => {
   const { t } = useTranslation('common')
 
   let uniqueChange = overall.uniqueChange
@@ -222,6 +225,105 @@ const MetricCards = ({ overall, overallCompare, activePeriodCompare }: IMetricCa
       />
     </>
   )
+})
+
+interface IMetricCardsUptime {
+  overall: MonitorOverallObject
 }
 
-export default memo(MetricCards)
+export const MetricCardsUptime = memo(({ overall }: IMetricCardsUptime) => {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <MetricCard
+        label={t('monitor.metrics.avg')}
+        value={overall.current.avg}
+        change={overall.avgChange}
+        goodChangeDirection='up'
+        valueMapper={(value, type) =>
+          `${type === 'badge' && value > 0 ? '+' : ''}${getStringFromTime(getTimeFromSeconds(value), true)}`
+        }
+      />
+      <MetricCard
+        label={t('monitor.metrics.min')}
+        value={overall.current.min}
+        change={overall.minChange}
+        goodChangeDirection='up'
+        valueMapper={(value, type) =>
+          `${type === 'badge' && value > 0 ? '+' : ''}${getStringFromTime(getTimeFromSeconds(value), true)}`
+        }
+      />
+      <MetricCard
+        label={t('monitor.metrics.max')}
+        value={overall.current.max}
+        change={overall.maxChange}
+        goodChangeDirection='up'
+        valueMapper={(value, type) =>
+          `${type === 'badge' && value > 0 ? '+' : ''}${getStringFromTime(getTimeFromSeconds(value), true)}`
+        }
+      />
+    </>
+  )
+})
+
+interface IPerformanceMetricCards {
+  overall: Partial<IOverallPerformanceObject>
+  overallCompare?: Partial<IOverallPerformanceObject>
+  activePeriodCompare?: string
+}
+
+export const PerformanceMetricCards = memo(
+  ({ overall, overallCompare, activePeriodCompare }: IPerformanceMetricCards) => {
+    const { t } = useTranslation('common')
+
+    let frontendChange = overall.frontendChange
+    let backendChange = overall.backendChange
+    let networkChange = overall.networkChange
+
+    if (!_isEmpty(overallCompare) && activePeriodCompare !== 'previous') {
+      // @ts-ignore
+      frontendChange = overall.current?.frontend - overallCompare?.current?.frontend
+      // @ts-ignore
+      backendChange = overall.current?.backend - overallCompare?.current?.backend
+      // @ts-ignore
+      networkChange = overall.current?.network - overallCompare?.current?.network
+    }
+
+    return (
+      <div className='mb-5 flex flex-wrap justify-center gap-5 lg:justify-start'>
+        <MetricCard
+          label={t('dashboard.frontend')}
+          value={overall.current?.frontend}
+          change={frontendChange}
+          goodChangeDirection='up'
+          valueMapper={(value, type) =>
+            `${type === 'badge' && value > 0 ? '+' : ''}${getStringFromTime(getTimeFromSeconds(value), true)}`
+          }
+        />
+        <MetricCard
+          label={t('dashboard.backend')}
+          value={overall.current?.backend}
+          change={backendChange}
+          goodChangeDirection='up'
+          valueMapper={(value, type) =>
+            `${type === 'badge' && value > 0 ? '+' : ''}${getStringFromTime(getTimeFromSeconds(value), true)}`
+          }
+        />
+        <MetricCard
+          label={t('dashboard.network')}
+          value={overall.current?.network}
+          change={networkChange}
+          goodChangeDirection='up'
+          valueMapper={(value, type) =>
+            `${type === 'badge' && value > 0 ? '+' : ''}${getStringFromTime(getTimeFromSeconds(value), true)}`
+          }
+        />
+      </div>
+    )
+  },
+)
+
+MetricCards.displayName = 'MetricCards'
+MetricCardsUptime.displayName = 'MetricCardsUptime'
+PerformanceMetricCards.displayName = 'PerformanceMetricCards'

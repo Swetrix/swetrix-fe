@@ -77,7 +77,7 @@ const SmallBusinesses = () => {
           <ArrowTopRightOnSquareIcon className='ml-1 hidden h-4 w-4 text-slate-800 dark:text-white md:block' />
         </div>
         <div className='relative mx-auto min-h-[740px] pb-5 pt-10 sm:px-3 lg:px-6 lg:pt-24 xl:px-8'>
-          <div className='relative z-20 flex flex-col  content-between justify-center'>
+          <div className='relative z-20 flex flex-col content-between justify-center'>
             <div className='relative mx-auto flex flex-col px-4 text-left'>
               <h1 className='mx-auto max-w-4xl text-center text-4xl font-extrabold text-slate-900 dark:text-white sm:text-5xl sm:leading-none md:text-5xl lg:text-5xl xl:text-6xl xl:leading-[110%]'>
                 <Trans
@@ -85,24 +85,22 @@ const SmallBusinesses = () => {
                   i18nKey='smbs.slogan'
                   components={{
                     span: (
-                      <span className='bg-gradient-to-r  from-indigo-700 to-pink-700 bg-clip-text text-transparent dark:from-indigo-600 dark:to-indigo-400' />
+                      <span className='bg-gradient-to-r from-indigo-700 to-pink-700 bg-clip-text text-transparent dark:from-indigo-600 dark:to-indigo-400' />
                     ),
                   }}
                 />
               </h1>
               <p className='mx-auto mt-4 max-w-6xl text-center text-base leading-8 text-slate-900 dark:text-slate-300 sm:text-xl lg:text-lg xl:text-lg'>
                 {t('smbs.description')}
-                <br />
-                {t('main.trackEveryMetric')}
               </p>
               <div className='mt-10 flex flex-col items-center justify-center sm:flex-row'>
                 <Link
                   to={routesPath.signup}
-                  className='flex h-12 w-full items-center justify-center rounded-md bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 transition-all !duration-300 hover:bg-slate-700 dark:bg-indigo-700 dark:ring-indigo-700 dark:hover:bg-indigo-600 sm:mr-6 sm:max-w-[210px]'
+                  className='group flex h-12 w-full items-center justify-center rounded-md bg-slate-900 text-white shadow-sm ring-1 ring-slate-900 transition-all !duration-300 hover:bg-slate-700 dark:bg-indigo-700 dark:ring-indigo-700 dark:hover:bg-indigo-600 sm:mr-6 sm:max-w-[210px]'
                   aria-label={t('titles.signup')}
                 >
                   <span className='mr-1 text-base font-semibold'>{t('main.startAFreeTrial')}</span>
-                  <ArrowRightIcon className='mt-[1px] h-4 w-5' />
+                  <ArrowRightIcon className='mt-[1px] h-4 w-5 transition-transform group-hover:scale-[1.15]' />
                 </Link>
                 <a
                   href={LIVE_DEMO_URL}
@@ -119,9 +117,9 @@ const SmallBusinesses = () => {
                 className='mx-auto mt-8 flex max-w-max items-center border-0 font-bold text-slate-900 hover:underline dark:text-gray-100'
                 target='_blank'
                 rel='noopener noreferrer'
-                aria-label={`${t('common.bookADemo')} (opens in a new tab)`}
+                aria-label={`${t('common.bookACall')} (opens in a new tab)`}
               >
-                <span className='text-base font-semibold'>{t('common.bookADemo')}</span>
+                <span className='text-base font-semibold'>{t('common.bookACall')}</span>
                 <ArrowRightIcon className='mt-[1px] h-4 w-5' />
               </a>
             </div>

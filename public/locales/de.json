@@ -23,8 +23,10 @@
     "subscriptionUpdated": "Ihr Abonnement wurde aktualisiert",
     "generate2FAError": "Fehler beim Generieren des 2FA-Codes",
     "integrationRemovalError": "Beim Entfernen der Integration ist ein Fehler aufgetreten",
+    "integrationSaveError": "Failed to save integration, make sure you've entered a valid input",
     "enterACorrectNumber": "Bitte geben Sie eine korrekte Zahl ein",
     "numberCantBeNegative": "Die Zahl darf nicht negativ sein",
+    "numberCantBeBigger": "The number cannot be bigger than {{max}}",
     "forecastNumberCantBeBigger": "Die prognostizierte Zahl kann nicht größer sein als {{max}} für die gewählte Frequenz",
     "invalidToken": "Ungültiger Token",
     "transferRequestSent": "Transferanfrage gesendet",
@@ -41,11 +43,16 @@
     "funnelDeleted": "Der Trichter wurde gelöscht",
     "errorCode": "Fehlercode: {{error}}",
     "updateErrorStatusFailed": "Fehler beim Aktualisieren des Fehlerstatus",
-    "errorStatusUpdated": "Fehlerstatus wurde aktualisiert"
+    "errorStatusUpdated": "Fehlerstatus wurde aktualisiert",
+    "enterViewName": "Please enter a view name",
+    "inputCannotBeEmpty": "This input field must not be empty",
+    "viewDeleted": "View has been deleted",
+    "noAIForecastAvailable": "AI forecast is not available for this project yet"
   },
   "common": {
     "features": "Funktionen",
     "docs": "Dokumentation",
+    "bookACall": "Book a call with the founder",
     "getStarted": "Erste Schritte",
     "billing": "Rechnung",
     "pricing": "Preise",
@@ -96,8 +103,7 @@
     "oneMember": "1 Mitglied",
     "xMembers": "{{number}} Mitglieder",
     "general": "Allgemeines",
-    "fixIt": "Fixieren",
-    "bookADemo": "Enterprise-Demo buchen"
+    "fixIt": "Fixieren"
   },
   "performance": {
     "slogan": "Endbenutzer <span>Leistungsüberwachung</span> um schnelle Webseiten zu liefern.",
@@ -283,139 +289,73 @@
   },
   "main": {
     "ukrSupport": "Unterstützen Sie die ukrainische Armee im Kampf gegen die russische Invasion.",
-    "slogan": "<span>Ultimative Open-Source-Web-Analytics</span> um alle Ihre Wünsche zu befriedigen.",
-    "trackEveryMetric": "Analytik sollte so sein: GDPR-konform, leicht und einfach zu bedienen.",
-    "description": "Swetrix ist eine kochfreie Google Analytics-Alternative, die nicht in die Privatsphäre Ihrer Nutzer eindringt. Es ist perfekt für <0>Vermarkter</0>, <1>Start-ups</1>, <2>kleine Unternehmen</2> und praktisch alle Arten von Geschäften!",
+    "slogan": "Understand <span>the story</span> behind your customer clicks and scrolls",
+    "description": "Get all the insights you need about your users and website visitors without the hassle of showing cookie banners. Experience intuitive, easy-to-use and GDPR-compliant web analytics without invading the privacy of your visitors.",
+    "understandTheirUsers": "<0>{{amount}}</0> people understand their users",
+    "perfect": "It's perfect for <0>marketers</0>, <1>start-ups</1>, <2>small businesses</2> and virtually any type of business!",
     "trustedBy": "Von Regierungen, NGOs und innovativen Unternehmen anerkannt",
     "start": "Kostenlos beginnen",
-    "signup": "Jetzt gratis registrieren!",
-    "signupTerms": "Mit der Anmeldung akzeptieren Sie unsere <tos>Allgemeinen Geschäftsbedingungen</tos> und unsere <pp>Datenschutzerklärung</pp>.",
-    "techDetails": "Möchten Sie weitere technische Details erfahren?",
-    "lookAtDocs": "Sehen Sie sich doch mal die Dokumentation und die Live Demo an.",
-    "readyToStart": "Sind Sie bereit los zu legen?",
     "startAFreeTrial": "Kostenlos testen",
     "metric": "Metrisch",
-    "coreFeatures": {
-      "title": "Kern-Analysefunktionen",
-      "desc": "Leistungsfähige und einfache Analytics um alle benötigten Kennzahlen anzuzeigen. Frei von Cookies. Man muss kein Datenwissenschaftler sein, um unsere Analytics zu verstehen."
-    },
-    "marketplace": {
-      "title": "Marktplatz & integrierte Erweiterungen",
-      "desc1": "Benötigen Sie zusätzliche Funktionen? Verwenden Sie Erweiterungen oder programmieren Sie Ihre eigenen! Ab jetzt brauchen Sie nicht mehr viele Datenquellen aus verschiedenen Systemen zu nutzen - erweitern und ergänzen Sie alles in einem!",
-      "desc2": "Installieren Sie Erweiterungen und verkaufen Sie Ihre eigenen. Sie haben eine tolle Erweiterung für Ihr Unternehmen entwickelt? Großartig! Veröffentlichen Sie es auf dem Markt und teilen Sie Ihre Einblicke mit der ganzen Community."
-    },
-    "visitAddons": "Besuche Swetrix Marktplatz",
-    "privacy": {
-      "title": "Datenschutzkonform",
-      "list": [
-        {
-          "label": "DSGVO",
-          "desc": "daten und Verarbeitung mit Sitz in der EU Zone."
-        },
-        {
-          "label": "HIPAA",
-          "desc": "vertrauliche Informationen schützen."
-        },
-        {
-          "label": "PCI DSS",
-          "desc": "Sicherheit der Zahlungsdaten."
-        },
-        {
-          "label": "CCPA",
-          "desc": "Kontrolle über die persönlichen Informationen."
-        }
-      ]
-    },
-    "dataProtection": "Mehr zum Datenschutz",
-    "faq": {
-      "title": "Häufig gestellte Fragen",
-      "list": [
-        {
-          "question": "Benutzt Swetrix Cookies?",
-          "answer": "Nein. Unser Tracking-Script arbeitet komplett ohne den Einsatz von Cookies. Sie können unseren Dienst nutzen, ohne einen Cookie-Banner auf ihrer Webseite einzubauen. \nWir sind mit Richtlinien wie GDPR, PECR, CCPA, ePrivacy und COPPA konform."
-        },
-        {
-          "question": "Werden die Daten der Endnutzer verwendet, weitergegeben oder verkauft?",
-          "answer": "Nein, die Daten werden weder verwendet, weitergegeben oder verkauft. Alle gesammelten Daten werden zudem anonymisiert und wir speichern keine personenbezogenen Daten. Wir versuchen so transparent und respektvoll wie möglich mit Privatsphäre umzugehen."
-        },
-        {
-          "question": "Muss ich für ihren Dienst bezahlen?",
-          "answer": "Wir bieten sowohl kostenfreie als auch kostenpflichtige Abos an. Während die meisten Funktionen des kostenpflichtigen Abos auch im kostenfreien Abo enthalten sind, erhalten Sie in den kostenpflichtigen Abos mehr Tracking-Events pro Monat. Sie können Ihr Abo jederzeit herauf- oder herabstufen."
-        },
-        {
-          "question": "Sind meine Daten sicher?",
-          "answer": "Wir halten uns an alle Standards zur Sicherheit der Datenspeicherung und -verarbeitung. Alle Daten werden sicher gespeichert, können von Dritten nicht eingesehen werden und die gesamte Kommunikation erfolgt stets über verschlüsselte Kanäle (HTTPS)."
-        }
-      ]
-    },
-    "features": [
-      {
-        "name": "Website-Traffic mit 99% Genauigkeit messen",
-        "desc": "Die genaueste Analytics-Lösung, um alle grundlegenden Metriken zu verfolgen und die RICHTIGEN Daten zu sehen."
-      },
-      {
-        "name": "Demo & Geo-Berichte",
-        "desc": "Ja, es ist ein Standard. Aber wir verfolgen genau, wo Ihre Benutzer sind."
-      },
-      {
-        "name": "UTM & Reffer-Tracking",
-        "desc": "Der gesamte Datenverkehr Ihrer Unternehmen und Websites wird ohne Datenverlust angezeigt."
-      },
-      {
-        "name": "Agiles System",
-        "desc": "Ein flexibles Einstellungssystem für die Grundregeln - wie die Session-Definition, Traffic-Accounting usw. ist einfach einzurichten und anzupassen."
-      },
-      {
-        "name": "Eigene Ereignisse\n(sehr einfach einzurichten)",
-        "desc": "Die benutzerfreundliche Oberfläche und das einfache Setzen von Zielen wird Ihnen helfen, die Effektivität Ihrer Website zu messen."
-      },
-      {
-        "name": "Benutzerfluss",
-        "desc": "Verfolgen Sie, wie Benutzer auf Ihre Website gelangen und wohin sie gehen. Lernen Sie das Verhalten und die Muster Ihrer Besucher."
-      }
-    ],
     "demoGeoReports": "Ja, es ist ein Standard. Aber wir verfolgen genau, wo Ihre Benutzer sind.",
-    "mFeatures": [
-      {
-        "name": "Erweitern Sie Ihre Möglichkeiten",
-        "desc": "Browser-Erweiterungen, Benachrichtigungen, 2FA, flexible Funktionalität und mehr!"
-      },
-      {
-        "name": "Open-Source",
-        "desc": "Passen Sie Swetrix ganz einfach an Ihre Bedürfnisse an oder betreiben Sie es kinderleicht selbst."
-      },
-      {
-        "name": "Marktplatz-Einstellungen",
-        "desc": "Marktplatz mit von der Community entwickelten Erweiterungen, um Ihre analytischen Fähigkeiten zu verbessern."
-      },
-      {
-        "name": "Einfache Integration",
-        "desc": "Integrieren Sie Ihre Projekte, fügen Sie neue Erweiterungen hinzu, tauchen Sie ein in die Welt der Analyse."
-      },
-      {
-        "name": "Ihre Aufgaben lösen, statt weitere zu erzeugen",
-        "desc": "Holen Sie sich Einblicke und nutzen Sie die besten Lösungen, um Ihre Probleme zu lösen."
-      },
-      {
-        "name": "Teilen Sie Ihre besten Lösungen",
-        "desc": "Teilen Sie Ihre besten Lösungen mit der Community, erhalten Sie dafür Popularität und Geld."
-      }
-    ],
-    "supports": "Unterstützt alle beliebten Plattformen",
     "peopleLoveSwetrix": "Leute 🥰 Swetrix",
     "whyPeopleLoveSwetrix": "Swetrix ist ein ethischer und leistungsstarker Dienst. Hunderte von Menschen haben bereits den Wechsel von Google Analytics und anderen Alternativen gemacht.",
-    "marketplaceBlock": "Marktplatz- und Erweiterungsfunktionen",
-    "coreFeaturesBlock": "Kernfunktionen",
-    "opensourceAdv": "Vorteile der Verwendung von <url>Open-Source-</url>",
+    "weAreOpensource": "We are <url>open source</url>",
+    "coreFeatures": "Only the features you need",
+    "problem": {
+      "title": "Most people struggle to make sense of their analytics data",
+      "description": "Many web analytics solutions are either too complex and overwhelming, or too simple and don't provide enough insight. Business owners don't understand their customers and lose money.",
+      "step1": "Business owner collects web data",
+      "step2": "Overwhelmed by <u>complex dashboards</u> or limited by oversimplified metrics",
+      "step3": "Makes uninformed decisions, missing opportunities for growth"
+    },
+    "butThereIsASolution": "But there is a solution...",
+    "knowYourCustomers": "Know your customers and users",
+    "insights": {
+      "title": "Get insights into your traffic",
+      "description": "Swetrix helps you understand everything you need to know about your website traffic. Know how many people are online, what pages are most popular, where are your users from, and more."
+    },
+    "painPoints": {
+      "title": "Understand your site's pain points",
+      "description": "Nobody likes slow websites. Users are more likely to abandon your website if it takes too long to load, stay ahead of these problems and measure insights from real interactions."
+    },
+    "customisation": {
+      "title": "Complete customisation",
+      "description": "Missing a feature? We will build it :) You can also build your own features or install 3rd party add-ons from our Extensions Marketplace."
+    },
+    "integrations": {
+      "title": "Works with any platform",
+      "description": "With dozens of integrations, Swetrix makes it easy to connect your website and know your users, out of the box."
+    },
+    "sessions": {
+      "title": "Session analysis",
+      "description": "Analyse the sessions of your website users and make data-driven decisions."
+    },
+    "cookies": {
+      "title": "Forget about annoying cookie banners",
+      "description": "Swetrix does not use cookies for tracking, so you can forget about all those annoying cookie banners. We collect analytical data anonymously to respect the privacy of your users. We do not collect personal identifiers and do not perform cross-device tracking."
+    },
+    "utms": {
+      "title": "Analyse marketing campaigns and newsletters",
+      "description": "Use UTMs to tag your ads, social media posts and email campaigns to see how much traffic they generate and how much revenue they bring in."
+    },
+    "funnels": {
+      "title": "User flows & marketing funnels",
+      "description": "Track how users get to your site and know where they go. Study behaviour, visualise and understand your user journey."
+    },
+    "eCommerce": {
+      "title": "E-commerce & Custom events (really easy to setup)",
+      "description": "Send custom events with custom properties to track user activity or sales. Analyse this data with ease in our intuitive dashboard. Create reusable views to quickly see and spot trends in your sales."
+    },
     "opensource": [
       {
         "desc": "Installieren Sie Swetrix auf Ihren eigenen Servern - der Quellcode ist für alle verfügbar."
       },
       {
-        "desc": "Finden Sie Fehler und schlagen Sie Verbesserungen vor - die Community wird Ihnen dankbar sein."
+        "desc": "Take part in the development of Swetrix - contribute by suggesting improvements, reporting bugs or developing new features."
       },
       {
-        "desc": "Ihre Daten sind geschützt, alle Funktionen und Verbesserungen werden in wenigen Tagen von unseren Entwicklern implementiert."
+        "desc": "We are a customer-first company, and transparency is our top priority."
       }
     ],
     "timeToDitchGoogleAnalytics": "Es ist Zeit Google Analytics <colour>aufzugeben</colour>.",
@@ -590,7 +530,12 @@
     "integrationsDesc": "Mithilfe von Integrationen können Sie Ihre bevorzugten Messenger mit Swetrix verbinden und Updates wie Benachrichtigungen, Berichte oder Alarme direkt empfangen.",
     "integrationsList": {
       "telegram": "Empfangen Sie Benachrichtigungen direkt in einem Telegram-Bot.",
-      "tgHint": "Schreiben Sie eine Nachricht an <url>{{username}}</url> um Ihre Chat-ID zu erhalten. Dieser Bot wird später verwendet, um Ihnen Benachrichtigungen oder Alarme zu senden."
+      "slack": "Receive notifications in any Slack channel via webhook.",
+      "discord": "Receive notifications in any Discord channel via webhook.",
+      "tgHint": "Schreiben Sie eine Nachricht an <url>{{username}}</url> um Ihre Chat-ID zu erhalten. Dieser Bot wird später verwendet, um Ihnen Benachrichtigungen oder Alarme zu senden.",
+      "slackHint": "We use Slack incoming webhooks to send notifications into your Slack communication channels. Please create a Slack app and <url>an incoming webhook</url> and paste it into the input field below.",
+      "discordHint": "We use Discord webhooks to send you notifications. Please <url>create a Discord webhook</url> and paste it into the input field below.",
+      "webhookUrl": "Webhook URL"
     },
     "socialisations": "Social-Logins",
     "socialisationsDesc": "Die Funktion „Social-Login“ ermöglicht es Ihnen, Konten Dritter (wie Google oder Twitter) mit Ihrem Swetrix Konto zu verknüpfen und sie zur Anmeldung bei Swetrix zu verwenden.",
@@ -652,6 +597,7 @@
     "alertDeleted": "Der Alarm wurde gelöscht"
   },
   "dashboard": {
+    "uptime": "Uptime",
     "newProject": "Neues Projekt",
     "newFunnel": "Neuer Trichter",
     "reloadPage": "Seite neu laden",
@@ -699,6 +645,7 @@
     "alerts": "Alarme",
     "alertsDesc": "Automatisierte Alarme sind ein leistungsstarkes Tool, mit dem Sie automatisierte Aufgaben ausführen können, wenn bestimmte Ereignisse auftreten.\nWir können Ihr Projekt automatisch auf Stacheln überwachen und Sie per Telegram benachrichtigen.",
     "funnelsDesc": "Trichter ist ein leistungsfähiges Tool, mit dem Sie die Konversionsrate Ihrer Benutzer durch eine Reihe von Schritten verfolgen können.\nDie Analyse des Marketing-Trichters gibt Ihnen die Möglichkeit, potenzielle Probleme zu entdecken, Ihre Website zu verbessern und Ihre Konversionsrate zu erhöhen.",
+    "uptimeDesc": "Swetrix uptime is a powerful tool that allows you to monitor the uptime of your websites.\nThe analysis provided by the uptime gives you the ability to discover potential problems before your customers notice them.",
     "frontend": "Frontend",
     "backend": "Backend",
     "network": "Netzwerk",
@@ -716,6 +663,43 @@
     "average": "Durchschnitt",
     "median": "Median",
     "xPercentile": "{{x}} Perzentil"
+  },
+  "monitor": {
+    "create": "Create a monitor",
+    "settingsOf": "Settings of {{name}}",
+    "delete": "Delete monitor",
+    "monitorCreated": "Uptime monitor created",
+    "monitorUpdated": "Uptime monitor has been updated",
+    "monitorDeleted": "Uptime monitor deleted",
+    "qDelete": "Delete the monitor?",
+    "deleteHint": "This action is irreversible.\nThe uptime monitor and all the data related to it will be deleted from our servers.",
+    "noEvents": "No monitor events found",
+    "noEventsDesc": "No events have been recorded for the specified period, please try a different period.",
+    "form": {
+      "name": "Monitor name",
+      "type": "Monitor type",
+      "url": "URL to monitor",
+      "interval": "Monitor interval",
+      "intervalHint": "We will check the URL every {{intervalTranslated}}",
+      "retries": "Monitor retries",
+      "retriesHint": "We will retry the URL {{retries}} times before marking it as failed",
+      "retryInterval": "Monitor retry interval",
+      "retryIntervalHint": "We will retry the URL every {{retryIntervalTranslated}}",
+      "timeout": "Monitor timeout",
+      "timeoutHint": "We will cancel the request to the URL if it takes longer than {{x}} seconds and mark it as failed",
+      "acceptedStatusCodes": "Monitor accepted status codes (comma-separated)",
+      "description": "Monitor description"
+    },
+    "error": {
+      "urlInvalid": "Please enter a valid URL",
+      "acceptedStatusCodesNotValid": "Some of the values provided are not valid HTTP status codes"
+    },
+    "backToMonitors": "Back to monitors list",
+    "metrics": {
+      "avg": "Avg. response time",
+      "min": "Min. response time",
+      "max": "Max. response time"
+    }
   },
   "alert": {
     "create": "Alarm einrichten",
@@ -771,12 +755,52 @@
   },
   "project": {
     "metadata": "Metadaten",
+    "nextOneHour": "Next 1 hour",
+    "nextXHours": "Next {{x}} hours",
+    "exitForecastingMode": "Exit forecasting mode",
+    "aiDetailsDesc": "The buttons above allow you to see an estimate of what kind of traffic you can expect within an hour in the next X hours.",
     "search": "Suche",
+    "views": "Views",
+    "viewName": "View name",
+    "addAView": "Add a view",
     "loadMore": "Mehr laden",
     "unknownCountry": "Unbekanntes Land",
     "selectCategory": "Kategorie zum Filtern auswählen",
+    "selectCategoryOptional": "Select category to filter (optional)",
+    "customEventsAndMetrics": "Custom events and metrics (optional)",
+    "addAMetric": "Add a metric",
+    "customEvent": "Custom event",
+    "metrics": {
+      "xAvg": "\"{{x}}\" average",
+      "xTotal": "\"{{x}}\" total",
+      "metricKey": {
+        "title": "Custom metric key",
+        "description": "Metadata key to aggregate (for example, \"amount\")."
+      },
+      "metricType": {
+        "title": "Custom metric type",
+        "description": "Specifies how to interpret the custom metric value. For example, Decimal will convert \"15.99\" to 15.99, while Integer will interpret it as 15."
+      },
+      "optinalEventKey": {
+        "title": "Event key (optional)",
+        "description": "Custom event metadata key to filter (for example, \"currency\")."
+      },
+      "optinalEventValue": {
+        "title": "Event value (optional)",
+        "description": "Custom event metadata value to filter (for example, \"GBP\")."
+      },
+      "filterNoKV": "For \"{{customEventName}}\" aggregate \"{{metricKey}}\"",
+      "filterK": "For \"{{customEventName}}\" aggregate \"{{metricKey}}\" where any key is \"{{metaKey}}\"",
+      "filterV": "For \"{{customEventName}}\" aggregate \"{{metricKey}}\" where any value is \"{{metaValue}}\"",
+      "filterKV": "For \"{{customEventName}}\" aggregate \"{{metricKey}}\" where key \"{{metaKey}}\" is \"{{metaValue}}\""
+    },
+    "noViewsYet": "No views yet",
+    "metaValueType": {
+      "decimal": "Decimal",
+      "integer": "Integer",
+      "text": "Text"
+    },
     "currentFilters": "Aktuell angewendete Filter",
-    "newFilters": "Neue Filter",
     "advancedFilters": "Erweiterte Filter",
     "applyFilters": "Filter anwenden",
     "lookingForMore": "Suchen Sie nach mehr?",
@@ -838,7 +862,9 @@
       "os": "Betriebssystem",
       "so": "UTM Source",
       "me": "UTM Medium",
-      "ca": "UTM Campaign"
+      "ca": "UTM Campaign",
+      "te": "UTM Term",
+      "co": "UTM Content"
     },
     "metamapping": {
       "ev": {
@@ -1047,8 +1073,11 @@
     },
     "forecast": {
       "title": "Traffic-Prognose",
-      "desc": "Dies ist eine grobe Schätzung, wie viel Traffic Sie auf Ihrer Website erwarten können, basierend auf den KI-Modellen von Swetrix.",
-      "input": "Die Menge von '{{frequency}}' die Sie vorhersagen möchten"
+      "desc": "This type of forecast gives you a rough estimate on the main graph of how much traffic you can expect to get to your website.",
+      "detailsDesc": "This type of forecast provides you with a more flexible prediction, showing you what type of users (from what country, browser, locale, etc.) and how many of them you can expect to visit within your chosen timeframe.\n\nIt may not be available for newly created or low traffic sites, as we train our prediction models regularly and such sites may not be included in the training dataset.\n\nIf you wish to continue with this type of forecast, please press 'Continue'.",
+      "input": "Die Menge von '{{frequency}}' die Sie vorhersagen möchten",
+      "chart": "Chart forecast",
+      "details": "Details forecast"
     },
     "funnels": {
       "addTitle": "Trichter hinzufügen",
@@ -1165,7 +1194,7 @@
     "billing": "Rechnung",
     "contact": "Haben Sie etwas zu fragen?",
     "changelog": "Neuerungen",
-    "main": "Ultimative Open-Source-Web-Analytics um alle Ihre Wünsche zu befriedigen",
+    "main": "Understand the story behind your customer clicks and scrolls",
     "press": "Medien & Presse",
     "socialisation": "Social-Login",
     "open": "Open startup",

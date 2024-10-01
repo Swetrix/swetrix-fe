@@ -9,6 +9,7 @@ import _filter from 'lodash/filter'
 import { useNavigate, Link } from '@remix-run/react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'sonner'
 import {
   BellIcon,
   CurrencyDollarIcon,
@@ -24,8 +25,6 @@ import Modal from 'ui/Modal'
 import PaidFeature from 'modals/PaidFeature'
 import { QUERY_METRIC, PLAN_LIMITS } from 'redux/constants'
 import UIActions from 'redux/reducers/ui'
-import { alertsActions } from 'redux/reducers/alerts'
-import { errorsActions } from 'redux/reducers/errors'
 import { deleteAlert as deleteAlertApi } from 'api'
 import { StateType } from 'redux/store'
 
@@ -189,7 +188,6 @@ const ProjectAlerts = ({ projectId }: IProjectAlerts): JSX.Element => {
   const [isPaidFeatureOpened, setIsPaidFeatureOpened] = useState<boolean>(false)
   const navigate = useNavigate()
 
-  // @ts-ignore
   const limits = PLAN_LIMITS[user?.planCode] || PLAN_LIMITS.trial
   const isLimitReached = authenticated && total >= limits?.maxAlerts
 
@@ -214,7 +212,13 @@ const ProjectAlerts = ({ projectId }: IProjectAlerts): JSX.Element => {
   }, [t])
 
   const isIntegrationLinked = useMemo(() => {
-    return !_isEmpty(user) && user.telegramChatId && user.isTelegramChatIdConfirmed
+    if (_isEmpty(user)) {
+      return false
+    }
+
+    return Boolean(
+      (user.telegramChatId && user.isTelegramChatIdConfirmed) || user.slackWebhookUrl || user.discordWebhookUrl,
+    )
   }, [user])
 
   const handleNewAlert = () => {
@@ -235,18 +239,9 @@ const ProjectAlerts = ({ projectId }: IProjectAlerts): JSX.Element => {
           total: total - 1,
         }),
       )
-      dispatch(
-        alertsActions.generateAlerts({
-          message: t('alertsSettings.alertDeleted'),
-          type: 'success',
-        }),
-      )
+      toast.success(t('alertsSettings.alertDeleted'))
     } catch (reason: any) {
-      dispatch(
-        errorsActions.genericError({
-          message: reason?.response?.data?.message || reason?.message || 'Something went wrong',
-        }),
-      )
+      toast.error(reason?.response?.data?.message || reason?.message || 'Something went wrong')
     }
   }
 

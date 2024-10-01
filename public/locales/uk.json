@@ -23,8 +23,10 @@
     "subscriptionUpdated": "Ваша підписка була оновлена",
     "generate2FAError": "Сталася помилка під час генерації 2FA-коду",
     "integrationRemovalError": "Сталася помилка під час видалення інтеграції",
+    "integrationSaveError": "Failed to save integration, make sure you've entered a valid input",
     "enterACorrectNumber": "Будь ласка, введіть коректне число",
     "numberCantBeNegative": "Число не може бути від'ємним",
+    "numberCantBeBigger": "The number cannot be bigger than {{max}}",
     "forecastNumberCantBeBigger": "Кількість прогнозу не може бути більшим {{max}} для обраної частоти",
     "invalidToken": "Недійсний токен",
     "transferRequestSent": "Запит на передачу проєкту надіслано",
@@ -41,11 +43,16 @@
     "funnelDeleted": "Воронка видалена",
     "errorCode": "Код помилки: {{error}}",
     "updateErrorStatusFailed": "Сталася помилка під час оновлення статусу помилки",
-    "errorStatusUpdated": "Статус помилки був оновлений"
+    "errorStatusUpdated": "Статус помилки був оновлений",
+    "enterViewName": "Please enter a view name",
+    "inputCannotBeEmpty": "This input field must not be empty",
+    "viewDeleted": "View has been deleted",
+    "noAIForecastAvailable": "AI forecast is not available for this project yet"
   },
   "common": {
     "features": "Функціонал",
     "docs": "Документація",
+    "bookACall": "Book a call with the founder",
     "getStarted": "Реєстрація",
     "billing": "Тарифи",
     "pricing": "Ціни",
@@ -96,8 +103,7 @@
     "oneMember": "1 учасник",
     "xMembers": "{{number}} учасників",
     "general": "Загальні",
-    "fixIt": "Виправити",
-    "bookADemo": "Забронювати корпоративне демо"
+    "fixIt": "Виправити"
   },
   "performance": {
     "slogan": "<span>Моніторинг ефективності</span> для створення швидких вебсайтів.",
@@ -283,139 +289,73 @@
   },
   "main": {
     "ukrSupport": "Підтримайте українську армію в боротьбі з російським вторгненням.",
-    "slogan": "<span>Найкращий сервіс веб аналітики</span> для задоволення всіх ваших потреб.",
-    "trackEveryMetric": "Такою повинна бути аналітика: GDPR сумісною, швидкою та простою у використанні.",
-    "description": "Swetrix - це cookieless альтернатива Google Analytics, яка не втручається в приватність ваших користувачів. Swetrix є ідеальним для <0>маркетологів</0>, <1>стартапів</1>, <2>малих бізнесів</2> та практично будь-якого типу бізнесу!",
+    "slogan": "Understand <span>the story</span> behind your customer clicks and scrolls",
+    "description": "Get all the insights you need about your users and website visitors without the hassle of showing cookie banners. Experience intuitive, easy-to-use and GDPR-compliant web analytics without invading the privacy of your visitors.",
+    "understandTheirUsers": "<0>{{amount}}</0> people understand their users",
+    "perfect": "It's perfect for <0>marketers</0>, <1>start-ups</1>, <2>small businesses</2> and virtually any type of business!",
     "trustedBy": "Довіряють уряди, неурядові організації та інноваційні підприємства",
     "start": "Почніть безкоштовно",
-    "signup": "Зареєструйтесь, це безкоштовно!",
-    "signupTerms": "Реєструючись, ви погоджуєтесь з нашими <tos>Умовами використання</tos> та <pp>Політикою конфіденційності</pp>.",
-    "techDetails": "Хочете дізнатись більше технічних деталей?",
-    "lookAtDocs": "Детальніше на сторінках документації та функціоналу.",
-    "readyToStart": "Готові почати?",
     "startAFreeTrial": "Спробувати безкоштовно",
     "metric": "Метрика",
-    "coreFeatures": {
-      "title": "Основні функції аналітики",
-      "desc": "Потужна та проста аналітика для відображення всіх необхідних метрик. Без використання Cookies. Не потрібно бути статистиком, щоб зрозуміти нашу аналітику."
-    },
-    "marketplace": {
-      "title": "Торговий майданчик та розширення",
-      "desc1": "Потрібен додатковий функціонал? Підʼєднайте розширення або напишіть свої! Тепер вам не потрібно використовувати багато джерел з різних систем - розширюйте та доповнюйте все в одному!",
-      "desc2": "Встановлюйте розширення та продавайте власні. Створили файне розширення для вашої компанії? Чудово! Опублікуйте його на торговому майданчику та поділіться своїми здобутками з усією спільнотою."
-    },
-    "visitAddons": "Відвідати Swetrix Marketplace",
-    "privacy": {
-      "title": "Дотримання конфіденційності",
-      "list": [
-        {
-          "label": "GDPR",
-          "desc": "дані та їх обробка в зоні ЄС."
-        },
-        {
-          "label": "HIPAA",
-          "desc": "захист чутливої інформації."
-        },
-        {
-          "label": "PCI DSS",
-          "desc": "безпека платіжних даних."
-        },
-        {
-          "label": "CCPA",
-          "desc": "контроль над персональною інформацією."
-        }
-      ]
-    },
-    "dataProtection": "Докладніше про захист даних",
-    "faq": {
-      "title": "Отримайте відповіді на деякі запитання",
-      "list": [
-        {
-          "question": "Чи використовуються Cookie для відслідковування користувачів?",
-          "answer": "Ні. Ви можете використовувати наш сервіс без необхідності повідомлення про використання Cookie на вашому сайті.\nМи відповідаємо таким нормативним актам, як GDPR, PECR, CCPA, ePrivacy і COPPA."
-        },
-        {
-          "question": "Чи продаєте ви дані ваших користувачів?",
-          "answer": "Ні, не продаєм. Крім того, всі дані, які ми збираємо, є анонімізованими. Ми не зберігаємо ніяких даних, які дозволили б нам ідентифікувати конкретного користувача. Ми намагаємося бути максимально прозорими по відношенню до наших користувачів."
-        },
-        {
-          "question": "Чи потребують оплати ваші послуги?",
-          "answer": "Ми надаємо як безкоштовні, так і платні послуги, більшість функцій платного акаунту включені в безкоштовний. Ви можете купити або відмовитися від підписки в будь-який час."
-        },
-        {
-          "question": "Наскільки надійний ваш сервіс?",
-          "answer": "Ми дотримуємося всіх стандартів, що стосуються безпеки зберігання та обробки даних. Всі дані надійно зберігаються, не можуть бути доступні третім особам, а всі комунікації завжди здійснюються по зашифрованих каналах (HTTPS). "
-        }
-      ]
-    },
-    "features": [
-      {
-        "name": "Вимірюємо трафік з 99% точністю",
-        "desc": "Найбільш точне рішення аналітики для відстеження всіх основних показників та перегляду ПРАВИЛЬНИХ даних."
-      },
-      {
-        "name": "Демографія та геолокація",
-        "desc": "Так, це стандарт, але ми відстежуємо звідки саме прийшли ваші користувачі."
-      },
-      {
-        "name": "Відстеження UTM метрик",
-        "desc": "Весь трафік від ваших компаній і вебсайтів буде показано без втрати даних."
-      },
-      {
-        "name": "Agile система",
-        "desc": "Унікальна система налаштувань для основних правил використання - таких як визначення сесії, облік трафіку і так далі, легко налаштувати та використовувати."
-      },
-      {
-        "name": "Користувацькі події\n(дуже легко налаштувати)",
-        "desc": "Зручний інтерфейс і легкість встановлення цілей допоможуть вам оцінити ефективність вашого сайту."
-      },
-      {
-        "name": "Потік користувача",
-        "desc": "Відстежуйте, як користувачі потрапляють на ваш сайт і куди вони йдуть. Вивчайте поведінку та патерни ваших відвідувачів."
-      }
-    ],
     "demoGeoReports": "Так, це стандарт, але ми відстежуємо звідки саме прийшли ваші користувачі.",
-    "mFeatures": [
-      {
-        "name": "Розширте свої можливості",
-        "desc": "Браузерні розширення, сповіщення, 2FA, гнучкий функціонал та багато іншого!"
-      },
-      {
-        "name": "Відкритий вихідний код",
-        "desc": "Налаштовуйте Swetrix за вашими потребами або розвертайте його на ваших серверах."
-      },
-      {
-        "name": "Торговий майданчик",
-        "desc": "Торговий майданчик з розширеннями від спільноти покращить ваші аналітичні можливості."
-      },
-      {
-        "name": "Проста інтеграція",
-        "desc": "Інтегруйте ваші проєкти, додавайте нові розширення, легко заглиблюйтесь у світ аналітики."
-      },
-      {
-        "name": "Вирішуйте свої завдання, а не створюйте",
-        "desc": "Отримуйте інформацію і використовуйте найкращі рішення для розв'язання ваших проблем."
-      },
-      {
-        "name": "Поділіться своїми найкращими рішеннями",
-        "desc": "Поділіться своїми найкращими рішеннями зі спільнотою, отримайте популярність і гроші."
-      }
-    ],
-    "supports": "Підтримує всі популярні платформи",
     "peopleLoveSwetrix": "Люди 🥰 Swetrix",
     "whyPeopleLoveSwetrix": "Swetrix - це етичний та потужний сервіс. Сотні людей вже мігрували з Google Analytics та інших альтернатив.",
-    "marketplaceBlock": "Торговий майданчик та розширення",
-    "coreFeaturesBlock": "Основні можливості",
-    "opensourceAdv": "Переваги використання <url>відкритого коду</url>",
+    "weAreOpensource": "We are <url>open source</url>",
+    "coreFeatures": "Only the features you need",
+    "problem": {
+      "title": "Most people struggle to make sense of their analytics data",
+      "description": "Many web analytics solutions are either too complex and overwhelming, or too simple and don't provide enough insight. Business owners don't understand their customers and lose money.",
+      "step1": "Business owner collects web data",
+      "step2": "Overwhelmed by <u>complex dashboards</u> or limited by oversimplified metrics",
+      "step3": "Makes uninformed decisions, missing opportunities for growth"
+    },
+    "butThereIsASolution": "But there is a solution...",
+    "knowYourCustomers": "Know your customers and users",
+    "insights": {
+      "title": "Get insights into your traffic",
+      "description": "Swetrix helps you understand everything you need to know about your website traffic. Know how many people are online, what pages are most popular, where are your users from, and more."
+    },
+    "painPoints": {
+      "title": "Understand your site's pain points",
+      "description": "Nobody likes slow websites. Users are more likely to abandon your website if it takes too long to load, stay ahead of these problems and measure insights from real interactions."
+    },
+    "customisation": {
+      "title": "Complete customisation",
+      "description": "Missing a feature? We will build it :) You can also build your own features or install 3rd party add-ons from our Extensions Marketplace."
+    },
+    "integrations": {
+      "title": "Works with any platform",
+      "description": "With dozens of integrations, Swetrix makes it easy to connect your website and know your users, out of the box."
+    },
+    "sessions": {
+      "title": "Session analysis",
+      "description": "Analyse the sessions of your website users and make data-driven decisions."
+    },
+    "cookies": {
+      "title": "Forget about annoying cookie banners",
+      "description": "Swetrix does not use cookies for tracking, so you can forget about all those annoying cookie banners. We collect analytical data anonymously to respect the privacy of your users. We do not collect personal identifiers and do not perform cross-device tracking."
+    },
+    "utms": {
+      "title": "Analyse marketing campaigns and newsletters",
+      "description": "Use UTMs to tag your ads, social media posts and email campaigns to see how much traffic they generate and how much revenue they bring in."
+    },
+    "funnels": {
+      "title": "User flows & marketing funnels",
+      "description": "Track how users get to your site and know where they go. Study behaviour, visualise and understand your user journey."
+    },
+    "eCommerce": {
+      "title": "E-commerce & Custom events (really easy to setup)",
+      "description": "Send custom events with custom properties to track user activity or sales. Analyse this data with ease in our intuitive dashboard. Create reusable views to quickly see and spot trends in your sales."
+    },
     "opensource": [
       {
         "desc": "Встановіть Swetrix на ваші власні сервери - вихідний код доступний для всіх."
       },
       {
-        "desc": "Шукайте помилки та пропонуйте покращення - спільнота буде вдячна вам."
+        "desc": "Take part in the development of Swetrix - contribute by suggesting improvements, reporting bugs or developing new features."
       },
       {
-        "desc": "Ваші дані захищені, всі покращення і виправлення реалізуються за лічені дні нашими розробниками."
+        "desc": "We are a customer-first company, and transparency is our top priority."
       }
     ],
     "timeToDitchGoogleAnalytics": "Настав час <colour>позбутися</colour> Google Аналітики.",
@@ -590,7 +530,12 @@
     "integrationsDesc": "Інтеграція можна використовувати для підʼєднання ваших улюблених месенджерів до Swetrix і безпосередньо отримувати різні сповіщення чи звіти.",
     "integrationsList": {
       "telegram": "Отримуйте сповіщення безпосередньо до Telegram бота.",
-      "tgHint": "Напишіть повідомлення <url>{{username}}</url>, щоб отримати ID вашого чату. Цей бот також буде використовуватися пізніше, щоб відправляти вам сповіщення чи звіти."
+      "slack": "Receive notifications in any Slack channel via webhook.",
+      "discord": "Receive notifications in any Discord channel via webhook.",
+      "tgHint": "Напишіть повідомлення <url>{{username}}</url>, щоб отримати ID вашого чату. Цей бот також буде використовуватися пізніше, щоб відправляти вам сповіщення чи звіти.",
+      "slackHint": "We use Slack incoming webhooks to send notifications into your Slack communication channels. Please create a Slack app and <url>an incoming webhook</url> and paste it into the input field below.",
+      "discordHint": "We use Discord webhooks to send you notifications. Please <url>create a Discord webhook</url> and paste it into the input field below.",
+      "webhookUrl": "Webhook URL"
     },
     "socialisations": "Соціалізації",
     "socialisationsDesc": "Функція соціалізації дозволяє зв'язати сторонні облікові записи (наприклад, Google або Twitter) з вашим обліковим записом Swetrix і використовувати їх для входу до Swetrix.",
@@ -652,6 +597,7 @@
     "alertDeleted": "Сповіщення видалено"
   },
   "dashboard": {
+    "uptime": "Uptime",
     "newProject": "Новий проєкт",
     "newFunnel": "Нова воронка",
     "reloadPage": "Оновити сторінку",
@@ -699,6 +645,7 @@
     "alerts": "Сповіщення",
     "alertsDesc": "Автоматизовані сповіщення - це потужний інструмент, який дозволяє вам виконувати автоматизовані завдання коли виконуються певні умови.\nМи можемо автоматично стежити за вашим проєктом на наявність спайків трафіку і повідомляти вас через Telegram.",
     "funnelsDesc": "Воронки – це потужний інструмент, що дозволяє вам відстежувати коефіцієнт конверсії ваших користувачів через ряд кроків.\nАналіз, наданий маркетинговою воронкою, дає вам можливість виявити потенційні проблеми, покращити ваш сайт та підвищити якість конвертації.",
+    "uptimeDesc": "Swetrix uptime is a powerful tool that allows you to monitor the uptime of your websites.\nThe analysis provided by the uptime gives you the ability to discover potential problems before your customers notice them.",
     "frontend": "Фронтенд",
     "backend": "Бекенд",
     "network": "Мережа",
@@ -716,6 +663,43 @@
     "average": "Середнє",
     "median": "Медіана",
     "xPercentile": "{{x}}й перцентиль"
+  },
+  "monitor": {
+    "create": "Create a monitor",
+    "settingsOf": "Settings of {{name}}",
+    "delete": "Delete monitor",
+    "monitorCreated": "Uptime monitor created",
+    "monitorUpdated": "Uptime monitor has been updated",
+    "monitorDeleted": "Uptime monitor deleted",
+    "qDelete": "Delete the monitor?",
+    "deleteHint": "This action is irreversible.\nThe uptime monitor and all the data related to it will be deleted from our servers.",
+    "noEvents": "No monitor events found",
+    "noEventsDesc": "No events have been recorded for the specified period, please try a different period.",
+    "form": {
+      "name": "Monitor name",
+      "type": "Monitor type",
+      "url": "URL to monitor",
+      "interval": "Monitor interval",
+      "intervalHint": "We will check the URL every {{intervalTranslated}}",
+      "retries": "Monitor retries",
+      "retriesHint": "We will retry the URL {{retries}} times before marking it as failed",
+      "retryInterval": "Monitor retry interval",
+      "retryIntervalHint": "We will retry the URL every {{retryIntervalTranslated}}",
+      "timeout": "Monitor timeout",
+      "timeoutHint": "We will cancel the request to the URL if it takes longer than {{x}} seconds and mark it as failed",
+      "acceptedStatusCodes": "Monitor accepted status codes (comma-separated)",
+      "description": "Monitor description"
+    },
+    "error": {
+      "urlInvalid": "Please enter a valid URL",
+      "acceptedStatusCodesNotValid": "Some of the values provided are not valid HTTP status codes"
+    },
+    "backToMonitors": "Back to monitors list",
+    "metrics": {
+      "avg": "Avg. response time",
+      "min": "Min. response time",
+      "max": "Max. response time"
+    }
   },
   "alert": {
     "create": "Створити сповіщення",
@@ -771,12 +755,52 @@
   },
   "project": {
     "metadata": "Метадані",
+    "nextOneHour": "Next 1 hour",
+    "nextXHours": "Next {{x}} hours",
+    "exitForecastingMode": "Exit forecasting mode",
+    "aiDetailsDesc": "The buttons above allow you to see an estimate of what kind of traffic you can expect within an hour in the next X hours.",
     "search": "Пошук",
+    "views": "Views",
+    "viewName": "View name",
+    "addAView": "Add a view",
     "loadMore": "Завантажити ще",
     "unknownCountry": "Невідома країна",
     "selectCategory": "Виберіть категорію для фільтрування",
+    "selectCategoryOptional": "Select category to filter (optional)",
+    "customEventsAndMetrics": "Custom events and metrics (optional)",
+    "addAMetric": "Add a metric",
+    "customEvent": "Custom event",
+    "metrics": {
+      "xAvg": "\"{{x}}\" average",
+      "xTotal": "\"{{x}}\" total",
+      "metricKey": {
+        "title": "Custom metric key",
+        "description": "Metadata key to aggregate (for example, \"amount\")."
+      },
+      "metricType": {
+        "title": "Custom metric type",
+        "description": "Specifies how to interpret the custom metric value. For example, Decimal will convert \"15.99\" to 15.99, while Integer will interpret it as 15."
+      },
+      "optinalEventKey": {
+        "title": "Event key (optional)",
+        "description": "Custom event metadata key to filter (for example, \"currency\")."
+      },
+      "optinalEventValue": {
+        "title": "Event value (optional)",
+        "description": "Custom event metadata value to filter (for example, \"GBP\")."
+      },
+      "filterNoKV": "For \"{{customEventName}}\" aggregate \"{{metricKey}}\"",
+      "filterK": "For \"{{customEventName}}\" aggregate \"{{metricKey}}\" where any key is \"{{metaKey}}\"",
+      "filterV": "For \"{{customEventName}}\" aggregate \"{{metricKey}}\" where any value is \"{{metaValue}}\"",
+      "filterKV": "For \"{{customEventName}}\" aggregate \"{{metricKey}}\" where key \"{{metaKey}}\" is \"{{metaValue}}\""
+    },
+    "noViewsYet": "No views yet",
+    "metaValueType": {
+      "decimal": "Decimal",
+      "integer": "Integer",
+      "text": "Text"
+    },
     "currentFilters": "Застосовані фільтри",
-    "newFilters": "Нові фільтри",
     "advancedFilters": "Розширені фільтри",
     "applyFilters": "Застосувати фільтри",
     "lookingForMore": "Шукаєте більше?",
@@ -838,7 +862,9 @@
       "os": "Операційна система",
       "so": "UTM Source",
       "me": "UTM Medium",
-      "ca": "UTM Campaign"
+      "ca": "UTM Campaign",
+      "te": "UTM Term",
+      "co": "UTM Content"
     },
     "metamapping": {
       "ev": {
@@ -1047,8 +1073,11 @@
     },
     "forecast": {
       "title": "Прогноз трафіку",
-      "desc": "Це приблизна оцінка того, на який трафік ви можете розраховувати на вашому вебсайті. Дані вираховуються на основі моделей Swetrix AI.",
-      "input": "Кількість '{{frequency}}', яку ви хочете прогнозувати"
+      "desc": "This type of forecast gives you a rough estimate on the main graph of how much traffic you can expect to get to your website.",
+      "detailsDesc": "This type of forecast provides you with a more flexible prediction, showing you what type of users (from what country, browser, locale, etc.) and how many of them you can expect to visit within your chosen timeframe.\n\nIt may not be available for newly created or low traffic sites, as we train our prediction models regularly and such sites may not be included in the training dataset.\n\nIf you wish to continue with this type of forecast, please press 'Continue'.",
+      "input": "Кількість '{{frequency}}', яку ви хочете прогнозувати",
+      "chart": "Chart forecast",
+      "details": "Details forecast"
     },
     "funnels": {
       "addTitle": "Додати воронку",
@@ -1165,7 +1194,7 @@
     "billing": "Ціни та тарифи",
     "contact": "Маєте що запитати?",
     "changelog": "Історія змін",
-    "main": "Найкращий сервіс веб аналітики для задоволення всіх ваших потреб",
+    "main": "Understand the story behind your customer clicks and scrolls",
     "press": "Медіа та преса",
     "socialisation": "Соціалізація",
     "open": "Open startup",

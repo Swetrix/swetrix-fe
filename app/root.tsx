@@ -19,11 +19,8 @@ import { ExclamationTriangleIcon, ChevronDownIcon, ChevronUpIcon } from '@heroic
 import { Provider } from 'react-redux'
 import clsx from 'clsx'
 import _replace from 'lodash/replace'
-// @ts-ignore
-import { transitions, positions, Provider as AlertProvider } from '@blaumaus/react-alert'
 import BillboardCss from 'billboard.js/dist/billboard.min.css'
 
-import AlertTemplate from 'ui/Alert'
 import { trackViews, trackErrors } from 'utils/analytics'
 import { useChangeLanguage } from 'remix-i18next/react'
 import { useTranslation } from 'react-i18next'
@@ -35,6 +32,7 @@ import { SEO } from 'components/SEO'
 
 import mainCss from 'styles/index.css'
 import tailwindCss from 'styles/tailwind.css'
+import sonnerCss from 'styles/sonner.css'
 import FlatpickerCss from 'styles/Flatpicker.css'
 import FlatpickrLightCss from 'flatpickr/dist/themes/light.css'
 import FlatpickrDarkCss from 'flatpickr/dist/themes/dark.css'
@@ -51,19 +49,13 @@ declare global {
   }
 }
 
-const options = {
-  position: positions.BOTTOM_RIGHT,
-  timeout: 8000,
-  offset: '30px',
-  transition: transitions.SCALE,
-}
-
 if (isBrowser && process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'swetrix:*'
 }
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: tailwindCss },
+  { rel: 'stylesheet', href: sonnerCss },
   { rel: 'stylesheet', href: mainCss },
   { rel: 'stylesheet', href: BillboardCss },
   { rel: 'stylesheet', href: FlatpickerCss },
@@ -270,9 +262,7 @@ export default function App() {
         })}
       >
         <Provider store={store}>
-          <AlertProvider template={AlertTemplate} {...options}>
-            <AppWrapper ssrTheme={theme} ssrAuthenticated={isAuthed} />
-          </AlertProvider>
+          <AppWrapper ssrTheme={theme} ssrAuthenticated={isAuthed} />
         </Provider>
         <ScrollRestoration />
         <Scripts />
