@@ -1,3 +1,6 @@
+> [!NOTE]
+> This repository has been archived as it has been merged with our backend repository to create a monorepo. The frontend source code can be found [here](https://github.com/Swetrix/swetrix/tree/main/web).
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://swetrix.com/assets/logo_white.png">
   <img alt="" src="https://swetrix.com/assets/logo_blue.png" height="80">
